@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,6 +8,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.3/babel.min.js"></script>
+  <!-- PWA / Home Screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Meal Plan">
+  <meta name="theme-color" content="#f97316">
+  <link rel="apple-touch-icon" id="apple-touch-icon">
+  <link rel="manifest" id="pwa-manifest">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: #08090d; color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
@@ -14,99 +23,157 @@
     button { font-family: inherit; }
     ::-webkit-scrollbar { width: 0; }
   </style>
+
+  <script>
+    // Generate home screen icon on canvas — orange bg + emojis
+    function buildIcon(size) {
+      const c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      const ctx = c.getContext('2d');
+      const r = size * 0.18; // corner radius
+
+      // Orange rounded background
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.lineTo(size - r, 0);
+      ctx.quadraticCurveTo(size, 0, size, r);
+      ctx.lineTo(size, size - r);
+      ctx.quadraticCurveTo(size, size, size - r, size);
+      ctx.lineTo(r, size);
+      ctx.quadraticCurveTo(0, size, 0, size - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Emojis — top row: lifter + bicep, bottom row: meat
+      const top = size * 0.36;
+      const bot = size * 0.72;
+      const fs  = Math.round(size * 0.30);
+      ctx.font = `${fs}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🏋🏻‍♂️', size * 0.30, top);
+      ctx.fillText('💪🏻',    size * 0.72, top);
+      ctx.fillText('🥩',     size * 0.50, bot);
+
+      return c.toDataURL('image/png');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const icon = buildIcon(180);
+
+      // Apple touch icon
+      document.getElementById('apple-touch-icon').href = icon;
+
+      // Web App Manifest (blob URL so icons array works)
+      const manifest = {
+        name: "Meal Plan — Dejan Zerafa",
+        short_name: "Meal Plan",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#08090d",
+        theme_color: "#f97316",
+        icons: [{ src: icon, sizes: "180x180", type: "image/png" }]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+    });
+  </script>
+
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const { useState } = React;
 
-
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 const C = {
-  bg:"#08090d", card:"#0f1117", card2:"#161b24", border:"#1e2433",
-  accent:"#f97316", accentDim:"rgba(249,115,22,0.12)", accentBorder:"rgba(249,115,22,0.30)",
-  prot:"#f97316", carb:"#3b82f6", fat:"#a855f7",
-  green:"#22c55e", greenDim:"rgba(34,197,94,0.08)", greenBorder:"rgba(34,197,94,0.25)",
-  blueDim:"rgba(59,130,246,0.10)", blueBorder:"rgba(59,130,246,0.28)",
-  text:"#eef2ff", sub:"#8b98b0", muted:"#4b5563", dim:"#1e2433",
+bg:”#08090d”, card:”#0f1117”, card2:”#161b24”, border:”#1e2433”,
+accent:”#f97316”, accentDim:“rgba(249,115,22,0.12)”, accentBorder:“rgba(249,115,22,0.30)”,
+prot:”#f97316”, carb:”#3b82f6”, fat:”#a855f7”,
+green:”#22c55e”, greenDim:“rgba(34,197,94,0.08)”, greenBorder:“rgba(34,197,94,0.25)”,
+blueDim:“rgba(59,130,246,0.10)”, blueBorder:“rgba(59,130,246,0.28)”,
+text:”#eef2ff”, sub:”#8b98b0”, muted:”#4b5563”, dim:”#1e2433”,
 };
 const TARGETS = { kcal:2500, protein:205, carbs:300, fat:55 };
 const FISH_OIL = { kcal:18, fat:2 };
-const CAT_ORDER = ["Protein","Carbs","Dairy","Vegetables","Aromatics","Sauces","Liquids"];
-const CAT_ICON  = { Protein:"🥩", Carbs:"🌾", Dairy:"🧀", Vegetables:"🥦", Aromatics:"🧄", Sauces:"🍶", Liquids:"💧" };
+const CAT_ORDER = [“Protein”,“Carbs”,“Dairy”,“Vegetables”,“Aromatics”,“Sauces”,“Liquids”];
+const CAT_ICON  = { Protein:“🥩”, Carbs:“🌾”, Dairy:“🧀”, Vegetables:“🥦”, Aromatics:“🧄”, Sauces:“🍶”, Liquids:“💧” };
 
 // ─── FIXED MEALS ───────────────────────────────────────────────────────────
 const BREAKFAST = {
-  type:"Breakfast", icon:"🌅", name:"High-Protein Breakfast",
-  kcal:798, protein:93, carbs:64, fat:19, fixed:true,
-  items:["200g fat-free cottage cheese","100g smoked turkey","2 whole eggs",
-         "2 sl. Baker Street white bread","150g cherry tomatoes",
-         "Double espresso + skimmed milk","250mL Baladna skimmed milk","1 scoop ON whey"],
-  supplements:["Creatine 10g","Vitamin D 4000 IU","Fish oil ×2"],
+type:“Breakfast”, icon:“🌅”, name:“High-Protein Breakfast”,
+kcal:798, protein:93, carbs:64, fat:19, fixed:true,
+items:[“200g fat-free cottage cheese”,“100g smoked turkey”,“2 whole eggs”,
+“2 sl. Baker Street white bread”,“150g cherry tomatoes”,
+“Double espresso + skimmed milk”,“250mL Baladna skimmed milk”,“1 scoop ON whey”],
+supplements:[“Creatine 10g”,“Vitamin D 4000 IU”,“Fish oil ×2”],
 };
 const PRE = {
-  type:"Pre-Workout", icon:"⚡", name:"Carb Bridge",
-  kcal:271, protein:2, carbs:66, fat:1, fixed:true,
-  items:["2 Kallo rice cakes","4 tbsp jam","1 banana"],
-  note:"45–60 min before training. Skip on rest days.",
+type:“Pre-Workout”, icon:“⚡”, name:“Carb Bridge”,
+kcal:271, protein:2, carbs:66, fat:1, fixed:true,
+items:[“2 Kallo rice cakes”,“4 tbsp jam”,“1 banana”],
+note:“45–60 min before training. Skip on rest days.”,
 };
 
 // ─── INGREDIENT DB ─────────────────────────────────────────────────────────
 const IDB = [
-  { cat:"Proteins 🥩", items:[
-    {n:"Chicken breast (raw)",kcal:110,p:23,c:0,f:1.2},
-    {n:"Lean beef mince (5%)",kcal:137,p:21,c:0,f:5},
-    {n:"Smoked turkey (sliced)",kcal:99,p:18,c:2.5,f:1.7},
-    {n:"Whole egg (raw)",kcal:147,p:13,c:0.7,f:10},
-    {n:"Beef bacon",kcal:170,p:15,c:0,f:12},
-  ]},
-  { cat:"Dairy & Supplements 🥛", items:[
-    {n:"Fat-free cottage cheese",kcal:72,p:12,c:4,f:0.5},
-    {n:"2% cottage cheese",kcal:90,p:12,c:5,f:2.5},
-    {n:"0% Greek yogurt",kcal:57,p:10,c:3.6,f:0.4},
-    {n:"Light sour cream",kcal:100,p:1.5,c:4,f:8},
-    {n:"Baladna skimmed milk",kcal:35,p:3.5,c:5,f:0.1},
-    {n:"Fat-free mozzarella",kcal:160,p:36,c:4,f:0},
-    {n:"Fat-free cheddar",kcal:155,p:35,c:3,f:0},
-    {n:"Parmesan (grated)",kcal:431,p:38,c:4,f:29},
-    {n:"Fat-free cream cheese",kcal:105,p:14,c:8,f:0.5},
-    {n:"ON Whey Protein",kcal:390,p:78,c:8,f:5},
-  ]},
-  { cat:"Grains & Starches 🌾", items:[
-    {n:"White rice / jasmine (dry)",kcal:360,p:7,c:80,f:0.5},
-    {n:"Regular pasta (dry)",kcal:360,p:13,c:73,f:1.3},
-    {n:"Protein pasta (dry)",kcal:355,p:28,c:47,f:4},
-    {n:"White potato (raw)",kcal:77,p:2,c:17,f:0.1},
-    {n:"Sweet potato (raw)",kcal:86,p:1.6,c:20,f:0.1},
-    {n:"Baker Street white bread",kcal:265,p:9.5,c:46,f:4.3},
-    {n:"Kallo rice cakes",kcal:385,p:7,c:83,f:1.8},
-  ]},
-  { cat:"Vegetables 🥦", items:[
-    {n:"Broccoli (raw)",kcal:34,p:2.8,c:7,f:0.4},
-    {n:"Red bell pepper",kcal:31,p:1,c:6,f:0.3},
-    {n:"Green bell pepper",kcal:20,p:0.9,c:4.6,f:0.2},
-    {n:"Orange bell pepper",kcal:31,p:1,c:6,f:0.3},
-    {n:"Zucchini (raw)",kcal:17,p:1.2,c:3.5,f:0.3},
-    {n:"Mushrooms (raw)",kcal:22,p:3.1,c:3.3,f:0.3},
-    {n:"Frozen peas",kcal:81,p:5.4,c:14,f:0.4},
-    {n:"Carrots (raw)",kcal:41,p:0.9,c:9.6,f:0.2},
-    {n:"Spinach (raw)",kcal:23,p:2.9,c:3.6,f:0.4},
-    {n:"Cherry tomatoes",kcal:18,p:0.9,c:3.9,f:0.2},
-    {n:"Sun-dried tomatoes (no oil)",kcal:258,p:14,c:55,f:3},
-  ]},
-  { cat:"Fruit 🍌", items:[
-    {n:"Banana (ripe)",kcal:89,p:1.1,c:23,f:0.3},
-  ]},
-  { cat:"Condiments & Fats 🫒", items:[
-    {n:"Olive oil — 1 tbsp (14 g)",kcal:124,p:0,c:0,f:14},
-    {n:"Olive oil — ½ tbsp / meal",kcal:62,p:0,c:0,f:7},
-    {n:"Jam — 1 tbsp (20 g)",kcal:50,p:0.1,c:12.4,f:0},
-    {n:"Sugar-free ketchup",kcal:25,p:0.5,c:5,f:0},
-    {n:"Yellow mustard",kcal:66,p:4,c:6,f:4},
-    {n:"Dijon mustard",kcal:60,p:3.7,c:5.3,f:3.6},
-    {n:"Sweet relish",kcal:105,p:0.3,c:25,f:0.5},
-    {n:"Raw honey",kcal:304,p:0.3,c:82,f:0},
-  ]},
+{ cat:“Proteins 🥩”, items:[
+{n:“Chicken breast (raw)”,kcal:110,p:23,c:0,f:1.2},
+{n:“Lean beef mince (5%)”,kcal:137,p:21,c:0,f:5},
+{n:“Smoked turkey (sliced)”,kcal:99,p:18,c:2.5,f:1.7},
+{n:“Whole egg (raw)”,kcal:147,p:13,c:0.7,f:10},
+{n:“Beef bacon”,kcal:170,p:15,c:0,f:12},
+]},
+{ cat:“Dairy & Supplements 🥛”, items:[
+{n:“Fat-free cottage cheese”,kcal:72,p:12,c:4,f:0.5},
+{n:“2% cottage cheese”,kcal:90,p:12,c:5,f:2.5},
+{n:“0% Greek yogurt”,kcal:57,p:10,c:3.6,f:0.4},
+{n:“Light sour cream”,kcal:100,p:1.5,c:4,f:8},
+{n:“Baladna skimmed milk”,kcal:35,p:3.5,c:5,f:0.1},
+{n:“Fat-free mozzarella”,kcal:160,p:36,c:4,f:0},
+{n:“Fat-free cheddar”,kcal:155,p:35,c:3,f:0},
+{n:“Parmesan (grated)”,kcal:431,p:38,c:4,f:29},
+{n:“Fat-free cream cheese”,kcal:105,p:14,c:8,f:0.5},
+{n:“ON Whey Protein”,kcal:390,p:78,c:8,f:5},
+]},
+{ cat:“Grains & Starches 🌾”, items:[
+{n:“White rice / jasmine (dry)”,kcal:360,p:7,c:80,f:0.5},
+{n:“Regular pasta (dry)”,kcal:360,p:13,c:73,f:1.3},
+{n:“Protein pasta (dry)”,kcal:355,p:28,c:47,f:4},
+{n:“White potato (raw)”,kcal:77,p:2,c:17,f:0.1},
+{n:“Sweet potato (raw)”,kcal:86,p:1.6,c:20,f:0.1},
+{n:“Baker Street white bread”,kcal:265,p:9.5,c:46,f:4.3},
+{n:“Kallo rice cakes”,kcal:385,p:7,c:83,f:1.8},
+]},
+{ cat:“Vegetables 🥦”, items:[
+{n:“Broccoli (raw)”,kcal:34,p:2.8,c:7,f:0.4},
+{n:“Red bell pepper”,kcal:31,p:1,c:6,f:0.3},
+{n:“Green bell pepper”,kcal:20,p:0.9,c:4.6,f:0.2},
+{n:“Orange bell pepper”,kcal:31,p:1,c:6,f:0.3},
+{n:“Zucchini (raw)”,kcal:17,p:1.2,c:3.5,f:0.3},
+{n:“Mushrooms (raw)”,kcal:22,p:3.1,c:3.3,f:0.3},
+{n:“Frozen peas”,kcal:81,p:5.4,c:14,f:0.4},
+{n:“Carrots (raw)”,kcal:41,p:0.9,c:9.6,f:0.2},
+{n:“Spinach (raw)”,kcal:23,p:2.9,c:3.6,f:0.4},
+{n:“Cherry tomatoes”,kcal:18,p:0.9,c:3.9,f:0.2},
+{n:“Sun-dried tomatoes (no oil)”,kcal:258,p:14,c:55,f:3},
+]},
+{ cat:“Fruit 🍌”, items:[
+{n:“Banana (ripe)”,kcal:89,p:1.1,c:23,f:0.3},
+]},
+{ cat:“Condiments & Fats 🫒”, items:[
+{n:“Olive oil — 1 tbsp (14 g)”,kcal:124,p:0,c:0,f:14},
+{n:“Olive oil — ½ tbsp / meal”,kcal:62,p:0,c:0,f:7},
+{n:“Jam — 1 tbsp (20 g)”,kcal:50,p:0.1,c:12.4,f:0},
+{n:“Sugar-free ketchup”,kcal:25,p:0.5,c:5,f:0},
+{n:“Yellow mustard”,kcal:66,p:4,c:6,f:4},
+{n:“Dijon mustard”,kcal:60,p:3.7,c:5.3,f:3.6},
+{n:“Sweet relish”,kcal:105,p:0.3,c:25,f:0.5},
+{n:“Raw honey”,kcal:304,p:0.3,c:82,f:0},
+]},
 ];
 
 // ─── RECIPE BANK ─────────────────────────────────────────────────────────
@@ -115,482 +182,686 @@ const IDB = [
 // ONE carb source per recipe — no pasta + rice ever.
 
 const RECIPES = [
-  {
-    id:"l1", name:"Marry Me Chicken", subtitle:"Jasmine rice · mushrooms · peas & carrots",
-    badge:"🥘 SC", carb:"Rice", portions:7,
-    perPortion:{kcal:777,protein:70,carbs:86,fat:17},
-    note:"Cook mushrooms in the slow cooker with the chicken. Fold peas, carrots and spinach into the hot rice off heat.",
-    batchItems:[
-      {key:"chicken_breast", label:"Chicken breast (raw)", qty:1400, unit:"g", cat:"Protein"},
-      {key:"rice_white",     label:"White rice (jasmine)", qty:490,  unit:"g", cat:"Carbs"},
-      {key:"cottage_cheese_ff", label:"Fat-free cottage cheese", qty:233, unit:"g", cat:"Dairy"},
-      {key:"greek_yogurt_0", label:"0% Greek yogurt",       qty:287, unit:"g", cat:"Dairy"},
-      {key:"parmesan",       label:"Parmesan (grated)",      qty:58,  unit:"g", cat:"Dairy"},
-      {key:"sun_dried_tom",  label:"Sun-dried tomatoes (no oil)", qty:146, unit:"g", cat:"Vegetables"},
-      {key:"spinach",        label:"Spinach",                qty:80,  unit:"g", cat:"Vegetables"},
-      {key:"mushrooms",      label:"Mushrooms (sliced)",     qty:350, unit:"g", cat:"Vegetables"},
-      {key:"frozen_peas",    label:"Frozen peas",            qty:350, unit:"g", cat:"Vegetables"},
-      {key:"carrots",        label:"Carrots (diced)",        qty:210, unit:"g", cat:"Vegetables"},
-      {key:"onion",          label:"Onion",                  qty:1,   unit:"whole", cat:"Aromatics"},
-      {key:"garlic",         label:"Minced garlic",          qty:25,  unit:"g", cat:"Aromatics"},
-      {key:"chicken_stock",  label:"Chicken stock",          qty:280, unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and all seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.",
-      "Cook 490g jasmine rice. Stir in peas, carrots and spinach off heat.",
-      "Blend cottage cheese, Greek yogurt, parmesan and sauce seasonings until smooth.",
-      "Shred chicken in pot. Add blended sauce. Mix well.",
-      "Combine chicken mix with rice-veg mix. Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"l2", name:"Big Mac Protein Pasta", subtitle:"Lean beef · pasta · high-protein Big Mac sauce",
-    badge:"🍳 ST", carb:"Pasta", portions:7,
-    perPortion:{kcal:718,protein:58,carbs:85,fat:17},
-    note:"Regular pasta (750g) hits the 85g carb target. Protein pasta (440g) raises protein but lowers carbs.",
-    batchItems:[
-      {key:"beef_mince_lean", label:"Lean beef mince", qty:1350, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (any shape)", qty:750, unit:"g", cat:"Carbs"},
-      {key:"greek_yogurt_0",  label:"0% Greek yogurt",  qty:210, unit:"g", cat:"Dairy"},
-      {key:"tomatoes_chopped",label:"Chopped tomatoes (canned)", qty:210, unit:"g", cat:"Vegetables"},
-      {key:"onion",           label:"Onion",             qty:1,   unit:"whole", cat:"Aromatics"},
-      {key:"ketchup_sf",      label:"Sugar-free ketchup",qty:28,  unit:"g", cat:"Sauces"},
-      {key:"mustard_yellow",  label:"Yellow mustard",    qty:14,  unit:"g", cat:"Sauces"},
-      {key:"sweet_relish",    label:"Sweet relish",      qty:105, unit:"g", cat:"Sauces"},
-    ],
-    steps:[
-      "Brown beef with garlic powder and paprika. Add onion halfway through.",
-      "Cook pasta separately. Drain.",
-      "Mix all Big Mac sauce ingredients in a bowl until smooth.",
-      "Combine beef, pasta, chopped tomatoes and sauce. Mix well.",
-      "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"l3", name:"Marry Me Chicken — Pasta", subtitle:"Pasta · mushrooms · peas & carrots · highest protein",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:767,protein:72,carbs:84,fat:14},
-    note:"Same slow cooker method as the rice version — only the carb source differs. Use protein pasta for extra protein at slightly lower carbs.",
-    batchItems:[
-      {key:"chicken_breast",  label:"Chicken breast (raw)", qty:1400, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (any shape)",    qty:550,  unit:"g", cat:"Carbs"},
-      {key:"cottage_cheese_ff",label:"Fat-free cottage cheese", qty:233, unit:"g", cat:"Dairy"},
-      {key:"greek_yogurt_0",  label:"0% Greek yogurt",      qty:287,  unit:"g", cat:"Dairy"},
-      {key:"parmesan",        label:"Parmesan (grated)",     qty:58,   unit:"g", cat:"Dairy"},
-      {key:"sun_dried_tom",   label:"Sun-dried tomatoes (no oil)", qty:146, unit:"g", cat:"Vegetables"},
-      {key:"spinach",         label:"Spinach",               qty:80,   unit:"g", cat:"Vegetables"},
-      {key:"mushrooms",       label:"Mushrooms (sliced)",    qty:350,  unit:"g", cat:"Vegetables"},
-      {key:"frozen_peas",     label:"Frozen peas",           qty:350,  unit:"g", cat:"Vegetables"},
-      {key:"carrots",         label:"Carrots (diced)",       qty:210,  unit:"g", cat:"Vegetables"},
-      {key:"onion",           label:"Onion",                 qty:1,    unit:"whole", cat:"Aromatics"},
-      {key:"garlic",          label:"Minced garlic",         qty:25,   unit:"g", cat:"Aromatics"},
-      {key:"chicken_stock",   label:"Chicken stock",         qty:280,  unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.",
-      "Cook pasta separately. Mix in peas and carrots during last 2 min. Fold in spinach off heat.",
-      "Blend cottage cheese, Greek yogurt, parmesan and sauce seasonings until smooth.",
-      "Shred chicken. Add blended sauce. Mix well.",
-      "Combine chicken mix with pasta-veg mix. Divide into 7 containers. Add ½ tbsp olive oil.",
-    ],
-  },
-  {
-    id:"d1", name:"Beef Mince Bake", subtitle:"Lean mince · white & sweet potato · roasted veg",
-    badge:"🌬️ AF", carb:"Potato", portions:7,
-    perPortion:{kcal:767,protein:53,carbs:82,fat:25},
-    note:"50/50 white and sweet potato for a better nutrient mix. Air fry veg separately for a crispier result.",
-    batchItems:[
-      {key:"beef_mince_lean", label:"Lean beef mince (5%)", qty:1400, unit:"g", cat:"Protein"},
-      {key:"white_potato",    label:"White potato (raw)",   qty:1250, unit:"g", cat:"Carbs"},
-      {key:"sweet_potato",    label:"Sweet potato (raw)",   qty:1250, unit:"g", cat:"Carbs"},
-      {key:"broccoli",        label:"Broccoli",             qty:700,  unit:"g", cat:"Vegetables"},
-      {key:"bell_pepper_red", label:"Red bell peppers",     qty:700,  unit:"g", cat:"Vegetables"},
-      {key:"zucchini",        label:"Zucchini",             qty:700,  unit:"g", cat:"Vegetables"},
-    ],
-    steps:[
-      "Cube all potatoes evenly. Season with salt, pepper, rosemary and PAM. Roast at 200°C for 35–40 min, turning halfway.",
-      "Brown beef mince in a pan. Season well with salt and pepper.",
-      "Slice veg. Air fry at 190°C for 15 min, or roast alongside potatoes for last 20 min.",
-      "Portion per container: 200g beef · 175g white potato · 175g sweet potato · 300g mixed veg.",
-      "Add ½ tbsp olive oil per portion when reheating.",
-    ],
-  },
-  {
-    id:"n1", name:"French Onion Pasta", subtitle:"Chicken · caramelized onions · cottage cheese sauce",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:742,protein:62,carbs:85,fat:13},
-    note:"The onions take ~45 min to fully caramelize — be patient, they must turn dark brown for full flavour.",
-    batchItems:[
-      {key:"chicken_breast",  label:"Chicken breast (raw)", qty:1000, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (penne or short)", qty:650, unit:"g", cat:"Carbs"},
-      {key:"cottage_cheese_2",label:"2% cottage cheese",    qty:560,  unit:"g", cat:"Dairy"},
-      {key:"mozzarella_ff",   label:"Fat-free mozzarella",  qty:140,  unit:"g", cat:"Dairy"},
-      {key:"parmesan",        label:"Parmesan",             qty:100,  unit:"g", cat:"Dairy"},
-      {key:"milk_ff",         label:"Fat-free milk",        qty:266,  unit:"mL", cat:"Dairy"},
-      {key:"butter",          label:"Butter",               qty:20,   unit:"g", cat:"Dairy"},
-      {key:"onion",           label:"Yellow onions (large)", qty:3,   unit:"whole", cat:"Aromatics"},
-      {key:"garlic",          label:"Minced garlic",         qty:20,  unit:"g", cat:"Aromatics"},
-      {key:"worcestershire",  label:"Worcestershire sauce",  qty:50,  unit:"mL", cat:"Sauces"},
-      {key:"dijon_mustard",   label:"Dijon mustard",         qty:15,  unit:"g", cat:"Sauces"},
-      {key:"beef_broth",      label:"Beef bone broth",       qty:750, unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Slow cooker: add chicken, garlic, Dijon, Worcestershire, 250mL broth and seasonings. Cook HIGH 3hr.",
-      "Caramelize 3 onions in butter + remaining broth over medium heat until dark brown (~45 min).",
-      "Blend cottage cheese, mozzarella, parmesan, milk and ¾ of caramelized onions until silky smooth.",
-      "Cook pasta al dente. Drain.",
-      "Shred chicken. Add pasta, cheese sauce and remaining onions. Mix well. Divide into 7 containers. Add ½ tbsp olive oil.",
-    ],
-  },
-  {
-    id:"n2", name:"Honey Chipotle Chicken Bowl", subtitle:"Slow-cooked chicken · honey chipotle · jasmine rice",
-    badge:"🥘 SC", carb:"Rice", portions:7,
-    perPortion:{kcal:688,protein:67,carbs:86,fat:12},
-    note:"Tortilla wraps removed — served as a rice bowl. Blended sauce mixed directly into shredded chicken.",
-    batchItems:[
-      {key:"chicken_breast",       label:"Chicken breast (raw)",        qty:1200, unit:"g", cat:"Protein"},
-      {key:"rice_white",           label:"White rice (jasmine)",         qty:580,  unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",        label:"Fat-free mozzarella",          qty:392,  unit:"g", cat:"Dairy"},
-      {key:"cottage_cheese_2",     label:"2% cottage cheese",            qty:158,  unit:"g", cat:"Dairy"},
-      {key:"milk_ff",              label:"Fat-free milk",                qty:84,   unit:"mL", cat:"Dairy"},
-      {key:"chipotle_peppers_adobo",label:"Chipotle peppers in adobo",  qty:198,  unit:"g", cat:"Sauces"},
-      {key:"tomato_sauce",         label:"Tomato sauce",                 qty:168,  unit:"g", cat:"Sauces"},
-      {key:"honey",                label:"Raw honey",                    qty:42,   unit:"g", cat:"Sauces"},
-      {key:"garlic",               label:"Garlic cloves",                qty:20,   unit:"g", cat:"Aromatics"},
-    ],
-    steps:[
-      "Slow cooker: add chicken, chipotle peppers, 30g honey and seasonings. Cook HIGH 3hr.",
-      "Blend cottage cheese, tomato sauce, garlic, milk and remaining 12g honey until smooth.",
-      "Cook 580g jasmine rice.",
-      "Shred chicken. Pour blended sauce in and mix well.",
-      "Divide rice into 7 bowls. Top with chicken mix and 56g mozzarella each. Add ½ tbsp olive oil.",
-    ],
-  },
-  {
-    id:"n3", name:"Chipotle Chicken Bowl", subtitle:"Blended chipotle · rice · corn · pico · sour cream",
-    badge:"🥘 SC", carb:"Rice", portions:7,
-    perPortion:{kcal:735,protein:65,carbs:86,fat:15},
-    note:"Blend the chipotle peppers before adding to the slow cooker — this creates a much smoother, richer sauce.",
-    batchItems:[
-      {key:"chicken_breast",       label:"Chicken breast (raw)",      qty:1500, unit:"g", cat:"Protein"},
-      {key:"rice_white",           label:"White rice (long grain)",    qty:700,  unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",        label:"Fat-free mozzarella",        qty:147,  unit:"g", cat:"Dairy"},
-      {key:"sour_cream_light",     label:"Light sour cream",           qty:184,  unit:"g", cat:"Dairy"},
-      {key:"chipotle_peppers_adobo",label:"Chipotle peppers in adobo",qty:298,  unit:"g", cat:"Sauces"},
-      {key:"corn_canned",          label:"Canned sweet corn (drained)",qty:368,  unit:"g", cat:"Sauces"},
-      {key:"pico_de_gallo",        label:"Mild pico de gallo",         qty:84,   unit:"g", cat:"Sauces"},
-      {key:"garlic",               label:"Garlic cloves",              qty:45,   unit:"g", cat:"Aromatics"},
-      {key:"lime",                 label:"Lime",                       qty:1,    unit:"whole", cat:"Aromatics"},
-      {key:"chicken_broth",        label:"Chicken bone broth",         qty:1000, unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Blend chipotle peppers, garlic, lime juice and 250mL chicken broth until smooth.",
-      "Pour into slow cooker. Add chicken. Cook HIGH 3hr.",
-      "Cook 700g rice in remaining 750mL chicken broth.",
-      "Drain excess liquid. Shred chicken.",
-      "Portion rice into 7 containers. Top with chicken, corn+pico mix, 21g mozzarella and 26g sour cream each. Add ½ tbsp olive oil.",
-    ],
-  },
-  {
-    id:"n4", name:"Lean Beef Hamburger Helper", subtitle:"Lean beef · pasta cooked in beef broth · fat-free cheese",
-    badge:"🍳 ST", carb:"Pasta", portions:7,
-    perPortion:{kcal:730,protein:70,carbs:85,fat:18},
-    note:"Pasta cooks directly in the broth and absorbs all the flavour. Beef provides enough fat — no oil drizzle needed.",
-    batchItems:[
-      {key:"beef_mince_lean", label:"Lean beef mince (96/4)", qty:1050, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (elbow or short)", qty:730,  unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",   label:"Fat-free mozzarella",    qty:260,  unit:"g", cat:"Dairy"},
-      {key:"tomato_paste",    label:"Tomato paste",           qty:66,   unit:"g", cat:"Sauces"},
-      {key:"onion",           label:"Onion",                  qty:1,    unit:"whole", cat:"Aromatics"},
-      {key:"garlic",          label:"Minced garlic",          qty:25,   unit:"g", cat:"Aromatics"},
-      {key:"beef_broth",      label:"Beef stock / bone broth",qty:1000, unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Sauté onion and garlic in a large pan until softened.",
-      "Add beef, season with chili powder, garlic powder and paprika. Brown fully.",
-      "Pour in 1L beef broth. Add dry uncooked pasta. Stir, cover and cook until pasta is al dente.",
-      "Add tomato paste and mozzarella. Stir until melted through.",
-      "Divide into 7 containers. No extra oil needed.",
-    ],
-  },
-  {
-    id:"n5", name:"Buffalo Ranch Chicken Pasta", subtitle:"Slow-cooked buffalo chicken · pasta · bacon · sun-dried tomatoes",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:720,protein:58,carbs:83,fat:16},
-    note:"Hidden Valley Ranch not in Doha — substitute: fat-free Greek yogurt + 1 ranch seasoning packet. Frank's buffalo sauce available at Carrefour.",
-    batchItems:[
-      {key:"chicken_breast", label:"Chicken breast (raw)",       qty:950, unit:"g", cat:"Protein"},
-      {key:"bacon_bits",     label:"Beef bacon bits / crumbled", qty:86,  unit:"g", cat:"Protein"},
-      {key:"pasta_regular",  label:"Pasta (rigatoni or any)",    qty:700, unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",  label:"Fat-free mozzarella",        qty:160, unit:"g", cat:"Dairy"},
-      {key:"cheddar_ff",     label:"Fat-free cheddar",           qty:160, unit:"g", cat:"Dairy"},
-      {key:"sun_dried_tom",  label:"Sun-dried tomatoes",         qty:60,  unit:"g", cat:"Vegetables"},
-      {key:"hot_sauce",      label:"Buffalo hot sauce (Frank's)",qty:166, unit:"mL", cat:"Sauces"},
-      {key:"ranch_dressing", label:"Fat-free ranch (or yogurt + ranch packet)", qty:166, unit:"mL", cat:"Sauces"},
-    ],
-    steps:[
-      "Add chicken, hot sauce, ranch dressing and ranch seasoning packet to slow cooker. Cook HIGH 3hr.",
-      "Cook pasta al dente. Drain.",
-      "Shred chicken. Add pasta, bacon bits, sun-dried tomatoes, mozzarella and cheddar. Mix well.",
-      "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"n6", name:"Garlic Parmesan Chicken Pasta", subtitle:"Chicken · broccoli · creamy garlic parmesan sauce",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:705,protein:63,carbs:85,fat:13},
-    note:"Flying Saucy Garlic Parmesan not in Doha — sub: 4 tbsp minced garlic + Italian herbs + garlic powder + light cream pasta sauce from Carrefour.",
-    batchItems:[
-      {key:"chicken_breast",  label:"Chicken breast (raw)",      qty:1200, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (any shape)",          qty:640,  unit:"g", cat:"Carbs"},
-      {key:"broccoli",        label:"Broccoli",                   qty:595,  unit:"g", cat:"Vegetables"},
-      {key:"sun_dried_tom",   label:"Sun-dried tomatoes",         qty:69,   unit:"g", cat:"Vegetables"},
-      {key:"cream_cheese_ff", label:"Fat-free cream cheese",      qty:140,  unit:"g", cat:"Dairy"},
-      {key:"mozzarella_ff",   label:"Fat-free mozzarella",        qty:118,  unit:"g", cat:"Dairy"},
-      {key:"milk_ff",         label:"Fat-free milk",              qty:166,  unit:"mL", cat:"Dairy"},
-      {key:"parmesan",        label:"Parmesan (sauce + topping)", qty:150,  unit:"g", cat:"Dairy"},
-      {key:"garlic",          label:"Minced garlic",              qty:28,   unit:"g", cat:"Aromatics"},
-    ],
-    steps:[
-      "Add chicken, cream cheese, 84g mozzarella and garlic parmesan sauce to slow cooker. Add milk. Cook HIGH 3hr.",
-      "Cook pasta al dente. Steam broccoli separately.",
-      "Shred chicken. Add pasta, broccoli, sun-dried tomatoes, parmesan and remaining mozzarella. Cook 15 min more.",
-      "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"n7", name:"Green Pepper & Onion Pasta", subtitle:"Chicken · sautéed green peppers · creamy + tomato sauce",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:695,protein:60,carbs:85,fat:14},
-    note:"HEB Creamy Poblano not in Doha — sub: any light creamy pasta sauce (Prego, Barilla) + smoked paprika + chipotle powder.",
-    batchItems:[
-      {key:"chicken_breast",    label:"Chicken breast (raw)",      qty:950,  unit:"g", cat:"Protein"},
-      {key:"pasta_regular",     label:"Pasta (spaghetti or any)",   qty:615,  unit:"g", cat:"Carbs"},
-      {key:"bell_pepper_green", label:"Green bell peppers",         qty:2,    unit:"whole", cat:"Vegetables"},
-      {key:"butter",            label:"Butter",                     qty:20,   unit:"g", cat:"Dairy"},
-      {key:"onion",             label:"Onion",                      qty:1,    unit:"whole", cat:"Aromatics"},
-      {key:"garlic",            label:"Garlic",                     qty:10,   unit:"g", cat:"Aromatics"},
-      {key:"pasta_sauce_cream", label:"Light creamy pasta sauce (jar)", qty:600, unit:"g", cat:"Sauces"},
-      {key:"pasta_sauce_tom",   label:"Tomato spaghetti sauce (jar)", qty:500, unit:"g", cat:"Sauces"},
-      {key:"chicken_broth",     label:"Chicken broth",              qty:126,  unit:"mL", cat:"Liquids"},
-    ],
-    steps:[
-      "Add chicken and both pasta sauces to slow cooker. Cook HIGH 3hr.",
-      "Sauté diced peppers and onion in butter and chicken broth until golden. Add to slow cooker.",
-      "Par-cook pasta for half the package time. Drain. Add to slow cooker.",
-      "Cook HIGH 30 min more. Divide into 7 containers. Add ½ tbsp olive oil.",
-    ],
-  },
-  {
-    id:"n8", name:"Chicken Bacon Mac", subtitle:"Chicken · beef bacon · pasta · blended buffalo cheese sauce",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:748,protein:63,carbs:85,fat:13},
-    note:"Pork bacon → beef bacon throughout. Most involved recipe but exceptional flavour from the blended cheese sauce.",
-    batchItems:[
-      {key:"chicken_breast",  label:"Chicken breast (raw)",   qty:900, unit:"g", cat:"Protein"},
-      {key:"bacon_beef",      label:"Beef bacon",              qty:220, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",   label:"Pasta (macaroni/shells)", qty:680, unit:"g", cat:"Carbs"},
-      {key:"cottage_cheese_2",label:"2% cottage cheese",       qty:509, unit:"g", cat:"Dairy"},
-      {key:"cream_cheese_ff", label:"Fat-free cream cheese",   qty:32,  unit:"g", cat:"Dairy"},
-      {key:"parmesan",        label:"Parmesan",                qty:38,  unit:"g", cat:"Dairy"},
-      {key:"cheddar_ff",      label:"Fat-free cheddar",        qty:145, unit:"g", cat:"Dairy"},
-      {key:"milk_ff",         label:"Fat-free milk",           qty:191, unit:"mL", cat:"Dairy"},
-      {key:"honey",           label:"Raw honey",               qty:19,  unit:"g", cat:"Sauces"},
-      {key:"buffalo_sauce",   label:"Buffalo sauce",           qty:140, unit:"mL", cat:"Sauces"},
-      {key:"bell_pepper_orange",label:"Orange bell peppers",   qty:2,   unit:"whole", cat:"Vegetables"},
-      {key:"onion",           label:"Onion",                   qty:1,   unit:"whole", cat:"Aromatics"},
-    ],
-    steps:[
-      "Sauté diced peppers and onion. Add to slow cooker with chicken, buffalo sauce and seasonings. Cook HIGH 2hr.",
-      "Blend cottage cheese, cream cheese, parmesan, milk and honey for 4–5 min until fully smooth.",
-      "Cook pasta al dente. Cook bacon until crispy, chop.",
-      "Shred chicken. Add pasta, cheese sauce, cheddar and bacon. Cook 30 min more.",
-      "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"n9", name:"Beef Mince & Rice Bowl", subtitle:"Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
-    badge:"🍳 ST", carb:"Rice", portions:7,
-    perPortion:{kcal:715,protein:57,carbs:80,fat:16},
-    note:"⚠ Carbs ~80g vs 85g target — pre-workout compensates. Steak replaced with lean beef mince for higher protein.",
-    batchItems:[
-      {key:"beef_mince_lean",  label:"Lean beef mince (5%)",   qty:1400, unit:"g", cat:"Protein"},
-      {key:"rice_white",       label:"White rice (jasmine)",    qty:630,  unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",    label:"Fat-free mozzarella",     qty:245,  unit:"g", cat:"Dairy"},
-      {key:"sour_cream_light", label:"Light sour cream",        qty:263,  unit:"g", cat:"Dairy"},
-      {key:"greek_yogurt_0",   label:"0% Greek yogurt",         qty:131,  unit:"g", cat:"Dairy"},
-      {key:"bell_pepper_orange",label:"Orange bell peppers",    qty:2,    unit:"whole", cat:"Vegetables"},
-      {key:"chipotle_peppers_adobo",label:"Chipotle peppers in adobo", qty:100, unit:"g", cat:"Sauces"},
-      {key:"lime",             label:"Lime",                    qty:1,    unit:"whole", cat:"Aromatics"},
-    ],
-    steps:[
-      "Cook 630g jasmine rice.",
-      "Brown beef mince. Season well. Sauté diced bell peppers and add to beef.",
-      "Blend sour cream, Greek yogurt, chipotle peppers and lime juice until smooth.",
-      "Portion rice into 7 containers. Top with beef-pepper mix and 35g mozzarella each.",
-      "Drizzle chipotle-lime sauce over top. Add ½ tbsp olive oil per portion.",
-    ],
-  },
-  {
-    id:"n10", name:"Chicken Alfredo Red Sauce", subtitle:"Slow-cooked chicken · Alfredo · Italian tomato sauce · mozzarella",
-    badge:"🥘 SC", carb:"Pasta", portions:7,
-    perPortion:{kcal:720,protein:61,carbs:85,fat:14},
-    note:"Prego Alfredo and Italian sauces available at Carrefour and LuLu, Doha. Use any Barilla or similar pasta.",
-    batchItems:[
-      {key:"chicken_breast", label:"Chicken breast (raw)",          qty:907, unit:"g", cat:"Protein"},
-      {key:"pasta_regular",  label:"Pasta (farfalle or any)",        qty:600, unit:"g", cat:"Carbs"},
-      {key:"mozzarella_ff",  label:"Fat-free mozzarella",            qty:227, unit:"g", cat:"Dairy"},
-      {key:"garlic",         label:"Minced garlic",                  qty:28,  unit:"g", cat:"Aromatics"},
-      {key:"alfredo_sauce",  label:"Alfredo sauce — Prego (1 jar)",  qty:624, unit:"g", cat:"Sauces"},
-      {key:"italian_sauce",  label:"Italian tomato sauce — Prego (1 jar)", qty:680, unit:"g", cat:"Sauces"},
-    ],
-    steps:[
-      "Add chicken, both sauces and garlic to slow cooker. Cook HIGH 3hr.",
-      "Cook pasta al dente. Drain.",
-      "Shred chicken. Add pasta and mozzarella. Cover and cook 15 min more.",
-      "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
-    ],
-  },
+{
+id:“l1”, name:“Marry Me Chicken”, subtitle:“Jasmine rice · mushrooms · peas & carrots”,
+badge:“🥘 SC”, carb:“Rice”, portions:7,
+perPortion:{kcal:777,protein:70,carbs:86,fat:17},
+note:“Cook mushrooms in the slow cooker with the chicken. Fold peas, carrots and spinach into the hot rice off heat.”,
+batchItems:[
+{key:“chicken_breast”, label:“Chicken breast (raw)”, qty:1400, unit:“g”, cat:“Protein”},
+{key:“rice_white”,     label:“White rice (jasmine)”, qty:490,  unit:“g”, cat:“Carbs”},
+{key:“cottage_cheese_ff”, label:“Fat-free cottage cheese”, qty:233, unit:“g”, cat:“Dairy”},
+{key:“greek_yogurt_0”, label:“0% Greek yogurt”,       qty:287, unit:“g”, cat:“Dairy”},
+{key:“parmesan”,       label:“Parmesan (grated)”,      qty:58,  unit:“g”, cat:“Dairy”},
+{key:“sun_dried_tom”,  label:“Sun-dried tomatoes (no oil)”, qty:146, unit:“g”, cat:“Vegetables”},
+{key:“spinach”,        label:“Spinach”,                qty:80,  unit:“g”, cat:“Vegetables”},
+{key:“mushrooms”,      label:“Mushrooms (sliced)”,     qty:350, unit:“g”, cat:“Vegetables”},
+{key:“frozen_peas”,    label:“Frozen peas”,            qty:350, unit:“g”, cat:“Vegetables”},
+{key:“carrots”,        label:“Carrots (diced)”,        qty:210, unit:“g”, cat:“Vegetables”},
+{key:“onion”,          label:“Onion”,                  qty:1,   unit:“whole”, cat:“Aromatics”},
+{key:“garlic”,         label:“Minced garlic”,          qty:25,  unit:“g”, cat:“Aromatics”},
+{key:“chicken_stock”,  label:“Chicken stock”,          qty:280, unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and all seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.”,
+“Cook 490g jasmine rice. Stir in peas, carrots and spinach off heat.”,
+“Blend cottage cheese, Greek yogurt, parmesan and sauce seasonings until smooth.”,
+“Shred chicken in pot. Add blended sauce. Mix well.”,
+“Combine chicken mix with rice-veg mix. Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“l2”, name:“Big Mac Protein Pasta”, subtitle:“Lean beef · pasta · high-protein Big Mac sauce”,
+badge:“🍳 ST”, carb:“Pasta”, portions:7,
+perPortion:{kcal:718,protein:58,carbs:85,fat:17},
+note:“Regular pasta (750g) hits the 85g carb target. Protein pasta (440g) raises protein but lowers carbs.”,
+batchItems:[
+{key:“beef_mince_lean”, label:“Lean beef mince”, qty:1350, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (any shape)”, qty:750, unit:“g”, cat:“Carbs”},
+{key:“greek_yogurt_0”,  label:“0% Greek yogurt”,  qty:210, unit:“g”, cat:“Dairy”},
+{key:“tomatoes_chopped”,label:“Chopped tomatoes (canned)”, qty:210, unit:“g”, cat:“Vegetables”},
+{key:“onion”,           label:“Onion”,             qty:1,   unit:“whole”, cat:“Aromatics”},
+{key:“ketchup_sf”,      label:“Sugar-free ketchup”,qty:28,  unit:“g”, cat:“Sauces”},
+{key:“mustard_yellow”,  label:“Yellow mustard”,    qty:14,  unit:“g”, cat:“Sauces”},
+{key:“sweet_relish”,    label:“Sweet relish”,      qty:105, unit:“g”, cat:“Sauces”},
+],
+steps:[
+“Brown beef with garlic powder and paprika. Add onion halfway through.”,
+“Cook pasta separately. Drain.”,
+“Mix all Big Mac sauce ingredients in a bowl until smooth.”,
+“Combine beef, pasta, chopped tomatoes and sauce. Mix well.”,
+“Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“l3”, name:“Marry Me Chicken — Pasta”, subtitle:“Pasta · mushrooms · peas & carrots · highest protein”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:767,protein:72,carbs:84,fat:14},
+note:“Same slow cooker method as the rice version — only the carb source differs. Use protein pasta for extra protein at slightly lower carbs.”,
+batchItems:[
+{key:“chicken_breast”,  label:“Chicken breast (raw)”, qty:1400, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (any shape)”,    qty:550,  unit:“g”, cat:“Carbs”},
+{key:“cottage_cheese_ff”,label:“Fat-free cottage cheese”, qty:233, unit:“g”, cat:“Dairy”},
+{key:“greek_yogurt_0”,  label:“0% Greek yogurt”,      qty:287,  unit:“g”, cat:“Dairy”},
+{key:“parmesan”,        label:“Parmesan (grated)”,     qty:58,   unit:“g”, cat:“Dairy”},
+{key:“sun_dried_tom”,   label:“Sun-dried tomatoes (no oil)”, qty:146, unit:“g”, cat:“Vegetables”},
+{key:“spinach”,         label:“Spinach”,               qty:80,   unit:“g”, cat:“Vegetables”},
+{key:“mushrooms”,       label:“Mushrooms (sliced)”,    qty:350,  unit:“g”, cat:“Vegetables”},
+{key:“frozen_peas”,     label:“Frozen peas”,           qty:350,  unit:“g”, cat:“Vegetables”},
+{key:“carrots”,         label:“Carrots (diced)”,       qty:210,  unit:“g”, cat:“Vegetables”},
+{key:“onion”,           label:“Onion”,                 qty:1,    unit:“whole”, cat:“Aromatics”},
+{key:“garlic”,          label:“Minced garlic”,         qty:25,   unit:“g”, cat:“Aromatics”},
+{key:“chicken_stock”,   label:“Chicken stock”,         qty:280,  unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.”,
+“Cook pasta separately. Mix in peas and carrots during last 2 min. Fold in spinach off heat.”,
+“Blend cottage cheese, Greek yogurt, parmesan and sauce seasonings until smooth.”,
+“Shred chicken. Add blended sauce. Mix well.”,
+“Combine chicken mix with pasta-veg mix. Divide into 7 containers. Add ½ tbsp olive oil.”,
+],
+},
+{
+id:“d1”, name:“Beef Mince Bake”, subtitle:“Lean mince · white & sweet potato · roasted veg”,
+badge:“🌬️ AF”, carb:“Potato”, portions:7,
+perPortion:{kcal:767,protein:53,carbs:82,fat:25},
+note:“50/50 white and sweet potato for a better nutrient mix. Air fry veg separately for a crispier result.”,
+batchItems:[
+{key:“beef_mince_lean”, label:“Lean beef mince (5%)”, qty:1400, unit:“g”, cat:“Protein”},
+{key:“white_potato”,    label:“White potato (raw)”,   qty:1250, unit:“g”, cat:“Carbs”},
+{key:“sweet_potato”,    label:“Sweet potato (raw)”,   qty:1250, unit:“g”, cat:“Carbs”},
+{key:“broccoli”,        label:“Broccoli”,             qty:700,  unit:“g”, cat:“Vegetables”},
+{key:“bell_pepper_red”, label:“Red bell peppers”,     qty:700,  unit:“g”, cat:“Vegetables”},
+{key:“zucchini”,        label:“Zucchini”,             qty:700,  unit:“g”, cat:“Vegetables”},
+],
+steps:[
+“Cube all potatoes evenly. Season with salt, pepper, rosemary and PAM. Roast at 200°C for 35–40 min, turning halfway.”,
+“Brown beef mince in a pan. Season well with salt and pepper.”,
+“Slice veg. Air fry at 190°C for 15 min, or roast alongside potatoes for last 20 min.”,
+“Portion per container: 200g beef · 175g white potato · 175g sweet potato · 300g mixed veg.”,
+“Add ½ tbsp olive oil per portion when reheating.”,
+],
+},
+{
+id:“n1”, name:“French Onion Pasta”, subtitle:“Chicken · caramelized onions · cottage cheese sauce”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:742,protein:62,carbs:85,fat:13},
+note:“The onions take ~45 min to fully caramelize — be patient, they must turn dark brown for full flavour.”,
+batchItems:[
+{key:“chicken_breast”,  label:“Chicken breast (raw)”, qty:1000, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (penne or short)”, qty:650, unit:“g”, cat:“Carbs”},
+{key:“cottage_cheese_2”,label:“2% cottage cheese”,    qty:560,  unit:“g”, cat:“Dairy”},
+{key:“mozzarella_ff”,   label:“Fat-free mozzarella”,  qty:140,  unit:“g”, cat:“Dairy”},
+{key:“parmesan”,        label:“Parmesan”,             qty:100,  unit:“g”, cat:“Dairy”},
+{key:“milk_ff”,         label:“Fat-free milk”,        qty:266,  unit:“mL”, cat:“Dairy”},
+{key:“butter”,          label:“Butter”,               qty:20,   unit:“g”, cat:“Dairy”},
+{key:“onion”,           label:“Yellow onions (large)”, qty:3,   unit:“whole”, cat:“Aromatics”},
+{key:“garlic”,          label:“Minced garlic”,         qty:20,  unit:“g”, cat:“Aromatics”},
+{key:“worcestershire”,  label:“Worcestershire sauce”,  qty:50,  unit:“mL”, cat:“Sauces”},
+{key:“dijon_mustard”,   label:“Dijon mustard”,         qty:15,  unit:“g”, cat:“Sauces”},
+{key:“beef_broth”,      label:“Beef bone broth”,       qty:750, unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Slow cooker: add chicken, garlic, Dijon, Worcestershire, 250mL broth and seasonings. Cook HIGH 3hr.”,
+“Caramelize 3 onions in butter + remaining broth over medium heat until dark brown (~45 min).”,
+“Blend cottage cheese, mozzarella, parmesan, milk and ¾ of caramelized onions until silky smooth.”,
+“Cook pasta al dente. Drain.”,
+“Shred chicken. Add pasta, cheese sauce and remaining onions. Mix well. Divide into 7 containers. Add ½ tbsp olive oil.”,
+],
+},
+{
+id:“n2”, name:“Honey Chipotle Chicken Bowl”, subtitle:“Slow-cooked chicken · honey chipotle · jasmine rice”,
+badge:“🥘 SC”, carb:“Rice”, portions:7,
+perPortion:{kcal:688,protein:67,carbs:86,fat:12},
+note:“Tortilla wraps removed — served as a rice bowl. Blended sauce mixed directly into shredded chicken.”,
+batchItems:[
+{key:“chicken_breast”,       label:“Chicken breast (raw)”,        qty:1200, unit:“g”, cat:“Protein”},
+{key:“rice_white”,           label:“White rice (jasmine)”,         qty:580,  unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,        label:“Fat-free mozzarella”,          qty:392,  unit:“g”, cat:“Dairy”},
+{key:“cottage_cheese_2”,     label:“2% cottage cheese”,            qty:158,  unit:“g”, cat:“Dairy”},
+{key:“milk_ff”,              label:“Fat-free milk”,                qty:84,   unit:“mL”, cat:“Dairy”},
+{key:“chipotle_peppers_adobo”,label:“Chipotle peppers in adobo”,  qty:198,  unit:“g”, cat:“Sauces”},
+{key:“tomato_sauce”,         label:“Tomato sauce”,                 qty:168,  unit:“g”, cat:“Sauces”},
+{key:“honey”,                label:“Raw honey”,                    qty:42,   unit:“g”, cat:“Sauces”},
+{key:“garlic”,               label:“Garlic cloves”,                qty:20,   unit:“g”, cat:“Aromatics”},
+],
+steps:[
+“Slow cooker: add chicken, chipotle peppers, 30g honey and seasonings. Cook HIGH 3hr.”,
+“Blend cottage cheese, tomato sauce, garlic, milk and remaining 12g honey until smooth.”,
+“Cook 580g jasmine rice.”,
+“Shred chicken. Pour blended sauce in and mix well.”,
+“Divide rice into 7 bowls. Top with chicken mix and 56g mozzarella each. Add ½ tbsp olive oil.”,
+],
+},
+{
+id:“n3”, name:“Chipotle Chicken Bowl”, subtitle:“Blended chipotle · rice · corn · pico · sour cream”,
+badge:“🥘 SC”, carb:“Rice”, portions:7,
+perPortion:{kcal:735,protein:65,carbs:86,fat:15},
+note:“Blend the chipotle peppers before adding to the slow cooker — this creates a much smoother, richer sauce.”,
+batchItems:[
+{key:“chicken_breast”,       label:“Chicken breast (raw)”,      qty:1500, unit:“g”, cat:“Protein”},
+{key:“rice_white”,           label:“White rice (long grain)”,    qty:700,  unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,        label:“Fat-free mozzarella”,        qty:147,  unit:“g”, cat:“Dairy”},
+{key:“sour_cream_light”,     label:“Light sour cream”,           qty:184,  unit:“g”, cat:“Dairy”},
+{key:“chipotle_peppers_adobo”,label:“Chipotle peppers in adobo”,qty:298,  unit:“g”, cat:“Sauces”},
+{key:“corn_canned”,          label:“Canned sweet corn (drained)”,qty:368,  unit:“g”, cat:“Sauces”},
+{key:“pico_de_gallo”,        label:“Mild pico de gallo”,         qty:84,   unit:“g”, cat:“Sauces”},
+{key:“garlic”,               label:“Garlic cloves”,              qty:45,   unit:“g”, cat:“Aromatics”},
+{key:“lime”,                 label:“Lime”,                       qty:1,    unit:“whole”, cat:“Aromatics”},
+{key:“chicken_broth”,        label:“Chicken bone broth”,         qty:1000, unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Blend chipotle peppers, garlic, lime juice and 250mL chicken broth until smooth.”,
+“Pour into slow cooker. Add chicken. Cook HIGH 3hr.”,
+“Cook 700g rice in remaining 750mL chicken broth.”,
+“Drain excess liquid. Shred chicken.”,
+“Portion rice into 7 containers. Top with chicken, corn+pico mix, 21g mozzarella and 26g sour cream each. Add ½ tbsp olive oil.”,
+],
+},
+{
+id:“n4”, name:“Lean Beef Hamburger Helper”, subtitle:“Lean beef · pasta cooked in beef broth · fat-free cheese”,
+badge:“🍳 ST”, carb:“Pasta”, portions:7,
+perPortion:{kcal:730,protein:70,carbs:85,fat:18},
+note:“Pasta cooks directly in the broth and absorbs all the flavour. Beef provides enough fat — no oil drizzle needed.”,
+batchItems:[
+{key:“beef_mince_lean”, label:“Lean beef mince (96/4)”, qty:1050, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (elbow or short)”, qty:730,  unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,   label:“Fat-free mozzarella”,    qty:260,  unit:“g”, cat:“Dairy”},
+{key:“tomato_paste”,    label:“Tomato paste”,           qty:66,   unit:“g”, cat:“Sauces”},
+{key:“onion”,           label:“Onion”,                  qty:1,    unit:“whole”, cat:“Aromatics”},
+{key:“garlic”,          label:“Minced garlic”,          qty:25,   unit:“g”, cat:“Aromatics”},
+{key:“beef_broth”,      label:“Beef stock / bone broth”,qty:1000, unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Sauté onion and garlic in a large pan until softened.”,
+“Add beef, season with chili powder, garlic powder and paprika. Brown fully.”,
+“Pour in 1L beef broth. Add dry uncooked pasta. Stir, cover and cook until pasta is al dente.”,
+“Add tomato paste and mozzarella. Stir until melted through.”,
+“Divide into 7 containers. No extra oil needed.”,
+],
+},
+{
+id:“n5”, name:“Buffalo Ranch Chicken Pasta”, subtitle:“Slow-cooked buffalo chicken · pasta · bacon · sun-dried tomatoes”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:720,protein:58,carbs:83,fat:16},
+note:“Hidden Valley Ranch not in Doha — substitute: fat-free Greek yogurt + 1 ranch seasoning packet. Frank’s buffalo sauce available at Carrefour.”,
+batchItems:[
+{key:“chicken_breast”, label:“Chicken breast (raw)”,       qty:950, unit:“g”, cat:“Protein”},
+{key:“bacon_bits”,     label:“Beef bacon bits / crumbled”, qty:86,  unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,  label:“Pasta (rigatoni or any)”,    qty:700, unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,  label:“Fat-free mozzarella”,        qty:160, unit:“g”, cat:“Dairy”},
+{key:“cheddar_ff”,     label:“Fat-free cheddar”,           qty:160, unit:“g”, cat:“Dairy”},
+{key:“sun_dried_tom”,  label:“Sun-dried tomatoes”,         qty:60,  unit:“g”, cat:“Vegetables”},
+{key:“hot_sauce”,      label:“Buffalo hot sauce (Frank’s)”,qty:166, unit:“mL”, cat:“Sauces”},
+{key:“ranch_dressing”, label:“Fat-free ranch (or yogurt + ranch packet)”, qty:166, unit:“mL”, cat:“Sauces”},
+],
+steps:[
+“Add chicken, hot sauce, ranch dressing and ranch seasoning packet to slow cooker. Cook HIGH 3hr.”,
+“Cook pasta al dente. Drain.”,
+“Shred chicken. Add pasta, bacon bits, sun-dried tomatoes, mozzarella and cheddar. Mix well.”,
+“Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“n6”, name:“Garlic Parmesan Chicken Pasta”, subtitle:“Chicken · broccoli · creamy garlic parmesan sauce”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:705,protein:63,carbs:85,fat:13},
+note:“Flying Saucy Garlic Parmesan not in Doha — sub: 4 tbsp minced garlic + Italian herbs + garlic powder + light cream pasta sauce from Carrefour.”,
+batchItems:[
+{key:“chicken_breast”,  label:“Chicken breast (raw)”,      qty:1200, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (any shape)”,          qty:640,  unit:“g”, cat:“Carbs”},
+{key:“broccoli”,        label:“Broccoli”,                   qty:595,  unit:“g”, cat:“Vegetables”},
+{key:“sun_dried_tom”,   label:“Sun-dried tomatoes”,         qty:69,   unit:“g”, cat:“Vegetables”},
+{key:“cream_cheese_ff”, label:“Fat-free cream cheese”,      qty:140,  unit:“g”, cat:“Dairy”},
+{key:“mozzarella_ff”,   label:“Fat-free mozzarella”,        qty:118,  unit:“g”, cat:“Dairy”},
+{key:“milk_ff”,         label:“Fat-free milk”,              qty:166,  unit:“mL”, cat:“Dairy”},
+{key:“parmesan”,        label:“Parmesan (sauce + topping)”, qty:150,  unit:“g”, cat:“Dairy”},
+{key:“garlic”,          label:“Minced garlic”,              qty:28,   unit:“g”, cat:“Aromatics”},
+],
+steps:[
+“Add chicken, cream cheese, 84g mozzarella and garlic parmesan sauce to slow cooker. Add milk. Cook HIGH 3hr.”,
+“Cook pasta al dente. Steam broccoli separately.”,
+“Shred chicken. Add pasta, broccoli, sun-dried tomatoes, parmesan and remaining mozzarella. Cook 15 min more.”,
+“Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“n7”, name:“Green Pepper & Onion Pasta”, subtitle:“Chicken · sautéed green peppers · creamy + tomato sauce”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:695,protein:60,carbs:85,fat:14},
+note:“HEB Creamy Poblano not in Doha — sub: any light creamy pasta sauce (Prego, Barilla) + smoked paprika + chipotle powder.”,
+batchItems:[
+{key:“chicken_breast”,    label:“Chicken breast (raw)”,      qty:950,  unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,     label:“Pasta (spaghetti or any)”,   qty:615,  unit:“g”, cat:“Carbs”},
+{key:“bell_pepper_green”, label:“Green bell peppers”,         qty:2,    unit:“whole”, cat:“Vegetables”},
+{key:“butter”,            label:“Butter”,                     qty:20,   unit:“g”, cat:“Dairy”},
+{key:“onion”,             label:“Onion”,                      qty:1,    unit:“whole”, cat:“Aromatics”},
+{key:“garlic”,            label:“Garlic”,                     qty:10,   unit:“g”, cat:“Aromatics”},
+{key:“pasta_sauce_cream”, label:“Light creamy pasta sauce (jar)”, qty:600, unit:“g”, cat:“Sauces”},
+{key:“pasta_sauce_tom”,   label:“Tomato spaghetti sauce (jar)”, qty:500, unit:“g”, cat:“Sauces”},
+{key:“chicken_broth”,     label:“Chicken broth”,              qty:126,  unit:“mL”, cat:“Liquids”},
+],
+steps:[
+“Add chicken and both pasta sauces to slow cooker. Cook HIGH 3hr.”,
+“Sauté diced peppers and onion in butter and chicken broth until golden. Add to slow cooker.”,
+“Par-cook pasta for half the package time. Drain. Add to slow cooker.”,
+“Cook HIGH 30 min more. Divide into 7 containers. Add ½ tbsp olive oil.”,
+],
+},
+{
+id:“n8”, name:“Chicken Bacon Mac”, subtitle:“Chicken · beef bacon · pasta · blended buffalo cheese sauce”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:748,protein:63,carbs:85,fat:13},
+note:“Pork bacon → beef bacon throughout. Most involved recipe but exceptional flavour from the blended cheese sauce.”,
+batchItems:[
+{key:“chicken_breast”,  label:“Chicken breast (raw)”,   qty:900, unit:“g”, cat:“Protein”},
+{key:“bacon_beef”,      label:“Beef bacon”,              qty:220, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,   label:“Pasta (macaroni/shells)”, qty:680, unit:“g”, cat:“Carbs”},
+{key:“cottage_cheese_2”,label:“2% cottage cheese”,       qty:509, unit:“g”, cat:“Dairy”},
+{key:“cream_cheese_ff”, label:“Fat-free cream cheese”,   qty:32,  unit:“g”, cat:“Dairy”},
+{key:“parmesan”,        label:“Parmesan”,                qty:38,  unit:“g”, cat:“Dairy”},
+{key:“cheddar_ff”,      label:“Fat-free cheddar”,        qty:145, unit:“g”, cat:“Dairy”},
+{key:“milk_ff”,         label:“Fat-free milk”,           qty:191, unit:“mL”, cat:“Dairy”},
+{key:“honey”,           label:“Raw honey”,               qty:19,  unit:“g”, cat:“Sauces”},
+{key:“buffalo_sauce”,   label:“Buffalo sauce”,           qty:140, unit:“mL”, cat:“Sauces”},
+{key:“bell_pepper_orange”,label:“Orange bell peppers”,   qty:2,   unit:“whole”, cat:“Vegetables”},
+{key:“onion”,           label:“Onion”,                   qty:1,   unit:“whole”, cat:“Aromatics”},
+],
+steps:[
+“Sauté diced peppers and onion. Add to slow cooker with chicken, buffalo sauce and seasonings. Cook HIGH 2hr.”,
+“Blend cottage cheese, cream cheese, parmesan, milk and honey for 4–5 min until fully smooth.”,
+“Cook pasta al dente. Cook bacon until crispy, chop.”,
+“Shred chicken. Add pasta, cheese sauce, cheddar and bacon. Cook 30 min more.”,
+“Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“n9”, name:“Beef Mince & Rice Bowl”, subtitle:“Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers”,
+badge:“🍳 ST”, carb:“Rice”, portions:7,
+perPortion:{kcal:715,protein:57,carbs:80,fat:16},
+note:“⚠ Carbs ~80g vs 85g target — pre-workout compensates. Steak replaced with lean beef mince for higher protein.”,
+batchItems:[
+{key:“beef_mince_lean”,  label:“Lean beef mince (5%)”,   qty:1400, unit:“g”, cat:“Protein”},
+{key:“rice_white”,       label:“White rice (jasmine)”,    qty:630,  unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,    label:“Fat-free mozzarella”,     qty:245,  unit:“g”, cat:“Dairy”},
+{key:“sour_cream_light”, label:“Light sour cream”,        qty:263,  unit:“g”, cat:“Dairy”},
+{key:“greek_yogurt_0”,   label:“0% Greek yogurt”,         qty:131,  unit:“g”, cat:“Dairy”},
+{key:“bell_pepper_orange”,label:“Orange bell peppers”,    qty:2,    unit:“whole”, cat:“Vegetables”},
+{key:“chipotle_peppers_adobo”,label:“Chipotle peppers in adobo”, qty:100, unit:“g”, cat:“Sauces”},
+{key:“lime”,             label:“Lime”,                    qty:1,    unit:“whole”, cat:“Aromatics”},
+],
+steps:[
+“Cook 630g jasmine rice.”,
+“Brown beef mince. Season well. Sauté diced bell peppers and add to beef.”,
+“Blend sour cream, Greek yogurt, chipotle peppers and lime juice until smooth.”,
+“Portion rice into 7 containers. Top with beef-pepper mix and 35g mozzarella each.”,
+“Drizzle chipotle-lime sauce over top. Add ½ tbsp olive oil per portion.”,
+],
+},
+{
+id:“n10”, name:“Chicken Alfredo Red Sauce”, subtitle:“Slow-cooked chicken · Alfredo · Italian tomato sauce · mozzarella”,
+badge:“🥘 SC”, carb:“Pasta”, portions:7,
+perPortion:{kcal:720,protein:61,carbs:85,fat:14},
+note:“Prego Alfredo and Italian sauces available at Carrefour and LuLu, Doha. Use any Barilla or similar pasta.”,
+batchItems:[
+{key:“chicken_breast”, label:“Chicken breast (raw)”,          qty:907, unit:“g”, cat:“Protein”},
+{key:“pasta_regular”,  label:“Pasta (farfalle or any)”,        qty:600, unit:“g”, cat:“Carbs”},
+{key:“mozzarella_ff”,  label:“Fat-free mozzarella”,            qty:227, unit:“g”, cat:“Dairy”},
+{key:“garlic”,         label:“Minced garlic”,                  qty:28,  unit:“g”, cat:“Aromatics”},
+{key:“alfredo_sauce”,  label:“Alfredo sauce — Prego (1 jar)”,  qty:624, unit:“g”, cat:“Sauces”},
+{key:“italian_sauce”,  label:“Italian tomato sauce — Prego (1 jar)”, qty:680, unit:“g”, cat:“Sauces”},
+],
+steps:[
+“Add chicken, both sauces and garlic to slow cooker. Cook HIGH 3hr.”,
+“Cook pasta al dente. Drain.”,
+“Shred chicken. Add pasta and mozzarella. Cover and cook 15 min more.”,
+“Divide into 7 containers. Add ½ tbsp olive oil per portion.”,
+],
+},
 ];
 
 // ─── FIXED 7-DAY SHOPPING ──────────────────────────────────────────────────
 const FIXED = {
-  "🌅 Breakfast — 7 days":[
-    "1,400 g fat-free cottage cheese","700 g smoked turkey","14 whole eggs",
-    "1,050 g cherry tomatoes","~1.9 L Baladna skimmed milk",
-    "7 scoops ON whey","14 slices Baker Street white bread",
-  ],
-  "⚡ Pre-Workout — 7 days":[
-    "7 bananas","14 Kallo rice cakes","~560 g jam",
-  ],
-  "💊 Supplements — 7 days":[
-    "7 creatine sachets (10g each)","28 vitamin D tablets",
-    "28 fish oil softgels","7 zinc capsules","7 magnesium servings",
-  ],
-  "🧂 Pantry":[
-    "Olive oil (½ tbsp × 14 portions)","Salt · black pepper · rosemary","PAM cooking spray",
-    "Italian seasoning · paprika · garlic powder · onion powder · chilli flakes",
-  ],
+“🌅 Breakfast — 7 days”:[
+“1,400 g fat-free cottage cheese”,“700 g smoked turkey”,“14 whole eggs”,
+“1,050 g cherry tomatoes”,“~1.9 L Baladna skimmed milk”,
+“7 scoops ON whey”,“14 slices Baker Street white bread”,
+],
+“⚡ Pre-Workout — 7 days”:[
+“7 bananas”,“14 Kallo rice cakes”,“~560 g jam”,
+],
+“💊 Supplements — 7 days”:[
+“7 creatine sachets (10g each)”,“28 vitamin D tablets”,
+“28 fish oil softgels”,“7 zinc capsules”,“7 magnesium servings”,
+],
+“🧂 Pantry”:[
+“Olive oil (½ tbsp × 14 portions)”,“Salt · black pepper · rosemary”,“PAM cooking spray”,
+“Italian seasoning · paprika · garlic powder · onion powder · chilli flakes”,
+],
 };
 
 // ─── HELPERS ───────────────────────────────────────────────────────────────
 function fmtQty(qty, unit) {
-  if (unit === "g")   return qty >= 1000 ? `${+(qty/1000).toFixed(1)} kg`  : `${Math.round(qty)} g`;
-  if (unit === "mL")  return qty >= 1000 ? `${+(qty/1000).toFixed(1)} L`   : `${Math.round(qty)} mL`;
-  return String(Math.round(qty));
+if (unit === “g”)   return qty >= 1000 ? `${+(qty/1000).toFixed(1)} kg`  : `${Math.round(qty)} g`;
+if (unit === “mL”)  return qty >= 1000 ? `${+(qty/1000).toFixed(1)} L`   : `${Math.round(qty)} mL`;
+return String(Math.round(qty));
 }
 function fmtItem(item) {
-  const q   = fmtQty(item.qty, item.unit);
-  const lbl = item.unit === "whole" && item.qty > 1 && !item.label.endsWith("s")
-    ? item.label + "s" : item.label;
-  return `${q} ${lbl}`;
+const q   = fmtQty(item.qty, item.unit);
+const lbl = item.unit === “whole” && item.qty > 1 && !item.label.endsWith(“s”)
+? item.label + “s” : item.label;
+return `${q} ${lbl}`;
 }
 function mergeItems(lr, dr) {
-  const map = {};
-  const add = (arr) => arr.forEach(i => {
-    if (map[i.key]) map[i.key] = { ...map[i.key], qty: map[i.key].qty + i.qty };
-    else map[i.key] = { ...i };
-  });
-  if (lr.id === dr.id) add(lr.batchItems.map(i => ({ ...i, qty: i.qty * 2 })));
-  else { add(lr.batchItems); add(dr.batchItems); }
-  const grouped = {};
-  CAT_ORDER.forEach(c => { grouped[c] = []; });
-  Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
-  return Object.fromEntries(Object.entries(grouped).filter(([,v]) => v.length > 0));
+const map = {};
+const add = (arr) => arr.forEach(i => {
+if (map[i.key]) map[i.key] = { …map[i.key], qty: map[i.key].qty + i.qty };
+else map[i.key] = { …i };
+});
+if (lr.id === dr.id) add(lr.batchItems.map(i => ({ …i, qty: i.qty * 2 })));
+else { add(lr.batchItems); add(dr.batchItems); }
+const grouped = {};
+CAT_ORDER.forEach(c => { grouped[c] = []; });
+Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
+return Object.fromEntries(Object.entries(grouped).filter(([,v]) => v.length > 0));
 }
 function computeMeals(lr, dr) {
-  const L = { ...lr.perPortion };
-  const D = { kcal: dr.perPortion.kcal + FISH_OIL.kcal, protein: dr.perPortion.protein,
-               carbs: dr.perPortion.carbs, fat: +(dr.perPortion.fat + FISH_OIL.fat).toFixed(1) };
-  const total = {
-    kcal:    BREAKFAST.kcal    + PRE.kcal    + L.kcal    + D.kcal,
-    protein: BREAKFAST.protein + PRE.protein + L.protein + D.protein,
-    carbs:   BREAKFAST.carbs   + PRE.carbs   + L.carbs   + D.carbs,
-    fat:     +(BREAKFAST.fat   + PRE.fat     + L.fat     + D.fat).toFixed(1),
-  };
-  return { L, D, total };
+const L = { …lr.perPortion };
+const D = { kcal: dr.perPortion.kcal + FISH_OIL.kcal, protein: dr.perPortion.protein,
+carbs: dr.perPortion.carbs, fat: +(dr.perPortion.fat + FISH_OIL.fat).toFixed(1) };
+const total = {
+kcal:    BREAKFAST.kcal    + PRE.kcal    + L.kcal    + D.kcal,
+protein: BREAKFAST.protein + PRE.protein + L.protein + D.protein,
+carbs:   BREAKFAST.carbs   + PRE.carbs   + L.carbs   + D.carbs,
+fat:     +(BREAKFAST.fat   + PRE.fat     + L.fat     + D.fat).toFixed(1),
+};
+return { L, D, total };
 }
 function pct(v,t){ return Math.min(100,Math.round(v/t*100)); }
 
 // ─── SMALL COMPONENTS ──────────────────────────────────────────────────────
 function Macro({ label, value, color }) {
-  return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-      <span style={{ fontSize:15, fontWeight:700, color }}>{value}g</span>
-      <span style={{ fontSize:10, color:C.sub, letterSpacing:"0.06em" }}>{label}</span>
-    </div>
-  );
+return (
+<div style={{ display:“flex”, flexDirection:“column”, alignItems:“center”, gap:2 }}>
+<span style={{ fontSize:15, fontWeight:700, color }}>{value}g</span>
+<span style={{ fontSize:10, color:C.sub, letterSpacing:“0.06em” }}>{label}</span>
+</div>
+);
 }
 function KPill({ v }) {
-  return <span style={{ fontSize:13, fontWeight:700, color:C.text, background:C.card2,
-    border:`1px solid ${C.dim}`, borderRadius:6, padding:"2px 8px" }}>{v} kcal</span>;
+return <span style={{ fontSize:13, fontWeight:700, color:C.text, background:C.card2,
+border:`1px solid ${C.dim}`, borderRadius:6, padding:“2px 8px” }}>{v} kcal</span>;
 }
 function Bar({ v, t, color }) {
-  const p = pct(v, t);
-  const over = v > t;
-  return (
-    <div style={{ height:5, background:C.dim, borderRadius:3, overflow:"hidden" }}>
-      <div style={{ height:"100%", width:`${Math.min(p,100)}%`,
-        background: over ? "#ef4444" : color, borderRadius:3, transition:"width 0.4s" }} />
-    </div>
-  );
+const p = pct(v, t);
+const over = v > t;
+return (
+<div style={{ height:5, background:C.dim, borderRadius:3, overflow:“hidden” }}>
+<div style={{ height:“100%”, width:`${Math.min(p,100)}%`,
+background: over ? “#ef4444” : color, borderRadius:3, transition:“width 0.4s” }} />
+</div>
+);
 }
 
 // ─── MEAL CARD ──────────────────────────────────────────────────────────────
 function MealCard({ meal, macros, slot }) {
-  const [open, setOpen] = useState(false);
-  const isRecipe = !meal.fixed;
-  const borderColor = slot === "lunch" ? C.accentBorder : C.blueBorder;
-  const slotBg = slot === "lunch" ? C.accentDim : C.blueDim;
-  return (
-    <div style={{ background:C.card, border:`1px solid ${borderColor}`, borderRadius:14,
-      overflow:"hidden", marginBottom:10 }}>
-      <div style={{ padding:"12px 14px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
-          <div>
-            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <span style={{ fontSize:16 }}>{meal.icon || (slot==="lunch"?"☀️":"🌙")}</span>
-              <span style={{ fontSize:13, fontWeight:600, color:C.sub, letterSpacing:"0.05em" }}>
-                {meal.type || (slot==="lunch"?"LUNCH":"DINNER")}
-              </span>
-              {isRecipe && <span style={{ fontSize:10, color:C.sub, background:slotBg,
-                border:`1px solid ${borderColor}`, borderRadius:4, padding:"1px 6px" }}>
-                {meal.badge}
-              </span>}
-            </div>
-            <div style={{ fontSize:16, fontWeight:700, color:C.text, marginTop:3 }}>{meal.name}</div>
-            {meal.subtitle && <div style={{ fontSize:12, color:C.sub, marginTop:1 }}>{meal.subtitle}</div>}
-          </div>
-          <KPill v={macros.kcal} />
-        </div>
-        <div style={{ display:"flex", justifyContent:"space-around", padding:"8px 0",
-          background:C.card2, borderRadius:8, marginBottom:8 }}>
-          <Macro label="PROTEIN" value={macros.protein} color={C.prot} />
-          <Macro label="CARBS"   value={macros.carbs}   color={C.carb} />
-          <Macro label="FAT"     value={macros.fat}     color={C.fat}  />
-        </div>
-        {isRecipe && (
-          <button onClick={()=>setOpen(o=>!o)} style={{ fontSize:11, color:C.sub, background:"none",
-            border:"none", cursor:"pointer", padding:0, letterSpacing:"0.05em" }}>
-            {open?"▲ Hide ingredients":"▼ 🧺 Fridge pull — batch ingredients"}
+const [open, setOpen] = useState(false);
+const isRecipe = !meal.fixed;
+const borderColor = slot === “lunch” ? C.accentBorder : C.blueBorder;
+const slotBg = slot === “lunch” ? C.accentDim : C.blueDim;
+return (
+<div style={{ background:C.card, border:`1px solid ${borderColor}`, borderRadius:14,
+overflow:“hidden”, marginBottom:10 }}>
+<div style={{ padding:“12px 14px” }}>
+<div style={{ display:“flex”, justifyContent:“space-between”, alignItems:“flex-start”, marginBottom:8 }}>
+<div>
+<div style={{ display:“flex”, alignItems:“center”, gap:8 }}>
+<span style={{ fontSize:16 }}>{meal.icon || (slot===“lunch”?“☀️”:“🌙”)}</span>
+<span style={{ fontSize:13, fontWeight:600, color:C.sub, letterSpacing:“0.05em” }}>
+{meal.type || (slot===“lunch”?“LUNCH”:“DINNER”)}
+</span>
+{isRecipe && <span style={{ fontSize:10, color:C.sub, background:slotBg,
+border:`1px solid ${borderColor}`, borderRadius:4, padding:“1px 6px” }}>
+{meal.badge}
+</span>}
+</div>
+<div style={{ fontSize:16, fontWeight:700, color:C.text, marginTop:3 }}>{meal.name}</div>
+{meal.subtitle && <div style={{ fontSize:12, color:C.sub, marginTop:1 }}>{meal.subtitle}</div>}
+</div>
+<KPill v={macros.kcal} />
+</div>
+<div style={{ display:“flex”, justifyContent:“space-around”, padding:“8px 0”,
+background:C.card2, borderRadius:8, marginBottom:8 }}>
+<Macro label="PROTEIN" value={macros.protein} color={C.prot} />
+<Macro label="CARBS"   value={macros.carbs}   color={C.carb} />
+<Macro label="FAT"     value={macros.fat}     color={C.fat}  />
+</div>
+{isRecipe && (
+<button onClick={()=>setOpen(o=>!o)} style={{ fontSize:11, color:C.sub, background:“none”,
+border:“none”, cursor:“pointer”, padding:0, letterSpacing:“0.05em” }}>
+{open?“▲ Hide ingredients”:“▼ 🧺 Fridge pull — batch ingredients”}
+</button>
+)}
+{!isRecipe && (meal.items || meal.supplements) && (
+<button onClick={()=>setOpen(o=>!o)} style={{ fontSize:11, color:C.sub, background:“none”,
+border:“none”, cursor:“pointer”, padding:0, letterSpacing:“0.05em” }}>
+{open?“▲ Hide details”:“▼ View ingredients”}
+</button>
+)}
+</div>
+{open && isRecipe && (
+<div style={{ borderTop:`1px solid ${C.dim}`, padding:“12px 14px” }}>
+{meal.note && <div style={{ fontSize:11, color:C.sub, background:C.card2, borderRadius:6,
+padding:“6px 10px”, marginBottom:10, lineHeight:1.5 }}>💡 {meal.note}</div>}
+<div style={{ fontSize:11, fontWeight:700, color:C.sub, letterSpacing:“0.08em”, marginBottom:10 }}>
+🧺 BATCH INGREDIENTS — 7 PORTIONS
+</div>
+{CAT_ORDER.map(cat => {
+const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
+if (!catItems.length) return null;
+return (
+<div key={cat} style={{ marginBottom:10 }}>
+<div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:“0.07em”, marginBottom:5 }}>
+{CAT_ICON[cat]} {cat.toUpperCase()}
+</div>
+{catItems.map(item => (
+<div key={item.key} style={{ display:“flex”, alignItems:“center”, gap:8,
+padding:“5px 8px”, background:C.card2, borderRadius:6, marginBottom:3 }}>
+<span style={{ fontSize:12, color:C.accent, fontWeight:700, minWidth:8 }}>·</span>
+<span style={{ fontSize:12, color:C.text }}>{fmtItem(item)}</span>
+</div>
+))}
+</div>
+);
+})}
+</div>
+)}
+{open && !isRecipe && meal.items && (
+<div style={{ borderTop:`1px solid ${C.dim}`, padding:“12px 14px” }}>
+<div style={{ display:“flex”, flexWrap:“wrap”, gap:6 }}>
+{meal.items.map((item,i)=>(
+<span key={i} style={{ fontSize:11, color:C.text, background:C.card2,
+border:`1px solid ${C.dim}`, borderRadius:6, padding:“3px 8px” }}>{item}</span>
+))}
+</div>
+{meal.supplements && <>
+<div style={{ fontSize:12, fontWeight:600, color:C.sub, marginTop:10, marginBottom:6, letterSpacing:“0.06em” }}>SUPPLEMENTS</div>
+<div style={{ display:“flex”, flexWrap:“wrap”, gap:6 }}>
+{meal.supplements.map((s,i)=>(
+<span key={i} style={{ fontSize:11, color:C.green, background:C.greenDim,
+border:`1px solid ${C.greenBorder}`, borderRadius:6, padding:“3px 8px” }}>{s}</span>
+))}
+</div>
+</>}
+</div>
+)}
+</div>
+);
+}
+
+// ─── DAILY TOTAL BAR ───────────────────────────────────────────────────────
+// Kcal: ≤2500 green · 2501–2700 amber · >2700 red
+// Protein: below 90% amber · 90–115% green · above 115% amber (never red)
+// Carbs: below 90% amber · 90–105% green · above 105% red
+// Fat: at/below target green · any over red
+function kcalStatus(v) {
+if (v > 2700) return { c:”#ef4444”, tag:“⚠ over limit” };
+if (v > 2500) return { c:”#f59e0b”, tag:“↑ above target” };
+return { c:”#22c55e”, tag:“✓ within target” };
+}
+function macroStatus(v, t, kind) {
+const r = v / t;
+if (kind === “protein”) {
+if (r < 0.90) return { c:”#f59e0b”, tag:“↓ below” };
+if (r > 1.15) return { c:”#f59e0b”, tag:“↑ above” };
+return { c:”#22c55e”, tag:“✓” };
+}
+if (kind === “carbs”) {
+if (r < 0.90) return { c:”#f59e0b”, tag:“↓ below” };
+if (r > 1.05) return { c:”#ef4444”, tag:“↑ over” };
+return { c:”#22c55e”, tag:“✓” };
+}
+if (kind === “fat”) {
+if (v > t) return { c:”#ef4444”, tag:“↑ over” };
+return { c:”#22c55e”, tag:“✓” };
+}
+return { c:”#22c55e”, tag:“✓” };
+}
+function TotalBar({ total }) {
+const ks = kcalStatus(total.kcal);
+const rows = [
+{ label:“Protein”, v:total.protein, t:TARGETS.protein, kind:“protein” },
+{ label:“Carbs”,   v:total.carbs,   t:TARGETS.carbs,   kind:“carbs”   },
+{ label:“Fat”,     v:total.fat,     t:TARGETS.fat,     kind:“fat”     },
+];
+return (
+<div style={{ background:C.card, border:`1.5px solid ${C.dim}`, borderRadius:14, padding:“14px 16px”, marginBottom:10 }}>
+{/* Kcal header */}
+<div style={{ display:“flex”, justifyContent:“space-between”, alignItems:“center”, marginBottom:5 }}>
+<div style={{ display:“flex”, alignItems:“center”, gap:8 }}>
+<span style={{ fontSize:11, fontWeight:700, color:C.sub, letterSpacing:“0.07em” }}>DAILY TOTAL</span>
+<span style={{ fontSize:10, color:ks.c, fontWeight:700,
+background:`${ks.c}20`, borderRadius:4, padding:“2px 6px” }}>{ks.tag}</span>
+</div>
+<span style={{ fontSize:18, fontWeight:800, color:ks.c }}>
+{total.kcal}
+<span style={{ fontSize:11, fontWeight:400, color:C.sub }}> / 2500 kcal</span>
+</span>
+</div>
+{/* Kcal bar */}
+<div style={{ height:5, background:C.dim, borderRadius:3, overflow:“hidden”, marginBottom:14 }}>
+<div style={{ height:“100%”, width:`${Math.min(pct(total.kcal,2500),100)}%`,
+background:ks.c, borderRadius:3, transition:“width 0.4s” }} />
+</div>
+{/* Macro rows */}
+{rows.map(({ label, v, t, kind }) => {
+const ms = macroStatus(v, t, kind);
+return (
+<div key={label} style={{ marginBottom:10 }}>
+<div style={{ display:“flex”, justifyContent:“space-between”, alignItems:“center”, marginBottom:4 }}>
+<div style={{ display:“flex”, alignItems:“center”, gap:6 }}>
+<span style={{ fontSize:11, fontWeight:600, color:C.sub }}>{label}</span>
+<span style={{ fontSize:10, color:ms.c, fontWeight:700,
+background:`${ms.c}18`, borderRadius:4, padding:“1px 5px” }}>{ms.tag}</span>
+</div>
+<span style={{ fontSize:12, fontWeight:700, color:ms.c }}>
+{v}g <span style={{ fontSize:10, fontWeight:400, color:C.muted }}>/ {t}g</span>
+</span>
+</div>
+<div style={{ height:5, background:C.dim, borderRadius:3, overflow:“hidden” }}>
+<div style={{ height:“100%”, width:`${Math.min(pct(v,t),100)}%`,
+background:ms.c, borderRadius:3, transition:“width 0.4s” }} />
+</div>
+</div>
+);
+})}
+</div>
+);
+}
+
+// ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
+function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
+const [open, setOpen] = useState(false);
+const [view, setView] = useState(“ingredients”);
+const isL = r.id === activeLunch;
+const isD = r.id === activeDinner;
+const active = isL || isD;
+return (
+<div style={{ background:C.card, border:`1.5px solid ${active?C.accentBorder:C.border}`,
+borderRadius:14, overflow:“hidden”, marginBottom:10 }}>
+<div style={{ padding:“12px 14px” }}>
+<div style={{ display:“flex”, justifyContent:“space-between”, alignItems:“flex-start”, marginBottom:8 }}>
+<div style={{ flex:1 }}>
+<div style={{ display:“flex”, gap:6, flexWrap:“wrap”, marginBottom:4 }}>
+<span style={{ fontSize:10, color:C.sub, background:C.card2, border:`1px solid ${C.dim}`,
+borderRadius:4, padding:“2px 7px”, letterSpacing:“0.05em” }}>{r.badge}</span>
+<span style={{ fontSize:10, color:C.carb, background:C.blueDim, border:`1px solid ${C.blueBorder}`,
+borderRadius:4, padding:“2px 7px” }}>{r.carb}</span>
+{isL && <span style={{ fontSize:10, color:C.accent, background:C.accentDim, border:`1px solid ${C.accentBorder}`,
+borderRadius:4, padding:“2px 7px” }}>☀️ Lunch</span>}
+{isD && <span style={{ fontSize:10, color:”#a78bfa”, background:“rgba(167,139,250,0.10)”, border:“1px solid rgba(167,139,250,0.25)”,
+borderRadius:4, padding:“2px 7px” }}>🌙 Dinner</span>}
+</div>
+<div style={{ fontSize:15, fontWeight:700, color:C.text }}>{r.name}</div>
+<div style={{ fontSize:11, color:C.sub, marginTop:1 }}>{r.subtitle}</div>
+</div>
+</div>
+<div style={{ display:“flex”, gap:8, marginBottom:10 }}>
+{[{l:“P”,v:r.perPortion.protein,c:C.prot},{l:“C”,v:r.perPortion.carbs,c:C.carb},{l:“F”,v:r.perPortion.fat,c:C.fat}].map(({l,v,c})=>(
+<span key={l} style={{ fontSize:11, color:c, background:C.card2, border:`1px solid ${C.dim}`,
+borderRadius:6, padding:“3px 7px” }}><b>{v}g</b> {l}</span>
+))}
+<span style={{ fontSize:11, color:C.sub, background:C.card2, border:`1px solid ${C.dim}`,
+borderRadius:6, padding:“3px 7px” }}>{r.perPortion.kcal} kcal</span>
+<span style={{ fontSize:11, color:C.sub, marginLeft:“auto”, alignSelf:“center” }}>7 × meal</span>
+</div>
+<div style={{ display:“flex”, gap:8 }}>
+<button onClick={()=>setLunch(r.id)}
+style={{ flex:1, padding:“7px 0”, fontSize:12, fontWeight:600, borderRadius:8, border:“none”,
+cursor:“pointer”, background: isL ? C.accent : C.card2,
+color: isL ? “#000” : C.sub, letterSpacing:“0.03em” }}>
+{isL ? “☀️ Lunch ✓” : “☀️ Set Lunch”}
+</button>
+<button onClick={()=>setDinner(r.id)}
+style={{ flex:1, padding:“7px 0”, fontSize:12, fontWeight:600, borderRadius:8, border:“none”,
+cursor:“pointer”, background: isD ? “#7c3aed” : C.card2,
+color: isD ? “#fff” : C.sub, letterSpacing:“0.03em” }}>
+{isD ? “🌙 Dinner ✓” : “🌙 Set Dinner”}
+</button>
+<button onClick={()=>setOpen(o=>!o)}
+style={{ padding:“7px 10px”, fontSize:12, borderRadius:8, border:`1px solid ${C.dim}`,
+cursor:“pointer”, background:“none”, color:C.sub }}>
+{open ? “▲” : “▼”}
+</button>
+</div>
+</div>
+{open && (
+<div style={{ borderTop:`1px solid ${C.dim}`, padding:“12px 14px” }}>
+{r.note && <div style={{ fontSize:11, color:C.sub, background:C.card2, borderRadius:6,
+padding:“6px 10px”, marginBottom:10, lineHeight:1.5 }}>💡 {r.note}</div>}
+
+```
+      {/* Toggle bar */}
+      <div style={{ display:"flex", gap:6, marginBottom:12 }}>
+        {[["ingredients","🧺 Ingredients"],["method","👨‍🍳 Method"]].map(([v,lbl])=>(
+          <button key={v} onClick={()=>setView(v)}
+            style={{ flex:1, padding:"6px 0", fontSize:11, fontWeight:700, borderRadius:7, border:"none",
+              cursor:"pointer", letterSpacing:"0.04em",
+              background: view===v ? C.accent : C.card2,
+              color:       view===v ? "#000"   : C.sub }}>
+            {lbl}
           </button>
-        )}
-        {!isRecipe && (meal.items || meal.supplements) && (
-          <button onClick={()=>setOpen(o=>!o)} style={{ fontSize:11, color:C.sub, background:"none",
-            border:"none", cursor:"pointer", padding:0, letterSpacing:"0.05em" }}>
-            {open?"▲ Hide details":"▼ View ingredients"}
-          </button>
-        )}
+        ))}
       </div>
-      {open && isRecipe && (
-        <div style={{ borderTop:`1px solid ${C.dim}`, padding:"12px 14px" }}>
-          {meal.note && <div style={{ fontSize:11, color:C.sub, background:C.card2, borderRadius:6,
-            padding:"6px 10px", marginBottom:10, lineHeight:1.5 }}>💡 {meal.note}</div>}
-          <div style={{ fontSize:11, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:10 }}>
-            🧺 BATCH INGREDIENTS — 7 PORTIONS
+
+      {/* INGREDIENTS view */}
+      {view === "ingredients" && (
+        <div>
+          <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:8 }}>
+            BATCH — 7 PORTIONS
           </div>
           {CAT_ORDER.map(cat => {
-            const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
+            const catItems = r.batchItems.filter(i => i.cat === cat);
             if (!catItems.length) return null;
             return (
               <div key={cat} style={{ marginBottom:10 }}>
@@ -600,7 +871,7 @@ function MealCard({ meal, macros, slot }) {
                 {catItems.map(item => (
                   <div key={item.key} style={{ display:"flex", alignItems:"center", gap:8,
                     padding:"5px 8px", background:C.card2, borderRadius:6, marginBottom:3 }}>
-                    <span style={{ fontSize:12, color:C.accent, fontWeight:700, minWidth:8 }}>·</span>
+                    <span style={{ fontSize:12, color:C.accent, fontWeight:700 }}>·</span>
                     <span style={{ fontSize:12, color:C.text }}>{fmtItem(item)}</span>
                   </div>
                 ))}
@@ -609,512 +880,320 @@ function MealCard({ meal, macros, slot }) {
           })}
         </div>
       )}
-      {open && !isRecipe && meal.items && (
-        <div style={{ borderTop:`1px solid ${C.dim}`, padding:"12px 14px" }}>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-            {meal.items.map((item,i)=>(
-              <span key={i} style={{ fontSize:11, color:C.text, background:C.card2,
-                border:`1px solid ${C.dim}`, borderRadius:6, padding:"3px 8px" }}>{item}</span>
-            ))}
-          </div>
-          {meal.supplements && <>
-            <div style={{ fontSize:12, fontWeight:600, color:C.sub, marginTop:10, marginBottom:6, letterSpacing:"0.06em" }}>SUPPLEMENTS</div>
-            <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-              {meal.supplements.map((s,i)=>(
-                <span key={i} style={{ fontSize:11, color:C.green, background:C.greenDim,
-                  border:`1px solid ${C.greenBorder}`, borderRadius:6, padding:"3px 8px" }}>{s}</span>
-              ))}
-            </div>
-          </>}
-        </div>
-      )}
-    </div>
-  );
-}
 
-// ─── DAILY TOTAL BAR ───────────────────────────────────────────────────────
-// Kcal: ≤2500 green · 2501–2700 amber · >2700 red
-// Protein: below 90% amber · 90–115% green · above 115% amber (never red)
-// Carbs: below 90% amber · 90–105% green · above 105% red
-// Fat: at/below target green · any over red
-function kcalStatus(v) {
-  if (v > 2700) return { c:"#ef4444", tag:"⚠ over limit" };
-  if (v > 2500) return { c:"#f59e0b", tag:"↑ above target" };
-  return { c:"#22c55e", tag:"✓ within target" };
-}
-function macroStatus(v, t, kind) {
-  const r = v / t;
-  if (kind === "protein") {
-    if (r < 0.90) return { c:"#f59e0b", tag:"↓ below" };
-    if (r > 1.15) return { c:"#f59e0b", tag:"↑ above" };
-    return { c:"#22c55e", tag:"✓" };
-  }
-  if (kind === "carbs") {
-    if (r < 0.90) return { c:"#f59e0b", tag:"↓ below" };
-    if (r > 1.05) return { c:"#ef4444", tag:"↑ over" };
-    return { c:"#22c55e", tag:"✓" };
-  }
-  if (kind === "fat") {
-    if (v > t) return { c:"#ef4444", tag:"↑ over" };
-    return { c:"#22c55e", tag:"✓" };
-  }
-  return { c:"#22c55e", tag:"✓" };
-}
-function TotalBar({ total }) {
-  const ks = kcalStatus(total.kcal);
-  const rows = [
-    { label:"Protein", v:total.protein, t:TARGETS.protein, kind:"protein" },
-    { label:"Carbs",   v:total.carbs,   t:TARGETS.carbs,   kind:"carbs"   },
-    { label:"Fat",     v:total.fat,     t:TARGETS.fat,     kind:"fat"     },
-  ];
-  return (
-    <div style={{ background:C.card, border:`1.5px solid ${C.dim}`, borderRadius:14, padding:"14px 16px", marginBottom:10 }}>
-      {/* Kcal header */}
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:5 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <span style={{ fontSize:11, fontWeight:700, color:C.sub, letterSpacing:"0.07em" }}>DAILY TOTAL</span>
-          <span style={{ fontSize:10, color:ks.c, fontWeight:700,
-            background:`${ks.c}20`, borderRadius:4, padding:"2px 6px" }}>{ks.tag}</span>
-        </div>
-        <span style={{ fontSize:18, fontWeight:800, color:ks.c }}>
-          {total.kcal}
-          <span style={{ fontSize:11, fontWeight:400, color:C.sub }}> / 2500 kcal</span>
-        </span>
-      </div>
-      {/* Kcal bar */}
-      <div style={{ height:5, background:C.dim, borderRadius:3, overflow:"hidden", marginBottom:14 }}>
-        <div style={{ height:"100%", width:`${Math.min(pct(total.kcal,2500),100)}%`,
-          background:ks.c, borderRadius:3, transition:"width 0.4s" }} />
-      </div>
-      {/* Macro rows */}
-      {rows.map(({ label, v, t, kind }) => {
-        const ms = macroStatus(v, t, kind);
-        return (
-          <div key={label} style={{ marginBottom:10 }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                <span style={{ fontSize:11, fontWeight:600, color:C.sub }}>{label}</span>
-                <span style={{ fontSize:10, color:ms.c, fontWeight:700,
-                  background:`${ms.c}18`, borderRadius:4, padding:"1px 5px" }}>{ms.tag}</span>
-              </div>
-              <span style={{ fontSize:12, fontWeight:700, color:ms.c }}>
-                {v}g <span style={{ fontSize:10, fontWeight:400, color:C.muted }}>/ {t}g</span>
-              </span>
-            </div>
-            <div style={{ height:5, background:C.dim, borderRadius:3, overflow:"hidden" }}>
-              <div style={{ height:"100%", width:`${Math.min(pct(v,t),100)}%`,
-                background:ms.c, borderRadius:3, transition:"width 0.4s" }} />
-            </div>
+      {/* METHOD view */}
+      {view === "method" && (
+        <div>
+          <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:8 }}>
+            COOKING STEPS — 7 PORTIONS
           </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
-function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
-  const [open, setOpen] = useState(false);
-  const [view, setView] = useState("ingredients");
-  const isL = r.id === activeLunch;
-  const isD = r.id === activeDinner;
-  const active = isL || isD;
-  return (
-    <div style={{ background:C.card, border:`1.5px solid ${active?C.accentBorder:C.border}`,
-      borderRadius:14, overflow:"hidden", marginBottom:10 }}>
-      <div style={{ padding:"12px 14px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
-          <div style={{ flex:1 }}>
-            <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:4 }}>
-              <span style={{ fontSize:10, color:C.sub, background:C.card2, border:`1px solid ${C.dim}`,
-                borderRadius:4, padding:"2px 7px", letterSpacing:"0.05em" }}>{r.badge}</span>
-              <span style={{ fontSize:10, color:C.carb, background:C.blueDim, border:`1px solid ${C.blueBorder}`,
-                borderRadius:4, padding:"2px 7px" }}>{r.carb}</span>
-              {isL && <span style={{ fontSize:10, color:C.accent, background:C.accentDim, border:`1px solid ${C.accentBorder}`,
-                borderRadius:4, padding:"2px 7px" }}>☀️ Lunch</span>}
-              {isD && <span style={{ fontSize:10, color:"#a78bfa", background:"rgba(167,139,250,0.10)", border:"1px solid rgba(167,139,250,0.25)",
-                borderRadius:4, padding:"2px 7px" }}>🌙 Dinner</span>}
+          {r.steps.map((s,i)=>(
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:8 }}>
+              <span style={{ color:C.accent, fontWeight:700, fontSize:12, minWidth:18,
+                background:C.accentDim, borderRadius:4, padding:"1px 5px", flexShrink:0,
+                textAlign:"center", alignSelf:"flex-start" }}>{i+1}</span>
+              <span style={{ fontSize:12, color:C.text, lineHeight:1.6 }}>{s}</span>
             </div>
-            <div style={{ fontSize:15, fontWeight:700, color:C.text }}>{r.name}</div>
-            <div style={{ fontSize:11, color:C.sub, marginTop:1 }}>{r.subtitle}</div>
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:8, marginBottom:10 }}>
-          {[{l:"P",v:r.perPortion.protein,c:C.prot},{l:"C",v:r.perPortion.carbs,c:C.carb},{l:"F",v:r.perPortion.fat,c:C.fat}].map(({l,v,c})=>(
-            <span key={l} style={{ fontSize:11, color:c, background:C.card2, border:`1px solid ${C.dim}`,
-              borderRadius:6, padding:"3px 7px" }}><b>{v}g</b> {l}</span>
           ))}
-          <span style={{ fontSize:11, color:C.sub, background:C.card2, border:`1px solid ${C.dim}`,
-            borderRadius:6, padding:"3px 7px" }}>{r.perPortion.kcal} kcal</span>
-          <span style={{ fontSize:11, color:C.sub, marginLeft:"auto", alignSelf:"center" }}>7 × meal</span>
-        </div>
-        <div style={{ display:"flex", gap:8 }}>
-          <button onClick={()=>setLunch(r.id)}
-            style={{ flex:1, padding:"7px 0", fontSize:12, fontWeight:600, borderRadius:8, border:"none",
-              cursor:"pointer", background: isL ? C.accent : C.card2,
-              color: isL ? "#000" : C.sub, letterSpacing:"0.03em" }}>
-            {isL ? "☀️ Lunch ✓" : "☀️ Set Lunch"}
-          </button>
-          <button onClick={()=>setDinner(r.id)}
-            style={{ flex:1, padding:"7px 0", fontSize:12, fontWeight:600, borderRadius:8, border:"none",
-              cursor:"pointer", background: isD ? "#7c3aed" : C.card2,
-              color: isD ? "#fff" : C.sub, letterSpacing:"0.03em" }}>
-            {isD ? "🌙 Dinner ✓" : "🌙 Set Dinner"}
-          </button>
-          <button onClick={()=>setOpen(o=>!o)}
-            style={{ padding:"7px 10px", fontSize:12, borderRadius:8, border:`1px solid ${C.dim}`,
-              cursor:"pointer", background:"none", color:C.sub }}>
-            {open ? "▲" : "▼"}
-          </button>
-        </div>
-      </div>
-      {open && (
-        <div style={{ borderTop:`1px solid ${C.dim}`, padding:"12px 14px" }}>
-          {r.note && <div style={{ fontSize:11, color:C.sub, background:C.card2, borderRadius:6,
-            padding:"6px 10px", marginBottom:10, lineHeight:1.5 }}>💡 {r.note}</div>}
-
-          {/* Toggle bar */}
-          <div style={{ display:"flex", gap:6, marginBottom:12 }}>
-            {[["ingredients","🧺 Ingredients"],["method","👨‍🍳 Method"]].map(([v,lbl])=>(
-              <button key={v} onClick={()=>setView(v)}
-                style={{ flex:1, padding:"6px 0", fontSize:11, fontWeight:700, borderRadius:7, border:"none",
-                  cursor:"pointer", letterSpacing:"0.04em",
-                  background: view===v ? C.accent : C.card2,
-                  color:       view===v ? "#000"   : C.sub }}>
-                {lbl}
-              </button>
-            ))}
-          </div>
-
-          {/* INGREDIENTS view */}
-          {view === "ingredients" && (
-            <div>
-              <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:8 }}>
-                BATCH — 7 PORTIONS
-              </div>
-              {CAT_ORDER.map(cat => {
-                const catItems = r.batchItems.filter(i => i.cat === cat);
-                if (!catItems.length) return null;
-                return (
-                  <div key={cat} style={{ marginBottom:10 }}>
-                    <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.07em", marginBottom:5 }}>
-                      {CAT_ICON[cat]} {cat.toUpperCase()}
-                    </div>
-                    {catItems.map(item => (
-                      <div key={item.key} style={{ display:"flex", alignItems:"center", gap:8,
-                        padding:"5px 8px", background:C.card2, borderRadius:6, marginBottom:3 }}>
-                        <span style={{ fontSize:12, color:C.accent, fontWeight:700 }}>·</span>
-                        <span style={{ fontSize:12, color:C.text }}>{fmtItem(item)}</span>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* METHOD view */}
-          {view === "method" && (
-            <div>
-              <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:8 }}>
-                COOKING STEPS — 7 PORTIONS
-              </div>
-              {r.steps.map((s,i)=>(
-                <div key={i} style={{ display:"flex", gap:8, marginBottom:8 }}>
-                  <span style={{ color:C.accent, fontWeight:700, fontSize:12, minWidth:18,
-                    background:C.accentDim, borderRadius:4, padding:"1px 5px", flexShrink:0,
-                    textAlign:"center", alignSelf:"flex-start" }}>{i+1}</span>
-                  <span style={{ fontSize:12, color:C.text, lineHeight:1.6 }}>{s}</span>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>
-  );
+  )}
+</div>
+```
+
+);
 }
 
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 function ShoppingList({ lr, dr }) {
-  const [checked, setChecked] = useState({});
-  const toggle = k => setChecked(c => ({ ...c, [k]: !c[k] }));
-  const batch = mergeItems(lr, dr);
-  const sameRecipe = lr.id === dr.id;
+const [checked, setChecked] = useState({});
+const toggle = k => setChecked(c => ({ …c, [k]: !c[k] }));
+const batch = mergeItems(lr, dr);
+const sameRecipe = lr.id === dr.id;
 
-  return (
-    <div>
-      {/* Batch header */}
-      <div style={{ background:C.accentDim, border:`1px solid ${C.accentBorder}`,
-        borderRadius:12, padding:"10px 14px", marginBottom:12 }}>
-        <div style={{ fontSize:11, fontWeight:700, color:C.accent, letterSpacing:"0.07em", marginBottom:2 }}>
-          BATCH INGREDIENTS — 7 DAYS
-        </div>
-        <div style={{ fontSize:12, color:C.text }}>
-          ☀️ {lr.name} {sameRecipe ? "× 2 slots (×2 qty)" : `+ 🌙 ${dr.name}`}
-        </div>
-        {sameRecipe && <div style={{ fontSize:10, color:C.sub, marginTop:2 }}>
-          Same recipe for both meals — all quantities doubled.
-        </div>}
+return (
+<div>
+{/* Batch header */}
+<div style={{ background:C.accentDim, border:`1px solid ${C.accentBorder}`,
+borderRadius:12, padding:“10px 14px”, marginBottom:12 }}>
+<div style={{ fontSize:11, fontWeight:700, color:C.accent, letterSpacing:“0.07em”, marginBottom:2 }}>
+BATCH INGREDIENTS — 7 DAYS
+</div>
+<div style={{ fontSize:12, color:C.text }}>
+☀️ {lr.name} {sameRecipe ? “× 2 slots (×2 qty)” : `+ 🌙 ${dr.name}`}
+</div>
+{sameRecipe && <div style={{ fontSize:10, color:C.sub, marginTop:2 }}>
+Same recipe for both meals — all quantities doubled.
+</div>}
+</div>
+
+```
+  {/* Merged batch items */}
+  {Object.entries(batch).map(([cat, items]) => (
+    <div key={cat} style={{ marginBottom:14 }}>
+      <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:6 }}>
+        {CAT_ICON[cat]} {cat.toUpperCase()}
       </div>
-
-      {/* Merged batch items */}
-      {Object.entries(batch).map(([cat, items]) => (
-        <div key={cat} style={{ marginBottom:14 }}>
-          <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em", marginBottom:6 }}>
-            {CAT_ICON[cat]} {cat.toUpperCase()}
+      {items.map(item => {
+        const k = `b_${item.key}`;
+        return (
+          <div key={item.key} onClick={()=>toggle(k)}
+            style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 10px",
+              background: checked[k] ? C.card2 : C.card, borderRadius:8, marginBottom:4,
+              cursor:"pointer", opacity: checked[k] ? 0.5 : 1,
+              border:`1px solid ${checked[k]?C.muted:C.dim}` }}>
+            <div style={{ width:16, height:16, borderRadius:4, flexShrink:0,
+              border:`2px solid ${checked[k]?C.green:C.muted}`,
+              background: checked[k] ? C.green : "none",
+              display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {checked[k] && <span style={{fontSize:10,color:"#000"}}>✓</span>}
+            </div>
+            <span style={{ fontSize:12, color: checked[k]?C.muted:C.text, textDecoration: checked[k]?"line-through":"none" }}>
+              {fmtItem(item)}
+            </span>
           </div>
-          {items.map(item => {
-            const k = `b_${item.key}`;
-            return (
-              <div key={item.key} onClick={()=>toggle(k)}
-                style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 10px",
-                  background: checked[k] ? C.card2 : C.card, borderRadius:8, marginBottom:4,
-                  cursor:"pointer", opacity: checked[k] ? 0.5 : 1,
-                  border:`1px solid ${checked[k]?C.muted:C.dim}` }}>
-                <div style={{ width:16, height:16, borderRadius:4, flexShrink:0,
-                  border:`2px solid ${checked[k]?C.green:C.muted}`,
-                  background: checked[k] ? C.green : "none",
-                  display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {checked[k] && <span style={{fontSize:10,color:"#000"}}>✓</span>}
-                </div>
-                <span style={{ fontSize:12, color: checked[k]?C.muted:C.text, textDecoration: checked[k]?"line-through":"none" }}>
-                  {fmtItem(item)}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      ))}
-
-      {/* Fixed sections */}
-      {Object.entries(FIXED).map(([section, items]) => (
-        <div key={section} style={{ marginBottom:14 }}>
-          <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em",
-            marginBottom:6, marginTop:4 }}>{section.toUpperCase()}</div>
-          {items.map((item,i) => {
-            const k = `f_${section}_${i}`;
-            return (
-              <div key={k} onClick={()=>toggle(k)}
-                style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 10px",
-                  background: checked[k] ? C.card2 : C.card, borderRadius:8, marginBottom:4,
-                  cursor:"pointer", opacity: checked[k] ? 0.5 : 1,
-                  border:`1px solid ${checked[k]?C.muted:C.dim}` }}>
-                <div style={{ width:16, height:16, borderRadius:4, flexShrink:0,
-                  border:`2px solid ${checked[k]?C.green:C.muted}`,
-                  background: checked[k] ? C.green : "none",
-                  display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {checked[k] && <span style={{fontSize:10,color:"#000"}}>✓</span>}
-                </div>
-                <span style={{ fontSize:12, color: checked[k]?C.muted:C.text, textDecoration: checked[k]?"line-through":"none" }}>
-                  {item}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      ))}
+        );
+      })}
     </div>
-  );
+  ))}
+
+  {/* Fixed sections */}
+  {Object.entries(FIXED).map(([section, items]) => (
+    <div key={section} style={{ marginBottom:14 }}>
+      <div style={{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.08em",
+        marginBottom:6, marginTop:4 }}>{section.toUpperCase()}</div>
+      {items.map((item,i) => {
+        const k = `f_${section}_${i}`;
+        return (
+          <div key={k} onClick={()=>toggle(k)}
+            style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 10px",
+              background: checked[k] ? C.card2 : C.card, borderRadius:8, marginBottom:4,
+              cursor:"pointer", opacity: checked[k] ? 0.5 : 1,
+              border:`1px solid ${checked[k]?C.muted:C.dim}` }}>
+            <div style={{ width:16, height:16, borderRadius:4, flexShrink:0,
+              border:`2px solid ${checked[k]?C.green:C.muted}`,
+              background: checked[k] ? C.green : "none",
+              display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {checked[k] && <span style={{fontSize:10,color:"#000"}}>✓</span>}
+            </div>
+            <span style={{ fontSize:12, color: checked[k]?C.muted:C.text, textDecoration: checked[k]?"line-through":"none" }}>
+              {item}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  ))}
+</div>
+```
+
+);
 }
 
 // ─── MACRO REF ─────────────────────────────────────────────────────────────
 function MacroRef() {
-  const [open, setOpen] = useState({});
-  const tog = k => setOpen(o=>({...o,[k]:!o[k]}));
-  return (
-    <div>
-      <div style={{ fontSize:11, color:C.sub, marginBottom:14, lineHeight:1.5 }}>
-        Proteins, grains, dairy &amp; veg are per 100 g raw/dry. Oils and condiments are per serving. ½ tbsp olive oil added per meal portion. Fish oil (+18 kcal · +2g fat) added for dinner only.
-      </div>
-      {IDB.map(sec=>(
-        <div key={sec.cat} style={{ marginBottom:10 }}>
-          <div onClick={()=>tog(sec.cat)} style={{ display:"flex", justifyContent:"space-between",
-            background:C.card, border:`1px solid ${C.dim}`, borderRadius:10, padding:"10px 14px",
-            cursor:"pointer" }}>
-            <span style={{ fontSize:13, fontWeight:600, color:C.text }}>{sec.cat}</span>
-            <span style={{ color:C.sub }}>{open[sec.cat]?"▲":"▼"}</span>
-          </div>
-          {open[sec.cat] && (
-            <div style={{ background:C.card2, border:`1px solid ${C.dim}`, borderTop:"none",
-              borderRadius:"0 0 10px 10px", padding:"8px 14px" }}>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr auto auto auto auto",
-                gap:"4px 10px", fontSize:10, color:C.sub, marginBottom:6, paddingBottom:4,
-                borderBottom:`1px solid ${C.dim}` }}>
-                <span>Item</span><span>kcal</span>
-                <span style={{color:C.prot}}>P</span>
-                <span style={{color:C.carb}}>C</span>
-                <span style={{color:C.fat}}>F</span>
-              </div>
-              {sec.items.map(it=>(
-                <div key={it.n} style={{ display:"grid", gridTemplateColumns:"1fr auto auto auto auto",
-                  gap:"4px 10px", fontSize:11, padding:"4px 0", borderBottom:`1px solid ${C.dim}` }}>
-                  <span style={{color:C.text}}>{it.n}</span>
-                  <span style={{color:C.sub}}>{it.kcal}</span>
-                  <span style={{color:C.prot}}>{it.p}</span>
-                  <span style={{color:C.carb}}>{it.c}</span>
-                  <span style={{color:C.fat}}>{it.f}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
+const [open, setOpen] = useState({});
+const tog = k => setOpen(o=>({…o,[k]:!o[k]}));
+return (
+<div>
+<div style={{ fontSize:11, color:C.sub, marginBottom:14, lineHeight:1.5 }}>
+Proteins, grains, dairy & veg are per 100 g raw/dry. Oils and condiments are per serving. ½ tbsp olive oil added per meal portion. Fish oil (+18 kcal · +2g fat) added for dinner only.
+</div>
+{IDB.map(sec=>(
+<div key={sec.cat} style={{ marginBottom:10 }}>
+<div onClick={()=>tog(sec.cat)} style={{ display:“flex”, justifyContent:“space-between”,
+background:C.card, border:`1px solid ${C.dim}`, borderRadius:10, padding:“10px 14px”,
+cursor:“pointer” }}>
+<span style={{ fontSize:13, fontWeight:600, color:C.text }}>{sec.cat}</span>
+<span style={{ color:C.sub }}>{open[sec.cat]?“▲”:“▼”}</span>
+</div>
+{open[sec.cat] && (
+<div style={{ background:C.card2, border:`1px solid ${C.dim}`, borderTop:“none”,
+borderRadius:“0 0 10px 10px”, padding:“8px 14px” }}>
+<div style={{ display:“grid”, gridTemplateColumns:“1fr auto auto auto auto”,
+gap:“4px 10px”, fontSize:10, color:C.sub, marginBottom:6, paddingBottom:4,
+borderBottom:`1px solid ${C.dim}` }}>
+<span>Item</span><span>kcal</span>
+<span style={{color:C.prot}}>P</span>
+<span style={{color:C.carb}}>C</span>
+<span style={{color:C.fat}}>F</span>
+</div>
+{sec.items.map(it=>(
+<div key={it.n} style={{ display:“grid”, gridTemplateColumns:“1fr auto auto auto auto”,
+gap:“4px 10px”, fontSize:11, padding:“4px 0”, borderBottom:`1px solid ${C.dim}` }}>
+<span style={{color:C.text}}>{it.n}</span>
+<span style={{color:C.sub}}>{it.kcal}</span>
+<span style={{color:C.prot}}>{it.p}</span>
+<span style={{color:C.carb}}>{it.c}</span>
+<span style={{color:C.fat}}>{it.f}</span>
+</div>
+))}
+</div>
+)}
+</div>
+))}
+</div>
+);
 }
 
 // ─── APP ───────────────────────────────────────────────────────────────────
-const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
-const FILTER_MAP = { "All":null, "🥘 Crockpot":"SC", "🍳 Stovetop":"ST", "🌬️ Oven":"AF" };
+const FILTERS = [“All”, “🥘 Crockpot”, “🍳 Stovetop”, “🌬️ Oven”];
+const FILTER_MAP = { “All”:null, “🥘 Crockpot”:“SC”, “🍳 Stovetop”:“ST”, “🌬️ Oven”:“AF” };
 
 const TAB_META = [
-  { id:"meals",    label:"Meals",    icon:"🍽️" },
-  { id:"shopping", label:"Shop",     icon:"🛒" },
-  { id:"recipes",  label:"Recipes",  icon:"📋" },
-  { id:"macros",   label:"Macros",   icon:"📊" },
+{ id:“meals”,    label:“Meals”,    icon:“🍽️” },
+{ id:“shopping”, label:“Shop”,     icon:“🛒” },
+{ id:“recipes”,  label:“Recipes”,  icon:“📋” },
+{ id:“macros”,   label:“Macros”,   icon:“📊” },
 ];
 
 function App() {
-  // ── Persistent selections via localStorage ──────────────────────────────
-  const [lunch,  setLunchState]  = useState(() => localStorage.getItem("mp_lunch")  || "l1");
-  const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "d1");
-  const [tab,    setTab]         = useState("meals");
-  const [filter, setFilter]      = useState("All");
+// ── Persistent selections via localStorage ──────────────────────────────
+const [lunch,  setLunchState]  = useState(() => localStorage.getItem(“mp_lunch”)  || “l1”);
+const [dinner, setDinnerState] = useState(() => localStorage.getItem(“mp_dinner”) || “d1”);
+const [tab,    setTab]         = useState(“meals”);
+const [filter, setFilter]      = useState(“All”);
 
-  const setLunch = id => { setLunchState(id);  localStorage.setItem("mp_lunch",  id); };
-  const setDinner= id => { setDinnerState(id); localStorage.setItem("mp_dinner", id); };
+const setLunch = id => { setLunchState(id);  localStorage.setItem(“mp_lunch”,  id); };
+const setDinner= id => { setDinnerState(id); localStorage.setItem(“mp_dinner”, id); };
 
-  const lr = RECIPES.find(r => r.id === lunch)  || RECIPES[0];
-  const dr = RECIPES.find(r => r.id === dinner) || RECIPES[3];
-  const { L, D, total } = computeMeals(lr, dr);
+const lr = RECIPES.find(r => r.id === lunch)  || RECIPES[0];
+const dr = RECIPES.find(r => r.id === dinner) || RECIPES[3];
+const { L, D, total } = computeMeals(lr, dr);
 
-  const filteredRecipes = RECIPES.filter(r => {
-    const f = FILTER_MAP[filter];
-    return f ? r.badge.includes(f) : true;
-  });
+const filteredRecipes = RECIPES.filter(r => {
+const f = FILTER_MAP[filter];
+return f ? r.badge.includes(f) : true;
+});
 
-  const handleSetLunch  = id => { setLunch(id);  setTab("meals"); };
-  const handleSetDinner = id => { setDinner(id); setTab("meals"); };
+const handleSetLunch  = id => { setLunch(id);  setTab(“meals”); };
+const handleSetDinner = id => { setDinner(id); setTab(“meals”); };
 
-  // ── Sidebar width ────────────────────────────────────────────────────────
-  const SW = 72;
+// ── Sidebar width ────────────────────────────────────────────────────────
+const SW = 72;
 
-  return (
-    <div style={{ display:"flex", height:"100vh", maxWidth:520, margin:"0 auto",
-      fontFamily:"'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
-      color:C.text, background:C.bg, overflow:"hidden" }}>
+return (
+<div style={{ display:“flex”, height:“100vh”, maxWidth:520, margin:“0 auto”,
+fontFamily:”‘SF Pro Display’,-apple-system,BlinkMacSystemFont,sans-serif”,
+color:C.text, background:C.bg, overflow:“hidden” }}>
 
-      {/* ── Left Sidebar ─────────────────────────────────────────────────── */}
-      <div style={{ width:SW, flexShrink:0, background:C.card,
-        borderRight:`1px solid ${C.dim}`, display:"flex", flexDirection:"column",
-        alignItems:"center", paddingTop:16, paddingBottom:24, zIndex:100 }}>
+```
+  {/* ── Left Sidebar ─────────────────────────────────────────────────── */}
+  <div style={{ width:SW, flexShrink:0, background:C.card,
+    borderRight:`1px solid ${C.dim}`, display:"flex", flexDirection:"column",
+    alignItems:"center", paddingTop:16, paddingBottom:24, zIndex:100 }}>
 
-        {/* Logo mark */}
-        <div style={{ width:36, height:36, borderRadius:10, background:C.accent,
-          display:"flex", alignItems:"center", justifyContent:"center",
-          fontSize:18, marginBottom:28, flexShrink:0 }}>🥗</div>
+    {/* Logo mark */}
+    <div style={{ width:36, height:36, borderRadius:10, background:C.accent,
+      display:"flex", alignItems:"center", justifyContent:"center",
+      fontSize:18, marginBottom:28, flexShrink:0 }}>🥗</div>
 
-        {/* Tab buttons */}
-        {TAB_META.map(t => {
-          const active = tab === t.id;
-          return (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              style={{ width:52, paddingTop:10, paddingBottom:10, marginBottom:6,
-                background: active ? C.accentDim : "none",
-                border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
-                borderRadius:12, cursor:"pointer", display:"flex", flexDirection:"column",
-                alignItems:"center", gap:4, transition:"all 0.15s" }}>
-              <span style={{ fontSize:20, lineHeight:1 }}>{t.icon}</span>
-              <span style={{ fontSize:9, fontWeight:700, letterSpacing:"0.05em",
-                color: active ? C.accent : C.muted }}>
-                {t.label.toUpperCase()}
-              </span>
-            </button>
-          );
-        })}
+    {/* Tab buttons */}
+    {TAB_META.map(t => {
+      const active = tab === t.id;
+      return (
+        <button key={t.id} onClick={() => setTab(t.id)}
+          style={{ width:52, paddingTop:10, paddingBottom:10, marginBottom:6,
+            background: active ? C.accentDim : "none",
+            border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
+            borderRadius:12, cursor:"pointer", display:"flex", flexDirection:"column",
+            alignItems:"center", gap:4, transition:"all 0.15s" }}>
+          <span style={{ fontSize:20, lineHeight:1 }}>{t.icon}</span>
+          <span style={{ fontSize:9, fontWeight:700, letterSpacing:"0.05em",
+            color: active ? C.accent : C.muted }}>
+            {t.label.toUpperCase()}
+          </span>
+        </button>
+      );
+    })}
 
-        {/* Spacer + selection indicator */}
-        <div style={{ flex:1 }} />
-        <div style={{ width:44, borderTop:`1px solid ${C.dim}`, paddingTop:12,
-          display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
-          <div style={{ fontSize:9, color:C.muted, fontWeight:700, letterSpacing:"0.05em",
-            textAlign:"center", lineHeight:1.4 }}>
-            ☀️<br/><span style={{color:C.sub,fontSize:8}}>{lr.name.split(" ").slice(0,2).join(" ")}</span>
-          </div>
-          <div style={{ fontSize:9, color:C.muted, fontWeight:700, letterSpacing:"0.05em",
-            textAlign:"center", lineHeight:1.4 }}>
-            🌙<br/><span style={{color:C.sub,fontSize:8}}>{dr.name.split(" ").slice(0,2).join(" ")}</span>
-          </div>
-        </div>
+    {/* Spacer + selection indicator */}
+    <div style={{ flex:1 }} />
+    <div style={{ width:44, borderTop:`1px solid ${C.dim}`, paddingTop:12,
+      display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
+      <div style={{ fontSize:9, color:C.muted, fontWeight:700, letterSpacing:"0.05em",
+        textAlign:"center", lineHeight:1.4 }}>
+        ☀️<br/><span style={{color:C.sub,fontSize:8}}>{lr.name.split(" ").slice(0,2).join(" ")}</span>
       </div>
-
-      {/* ── Main area ────────────────────────────────────────────────────── */}
-      <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-
-        {/* Header */}
-        <div style={{ padding:"16px 14px 10px", background:`linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
-          borderBottom:`1px solid ${C.dim}`, flexShrink:0 }}>
-          <div style={{ fontSize:9, letterSpacing:"0.13em", color:C.sub, fontWeight:700 }}>DOHA · QATAR</div>
-          <div style={{ fontSize:18, fontWeight:800, color:C.text, marginTop:1, lineHeight:1.2 }}>
-            Meal Plan
-            <span style={{ fontWeight:400, color:C.sub }}> — Dejan Zerafa</span>
-          </div>
-          <div style={{ fontSize:11, color:C.sub, marginTop:3 }}>
-            ☀️ <span style={{color:C.text}}>{lr.name}</span>
-            &nbsp;·&nbsp;
-            🌙 <span style={{color:C.text}}>{dr.name}</span>
-          </div>
-        </div>
-
-        {/* Scrollable content */}
-        <div style={{ flex:1, overflowY:"auto", padding:"12px 12px 24px",
-          WebkitOverflowScrolling:"touch" }}>
-
-          {tab === "meals" && <>
-            <TotalBar total={total} />
-            <div style={{ fontSize:10, color:C.sub, textAlign:"center", margin:"6px 0 12px", lineHeight:1.6 }}>
-              🌙 Dinner + fish oil (+18 kcal · +2g fat) &nbsp;·&nbsp; 🌙 Before bed: Magnesium glycinate
-            </div>
-            <MealCard meal={BREAKFAST} macros={BREAKFAST} />
-            <MealCard meal={PRE}       macros={PRE}       />
-            <MealCard meal={lr} macros={L} slot="lunch"  />
-            <MealCard meal={dr} macros={D} slot="dinner" />
-          </>}
-
-          {tab === "shopping" && <ShoppingList lr={lr} dr={dr} />}
-
-          {tab === "recipes" && <>
-            <div style={{ display:"flex", gap:5, marginBottom:10, flexWrap:"wrap" }}>
-              {FILTERS.map(f=>(
-                <button key={f} onClick={()=>setFilter(f)}
-                  style={{ flex:1, minWidth:60, padding:"6px 4px", fontSize:10, fontWeight:700,
-                    borderRadius:8, border:"none", cursor:"pointer", letterSpacing:"0.03em",
-                    background: filter===f ? C.accent : C.card2,
-                    color:       filter===f ? "#000"   : C.sub }}>
-                  {f}
-                </button>
-              ))}
-            </div>
-            <div style={{ fontSize:10, color:C.sub, marginBottom:10 }}>
-              {filteredRecipes.length} recipe{filteredRecipes.length!==1?"s":""}
-            </div>
-            {filteredRecipes.map(r => (
-              <RecipeCard key={r.id} r={r}
-                activeLunch={lunch} activeDinner={dinner}
-                setLunch={handleSetLunch} setDinner={handleSetDinner} />
-            ))}
-          </>}
-
-          {tab === "macros" && <MacroRef />}
-
-        </div>
+      <div style={{ fontSize:9, color:C.muted, fontWeight:700, letterSpacing:"0.05em",
+        textAlign:"center", lineHeight:1.4 }}>
+        🌙<br/><span style={{color:C.sub,fontSize:8}}>{dr.name.split(" ").slice(0,2).join(" ")}</span>
       </div>
     </div>
-  );
+  </div>
+
+  {/* ── Main area ────────────────────────────────────────────────────── */}
+  <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+
+    {/* Header */}
+    <div style={{ padding:"16px 14px 10px", background:`linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
+      borderBottom:`1px solid ${C.dim}`, flexShrink:0 }}>
+      <div style={{ fontSize:9, letterSpacing:"0.13em", color:C.sub, fontWeight:700 }}>DOHA · QATAR</div>
+      <div style={{ fontSize:18, fontWeight:800, color:C.text, marginTop:1, lineHeight:1.2 }}>
+        Meal Plan
+        <span style={{ fontWeight:400, color:C.sub }}> — Dejan Zerafa</span>
+      </div>
+      <div style={{ fontSize:11, color:C.sub, marginTop:3 }}>
+        ☀️ <span style={{color:C.text}}>{lr.name}</span>
+        &nbsp;·&nbsp;
+        🌙 <span style={{color:C.text}}>{dr.name}</span>
+      </div>
+    </div>
+
+    {/* Scrollable content */}
+    <div style={{ flex:1, overflowY:"auto", padding:"12px 12px 24px",
+      WebkitOverflowScrolling:"touch" }}>
+
+      {tab === "meals" && <>
+        <TotalBar total={total} />
+        <div style={{ fontSize:10, color:C.sub, textAlign:"center", margin:"6px 0 12px", lineHeight:1.6 }}>
+          🌙 Dinner + fish oil (+18 kcal · +2g fat) &nbsp;·&nbsp; 🌙 Before bed: Magnesium glycinate
+        </div>
+        <MealCard meal={BREAKFAST} macros={BREAKFAST} />
+        <MealCard meal={PRE}       macros={PRE}       />
+        <MealCard meal={lr} macros={L} slot="lunch"  />
+        <MealCard meal={dr} macros={D} slot="dinner" />
+      </>}
+
+      {tab === "shopping" && <ShoppingList lr={lr} dr={dr} />}
+
+      {tab === "recipes" && <>
+        <div style={{ display:"flex", gap:5, marginBottom:10, flexWrap:"wrap" }}>
+          {FILTERS.map(f=>(
+            <button key={f} onClick={()=>setFilter(f)}
+              style={{ flex:1, minWidth:60, padding:"6px 4px", fontSize:10, fontWeight:700,
+                borderRadius:8, border:"none", cursor:"pointer", letterSpacing:"0.03em",
+                background: filter===f ? C.accent : C.card2,
+                color:       filter===f ? "#000"   : C.sub }}>
+              {f}
+            </button>
+          ))}
+        </div>
+        <div style={{ fontSize:10, color:C.sub, marginBottom:10 }}>
+          {filteredRecipes.length} recipe{filteredRecipes.length!==1?"s":""}
+        </div>
+        {filteredRecipes.map(r => (
+          <RecipeCard key={r.id} r={r}
+            activeLunch={lunch} activeDinner={dinner}
+            setLunch={handleSetLunch} setDinner={handleSetDinner} />
+        ))}
+      </>}
+
+      {tab === "macros" && <MacroRef />}
+
+    </div>
+  </div>
+</div>
+```
+
+);
 }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+```
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+```
+
   </script>
 </body>
 </html>
