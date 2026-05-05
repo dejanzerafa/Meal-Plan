@@ -15,14 +15,17 @@
   <link rel="manifest" id="pwa-manifest">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: #08090d; color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+    html, body { height: 100%; background: #08090d; color: #eef2ff;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
     #root { height: 100%; }
     button { font-family: inherit; }
     ::-webkit-scrollbar { width: 0; }
-    /* ── Macro bar loader animations ── */
     @keyframes barFill { 0%{width:0%} 100%{width:100%} }
     @keyframes fadeUp  { 0%{opacity:0;transform:translateY(8px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes loaderOut { 0%{opacity:1} 100%{opacity:0;pointer-events:none} }
+    @keyframes tabFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .tab-anim { animation: tabFadeIn 0.22s ease; }
     .bar-p { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 0.5s forwards; }
     .bar-c { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 1.15s forwards; }
     .bar-f { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 1.8s forwards; }
@@ -216,7 +219,8 @@
 "use strict";
 const { useState } = React;
 // ─── TOKENS ────────────────────────────────────────────────────────────────
-const C = {
+// ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
+const DARK_C = {
     bg: "#08090d", card: "#0f1117", card2: "#161b24", border: "#1e2433",
     accent: "#f97316", accentDim: "rgba(249,115,22,0.12)", accentBorder: "rgba(249,115,22,0.30)",
     prot: "#f97316", carb: "#3b82f6", fat: "#a855f7",
@@ -224,6 +228,16 @@ const C = {
     blueDim: "rgba(59,130,246,0.10)", blueBorder: "rgba(59,130,246,0.28)",
     text: "#eef2ff", sub: "#8b98b0", muted: "#4b5563", dim: "#1e2433",
 };
+const LIGHT_C = {
+    bg: "#f4f6f9", card: "#ffffff", card2: "#edf0f7", border: "#dde2ef",
+    accent: "#f97316", accentDim: "rgba(249,115,22,0.09)", accentBorder: "rgba(249,115,22,0.35)",
+    prot: "#ea6d0e", carb: "#2563eb", fat: "#9333ea",
+    green: "#16a34a", greenDim: "rgba(22,163,74,0.07)", greenBorder: "rgba(22,163,74,0.30)",
+    blueDim: "rgba(37,99,235,0.07)", blueBorder: "rgba(37,99,235,0.30)",
+    text: "#111827", sub: "#4b5563", muted: "#9ca3af", dim: "#dde2ef",
+};
+// Mutable global — reassigned at top of every App render based on active theme
+let C = Object.assign({}, DARK_C);
 const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Aromatics", "Sauces", "Liquids"];
@@ -680,6 +694,63 @@ const FIXED = {
     ],
 };
 // ─── HELPERS ───────────────────────────────────────────────────────────────
+// ─── UTILITY HELPERS ───────────────────────────────────────────────────────
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase());
+const IS_STANDALONE = !!(window.navigator.standalone);
+function getLastCooked(id) {
+    const ts = localStorage.getItem(`mp_last_${id}`);
+    if (!ts)
+        return null;
+    const days = Math.floor((Date.now() - new Date(ts).getTime()) / 86400000);
+    if (days === 0)
+        return "Today";
+    if (days < 7)
+        return `${days}d ago`;
+    if (days < 14)
+        return "1 wk ago";
+    return `${Math.floor(days / 7)} wks ago`;
+}
+function logHistory(lunchId, dinnerId) {
+    try {
+        const today = new Date().toDateString();
+        const hist = JSON.parse(localStorage.getItem("mp_history") || "[]");
+        const idx = hist.findIndex(h => h.date === today);
+        const entry = { date: today, lunch: lunchId, dinner: dinnerId };
+        if (idx >= 0)
+            hist[idx] = entry;
+        else
+            hist.unshift(entry);
+        localStorage.setItem("mp_history", JSON.stringify(hist.slice(0, 56)));
+    }
+    catch (e) { }
+}
+function getHistory() {
+    try {
+        return JSON.parse(localStorage.getItem("mp_history") || "[]");
+    }
+    catch (e) {
+        return [];
+    }
+}
+function generateShoppingText(lr, dr, portions) {
+    const scale = portions / 7;
+    const batch = mergeItems(lr, dr);
+    let t = `🛒 MEAL PLAN — ${portions} DAYS\n`;
+    t += `☀️ Lunch: ${lr.name}\n🌙 Dinner: ${dr.name}\n\n`;
+    Object.entries(batch).forEach(([cat, items]) => {
+        if (!items.length)
+            return;
+        t += `${CAT_ICON[cat] || "•"} ${cat.toUpperCase()}\n`;
+        items.forEach(item => {
+            const sq = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
+            t += `  • ${fmtQty(sq, item.unit)} ${item.label}\n`;
+        });
+        t += "\n";
+    });
+    t += `🌅 BREAKFAST (${portions} days)\n`;
+    Object.values(FIXED)[0].slice(0, 4).forEach(i => { t += `  • ${i}\n`; });
+    return t;
+}
 function fmtQty(qty, unit) {
     if (unit === "g")
         return qty >= 1000 ? `${+(qty / 1000).toFixed(1)} kg` : `${Math.round(qty)} g`;
@@ -877,18 +948,25 @@ function TotalBar({ total }) {
         })));
 }
 // ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
-function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
+function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner, portions }) {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState("ingredients");
+    const [stepsDone, setStepsDone] = useState({});
+    const [note, setNote] = useState(() => localStorage.getItem(`mp_note_${r.id}`) || "");
     const isL = r.id === activeLunch;
     const isD = r.id === activeDinner;
     const active = isL || isD;
+    const lastCooked = getLastCooked(r.id);
+    const scale = (portions || 7) / 7;
+    const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
+    const toggleStep = i => setStepsDone(s => (Object.assign(Object.assign({}, s), { [i]: !s[i] })));
+    const doneCount = Object.values(stepsDone).filter(Boolean).length;
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${active ? C.accentBorder : C.border}`,
             borderRadius: 14, overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 } },
                 React.createElement("div", { style: { flex: 1 } },
-                    React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 } },
+                    React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
                         React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, r.badge),
                         React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`,
@@ -896,7 +974,11 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
                         isL && React.createElement("span", { style: { fontSize: 10, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`,
                                 borderRadius: 4, padding: "2px 7px" } }, "\u2600\uFE0F Lunch"),
                         isD && React.createElement("span", { style: { fontSize: 10, color: "#a78bfa", background: "rgba(167,139,250,0.10)", border: "1px solid rgba(167,139,250,0.25)",
-                                borderRadius: 4, padding: "2px 7px" } }, "\uD83C\uDF19 Dinner")),
+                                borderRadius: 4, padding: "2px 7px" } }, "\uD83C\uDF19 Dinner"),
+                        lastCooked && React.createElement("span", { style: { fontSize: 10, color: C.green, background: C.greenDim, border: `1px solid ${C.greenBorder}`,
+                                borderRadius: 4, padding: "2px 7px" } },
+                            "\uD83D\uDD50 ",
+                            lastCooked)),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
                     React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, r.subtitle))),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 10 } },
@@ -910,8 +992,7 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
                 React.createElement("span", { style: { fontSize: 11, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                         borderRadius: 6, padding: "3px 7px" } },
                     r.perPortion.kcal,
-                    " kcal"),
-                React.createElement("span", { style: { fontSize: 11, color: C.sub, marginLeft: "auto", alignSelf: "center" } }, "7 \u00D7 meal")),
+                    " kcal")),
             React.createElement("div", { style: { display: "flex", gap: 8 } },
                 React.createElement("button", { onClick: () => setLunch(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none",
                         cursor: "pointer", background: isL ? C.accent : C.card2,
@@ -926,12 +1007,15 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
                     padding: "6px 10px", marginBottom: 10, lineHeight: 1.5 } },
                 "\uD83D\uDCA1 ",
                 r.note),
-            React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["ingredients", "🧺 Ingredients"], ["method", "👨‍🍳 Method"]].map(([v, lbl]) => (React.createElement("button", { key: v, onClick: () => setView(v), style: { flex: 1, padding: "6px 0", fontSize: 11, fontWeight: 700, borderRadius: 7, border: "none",
-                    cursor: "pointer", letterSpacing: "0.04em",
+            React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["ingredients", "🧺 Ingredients"], ["method", "👨‍🍳 Method"], ["notes", "📝 Notes"]].map(([v, lbl]) => (React.createElement("button", { key: v, onClick: () => setView(v), style: { flex: 1, padding: "6px 0", fontSize: 10, fontWeight: 700, borderRadius: 7, border: "none",
+                    cursor: "pointer", letterSpacing: "0.03em",
                     background: view === v ? C.accent : C.card2,
                     color: view === v ? "#000" : C.sub } }, lbl)))),
             view === "ingredients" && (React.createElement("div", null,
-                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8 } }, "BATCH \u2014 7 PORTIONS"),
+                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8 } },
+                    "BATCH \u2014 ",
+                    portions || 7,
+                    " PORTIONS"),
                 CAT_ORDER.map(cat => {
                     const catItems = r.batchItems.filter(i => i.cat === cat);
                     if (!catItems.length)
@@ -941,67 +1025,104 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner }) {
                             CAT_ICON[cat],
                             " ",
                             cat.toUpperCase()),
-                        catItems.map(item => (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
-                                padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
-                            React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700 } }, "\u00B7"),
-                            React.createElement("span", { style: { fontSize: 12, color: C.text } }, fmtItem(item)))))));
+                        catItems.map(item => {
+                            const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
+                            return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
+                                    padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
+                                React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700 } }, "\u00B7"),
+                                React.createElement("span", { style: { fontSize: 12, color: C.text } },
+                                    fmtQty(scaledQty, item.unit),
+                                    " ",
+                                    item.label)));
+                        })));
                 }))),
             view === "method" && (React.createElement("div", null,
-                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8 } }, "COOKING STEPS \u2014 7 PORTIONS"),
-                r.steps.map((s, i) => (React.createElement("div", { key: i, style: { display: "flex", gap: 8, marginBottom: 8 } },
-                    React.createElement("span", { style: { color: C.accent, fontWeight: 700, fontSize: 12, minWidth: 18,
-                            background: C.accentDim, borderRadius: 4, padding: "1px 5px", flexShrink: 0,
-                            textAlign: "center", alignSelf: "flex-start" } }, i + 1),
-                    React.createElement("span", { style: { fontSize: 12, color: C.text, lineHeight: 1.6 } }, s))))))))));
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } },
+                    React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em" } },
+                        "STEPS \u2014 ",
+                        doneCount,
+                        "/",
+                        r.steps.length,
+                        " done"),
+                    doneCount > 0 && (React.createElement("button", { onClick: () => setStepsDone({}), style: { fontSize: 10, color: C.muted, background: "none", border: `1px solid ${C.dim}`,
+                            borderRadius: 6, padding: "2px 8px", cursor: "pointer" } }, "Reset"))),
+                r.steps.map((s, i) => (React.createElement("div", { key: i, onClick: () => toggleStep(i), style: { display: "flex", gap: 10, marginBottom: 10, cursor: "pointer",
+                        opacity: stepsDone[i] ? 0.45 : 1, transition: "opacity 0.2s" } },
+                    React.createElement("div", { style: { width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 1,
+                            border: `2px solid ${stepsDone[i] ? C.green : C.accent}`,
+                            background: stepsDone[i] ? C.green : "none",
+                            display: "flex", alignItems: "center", justifyContent: "center" } },
+                        stepsDone[i] && React.createElement("span", { style: { fontSize: 12, color: "#000", fontWeight: 800 } }, "\u2713"),
+                        !stepsDone[i] && React.createElement("span", { style: { fontSize: 10, color: C.accent, fontWeight: 700 } }, i + 1)),
+                    React.createElement("span", { style: { fontSize: 12, color: C.text, lineHeight: 1.6,
+                            textDecoration: stepsDone[i] ? "line-through" : "none" } }, s)))))),
+            view === "notes" && (React.createElement("div", null,
+                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8 } }, "MY NOTES & TWEAKS"),
+                React.createElement("textarea", { value: note, onChange: e => saveNote(e.target.value), placeholder: "Add your tweaks, adjustments, tips... e.g. add extra garlic, reduce sour cream", style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
+                        color: C.text, fontSize: 12, padding: "10px 12px", resize: "none", minHeight: 100,
+                        fontFamily: "inherit", lineHeight: 1.6, outline: "none" } }),
+                note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
-function ShoppingList({ lr, dr }) {
+function ShoppingList({ lr, dr, portions, setPortions }) {
     const [checked, setChecked] = useState({});
     const toggle = k => setChecked(c => (Object.assign(Object.assign({}, c), { [k]: !c[k] })));
+    const p = portions || 7;
+    const scale = p / 7;
     const batch = mergeItems(lr, dr);
     const sameRecipe = lr.id === dr.id;
+    const Checkbox = ({ k, label }) => (React.createElement("div", { onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
+            background: checked[k] ? C.card2 : C.card, borderRadius: 8, marginBottom: 4,
+            cursor: "pointer", opacity: checked[k] ? 0.5 : 1,
+            border: `1px solid ${checked[k] ? C.muted : C.dim}` } },
+        React.createElement("div", { style: { width: 16, height: 16, borderRadius: 4, flexShrink: 0,
+                border: `2px solid ${checked[k] ? C.green : C.muted}`,
+                background: checked[k] ? C.green : "none",
+                display: "flex", alignItems: "center", justifyContent: "center" } }, checked[k] && React.createElement("span", { style: { fontSize: 10, color: "#000" } }, "\u2713")),
+        React.createElement("span", { style: { fontSize: 12, color: checked[k] ? C.muted : C.text, textDecoration: checked[k] ? "line-through" : "none" } }, label)));
     return (React.createElement("div", null,
+        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, alignItems: "center" } },
+            React.createElement("span", { style: { fontSize: 11, color: C.sub, marginRight: 2, flexShrink: 0 } }, "Batch:"),
+            [3, 5, 7].map(n => (React.createElement("button", { key: n, onClick: () => setPortions(n), style: { flex: 1, padding: "7px 0", fontSize: 11, fontWeight: 700, borderRadius: 8,
+                    border: `1px solid ${p === n ? C.accent : C.dim}`,
+                    background: p === n ? C.accentDim : C.card2,
+                    color: p === n ? C.accent : C.sub, cursor: "pointer" } },
+                n,
+                " days")))),
+        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                gap: 8, marginBottom: 14 } },
+            React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
+            React.createElement("span", { style: { fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: "0.04em" } },
+                "Share via WhatsApp (",
+                p,
+                " days)")),
         React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`,
                 borderRadius: 12, padding: "10px 14px", marginBottom: 12 } },
-            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.07em", marginBottom: 2 } }, "BATCH INGREDIENTS \u2014 7 DAYS"),
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.07em", marginBottom: 2 } },
+                "BATCH INGREDIENTS \u2014 ",
+                p,
+                " DAYS"),
             React.createElement("div", { style: { fontSize: 12, color: C.text } },
                 "\u2600\uFE0F ",
                 lr.name,
                 " ",
                 sameRecipe ? "× 2 slots (×2 qty)" : `+ 🌙 ${dr.name}`),
-            sameRecipe && React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Same recipe for both meals \u2014 all quantities doubled.")),
+            sameRecipe && React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Same recipe both meals \u2014 quantities doubled.")),
         Object.entries(batch).map(([cat, items]) => (React.createElement("div", { key: cat, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
                 CAT_ICON[cat],
                 " ",
                 cat.toUpperCase()),
             items.map(item => {
-                const k = `b_${item.key}`;
-                return (React.createElement("div", { key: item.key, onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
-                        background: checked[k] ? C.card2 : C.card, borderRadius: 8, marginBottom: 4,
-                        cursor: "pointer", opacity: checked[k] ? 0.5 : 1,
-                        border: `1px solid ${checked[k] ? C.muted : C.dim}` } },
-                    React.createElement("div", { style: { width: 16, height: 16, borderRadius: 4, flexShrink: 0,
-                            border: `2px solid ${checked[k] ? C.green : C.muted}`,
-                            background: checked[k] ? C.green : "none",
-                            display: "flex", alignItems: "center", justifyContent: "center" } }, checked[k] && React.createElement("span", { style: { fontSize: 10, color: "#000" } }, "\u2713")),
-                    React.createElement("span", { style: { fontSize: 12, color: checked[k] ? C.muted : C.text, textDecoration: checked[k] ? "line-through" : "none" } }, fmtItem(item))));
+                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
+                const scaledItem = Object.assign(Object.assign({}, item), { qty: scaledQty });
+                return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
             })))),
         Object.entries(FIXED).map(([section, items]) => (React.createElement("div", { key: section, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em",
                     marginBottom: 6, marginTop: 4 } }, section.toUpperCase()),
-            items.map((item, i) => {
-                const k = `f_${section}_${i}`;
-                return (React.createElement("div", { key: k, onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
-                        background: checked[k] ? C.card2 : C.card, borderRadius: 8, marginBottom: 4,
-                        cursor: "pointer", opacity: checked[k] ? 0.5 : 1,
-                        border: `1px solid ${checked[k] ? C.muted : C.dim}` } },
-                    React.createElement("div", { style: { width: 16, height: 16, borderRadius: 4, flexShrink: 0,
-                            border: `2px solid ${checked[k] ? C.green : C.muted}`,
-                            background: checked[k] ? C.green : "none",
-                            display: "flex", alignItems: "center", justifyContent: "center" } }, checked[k] && React.createElement("span", { style: { fontSize: 10, color: "#000" } }, "\u2713")),
-                    React.createElement("span", { style: { fontSize: 12, color: checked[k] ? C.muted : C.text, textDecoration: checked[k] ? "line-through" : "none" } }, item)));
-            }))))));
+            items.map((item, i) => React.createElement(Checkbox, { key: i, k: `f_${section}_${i}`, label: item })))))));
 }
 // ─── MACRO REF ─────────────────────────────────────────────────────────────
 function MacroRef() {
@@ -1044,6 +1165,7 @@ const TAB_META = [
     { id: "shopping", label: "Shop", icon: "🛒" },
     { id: "recipes", label: "Recipes", icon: "📋" },
     { id: "macros", label: "Macros", icon: "📊" },
+    { id: "history", label: "History", icon: "📅" },
 ];
 function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
@@ -1051,9 +1173,24 @@ function App() {
     const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "d1");
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
+    // ── Theme ─────────────────────────────────────────────────────────────────
+    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "dark");
+    const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
+    const resolvedTheme = theme === "system"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : theme;
+    // Mutate global C for this render cycle (all children see updated values)
+    Object.assign(C, resolvedTheme === "light" ? LIGHT_C : DARK_C);
+    document.body.style.background = C.bg;
+    // ── Portions scaler ────────────────────────────────────────────────────────
+    const [portions, setPortionsState] = useState(() => parseInt(localStorage.getItem("mp_portions") || "7"));
+    const setPortions = n => { setPortionsState(n); localStorage.setItem("mp_portions", String(n)); };
+    // ── PWA install prompt (iOS only) ───────────────────────────────────────────
+    const [showPWA, setShowPWA] = useState(() => IS_IOS && !IS_STANDALONE && !localStorage.getItem("mp_pwa_ok"));
+    const dismissPWA = () => { localStorage.setItem("mp_pwa_ok", "1"); setShowPWA(false); };
     // ── Sunday reminder banner ─────────────────────────────────────────────────
     const [sundayBanner, setSundayBanner] = useState(() => {
-        const day = new Date().getDay(); // 0 = Sunday
+        const day = new Date().getDay();
         if (day !== 0)
             return false;
         const last = localStorage.getItem("mp_sunday_dismissed");
@@ -1061,12 +1198,19 @@ function App() {
             return true;
         return new Date(last).toDateString() !== new Date().toDateString();
     });
-    const dismissSunday = () => {
-        localStorage.setItem("mp_sunday_dismissed", new Date().toISOString());
-        setSundayBanner(false);
+    const dismissSunday = () => { localStorage.setItem("mp_sunday_dismissed", new Date().toISOString()); setSundayBanner(false); };
+    const setLunch = id => {
+        setLunchState(id);
+        localStorage.setItem("mp_lunch", id);
+        localStorage.setItem(`mp_last_${id}`, new Date().toISOString());
+        logHistory(id, dinner);
     };
-    const setLunch = id => { setLunchState(id); localStorage.setItem("mp_lunch", id); };
-    const setDinner = id => { setDinnerState(id); localStorage.setItem("mp_dinner", id); };
+    const setDinner = id => {
+        setDinnerState(id);
+        localStorage.setItem("mp_dinner", id);
+        localStorage.setItem(`mp_last_${id}`, new Date().toISOString());
+        logHistory(lunch, id);
+    };
     const lr = RECIPES.find(r => r.id === lunch) || RECIPES[0];
     const dr = RECIPES.find(r => r.id === dinner) || RECIPES[3];
     const { L, D, total } = computeMeals(lr, dr);
@@ -1098,7 +1242,18 @@ function App() {
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: active ? C.accent : C.muted } }, t.label.toUpperCase())));
             }),
-            React.createElement("div", { style: { flex: 1 } })),
+            React.createElement("div", { style: { flex: 1 } }),
+            (() => {
+                const active = tab === "settings";
+                return (React.createElement("button", { onClick: () => setTab("settings"), style: { width: 52, paddingTop: 10, paddingBottom: 10,
+                        background: active ? C.accentDim : "none",
+                        border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
+                        borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
+                        alignItems: "center", gap: 4, transition: "all 0.15s" } },
+                    React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\u2699\uFE0F"),
+                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
+                            color: active ? C.accent : C.muted } }, "SETTINGS")));
+            })()),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
@@ -1122,15 +1277,16 @@ function App() {
                         React.createElement("div", { style: { fontSize: 11, color: "#8b98b0", lineHeight: 1.5 } }, "Set your lunch & dinner recipes, then head to Shopping for your full grocery list.")),
                     React.createElement("button", { onClick: dismissSunday, style: { background: "none", border: "none", color: "#4b5563",
                             fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0, lineHeight: 1 } }, "\u2715"))),
-                tab === "meals" && React.createElement(React.Fragment, null,
+                tab === "meals" && React.createElement("div", { className: "tab-anim", key: "meals" },
                     React.createElement(TotalBar, { total: total }),
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, textAlign: "center", margin: "8px 0 12px", lineHeight: 1.6 } }, "\uD83C\uDF19 Dinner + fish oil (+18 kcal \u00B7 +2g fat) \u00A0\u00B7\u00A0 Before bed: Magnesium glycinate"),
                     React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST }),
                     React.createElement(MealCard, { meal: PRE, macros: PRE }),
                     React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch" }),
                     React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner" })),
-                tab === "shopping" && React.createElement(ShoppingList, { lr: lr, dr: dr }),
-                tab === "recipes" && React.createElement(React.Fragment, null,
+                tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" },
+                    React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions })),
+                tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
                     React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 10, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 60, padding: "6px 4px", fontSize: 10, fontWeight: 700,
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
                             background: filter === f ? C.accent : C.card2,
@@ -1139,8 +1295,106 @@ function App() {
                         filteredRecipes.length,
                         " recipe",
                         filteredRecipes.length !== 1 ? "s" : ""),
-                    filteredRecipes.map(r => (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner })))),
-                tab === "macros" && React.createElement(MacroRef, null)))));
+                    filteredRecipes.map(r => (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, portions: portions })))),
+                tab === "macros" && React.createElement("div", { className: "tab-anim", key: "mac" },
+                    React.createElement(MacroRef, null)),
+                tab === "settings" && React.createElement("div", { className: "tab-anim", key: "settings" },
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                            padding: "14px 16px", marginBottom: 16 } },
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
+                                marginBottom: 14 } }, "\uD83C\uDFA8 APPEARANCE"),
+                        [
+                            { id: "dark", label: "🌙 Dark", desc: "Default — easy on the eyes" },
+                            { id: "light", label: "☀️ Light", desc: "Clean, bright interface" },
+                            { id: "system", label: "⚙️ System Default", desc: "Matches your device setting" },
+                        ].map(({ id, label, desc }) => (React.createElement("button", { key: id, onClick: () => setTheme(id), style: { width: "100%", display: "flex", alignItems: "center", gap: 12,
+                                padding: "11px 14px", marginBottom: 8, borderRadius: 10, cursor: "pointer",
+                                background: theme === id ? C.accentDim : C.card2,
+                                border: `1px solid ${theme === id ? C.accentBorder : C.dim}`,
+                                textAlign: "left" } },
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text } }, label),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, desc)),
+                            React.createElement("div", { style: { width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
+                                    border: `2px solid ${theme === id ? C.accent : C.muted}`,
+                                    background: theme === id ? C.accent : "none",
+                                    display: "flex", alignItems: "center", justifyContent: "center" } }, theme === id && React.createElement("span", { style: { fontSize: 10, color: "#fff", fontWeight: 900 } }, "\u2713")))))),
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                            padding: "14px 16px" } },
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
+                                marginBottom: 14 } }, "\u2696\uFE0F LEGAL & COPYRIGHT"),
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 12,
+                                padding: "8px 12px", background: C.accentDim, borderRadius: 8,
+                                border: `1px solid ${C.accentBorder}` } }, "\u00A9 2025 Dejan Zerafa. All Rights Reserved."),
+                        [
+                            {
+                                title: "Intellectual Property",
+                                body: "This application — including all source code, design, visual elements, functionality, recipe data, nutritional information, and all other content — constitutes the exclusive intellectual property of Dejan Zerafa. All rights are reserved in all jurisdictions worldwide."
+                            },
+                            {
+                                title: "Confidentiality",
+                                body: "This is a private, personal application. All personal health metrics, body composition data, nutritional targets, macro plans, and dietary information contained herein are strictly confidential and the exclusive property of the owner. This application is not intended for public distribution or access."
+                            },
+                            {
+                                title: "Prohibited Activities",
+                                body: "Unauthorised copying, reproduction, reverse engineering, decompilation, modification, distribution, sublicensing, sale, or any other exploitation of this application or any portion of its contents — in whole or in part — is strictly prohibited without the express prior written permission of Dejan Zerafa."
+                            },
+                            {
+                                title: "Data & Privacy",
+                                body: "This application operates entirely client-side. No personal data, health information, or usage data is transmitted to or stored on any external server. All data is stored locally on this device via browser localStorage and is not shared with, sold to, or accessible by any third party under any circumstances."
+                            },
+                            {
+                                title: "Disclaimer",
+                                body: "The nutritional information, macro targets, meal plans, and recipe content in this application are prepared for personal use only and do not constitute professional medical, dietary, or nutritional advice. The owner accepts no liability for any decisions made based on the information contained herein. Consult a qualified healthcare professional before making significant changes to your diet or exercise routine."
+                            },
+                        ].map(({ title, body }) => (React.createElement("div", { key: title, style: { marginBottom: 14 } },
+                            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.07em",
+                                    marginBottom: 4 } }, title.toUpperCase()),
+                            React.createElement("div", { style: { fontSize: 11, color: C.text, lineHeight: 1.65 } }, body)))),
+                        React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, marginTop: 16, paddingTop: 12,
+                                fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.6 } },
+                            "Built & owned by Dejan Zerafa \u00B7 Doha, Qatar \u00B7 2025",
+                            "\n",
+                            "dejan-mealplan.netlify.app"))),
+                tab === "history" && (() => {
+                    const hist = getHistory();
+                    return (React.createElement("div", { className: "tab-anim" },
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 14 } },
+                            "Recipe selections \u2014 last ",
+                            hist.length,
+                            " session",
+                            hist.length !== 1 ? "s" : ""),
+                        hist.length === 0 && (React.createElement("div", { style: { color: C.muted, fontSize: 12, textAlign: "center", marginTop: 60 } }, "No history yet. Set your recipes and they'll appear here.")),
+                        hist.map((h, i) => {
+                            const lrH = RECIPES.find(r => r.id === h.lunch);
+                            const drH = RECIPES.find(r => r.id === h.dinner);
+                            const d = new Date(h.date);
+                            const label = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+                            return (React.createElement("div", { key: i, style: { background: C.card, border: `1px solid ${C.dim}`,
+                                    borderRadius: 12, padding: "10px 14px", marginBottom: 8 } },
+                                React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, label),
+                                React.createElement("div", { style: { display: "flex", gap: 10 } },
+                                    React.createElement("div", { style: { flex: 1, background: C.accentDim, borderRadius: 8, padding: "6px 10px" } },
+                                        React.createElement("div", { style: { fontSize: 9, color: C.accent, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 2 } }, "\u2600\uFE0F LUNCH"),
+                                        React.createElement("div", { style: { fontSize: 12, color: C.text } }, lrH ? lrH.name : h.lunch)),
+                                    React.createElement("div", { style: { flex: 1, background: "rgba(124,58,237,0.10)", borderRadius: 8, padding: "6px 10px" } },
+                                        React.createElement("div", { style: { fontSize: 9, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.07em", marginBottom: 2 } }, "\uD83C\uDF19 DINNER"),
+                                        React.createElement("div", { style: { fontSize: 12, color: C.text } }, drH ? drH.name : h.dinner)))));
+                        })));
+                })())),
+        showPWA && (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+                width: "100%", maxWidth: 520, background: C.card2, borderTop: `1px solid ${C.accent}`,
+                padding: "12px 16px", zIndex: 200, display: "flex", alignItems: "center", gap: 10 } },
+            React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDCF2"),
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Add to Home Screen"),
+                React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 1 } },
+                    "Tap ",
+                    React.createElement("b", { style: { color: C.text } }, "Share \u2191"),
+                    " then ",
+                    React.createElement("b", { style: { color: C.text } }, "Add to Home Screen"))),
+            React.createElement("button", { onClick: dismissPWA, style: { background: "none", border: "none",
+                    color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
 // Fade out loader after all 3 bars finish (bars finish at ~2.65s, add buffer)
@@ -1152,13 +1406,16 @@ setTimeout(() => {
     setTimeout(() => { if (l.parentNode)
         l.parentNode.removeChild(l); }, 700);
 }, 2900);
-    // Fade out loader after all 3 bars fill (~2.65s total) + buffer
-    setTimeout(function() {
-      var l = document.getElementById('mp-loader');
-      if (!l) return;
-      l.style.animation = 'loaderOut 0.7s ease forwards';
-      setTimeout(function() { if (l.parentNode) l.parentNode.removeChild(l); }, 700);
-    }, 2900);
+
+```
+setTimeout(function() {
+  var l = document.getElementById('mp-loader');
+  if (!l) return;
+  l.style.animation = 'loaderOut 0.7s ease forwards';
+  setTimeout(function() { if (l.parentNode) l.parentNode.removeChild(l); }, 700);
+}, 2900);
+```
+
   </script>
 </body>
 </html>
