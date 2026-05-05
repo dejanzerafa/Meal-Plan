@@ -15,12 +15,20 @@
   <link rel="manifest" id="pwa-manifest">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: #08090d; color: #eef2ff;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+    html, body { height: 100%; background: #08090d; color: #eef2ff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
     #root { height: 100%; }
     button { font-family: inherit; }
     ::-webkit-scrollbar { width: 0; }
+    /* ── Macro bar loader animations ── */
+    @keyframes barFill { 0%{width:0%} 100%{width:100%} }
+    @keyframes fadeUp  { 0%{opacity:0;transform:translateY(8px)} 100%{opacity:1;transform:translateY(0)} }
+    @keyframes loaderOut { 0%{opacity:1} 100%{opacity:0;pointer-events:none} }
+    .bar-p { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 0.5s forwards; }
+    .bar-c { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 1.15s forwards; }
+    .bar-f { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 1.8s forwards; }
+    .loader-title { animation: fadeUp 0.6s ease 0.1s both; }
+    .loader-sub   { animation: fadeUp 0.6s ease 0.25s both; }
+    .loader-bars  { animation: fadeUp 0.6s ease 0.4s both; }
   </style>
   <script>
     function buildIcon(size) {
@@ -61,15 +69,149 @@
       const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
       document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
     });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(() => console.log('✅ Offline ready'))
+          .catch(e => console.log('SW:', e.message));
+      });
+    }
   </script>
 </head>
 <body>
-  <div id="root">
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#08090d;color:#8b98b0;font-family:-apple-system,sans-serif;gap:16px;">
-      <div style="font-size:36px">🥗</div>
-      <div style="font-size:13px;letter-spacing:0.1em">LOADING MEAL PLAN...</div>
-    </div>
+  <!-- Loading screen — motivational quotes + macro bars -->
+  <div id="mp-loader" style="position:fixed;inset:0;background:#08090d;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
+
+```
+<!-- ── Scattered quotes backdrop ── -->
+<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;">
+
+  <!-- TOP ZONE -->
+  <div style="position:absolute;top:3%;left:2%;max-width:55%;transform:rotate(-3deg);">
+    <div style="font-size:11px;font-weight:800;color:#fff;opacity:0.07;letter-spacing:0.04em;line-height:1.4;">"Discipline Equals Freedom."</div>
+    <div style="font-size:8px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
   </div>
+
+  <div style="position:absolute;top:4%;right:3%;max-width:42%;transform:rotate(4deg);text-align:right;">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.06;letter-spacing:0.04em;line-height:1.4;">"Be comfortable being uncomfortable."</div>
+    <div style="font-size:7px;color:#3b82f6;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— MAT FRASER</div>
+  </div>
+
+  <div style="position:absolute;top:12%;left:4%;max-width:40%;transform:rotate(2deg);">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Train like you've never won. Perform like you've never lost."</div>
+    <div style="font-size:7px;color:#a855f7;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— RICH FRONING</div>
+  </div>
+
+  <div style="position:absolute;top:13%;right:2%;max-width:38%;transform:rotate(-5deg);text-align:right;">
+    <div style="font-size:10px;font-weight:800;color:#f97316;opacity:0.07;letter-spacing:0.04em;line-height:1.4;">"Get after it."</div>
+    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
+  </div>
+
+  <div style="position:absolute;top:21%;left:1%;max-width:48%;transform:rotate(-2deg);">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"The only limit is the one you set yourself."</div>
+    <div style="font-size:7px;color:#22c55e;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— TIA-CLAIR TOOMEY</div>
+  </div>
+
+  <div style="position:absolute;top:22%;right:1%;max-width:40%;transform:rotate(3deg);text-align:right;">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Be the hero of your own story."</div>
+    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOE ROGAN</div>
+  </div>
+
+  <!-- LARGE WATERMARK — sits behind everything -->
+  <div style="position:absolute;top:30%;left:50%;transform:translateX(-50%) rotate(-8deg);white-space:nowrap;">
+    <div style="font-size:48px;font-weight:900;color:#fff;opacity:0.018;letter-spacing:0.02em;">DO THE WORK.</div>
+  </div>
+
+  <!-- SIDE LEFT — vertical -->
+  <div style="position:absolute;top:38%;left:-8px;transform:rotate(-90deg);transform-origin:left center;white-space:nowrap;">
+    <div style="font-size:8px;font-weight:700;color:#f97316;opacity:0.06;letter-spacing:0.14em;">"Work harder than you think you did yesterday." — MAT FRASER</div>
+  </div>
+
+  <!-- SIDE RIGHT — vertical -->
+  <div style="position:absolute;top:35%;right:-8px;transform:rotate(90deg);transform-origin:right center;white-space:nowrap;">
+    <div style="font-size:8px;font-weight:700;color:#3b82f6;opacity:0.06;letter-spacing:0.14em;">"Nothing worth having comes easy." — ANNIE THORISDOTTIR</div>
+  </div>
+
+  <!-- BOTTOM ZONE -->
+  <div style="position:absolute;bottom:28%;left:3%;max-width:46%;transform:rotate(2deg);">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Don't count on motivation. Count on discipline."</div>
+    <div style="font-size:7px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
+  </div>
+
+  <div style="position:absolute;bottom:27%;right:2%;max-width:44%;transform:rotate(-4deg);text-align:right;">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Trust the process."</div>
+    <div style="font-size:7px;color:#a855f7;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— NOAH OHLSEN</div>
+  </div>
+
+  <div style="position:absolute;bottom:19%;left:2%;max-width:50%;transform:rotate(-2deg);">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Hard work beats talent when talent doesn't work hard."</div>
+    <div style="font-size:7px;color:#22c55e;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— RICH FRONING</div>
+  </div>
+
+  <div style="position:absolute;bottom:18%;right:1%;max-width:42%;transform:rotate(3deg);text-align:right;">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"The universe rewards action."</div>
+    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOE ROGAN</div>
+  </div>
+
+  <div style="position:absolute;bottom:10%;left:3%;max-width:48%;transform:rotate(2deg);">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Control the controllables."</div>
+    <div style="font-size:7px;color:#3b82f6;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— BRENT FIKOWSKI</div>
+  </div>
+
+  <div style="position:absolute;bottom:9%;right:2%;max-width:44%;transform:rotate(-3deg);text-align:right;">
+    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Believe in yourself and all that you are."</div>
+    <div style="font-size:7px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— TIA-CLAIR TOOMEY</div>
+  </div>
+
+  <div style="position:absolute;bottom:3%;left:50%;transform:translateX(-50%);white-space:nowrap;">
+    <div style="font-size:8px;font-weight:700;color:#fff;opacity:0.04;letter-spacing:0.16em;">"MAKE TODAY BETTER THAN YESTERDAY." — MAT FRASER</div>
+  </div>
+
+  <!-- Second large watermark -->
+  <div style="position:absolute;bottom:22%;left:50%;transform:translateX(-50%) rotate(5deg);white-space:nowrap;">
+    <div style="font-size:36px;font-weight:900;color:#f97316;opacity:0.022;letter-spacing:0.02em;">EARN IT.</div>
+  </div>
+
+</div>
+
+<!-- ── Bar content (generic — no personal numbers) ── -->
+<div style="position:relative;z-index:1;width:100%;max-width:320px;">
+  <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;">DOHA · QATAR</div>
+  <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;">MEAL PLAN</div>
+  <div class="loader-sub" style="font-size:14px;font-weight:400;color:#8b98b0;margin-bottom:48px;">Dejan Zerafa</div>
+  <div class="loader-bars">
+    <div style="margin-bottom:20px;">
+      <div style="margin-bottom:7px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#f97316;">● PROTEIN</span>
+      </div>
+      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+        <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#f97316,#fb923c);border-radius:2px;"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <div style="margin-bottom:7px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#3b82f6;">● CARBS</span>
+      </div>
+      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+        <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:48px;">
+      <div style="margin-bottom:7px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#a855f7;">● FAT</span>
+      </div>
+      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+        <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;"></div>
+      </div>
+    </div>
+    <div style="font-size:9px;letter-spacing:0.12em;color:#374151;text-align:center;">PREPARING YOUR PLAN...</div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div id="root"></div>
   <script>
 "use strict";
 const { useState } = React;
@@ -909,6 +1051,20 @@ function App() {
     const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "d1");
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
+    // ── Sunday reminder banner ─────────────────────────────────────────────────
+    const [sundayBanner, setSundayBanner] = useState(() => {
+        const day = new Date().getDay(); // 0 = Sunday
+        if (day !== 0)
+            return false;
+        const last = localStorage.getItem("mp_sunday_dismissed");
+        if (!last)
+            return true;
+        return new Date(last).toDateString() !== new Date().toDateString();
+    });
+    const dismissSunday = () => {
+        localStorage.setItem("mp_sunday_dismissed", new Date().toISOString());
+        setSundayBanner(false);
+    };
     const setLunch = id => { setLunchState(id); localStorage.setItem("mp_lunch", id); };
     const setDinner = id => { setDinnerState(id); localStorage.setItem("mp_dinner", id); };
     const lr = RECIPES.find(r => r.id === lunch) || RECIPES[0];
@@ -957,6 +1113,15 @@ function App() {
                     React.createElement("span", { style: { color: C.text } }, dr.name))),
             React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px 12px 24px",
                     WebkitOverflowScrolling: "touch" } },
+                sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
+                        background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)",
+                        borderRadius: 12, padding: "10px 12px", marginBottom: 12 } },
+                    React.createElement("span", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDED2"),
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#22c55e", marginBottom: 2 } }, "Sunday \u2014 Prep Day"),
+                        React.createElement("div", { style: { fontSize: 11, color: "#8b98b0", lineHeight: 1.5 } }, "Set your lunch & dinner recipes, then head to Shopping for your full grocery list.")),
+                    React.createElement("button", { onClick: dismissSunday, style: { background: "none", border: "none", color: "#4b5563",
+                            fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0, lineHeight: 1 } }, "\u2715"))),
                 tab === "meals" && React.createElement(React.Fragment, null,
                     React.createElement(TotalBar, { total: total }),
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, textAlign: "center", margin: "8px 0 12px", lineHeight: 1.6 } }, "\uD83C\uDF19 Dinner + fish oil (+18 kcal \u00B7 +2g fat) \u00A0\u00B7\u00A0 Before bed: Magnesium glycinate"),
@@ -978,6 +1143,22 @@ function App() {
                 tab === "macros" && React.createElement(MacroRef, null)))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
+// Fade out loader after all 3 bars finish (bars finish at ~2.65s, add buffer)
+setTimeout(() => {
+    const l = document.getElementById('mp-loader');
+    if (!l)
+        return;
+    l.style.animation = 'loaderOut 0.7s ease forwards';
+    setTimeout(() => { if (l.parentNode)
+        l.parentNode.removeChild(l); }, 700);
+}, 2900);
+    // Fade out loader after all 3 bars fill (~2.65s total) + buffer
+    setTimeout(function() {
+      var l = document.getElementById('mp-loader');
+      if (!l) return;
+      l.style.animation = 'loaderOut 0.7s ease forwards';
+      setTimeout(function() { if (l.parentNode) l.parentNode.removeChild(l); }, 700);
+    }, 2900);
   </script>
 </body>
 </html>
