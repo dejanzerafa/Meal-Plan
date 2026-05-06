@@ -14,7 +14,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Meal Prep">
   <meta name="theme-color" content="#b84a1f">
-  <!-- Static manifest — works on Android Chrome for "Add to Home Screen" -->
+  <!-- Static manifest — works on Android Chrome for t("add_home") -->
   <link rel="manifest" href="/manifest.json">
   <!-- Apple touch icon — canvas-generated for iOS -->
   <link rel="apple-touch-icon" id="apple-touch-icon">
@@ -150,6 +150,195 @@
   <script>
 "use strict";
 const { useState } = React;
+
+// ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
+let _lang = (function(){ try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } })();
+const TRANSLATIONS = {
+  en: {
+    app_name:"Meal Prep", tagline:t("tagline"),
+    loader_sub:t("loader_sub"), daily_target:t("daily_target"),
+    tab_meals:"Meals", tab_shop:"Shop", tab_recipes:"Recipes",
+    tab_macros:"Macros", tab_history:"History", tab_me:"Me",
+    method:t("method"), settings:"SETTINGS",
+    choose_access:t("choose_access"),
+    modal_sub:"Real food. Verified macros. Cook once, eat all week.",
+    best_value:t("best_value"), save_17:t("save_17"),
+    tier_lifetime_label:t("tier_lifetime_label"), tier_lifetime_title:t("tier_lifetime_title"),
+    tier_lifetime_desc:t("tier_lifetime_desc"),
+    once:"once",
+    tier_quarterly_label:t("tier_quarterly_label"), tier_quarterly_title:t("tier_quarterly_title"),
+    tier_quarterly_desc:t("tier_quarterly_desc"), per_3months:t("per_3months"),
+    tier_monthly_label:t("tier_monthly_label"), tier_monthly_title:t("tier_monthly_title"),
+    tier_monthly_desc:t("tier_monthly_desc"), per_month:t("per_month"),
+    or_just:t("or_just"), single_recipe:t("single_recipe"),
+    pick_any:"Tap lock on recipe", calculator_label:t("calculator_label"), macros_only:t("macros_only"),
+    cta_lifetime:t("cta_lifetime"), maybe_later:t("maybe_later"),
+    secure_stripe:"🔒 Secure checkout via Stripe · Apple Pay & Google Pay accepted",
+    your_account:t("your_account"), create_account:t("create_account"),
+    account_desc:t("account_desc"),
+    first_name:t("first_name"), email_addr:t("email_addr"),
+    save_updated:t("save_updated"), no_spam:t("no_spam"),
+    edit:t("edit"), saved_msg:t("saved_msg"),
+    saving:t("saving"),
+    appearance:t("appearance"), dark_mode:t("dark_mode"), light_mode:t("light_mode"),
+    system_mode:t("system_mode"), dark_desc:t("dark_desc"),
+    light_desc:t("light_desc"), system_desc:t("system_desc"),
+    legal:t("legal"), language_label:"🌐 LANGUAGE",
+    macro_calc:t("macro_calc"),
+    what_you_get:t("what_you_get"), unlock_calc:t("unlock_calc"),
+    unlock_all:t("unlock_all"),
+    full_app_price:t("full_app_price"),
+    sunday_prep:t("sunday_prep"), no_lunch:t("no_lunch"), no_dinner:t("no_dinner"),
+    shop_empty:t("shop_empty"),
+    add_home:t("add_home"),
+    add_home_desc:"Tap Share ↑ then Add to Home Screen",
+    no_history:"No history yet. Set your recipes and they'll appear here.",
+    sessions:"session", sessions_plural:"sessions",
+    recipe_calc:"Your Macro Calculator",
+    recipe_calc_desc:"Answer a few questions about your body, job and training to get your personalised daily calorie and macro targets.",
+    unlock_recipes:t("unlock_recipes"),
+    coming_soon:t("coming_soon"),
+  },
+  fr: {
+    app_name:"Meal Prep", tagline:"VRAIE NOURRITURE · SIMPLE",
+    loader_sub:"Riche en protéines · Préparation en lot · Aliments vrais", daily_target:"Objectif quotidien",
+    tab_meals:"Repas", tab_shop:"Courses", tab_recipes:"Recettes",
+    tab_macros:"Macros", tab_history:"Historique", tab_me:"Moi",
+    method:"MÉTHODE", settings:"RÉGLAGES",
+    choose_access:"Choisissez votre accès",
+    modal_sub:"Vraie nourriture. Macros vérifiées. Cuisinez une fois, mangez toute la semaine.",
+    best_value:"⭐ MEILLEUR RAPPORT", save_17:"ÉCONOMISEZ 17%",
+    tier_lifetime_label:"À VIE · PAIEMENT UNIQUE", tier_lifetime_title:"Tout, pour toujours",
+    tier_lifetime_desc:"Toutes les recettes actuelles + futures. La calculatrice macro incluse.",
+    once:"une fois",
+    tier_quarterly_label:"TRIMESTRIEL · 3 MOIS", tier_quarterly_title:"Toutes les recettes + nouveautés",
+    tier_quarterly_desc:"8,33$/mois effectif · Renouvellement auto tous les 3 mois", per_3months:"/3 mois",
+    tier_monthly_label:"MENSUEL · ANNULEZ QUAND VOUS VOULEZ", tier_monthly_title:"Toutes les recettes + 2 nouvelles/mois",
+    tier_monthly_desc:"Le plus flexible · Essayez sans risque", per_month:"/mois",
+    or_just:"OU JUSTE CE QU'IL VOUS FAUT", single_recipe:"RECETTE UNIQUE",
+    pick_any:"Appuyez sur le cadenas", calculator_label:"CALCULATRICE", macros_only:"Macros seulement",
+    cta_lifetime:"Accès à vie — 59,99$ →", maybe_later:"Peut-être plus tard",
+    secure_stripe:"🔒 Paiement sécurisé via Stripe · Apple Pay & Google Pay acceptés",
+    your_account:"👤 VOTRE COMPTE", create_account:"👤 CRÉER VOTRE COMPTE",
+    account_desc:"Réservez votre place et soyez notifié des nouvelles recettes — sans achat nécessaire.",
+    first_name:"Prénom (facultatif)", email_addr:"Adresse e-mail",
+    save_updated:"Enregistrer et rester informé", no_spam:"Pas de spam. Nouvelles recettes uniquement.",
+    edit:"Modifier", saved_msg:"✓ Enregistré — vous recevrez les mises à jour ici",
+    saving:"Enregistrement…",
+    appearance:"🎨 APPARENCE", dark_mode:"🌙 Sombre", light_mode:"☀️ Clair",
+    system_mode:"⚙️ Défaut système", dark_desc:"Reposant pour les yeux",
+    light_desc:"Interface claire et lumineuse", system_desc:"Suit le réglage de votre appareil",
+    legal:"⚖️ LÉGAL & COPYRIGHT", language_label:"🌐 LANGUE",
+    macro_calc:"Calculatrice Macro Personnalisée",
+    what_you_get:"CE QUE VOUS OBTENEZ", unlock_calc:"🔓 Débloquer la calculatrice — 5,99$",
+    unlock_all:"Ou débloquer tout (recettes + calculatrice) →",
+    full_app_price:"App complète à partir de 9,99$/mois · 59,99$ à vie",
+    sunday_prep:"Dimanche — Jour de préparation", no_lunch:"Pas de déjeuner", no_dinner:"Pas de dîner",
+    shop_empty:"Choisissez une recette déjeuner et dîner dans l'onglet Repas pour générer votre liste.",
+    add_home:"Ajouter à l'écran d'accueil",
+    add_home_desc:"Appuyez sur Partager ↑ puis Ajouter à l'écran d'accueil",
+    no_history:"Pas encore d'historique. Sélectionnez vos recettes et elles apparaîtront ici.",
+    sessions:"session", sessions_plural:"sessions",
+    recipe_calc:"Votre calculatrice macro",
+    recipe_calc_desc:"Répondez à quelques questions sur votre corps et votre mode de vie pour obtenir vos objectifs caloriques personnalisés.",
+    unlock_recipes:"🔓 Débloquer toutes les recettes →",
+    coming_soon:"📅 BIENTÔT DISPONIBLE",
+  },
+  es: {
+    app_name:"Meal Prep", tagline:"COMIDA REAL · SIMPLE",
+    loader_sub:"Alto en proteínas · Cocinado en lote · Comida real", daily_target:"Objetivo diario",
+    tab_meals:"Comidas", tab_shop:"Compras", tab_recipes:"Recetas",
+    tab_macros:"Macros", tab_history:"Historial", tab_me:"Yo",
+    method:"MÉTODO", settings:"AJUSTES",
+    choose_access:"Elige tu acceso",
+    modal_sub:"Comida real. Macros verificadas. Cocina una vez, come toda la semana.",
+    best_value:"⭐ MEJOR VALOR", save_17:"AHORRA 17%",
+    tier_lifetime_label:"DE POR VIDA · PAGO ÚNICO", tier_lifetime_title:"Todo, para siempre",
+    tier_lifetime_desc:"Todas las recetas actuales + futuras. Calculadora de macros incluida.",
+    once:"una vez",
+    tier_quarterly_label:"TRIMESTRAL · 3 MESES", tier_quarterly_title:"Todas las recetas + novedades",
+    tier_quarterly_desc:"8,33$/mes efectivo · Renovación automática cada 3 meses", per_3months:"/3 meses",
+    tier_monthly_label:"MENSUAL · CANCELA CUANDO QUIERAS", tier_monthly_title:"Todas las recetas + 2 nuevas al mes",
+    tier_monthly_desc:"Más flexible · Prueba sin riesgo", per_month:"/mes",
+    or_just:"O SOLO LO QUE NECESITAS", single_recipe:"RECETA INDIVIDUAL",
+    pick_any:"Toca el candado en la receta", calculator_label:"CALCULADORA", macros_only:"Solo macros",
+    cta_lifetime:"Acceso de por vida — 59,99$ →", maybe_later:"Quizás más tarde",
+    secure_stripe:"🔒 Pago seguro con Stripe · Apple Pay y Google Pay aceptados",
+    your_account:"👤 TU CUENTA", create_account:"👤 CREAR TU CUENTA",
+    account_desc:"Guarda tu lugar y recibe notificaciones de nuevas recetas — sin necesidad de compra.",
+    first_name:"Nombre (opcional)", email_addr:"Correo electrónico",
+    save_updated:"Guardar y mantenerse actualizado", no_spam:"Sin spam. Solo nuevas recetas.",
+    edit:"Editar", saved_msg:"✓ Guardado — recibirás actualizaciones aquí",
+    saving:"Guardando…",
+    appearance:"🎨 APARIENCIA", dark_mode:"🌙 Oscuro", light_mode:"☀️ Claro",
+    system_mode:"⚙️ Predeterminado del sistema", dark_desc:"Descansa la vista",
+    light_desc:"Interfaz limpia y brillante", system_desc:"Sigue la configuración de tu dispositivo",
+    legal:"⚖️ LEGAL Y COPYRIGHT", language_label:"🌐 IDIOMA",
+    macro_calc:"Calculadora de Macros Personalizada",
+    what_you_get:"QUÉ OBTIENES", unlock_calc:"🔓 Desbloquear calculadora — 5,99$",
+    unlock_all:"O desbloquea todo (recetas + calculadora) →",
+    full_app_price:"App completa desde 9,99$/mes · 59,99$ de por vida",
+    sunday_prep:"Domingo — Día de preparación", no_lunch:"Sin almuerzo", no_dinner:"Sin cena",
+    shop_empty:"Elige una receta de almuerzo y cena en la pestaña Comidas para generar tu lista.",
+    add_home:"Añadir a pantalla de inicio",
+    add_home_desc:"Toca Compartir ↑ y luego Añadir a pantalla de inicio",
+    no_history:"Aún sin historial. Selecciona tus recetas y aparecerán aquí.",
+    sessions:"sesión", sessions_plural:"sesiones",
+    recipe_calc:"Tu calculadora de macros",
+    recipe_calc_desc:"Responde algunas preguntas sobre tu cuerpo y estilo de vida para obtener tus objetivos calóricos personalizados.",
+    unlock_recipes:"🔓 Desbloquear todas las recetas →",
+    coming_soon:"📅 PRÓXIMAMENTE",
+  },
+  it: {
+    app_name:"Meal Prep", tagline:"CIBO VERO · SEMPLICE",
+    loader_sub:"Alto in proteine · Cottura in batch · Cibo vero", daily_target:"Obiettivo giornaliero",
+    tab_meals:"Pasti", tab_shop:"Spesa", tab_recipes:"Ricette",
+    tab_macros:"Macro", tab_history:"Cronologia", tab_me:"Io",
+    method:"METODO", settings:"IMPOSTAZIONI",
+    choose_access:"Scegli il tuo accesso",
+    modal_sub:"Cibo vero. Macro verificate. Cucina una volta, mangia tutta la settimana.",
+    best_value:"⭐ MIGLIOR VALORE", save_17:"RISPARMIA 17%",
+    tier_lifetime_label:"A VITA · PAGAMENTO UNICO", tier_lifetime_title:"Tutto, per sempre",
+    tier_lifetime_desc:"Tutte le ricette attuali + future. Calcolatrice macro inclusa.",
+    once:"una volta",
+    tier_quarterly_label:"TRIMESTRALE · 3 MESI", tier_quarterly_title:"Tutte le ricette + novità",
+    tier_quarterly_desc:"8,33$/mese effettivo · Rinnovo automatico ogni 3 mesi", per_3months:"/3 mesi",
+    tier_monthly_label:"MENSILE · CANCELLA QUANDO VUOI", tier_monthly_title:"Tutte le ricette + 2 nuove al mese",
+    tier_monthly_desc:"Più flessibile · Prova senza rischi", per_month:"/mese",
+    or_just:"O SOLO CIÒ CHE TI SERVE", single_recipe:"RICETTA SINGOLA",
+    pick_any:"Tocca il lucchetto sulla ricetta", calculator_label:"CALCOLATRICE", macros_only:"Solo macro",
+    cta_lifetime:"Accesso a vita — 59,99$ →", maybe_later:"Forse più tardi",
+    secure_stripe:"🔒 Pagamento sicuro con Stripe · Apple Pay e Google Pay accettati",
+    your_account:"👤 IL TUO ACCOUNT", create_account:"👤 CREA IL TUO ACCOUNT",
+    account_desc:"Salva il tuo posto e ricevi notifiche sulle nuove ricette — senza acquisto.",
+    first_name:"Nome (opzionale)", email_addr:"Indirizzo email",
+    save_updated:"Salva e resta aggiornato", no_spam:"Niente spam. Solo nuove ricette.",
+    edit:"Modifica", saved_msg:"✓ Salvato — riceverai aggiornamenti qui",
+    saving:"Salvataggio…",
+    appearance:"🎨 ASPETTO", dark_mode:"🌙 Scuro", light_mode:"☀️ Chiaro",
+    system_mode:"⚙️ Predefinito sistema", dark_desc:"Riposante per gli occhi",
+    light_desc:"Interfaccia pulita e luminosa", system_desc:"Segue le impostazioni del dispositivo",
+    legal:"⚖️ LEGALE & COPYRIGHT", language_label:"🌐 LINGUA",
+    macro_calc:"Calcolatrice Macro Personalizzata",
+    what_you_get:"COSA OTTIENI", unlock_calc:"🔓 Sblocca calcolatrice — 5,99$",
+    unlock_all:"O sblocca tutto (ricette + calcolatrice) →",
+    full_app_price:"App completa da 9,99$/mese · 59,99$ a vita",
+    sunday_prep:"Domenica — Giorno di preparazione", no_lunch:"Nessun pranzo", no_dinner:"Nessuna cena",
+    shop_empty:"Scegli una ricetta per pranzo e cena nella scheda Pasti per generare la lista.",
+    add_home:"Aggiungi alla schermata Home",
+    add_home_desc:"Tocca Condividi ↑ poi Aggiungi alla schermata Home",
+    no_history:"Ancora nessuna cronologia. Seleziona le tue ricette e appariranno qui.",
+    sessions:"sessione", sessions_plural:"sessioni",
+    recipe_calc:"La tua calcolatrice macro",
+    recipe_calc_desc:"Rispondi ad alcune domande su di te per ottenere i tuoi obiettivi calorici giornalieri personalizzati.",
+    unlock_recipes:"🔓 Sblocca tutte le ricette →",
+    coming_soon:"📅 PROSSIMAMENTE",
+  },
+};
+function t(key) {
+  var d = TRANSLATIONS[_lang] || TRANSLATIONS.en;
+  return d[key] !== undefined ? d[key] : (TRANSLATIONS.en[key] || key);
+}
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 // ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
 // ── PAPER (light, default) — matches method.html ─────────────────────────
@@ -2123,9 +2312,9 @@ function UpgradeModal({ onClose }) {
                 maxHeight: "95vh", overflowY: "auto" } },
             React.createElement("div", { style: { width: 40, height: 4, background: C.dim, borderRadius: 2, margin: "0 auto 18px" } }),
             React.createElement("div", { style: { textAlign: "center", fontSize: 24, marginBottom: 8, opacity: 0.85 } }, "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F\uD83E\uDD90\uD83E\uDD66"),
-            React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, "Choose your access"),
+            React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, t("choose_access")),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, textAlign: "center", lineHeight: 1.5, marginBottom: 20,
-                    fontStyle: "italic" } }, "Real food. Verified macros. High protein. Cook once, eat all week."),
+                    fontStyle: "italic" } }, t("modal_sub")),
             React.createElement("div", { onClick: () => startCheckout("lifetime"), style: { background: C.accentDim, border: `2px solid ${C.accent}`, borderRadius: 14,
                     padding: "16px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, left: 14, background: C.accent,
@@ -2134,8 +2323,8 @@ function UpgradeModal({ onClose }) {
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginTop: 4 } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 4 } }, "LIFETIME \u00B7 ONE-TIME"),
-                        React.createElement("div", { style: { fontSize: 14, color: C.text, fontWeight: 700, marginBottom: 2 } }, "Everything, forever"),
-                        React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.4 } }, "All current recipes + all future drops. The macro calculator included.")),
+                        React.createElement("div", { style: { fontSize: 14, color: C.text, fontWeight: 700, marginBottom: 2 } }, t("tier_lifetime_title")),
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.4 } }, t("tier_lifetime_desc"))),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 26, color: C.accent, lineHeight: 1 } }, "$59.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "once")))),
@@ -2143,44 +2332,44 @@ function UpgradeModal({ onClose }) {
                     padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.green,
                         borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
-                        letterSpacing: "0.05em" } }, "SAVE 17%"),
+                        letterSpacing: "0.05em" } }, t("save_17")),
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.green, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "QUARTERLY \u00B7 3 MONTHS"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + new drops"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, t("tier_quarterly_title")),
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$8.33/mo effective \u00B7 Auto-renews every 3 months")),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.green, lineHeight: 1 } }, "$24.99"),
-                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/3 months")))),
+                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, t("per_3months"))))),
             React.createElement("div", { onClick: () => startCheckout("monthly"), style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                     padding: "14px 16px", marginBottom: 18, cursor: "pointer" } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "MONTHLY \u00B7 CANCEL ANYTIME"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + 2 new monthly"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, t("tier_monthly_title")),
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Most flexible \u00B7 Try the system risk-free")),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, lineHeight: 1 } }, "$9.99"),
-                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/month")))),
+                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, t("per_month"))))),
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
-                    marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
+                    marginBottom: 8, textAlign: "center" } }, t("or_just")),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 18 } },
                 React.createElement("div", { onClick: () => { alert("Tap any locked recipe to purchase it for $1.99."); onClose(); }, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one")),
+                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, t("single_recipe")),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, t("pick_any"))),
                 React.createElement("div", { onClick: () => startCheckout("calculator"), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$5.99"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "CALCULATOR"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Macros only"))),
+                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, t("calculator_label")),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, t("macros_only")))),
             React.createElement("button", { onClick: () => startCheckout("lifetime"), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                     padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
                     marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $59.99 \u2192"),
-            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "Secure payments via Stripe · Cancel anytime" : "🔒 Payments launching soon — beta in progress"),
+            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? t("secure_stripe") : "🔒 Payments launching soon — beta in progress"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
-                    fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
+                    fontSize: 11, cursor: "pointer", padding: "6px" } }, t("maybe_later")))));
 }
 function DevModal({ onClose, onUnlock }) {
     const [code, setCode] = useState("");
@@ -2214,14 +2403,14 @@ function DevModal({ onClose, onUnlock }) {
                         padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Unlock")))));
 }
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
-const TAB_META = [
-    { id: "meals", label: "Meals", icon: "🍽️" },
-    { id: "shopping", label: "Shop", icon: "🛒" },
-    { id: "recipes", label: "Recipes", icon: "📋" },
-    { id: "macros", label: "Macros", icon: "📊" },
-    { id: "history", label: "History", icon: "📅" },
-    { id: "profile", label: "Me", icon: "👤" },
-];
+function getTabMeta() { return [
+    { id: "meals",    label: t("tab_meals"),    icon: "🍽️" },
+    { id: "shopping", label: t("tab_shop"),     icon: "🛒" },
+    { id: "recipes",  label: t("tab_recipes"),  icon: "📋" },
+    { id: "macros",   label: t("tab_macros"),   icon: "📊" },
+    { id: "history",  label: t("tab_history"),  icon: "📅" },
+    { id: "profile",  label: t("tab_me"),       icon: "👤" },
+];}
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
 // All helper components defined OUTSIDE MacroCalculator to prevent focus loss
 const CALC_STEPS = ["About You", "Body", "Lifestyle", "Your Goal", "Results"];
@@ -2545,12 +2734,12 @@ function AccountCard({ C }) {
             style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14 }
         },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em" } }, "👤 YOUR ACCOUNT"),
-                React.createElement("button", { onClick: () => setEditing(true), style: { background: "none", border: "none", fontSize: 11, color: C.accent, cursor: "pointer", fontWeight: 600 } }, "Edit")
+                React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em" } }, t("your_account")),
+                React.createElement("button", { onClick: () => setEditing(true), style: { background: "none", border: "none", fontSize: 11, color: C.accent, cursor: "pointer", fontWeight: 600 } }, t("edit"))
             ),
             React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text } }, localStorage.getItem("mp_user_name") || "No name set"),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, marginTop: 2 } }, localStorage.getItem("mp_user_email")),
-            React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 6, fontWeight: 600 } }, "✓ Saved — you'll receive recipe updates here")
+            React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 6, fontWeight: 600 } }, t("saved_msg"))
         );
     }
 
@@ -2558,23 +2747,23 @@ function AccountCard({ C }) {
     return React.createElement("div", {
         style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14 }
     },
-        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 4 } }, "👤 CREATE YOUR ACCOUNT"),
-        React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.5, marginBottom: 12 } }, "Save your spot and get notified about new recipes — no purchase needed."),
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 4 } }, t("create_account")),
+        React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.5, marginBottom: 12 } }, t("account_desc")),
         React.createElement("input", {
             value: name, onChange: e => setName(e.target.value),
-            placeholder: "First name (optional)",
+            placeholder: t("first_name"),
             style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "10px 12px", color: C.text, fontSize: 13, fontFamily: "inherit", outline: "none", marginBottom: 8, boxSizing: "border-box" }
         }),
         React.createElement("input", {
             value: email, onChange: e => setEmail(e.target.value),
-            placeholder: "Email address", type: "email",
+            placeholder: t("email_addr"), type: "email",
             style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "10px 12px", color: C.text, fontSize: 13, fontFamily: "inherit", outline: "none", marginBottom: 10, boxSizing: "border-box" }
         }),
         React.createElement("button", {
             onClick: handleSave, disabled: saving || !validEmail,
             style: { width: "100%", background: validEmail ? C.accent : C.muted, border: "none", borderRadius: 8, padding: "11px", fontSize: 13, fontWeight: 700, color: "#fff", cursor: validEmail ? "pointer" : "not-allowed" }
-        }, saving ? "Saving…" : "Save & Stay Updated"),
-        React.createElement("div", { style: { fontSize: 10, color: C.muted, marginTop: 8, textAlign: "center" } }, "No spam. New recipe drops only.")
+        }, saving ? t("saving") : t("save_updated")),
+        React.createElement("div", { style: { fontSize: 10, color: C.muted, marginTop: 8, textAlign: "center" } }, t("no_spam"))
     );
 }
 
@@ -2609,11 +2798,11 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
             React.createElement(AccountCard, { C: C }),
             React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
                 React.createElement("div", { style: { fontSize: 36, marginBottom: 10 } }, "\uD83D\uDD12"),
-                React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, marginBottom: 8 } }, "Personalised Macro Calculator"),
+                React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, marginBottom: 8 } }, t("macro_calc")),
                 React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 320, margin: "0 auto 24px" } }, "Get your exact daily calorie and macro targets \u2014 calculated from your body, lifestyle, and goal. Auto-syncs with your meal plan.")),
             React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                     padding: "18px 20px", marginBottom: 14 } },
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "WHAT YOU GET"),
+                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, t("what_you_get")),
                 [
                     ["📊", "BMR, BMI & TDEE", "Calculated from your body data"],
                     ["🎯", "Daily calorie target", "Personalised to lose, maintain or gain"],
@@ -2720,6 +2909,9 @@ function App() {
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
     const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
+    // ── Language ──────────────────────────────────────────────────────────────
+    const [lang, setLangState] = useState(() => { try { return localStorage.getItem("mp_lang") || "en"; } catch(e) { return "en"; } });
+    const setLang = l => { _lang = l; setLangState(l); try { localStorage.setItem("mp_lang", l); } catch(e) {} };
     const resolvedTheme = theme === "system"
         ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
         : theme;
@@ -2902,8 +3094,8 @@ function App() {
                         WebkitTapHighlightColor: "transparent" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
-                            color: C.accent } }, "METHOD"))),
-            TAB_META.map(t => {
+                            color: C.accent } }, t("method")))),
+            getTabMeta().map(t => {
                 const active = tab === t.id;
                 return (React.createElement("button", { key: t.id, onClick: () => setTab(t.id), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
                         background: active ? C.accentDim : "none",
@@ -2933,9 +3125,9 @@ function App() {
                 React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginTop: 1, lineHeight: 1.2 } }, "Meal Prep"),
                 React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 3 } },
                     "\u2600\uFE0F ",
-                    React.createElement("span", { style: { color: C.text } }, lr ? lr.name : "No lunch"),
+                    React.createElement("span", { style: { color: C.text } }, lr ? lr.name : t("no_lunch")),
                     "\u00A0\u00B7\u00A0 \uD83C\uDF19 ",
-                    React.createElement("span", { style: { color: C.text } }, dr ? dr.name : "No dinner"))),
+                    React.createElement("span", { style: { color: C.text } }, dr ? dr.name : t("no_dinner")))),
             React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px 12px 24px",
                     WebkitOverflowScrolling: "touch" } },
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
@@ -3036,7 +3228,7 @@ function App() {
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" }, (!lr || !dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
                     React.createElement("div", { style: { fontSize: 32, marginBottom: 12 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
-                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName }))),
+                    React.createElement("div", { style: { fontSize: 13 } }, t("shop_empty")))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
                     pendingSlot && (React.createElement("div", { style: { background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.3)",
                             borderRadius: 12, padding: "10px 14px", marginBottom: 12,
@@ -3107,11 +3299,32 @@ function App() {
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                             padding: "14px 16px", marginBottom: 16 } },
                         React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
+                                marginBottom: 14 } }, t("language_label")),
+                        [
+                            { id: "en", flag: "🇬🇧", label: "English" },
+                            { id: "fr", flag: "🇫🇷", label: "Français" },
+                            { id: "es", flag: "🇪🇸", label: "Español" },
+                            { id: "it", flag: "🇮🇹", label: "Italiano" },
+                        ].map(({ id, flag, label }) => (React.createElement("button", { key: id, onClick: () => setLang(id), style: { width: "100%", display: "flex", alignItems: "center", gap: 12,
+                                padding: "11px 14px", marginBottom: 8, borderRadius: 10, cursor: "pointer",
+                                background: lang === id ? C.accentDim : C.card2,
+                                border: `1px solid ${lang === id ? C.accentBorder : C.dim}`,
+                                textAlign: "left" } },
+                            React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, flag),
+                            React.createElement("div", { style: { flex: 1, fontSize: 13, fontWeight: 700, color: C.text } }, label),
+                            React.createElement("div", { style: { width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
+                                    border: `2px solid ${lang === id ? C.accent : C.muted}`,
+                                    background: lang === id ? C.accent : "none",
+                                    display: "flex", alignItems: "center", justifyContent: "center" } },
+                                lang === id && React.createElement("span", { style: { fontSize: 10, color: "#fff", fontWeight: 900 } }, "✓")))))),
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                            padding: "14px 16px", marginBottom: 16 } },
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
                                 marginBottom: 14 } }, "\uD83C\uDFA8 APPEARANCE"),
                         [
-                            { id: "dark", label: "🌙 Dark", desc: "Default — easy on the eyes" },
-                            { id: "light", label: "☀️ Light", desc: "Clean, bright interface" },
-                            { id: "system", label: "⚙️ System Default", desc: "Matches your device setting" },
+                            { id: "dark", label: t("dark_mode"), desc: "Default — easy on the eyes" },
+                            { id: "light", label: t("light_mode"), desc: t("light_desc") },
+                            { id: "system", label: t("system_mode"), desc: t("system_desc") },
                         ].map(({ id, label, desc }) => (React.createElement("button", { key: id, onClick: () => setTheme(id), style: { width: "100%", display: "flex", alignItems: "center", gap: 12,
                                 padding: "11px 14px", marginBottom: 8, borderRadius: 10, cursor: "pointer",
                                 background: theme === id ? C.accentDim : C.card2,
@@ -3208,12 +3421,12 @@ function App() {
                 padding: "12px 16px", zIndex: 200, display: "flex", alignItems: "center", gap: 10 } },
             React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDCF2"),
             React.createElement("div", { style: { flex: 1 } },
-                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Add to Home Screen"),
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, t("add_home")),
                 React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 1 } },
                     "Tap ",
                     React.createElement("b", { style: { color: C.text } }, "Share \u2191"),
                     " then ",
-                    React.createElement("b", { style: { color: C.text } }, "Add to Home Screen"))),
+                    React.createElement("b", { style: { color: C.text } }, t("add_home")))),
             React.createElement("button", { onClick: dismissPWA, style: { background: "none", border: "none",
                     color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")))));
 }
