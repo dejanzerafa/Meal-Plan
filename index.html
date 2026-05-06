@@ -2286,10 +2286,10 @@ function DevModal({ onClose, onUnlock }) {
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
 function getTabMeta() { return [
     { id: "meals",    label: t("tab_meals"),   icon: "🍽️" },
+    { id: "history",  label: t("tab_history"), icon: "📅" },
     { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
     { id: "recipes",  label: t("tab_recipes"), icon: "📋" },
     { id: "macros",   label: t("tab_macros"),  icon: "📊" },
-    { id: "history",  label: t("tab_history"), icon: "📅" },
     { id: "profile",  label: t("tab_me"),      icon: "👤" },
 ]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
@@ -2964,6 +2964,7 @@ function App() {
     const [lunchScale, setLunchScale] = useState(1);
     const [dinnerScale, setDinnerScale] = useState(1);
     const [showBalance, setShowBalance] = useState(false);
+    const [showMethod, setShowMethod] = useState(false);
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
     const [recipeCat, setRecipeCat] = useState("main");
@@ -3162,12 +3163,11 @@ function App() {
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 18, marginBottom: 14, flexShrink: 0, cursor: "pointer",
                     WebkitTapHighlightColor: "transparent" } }, "\uD83E\uDD57"),
-            React.createElement("a", { href: "/method.html", target: "_blank", rel: "noopener", style: { textDecoration: "none", marginBottom: 18 } },
+            React.createElement("button", { onClick: () => setShowMethod(true), style: { textDecoration: "none", marginBottom: 18, background: "none", border: "none", padding: 0, cursor: "pointer", WebkitTapHighlightColor: "transparent" } },
                 React.createElement("div", { style: { width: 52, paddingTop: 10, paddingBottom: 10,
                         background: C.accentDim, border: `1px solid ${C.accentBorder}`,
                         borderRadius: 12, display: "flex", flexDirection: "column",
-                        alignItems: "center", gap: 4, cursor: "pointer",
-                        WebkitTapHighlightColor: "transparent" } },
+                        alignItems: "center", gap: 4 } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: C.accent } }, "METHOD"))),
@@ -3444,6 +3444,13 @@ function App() {
                     React.createElement(AccountCard, { C: C }),
                     React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
                 tab === "history" && React.createElement(CalendarTab, { lunch: lunch, dinner: dinner }))),
+        showMethod && React.createElement("div", { style: { position: "fixed", inset: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
+            React.createElement("div", { style: { padding: "10px 14px", background: C.card, borderBottom: "1px solid "+C.dim, display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
+                React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: C.sub, padding: "2px 8px 2px 0", lineHeight: 1, fontWeight: 700 } }, "\u2190"),
+                React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, "\uD83D\uDCD6 The Method"),
+                React.createElement("div", { style: { flex: 1 } }),
+                React.createElement("button", { onClick: () => setShowMethod(false), style: { background: C.accentDim, border: "1px solid "+C.accentBorder, borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: C.accent, cursor: "pointer" } }, "Done")),
+            React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: C.bg }, title: "The Method" })),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
         (unlocks.tier === "dev") && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
