@@ -51,14 +51,7 @@
     border-bottom: 1px solid var(--hairline);
     position: sticky; top: 0; background: var(--paper); z-index: 10;
   }
-  .back-btn {
-    display: flex; align-items: center; gap: 6px;
-    font-family: "Instrument Sans", sans-serif;
-    font-size: 14px; font-weight: 600; color: var(--terracotta);
-    background: none; border: none; cursor: pointer; padding: 0;
-    text-decoration: none; letter-spacing: 0;
-  }
-  .back-btn::before { content: "←"; font-size: 16px; }
+
   .topbar .mark {
     font-family: "Fraunces", serif; font-weight: 500;
     font-variation-settings: "opsz" 144, "SOFT" 100;
@@ -462,7 +455,6 @@
 <body>
 
 <header class="topbar">
-  <button class="back-btn" onclick="history.back()">Back</button>
   <div class="mark">The<span>·</span>Method</div>
   <div class="meta">Vol. 01</div>
 </header>
