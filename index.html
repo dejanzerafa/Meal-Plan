@@ -2157,7 +2157,7 @@ async function startCheckout(tier, recipeId) {
         console.error("Checkout error:", err);
     }
 }
-const DEV_CODE = "BATCHMASTER"; // tap logo 5× to enter
+const DEV_CODE = "DEVACCESS"; // tap logo 5× to enter
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10, position: "relative", minHeight: 140 } },
@@ -2779,7 +2779,7 @@ function CalendarTab({ lunch, dinner }) {
             batchMap[key]={ lunchId:log.lunchId, dinnerId:log.dinnerId, batchSize:log.batchSize,
                 startDate:log.date, dayIndex:i, isStart:i===0, isEnd:i===log.batchSize-1,
                 daysLeft:log.batchSize-i,
-                isShopDay: i===Math.max(0,log.batchSize-3)&&log.batchSize>3,
+                isShopDay: i===log.batchSize-2&&log.batchSize>1,
                 isPrepDay: i===log.batchSize-1 };
         }
     });
@@ -2876,7 +2876,7 @@ function CalendarTab({ lunch, dinner }) {
                             React.createElement("div",{style:{fontSize:11,fontWeight:700,color:"#7c3aed"}},(function(sB){return function(){var e=new Date(sB.startDate+"T00:00:00");e.setDate(e.getDate()+sB.batchSize-1);return e.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch))),
                         React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:8,padding:"8px",textAlign:"center"}},
                             React.createElement("div",{style:{fontSize:10,color:C.muted,marginBottom:2}},"Shop day"),
-                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.green}},(function(sB){return function(){var s=new Date(sB.startDate+"T00:00:00");s.setDate(s.getDate()+Math.max(0,sB.batchSize-3));return s.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch)))),
+                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.green}},(function(sB){return function(){var s=new Date(sB.startDate+"T00:00:00");s.setDate(s.getDate()+Math.max(0,sB.batchSize-2));return s.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch)))),
                     React.createElement("button",{onClick:function(){removeBatch(selectedBatch.startDate);},style:{width:"100%",background:"none",border:"1px solid "+C.dim,borderRadius:10,padding:"9px",fontSize:12,color:C.muted,cursor:"pointer"}},"✕ Remove batch"))
                 :React.createElement("div",null,
                     React.createElement("div",{style:{fontSize:12,color:C.sub,marginBottom:12}},"No batch logged here."),
@@ -3377,7 +3377,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
                                 marginBottom: 14 } }, t("lang_label")),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
-                            [["en","EN"],["fr","FR"],["es","ES"],["it","IT"]].map(([code, label]) =>
+                            [["en","🇬🇧"],["fr","🇫🇷"],["es","🇪🇸"],["it","🇮🇹"]].map(([code, label]) =>
                                 React.createElement("button", { key: code, onClick: () => setLang(code),
                                     style: { flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${lang === code ? C.accentBorder : C.dim}`,
                                         background: lang === code ? C.accentDim : C.card2,
