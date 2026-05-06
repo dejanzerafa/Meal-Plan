@@ -176,29 +176,126 @@ function getEmailSubject(tier) {
 
 function getEmailBody(tier, recipeId, amount) {
   const appUrl = process.env.APP_URL || "https://dejan-mealplan.netlify.app";
-  const tierLabels = {
-    lifetime: "Lifetime Access — every recipe + every future drop, forever",
-    quarterly: "Quarterly Plan — all recipes + new monthly drops",
-    monthly: "Monthly Plan — all recipes + 2 new every month",
-    calculator: "Macro Calculator — your personalised daily targets",
-    single: `Single Recipe (${recipeId})`,
+
+  const tierDetails = {
+    lifetime: {
+      label: "Lifetime Access",
+      description: "Every recipe + every future drop, forever. No renewals, no limits.",
+      badge: "LIFETIME",
+    },
+    quarterly: {
+      label: "Quarterly Plan",
+      description: "Full access to all recipes + new monthly drops for 3 months.",
+      badge: "QUARTERLY",
+    },
+    monthly: {
+      label: "Monthly Plan",
+      description: "Full access to all recipes + 2 new recipes every month.",
+      badge: "MONTHLY",
+    },
+    calculator: {
+      label: "Macro Calculator",
+      description: "Your personalised daily macro targets, built around your goal.",
+      badge: "CALCULATOR",
+    },
+    single: {
+      label: "Single Recipe",
+      description: `Recipe unlocked and ready to cook.`,
+      badge: "RECIPE",
+    },
   };
 
-  return `
-    <div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#1a1612;background:#f3ece0;">
-      <h1 style="font-family:Georgia,serif;font-size:24px;margin:0 0 16px;color:#b84a1f;">Welcome to Meal Prep.</h1>
-      <p style="font-size:15px;line-height:1.6;">Thanks for joining. Here's what you've unlocked:</p>
-      <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:12px;padding:16px;margin:18px 0;">
-        <div style="font-size:12px;font-weight:700;color:#7a6d5e;letter-spacing:0.08em;margin-bottom:6px;">YOUR ACCESS</div>
-        <div style="font-size:15px;font-weight:600;color:#1a1612;">${tierLabels[tier] || "Access activated"}</div>
-        ${amount ? `<div style="font-size:12px;color:#4a3f33;margin-top:6px;">Paid: $${amount.toFixed(2)}</div>` : ""}
-      </div>
-      <p style="font-size:14px;line-height:1.6;">Open the app to start cooking:</p>
-      <p><a href="${appUrl}" style="display:inline-block;background:#b84a1f;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;">Open the App →</a></p>
-      <p style="font-size:12px;color:#7a6d5e;margin-top:32px;line-height:1.5;">
-        Real food. Verified macros. Cook once, eat all week.<br>
-        Reply to this email if you need help.
-      </p>
-    </div>
-  `;
+  const details = tierDetails[tier] || {
+    label: "Access Activated",
+    description: "Your purchase has been confirmed.",
+    badge: "ACCESS",
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f0e9de;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0e9de;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" style="max-width:520px;background:#faf6f0;border-radius:16px;overflow:hidden;border:1px solid #ddd3c3;">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#1a1612;padding:32px 32px 24px;text-align:center;">
+            <div style="font-family:Georgia,serif;font-size:22px;color:#f3ece0;letter-spacing:0.04em;">MEAL PREP</div>
+            <div style="font-size:11px;color:#7a6d5e;letter-spacing:0.12em;margin-top:4px;">REAL FOOD. VERIFIED MACROS.</div>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:32px;">
+            <h1 style="font-family:Georgia,serif;font-size:26px;color:#1a1612;margin:0 0 8px;">You're in.</h1>
+            <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
+              Payment confirmed. Here's exactly what you've unlocked:
+            </p>
+
+            <!-- Access card -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:12px;margin-bottom:24px;">
+              <tr>
+                <td style="padding:20px 24px;">
+                  <div style="font-size:10px;font-weight:700;color:#b84a1f;letter-spacing:0.14em;margin-bottom:6px;">${details.badge}</div>
+                  <div style="font-size:17px;font-weight:700;color:#1a1612;margin-bottom:6px;">${details.label}</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">${details.description}</div>
+                  ${amount ? `<div style="margin-top:12px;font-size:12px;color:#7a6d5e;">Amount charged: <strong style="color:#1a1612;">$${amount.toFixed(2)}</strong></div>` : ""}
+                </td>
+              </tr>
+            </table>
+
+            <!-- CTA -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding-bottom:28px;">
+                  <a href="${appUrl}" style="display:inline-block;background:#b84a1f;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 32px;border-radius:10px;letter-spacing:0.02em;">
+                    Open the App →
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <!-- What to expect -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #ddd3c3;padding-top:24px;margin-top:4px;">
+              <tr>
+                <td style="padding-top:24px;">
+                  <div style="font-size:11px;font-weight:700;color:#7a6d5e;letter-spacing:0.1em;margin-bottom:12px;">WHAT TO EXPECT</div>
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="font-size:20px;padding-right:12px;padding-bottom:10px;">🔓</td>
+                      <td style="font-size:13px;color:#4a3f33;line-height:1.6;padding-bottom:10px;">Your access is live immediately — open the app and it's already unlocked.</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size:20px;padding-right:12px;padding-bottom:10px;">📲</td>
+                      <td style="font-size:13px;color:#4a3f33;line-height:1.6;padding-bottom:10px;">Bookmark the app or add it to your home screen so it's always one tap away.</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size:20px;padding-right:12px;">✉️</td>
+                      <td style="font-size:13px;color:#4a3f33;line-height:1.6;">New recipes and updates come straight to this inbox. Keep an eye out.</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#1a1612;padding:20px 32px;text-align:center;">
+            <p style="font-size:11px;color:#7a6d5e;margin:0;line-height:1.7;">
+              Cook once, eat all week.<br>
+              Questions? Reply to this email — I read every one.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
 }
