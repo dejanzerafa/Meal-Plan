@@ -2068,6 +2068,47 @@ function MacroRef() {
 const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
 const FREE_IDS = new Set(["m01", "b0", "d1"]);
+// ── Stripe configuration ────────────────────────────────────────────────
+// Set STRIPE_ENABLED=true once Netlify env vars are configured.
+// While false: upgrade buttons show "launching soon" (safe for friend testing).
+const STRIPE_ENABLED = false;
+const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2NxM0oYR46xTbBmFCdAqXkpyE9H6fieIuWZ24ZHWZIww7v00AV7lCr12";
+const STRIPE_PRICES = {
+    lifetime: "price_1TU80BGjmPEqu9q9dV53ktaZ",
+    quarterly: "price_1TU81SGjmPEqu9q9UVg827sE",
+    monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
+    calculator: "price_1TU824GjmPEqu9q90xWZDozk",
+    single: "price_1TU82XGjmPEqu9q9EhfIpkFW",
+};
+// ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
+async function startCheckout(tier, recipeId) {
+    if (!STRIPE_ENABLED) {
+        alert("Payments launching soon!\n\nWe're in private beta — full payment system goes live shortly. Watch your email for the launch announcement.");
+        return;
+    }
+    try {
+        const res = await fetch("/.netlify/functions/create-checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                priceId: STRIPE_PRICES[tier],
+                tier,
+                recipeId: recipeId || null,
+            }),
+        });
+        if (!res.ok)
+            throw new Error("Checkout creation failed");
+        const { url } = await res.json();
+        if (url)
+            window.location.href = url;
+        else
+            throw new Error("No checkout URL returned");
+    }
+    catch (err) {
+        alert("Could not start checkout. Please try again or contact support.");
+        console.error("Checkout error:", err);
+    }
+}
 const DEV_CODE = "BATCHMASTER"; // tap logo 5× to enter
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
@@ -2107,8 +2148,8 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, "Choose your access"),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, textAlign: "center", lineHeight: 1.5, marginBottom: 20,
                     fontStyle: "italic" } }, "Real food. Verified macros. High protein. Cook once, eat all week."),
-            React.createElement("div", { style: { background: C.accentDim, border: `2px solid ${C.accent}`, borderRadius: 14,
-                    padding: "16px 16px", marginBottom: 10, position: "relative" } },
+            React.createElement("div", { onClick: () => startCheckout("lifetime"), style: { background: C.accentDim, border: `2px solid ${C.accent}`, borderRadius: 14,
+                    padding: "16px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, left: 14, background: C.accent,
                         borderRadius: 20, padding: "3px 12px", fontSize: 9, fontWeight: 800, color: "#fff",
                         letterSpacing: "0.06em" } }, "\u2B50 BEST VALUE"),
@@ -2120,8 +2161,8 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 26, color: C.accent, lineHeight: 1 } }, "$59.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "once")))),
-            React.createElement("div", { style: { background: C.greenDim, border: `1.5px solid ${C.greenBorder}`, borderRadius: 14,
-                    padding: "14px 16px", marginBottom: 10, position: "relative" } },
+            React.createElement("div", { onClick: () => startCheckout("quarterly"), style: { background: C.greenDim, border: `1.5px solid ${C.greenBorder}`, borderRadius: 14,
+                    padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.green,
                         borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
                         letterSpacing: "0.05em" } }, "SAVE 17%"),
@@ -2133,8 +2174,8 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.green, lineHeight: 1 } }, "$24.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/3 months")))),
-            React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
-                    padding: "14px 16px", marginBottom: 18 } },
+            React.createElement("div", { onClick: () => startCheckout("monthly"), style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                    padding: "14px 16px", marginBottom: 18, cursor: "pointer" } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "MONTHLY \u00B7 CANCEL ANYTIME"),
@@ -2146,20 +2187,20 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
                     marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 18 } },
-                React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
-                        padding: "10px 12px", textAlign: "center" } },
+                React.createElement("div", { onClick: () => { alert("Tap any locked recipe to purchase it for $1.99."); onClose(); }, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
+                        padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one")),
-                React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
-                        padding: "10px 12px", textAlign: "center" } },
+                React.createElement("div", { onClick: () => startCheckout("calculator"), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
+                        padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$5.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "CALCULATOR"),
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Macros only"))),
-            React.createElement("button", { style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
+            React.createElement("button", { onClick: () => startCheckout("lifetime"), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                     padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
                     marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $59.99 \u2192"),
-            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, "Stripe payments coming soon. For now, dev unlock available via 5-tap logo."),
+            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "Secure payments via Stripe · Cancel anytime" : "🔒 Payments launching soon — beta in progress"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
                     fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
 }
@@ -2998,11 +3039,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
-                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, pendingSlot: pendingSlot, setBreakfast: handleSetBreakfast, portions: portions })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => {
-                            if (confirm(`Unlock "${name}" for $1.99?\n\n(Stripe payment integration coming soon — for now this is a preview.)`)) {
-                                unlockRecipe(id);
-                            }
-                        } }))),
+                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, pendingSlot: pendingSlot, setBreakfast: handleSetBreakfast, portions: portions })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
@@ -3080,7 +3117,7 @@ function App() {
                             "High Protein \u00B7 Real Food \u00B7 Batch Cooked \u00B7 2025",
                             "\n",
                             "dejan-mealplan.netlify.app"))),
-                tab === "profile" && (React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: unlockCalculator })),
+                tab === "profile" && (React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
                 tab === "history" && (() => {
                     // Filter out entries with deleted/renamed recipe IDs that no longer exist
                     const allHist = getHistory();
