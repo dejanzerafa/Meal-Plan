@@ -2377,7 +2377,7 @@ function MacroCalculator({ C, onSave, initialProfile }) {
                     color: canNext() ? "#000" : C.muted, cursor: canNext() ? "pointer" : "default",
                     transition: "all 0.2s", WebkitTapHighlightColor: "transparent" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
 }
-function ProfileTab({ C, unlocked, onSave }) {
+function ProfileTab({ C, unlocked, onSave, setShowUpgrade }) {
     const [profile, setProfile] = useState(() => {
         try {
             return JSON.parse(localStorage.getItem("mp_profile") || "null");
@@ -2402,7 +2402,42 @@ function ProfileTab({ C, unlocked, onSave }) {
         if (onSave)
             onSave(p);
     };
-    // First-time: no profile saved
+    // ── PAYWALL: calculator is gated behind premium unlock ──────────────────
+    // Free users see a paywall card. Premium users (any unlock) get full access.
+    // Profile data is preserved if user previously saved one.
+    if (!unlocked) {
+        return (React.createElement("div", { className: "tab-anim" },
+            React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
+                React.createElement("div", { style: { fontSize: 36, marginBottom: 10 } }, "\uD83D\uDD12"),
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Personalised Macro Calculator"),
+                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 320, margin: "0 auto 24px" } }, "Get your exact daily calorie and macro targets \u2014 calculated from your body, lifestyle, and goal. Auto-syncs with your meal plan.")),
+            React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                    padding: "18px 20px", marginBottom: 14 } },
+                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "WHAT YOU GET"),
+                [
+                    ["📊", "BMR, BMI & TDEE", "Calculated from your body data"],
+                    ["🎯", "Daily calorie target", "Personalised to lose, maintain or gain"],
+                    ["🥩", "Macro breakdown", "Exact protein, carbs, fat in grams"],
+                    ["🔄", "Auto-syncs with app", "Updates meal totals everywhere"],
+                    ["💾", "Save & recalculate", "Update weight monthly, identity stays"],
+                ].map(([icon, title, desc], i) => (React.createElement("div", { key: i, style: { display: "flex", alignItems: "flex-start", gap: 12,
+                        padding: "10px 0", borderBottom: i < 4 ? `1px solid ${C.dim}` : "none" } },
+                    React.createElement("span", { style: { fontSize: 18, flexShrink: 0 } }, icon),
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text } }, title),
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, desc)),
+                    React.createElement("span", { style: { fontSize: 14, color: C.green, fontWeight: 700 } }, "\u2713"))))),
+            React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`,
+                    borderRadius: 14, padding: "18px 20px", marginBottom: 14, textAlign: "center" } },
+                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.1em", marginBottom: 6 } }, "ONE-TIME \u00B7 LIFETIME ACCESS"),
+                React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1, marginBottom: 4 } }, "$5.99"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Unlock the calculator forever")),
+            React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
+                    padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer",
+                    letterSpacing: "0.02em", marginBottom: 10 } }, "\uD83D\uDD13 Unlock Calculator \u2014 $5.99"),
+            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted } }, "Or get the full app (calculator + 39 recipes) from $7.99/mo")));
+    }
+    // First-time: no profile saved (premium user)
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
             React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
@@ -2847,7 +2882,7 @@ function App() {
                             "High Protein \u00B7 Real Food \u00B7 Batch Cooked \u00B7 2025",
                             "\n",
                             "dejan-mealplan.netlify.app"))),
-                tab === "profile" && (React.createElement(ProfileTab, { C: C, unlocked: unlocked, onSave: handleProfileSave })),
+                tab === "profile" && (React.createElement(ProfileTab, { C: C, unlocked: unlocked, onSave: handleProfileSave, setShowUpgrade: setShowUpgrade })),
                 tab === "history" && (() => {
                     const hist = getHistory();
                     return (React.createElement("div", { className: "tab-anim" },
