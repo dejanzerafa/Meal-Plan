@@ -1850,13 +1850,23 @@ const TAB_META = [
     { id: "profile", label: "Me", icon: "👤" },
 ];
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
+// All helper components defined OUTSIDE MacroCalculator to prevent focus loss
 const CALC_STEPS = ["About You", "Body", "Lifestyle", "Your Goal", "Results"];
+// ── Pure calculation functions ──────────────────────────────────────────────
 function calcBMR(w, h, age, gender) {
+    if (!w || !h || !age || isNaN(w) || isNaN(h) || isNaN(age))
+        return 0;
     const base = 10 * w + 6.25 * h - 5 * age;
     return gender === "male" ? base + 5 : base - 161;
 }
-function calcBMI(w, h) { return w / ((h / 100) * (h / 100)); }
+function calcBMI(w, h) {
+    if (!w || !h || isNaN(w) || isNaN(h) || h <= 0)
+        return 0;
+    return w / ((h / 100) * (h / 100));
+}
 function bmiLabel(b) {
+    if (b <= 0)
+        return { l: "—", c: "#8896b3" };
     if (b < 18.5)
         return { l: "Underweight", c: "#60a5fa" };
     if (b < 25)
@@ -1881,13 +1891,55 @@ function calcActivityMultiplier(job, steps, training) {
     return 1.9;
 }
 function calcMacros(tdee, weight, goal) {
-    let kcal = Math.round(goal === "lose" ? tdee * 0.80 : goal === "gain" ? tdee * 1.10 : tdee);
+    if (!tdee || !weight)
+        return { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+    const kcal = Math.round(goal === "lose" ? tdee * 0.80 : goal === "gain" ? tdee * 1.10 : tdee);
     const proteinG = Math.round(goal === "gain" ? weight * 2.4 : weight * 2.0);
     const fatG = Math.round((kcal * 0.25) / 9);
-    const carbG = Math.round((kcal - proteinG * 4 - fatG * 9) / 4);
+    const carbG = Math.max(0, Math.round((kcal - proteinG * 4 - fatG * 9) / 4));
     return { kcal, protein: proteinG, carbs: carbG, fat: fatG };
 }
-function MacroCalculator({ C, onSave, unlocked }) {
+// ── Stable helper components — defined OUTSIDE MacroCalculator ─────────────
+function CalcInputRow({ label, children }) {
+    return (React.createElement("div", { style: { marginBottom: 16 } },
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: "#8896b3", letterSpacing: "0.07em",
+                marginBottom: 7, textTransform: "uppercase" } }, label),
+        children));
+}
+function CalcTextInput({ value, onChange, placeholder, type }) {
+    return (React.createElement("input", { value: value, onChange: onChange, placeholder: placeholder, type: type || "text", autoComplete: "off", style: { width: "100%", background: "#161b24", border: "1px solid #1e2433", borderRadius: 10,
+            color: "#eef2ff", fontSize: 14, padding: "11px 14px", fontFamily: "inherit",
+            outline: "none", WebkitAppearance: "none", boxSizing: "border-box" } }));
+}
+function CalcSegBtn({ selected, onClick, label, accent }) {
+    const ac = accent || "#f97316";
+    return (React.createElement("button", { onClick: onClick, style: { flex: 1, padding: "9px 4px", fontSize: 11, fontWeight: 700, borderRadius: 8,
+            border: `1px solid ${selected ? ac : "#1e2433"}`,
+            background: selected ? `rgba(249,115,22,0.12)` : "#161b24",
+            color: selected ? ac : "#8896b3", cursor: "pointer",
+            WebkitTapHighlightColor: "transparent" } }, label));
+}
+function CalcOptionBtn({ selected, onClick, label, sub }) {
+    return (React.createElement("button", { onClick: onClick, style: { width: "100%", background: selected ? "rgba(249,115,22,0.12)" : "#161b24",
+            border: `1.5px solid ${selected ? "#f97316" : "#1e2433"}`, borderRadius: 10,
+            padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8,
+            WebkitTapHighlightColor: "transparent", transition: "border-color 0.15s" } },
+        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: selected ? "#f97316" : "#eef2ff" } }, label),
+        sub && React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, sub)));
+}
+function CalcMacroBar({ label, val, max, color }) {
+    return (React.createElement("div", { style: { marginBottom: 12 } },
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 5 } },
+            React.createElement("span", { style: { fontSize: 11, color: "#8896b3", fontWeight: 600 } }, label),
+            React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color } },
+                val,
+                "g")),
+        React.createElement("div", { style: { height: 6, background: "#161b24", borderRadius: 3, overflow: "hidden" } },
+            React.createElement("div", { style: { width: `${Math.min(100, (val / max) * 100)}%`, height: "100%",
+                    background: color, borderRadius: 3, transition: "width 0.6s ease" } }))));
+}
+// ── Main Calculator component ──────────────────────────────────────────────
+function MacroCalculator({ C, onSave }) {
     const [step, setStep] = useState(0);
     const [form, setForm] = useState({
         firstName: "", lastName: "", dob: "", gender: "male",
@@ -1895,40 +1947,50 @@ function MacroCalculator({ C, onSave, unlocked }) {
         job: "desk", steps: "6-10k", training: "3-4", goal: "lose"
     });
     const [result, setResult] = useState(null);
-    const [showGate, setShowGate] = useState(false);
     const set = (k, v) => setForm(f => (Object.assign(Object.assign({}, f), { [k]: v })));
     const calcAge = (dob) => {
         if (!dob)
-            return 25;
+            return null;
         const b = new Date(dob), n = new Date();
+        if (isNaN(b.getTime()))
+            return null;
         let a = n.getFullYear() - b.getFullYear();
         if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate()))
             a--;
-        return a;
+        return a >= 10 && a <= 120 ? a : null;
     };
     const getWeightKg = () => {
         const w = parseFloat(form.weight);
+        if (!w || isNaN(w))
+            return 0;
         return form.weightUnit === "lbs" ? w / 2.205 : w;
     };
     const getHeightCm = () => {
         const h = parseFloat(form.height);
+        if (!h || isNaN(h))
+            return 0;
         return form.heightUnit === "ft" ? h * 30.48 : h;
     };
-    const computeResult = () => {
-        const w = getWeightKg(), h = getHeightCm(), age = calcAge(form.dob);
+    const computeAndSetResult = () => {
+        const w = getWeightKg(), h = getHeightCm();
+        const age = calcAge(form.dob);
+        if (!w || !h || !age)
+            return;
         const bmr = Math.round(calcBMR(w, h, age, form.gender));
         const mult = calcActivityMultiplier(form.job, form.steps, form.training);
         const tdee = Math.round(bmr * mult);
         const bmi = parseFloat(calcBMI(w, h).toFixed(1));
         const macros = calcMacros(tdee, w, form.goal);
         const actLabel = mult <= 1.2 ? "Sedentary" : mult <= 1.375 ? "Lightly Active" : mult <= 1.55 ? "Moderately Active" : mult <= 1.725 ? "Very Active" : "Extra Active";
-        return { bmr, tdee, bmi, macros, actLabel, age, w: Math.round(w), h: Math.round(h) };
+        return { bmr, tdee, bmi, macros, actLabel, age, w: Math.round(w * 10) / 10, h: Math.round(h) };
     };
     const next = () => {
         if (step === CALC_STEPS.length - 2) {
-            const r = computeResult();
-            setResult(r);
-            setStep(s => s + 1);
+            const r = computeAndSetResult();
+            if (r) {
+                setResult(r);
+                setStep(s => s + 1);
+            }
         }
         else {
             setStep(s => s + 1);
@@ -1940,77 +2002,66 @@ function MacroCalculator({ C, onSave, unlocked }) {
         localStorage.setItem("mp_profile", JSON.stringify(profile));
         onSave(profile);
     };
-    const InputRow = ({ label, children }) => (React.createElement("div", { style: { marginBottom: 16 } },
-        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.07em", marginBottom: 7, textTransform: "uppercase" } }, label),
-        children));
-    const TextInput = ({ field, placeholder, type = "text" }) => (React.createElement("input", { value: form[field], onChange: e => set(field, e.target.value), placeholder: placeholder, type: type, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
-            color: C.text, fontSize: 14, padding: "11px 14px", fontFamily: "inherit", outline: "none" } }));
-    const OptionBtn = ({ field, val, label, sub }) => (React.createElement("button", { onClick: () => set(field, val), style: { width: "100%", background: form[field] === val ? C.accentDim : C.card2,
-            border: `1.5px solid ${form[field] === val ? C.accent : C.dim}`, borderRadius: 10,
-            padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, transition: "all 0.15s" } },
-        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form[field] === val ? C.accent : C.text } }, label),
-        sub && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, sub)));
-    const SegBtn = ({ field, val, label }) => (React.createElement("button", { onClick: () => set(field, val), style: { flex: 1, padding: "9px 4px", fontSize: 11, fontWeight: 700, borderRadius: 8,
-            border: `1px solid ${form[field] === val ? C.accent : C.dim}`,
-            background: form[field] === val ? C.accentDim : C.card2,
-            color: form[field] === val ? C.accent : C.sub, cursor: "pointer" } }, label));
-    const MacroBar = ({ label, val, max, color }) => (React.createElement("div", { style: { marginBottom: 12 } },
-        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 5 } },
-            React.createElement("span", { style: { fontSize: 11, color: C.sub, fontWeight: 600 } }, label),
-            React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color } },
-                val,
-                "g")),
-        React.createElement("div", { style: { height: 6, background: C.card2, borderRadius: 3, overflow: "hidden" } },
-            React.createElement("div", { style: { width: `${Math.min(100, (val / max) * 100)}%`, height: "100%", background: color, borderRadius: 3, transition: "width 0.5s" } }))));
-    // ─── STEPS ───────────────────────────────────────────────────────────────
-    const steps_content = [
-        React.createElement("div", { key: "s0" },
-            React.createElement(InputRow, { label: "First Name" },
-                React.createElement(TextInput, { field: "firstName", placeholder: "e.g. Alex" })),
-            React.createElement(InputRow, { label: "Last Name" },
-                React.createElement(TextInput, { field: "lastName", placeholder: "e.g. Smith" })),
-            React.createElement(InputRow, { label: "Date of Birth" },
-                React.createElement(TextInput, { field: "dob", type: "date" })),
-            React.createElement(InputRow, { label: "Gender" },
-                React.createElement("div", { style: { display: "flex", gap: 8 } },
-                    React.createElement(SegBtn, { field: "gender", val: "male", label: "Male" }),
-                    React.createElement(SegBtn, { field: "gender", val: "female", label: "Female" })))),
-        React.createElement("div", { key: "s1" },
-            React.createElement(InputRow, { label: "Height" },
-                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
-                    React.createElement(SegBtn, { field: "heightUnit", val: "cm", label: "cm" }),
-                    React.createElement(SegBtn, { field: "heightUnit", val: "ft", label: "ft" })),
-                React.createElement(TextInput, { field: "height", placeholder: form.heightUnit === "cm" ? "e.g. 183" : "e.g. 6.0", type: "number" })),
-            React.createElement(InputRow, { label: "Current Weight" },
-                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
-                    React.createElement(SegBtn, { field: "weightUnit", val: "kg", label: "kg" }),
-                    React.createElement(SegBtn, { field: "weightUnit", val: "lbs", label: "lbs" })),
-                React.createElement(TextInput, { field: "weight", placeholder: form.weightUnit === "kg" ? "e.g. 85" : "e.g. 187", type: "number" }))),
-        React.createElement("div", { key: "s2" },
-            React.createElement(InputRow, { label: "Job Type" },
-                React.createElement(OptionBtn, { field: "job", val: "desk", label: "\uD83D\uDDA5\uFE0F Desk / Office", sub: "Sitting most of the day" }),
-                React.createElement(OptionBtn, { field: "job", val: "light", label: "\uD83D\uDEB6 Light on feet", sub: "Standing, walking occasionally" }),
-                React.createElement(OptionBtn, { field: "job", val: "moderate", label: "\u2699\uFE0F Moderately active", sub: "On feet most of the day" }),
-                React.createElement(OptionBtn, { field: "job", val: "physical", label: "\uD83C\uDFD7\uFE0F Physical / Labour", sub: "Lifting, building, constant movement" })),
-            React.createElement(InputRow, { label: "Average Daily Steps" },
-                React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" } }, ["<3k", "3-6k", "6-10k", "10-15k", "15k+"].map(v => React.createElement(SegBtn, { key: v, field: "steps", val: v, label: v })))),
-            React.createElement(InputRow, { label: "Training Sessions Per Week" },
-                React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => React.createElement(SegBtn, { key: v, field: "training", val: v, label: v }))))),
-        React.createElement("div", { key: "s3" },
-            React.createElement(OptionBtn, { field: "goal", val: "lose", label: "\uD83D\uDD25 Lose Body Fat", sub: "Calorie deficit \u00B7 High protein \u00B7 Preserve muscle" }),
-            React.createElement(OptionBtn, { field: "goal", val: "maintain", label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
-            React.createElement(OptionBtn, { field: "goal", val: "gain", label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })),
-        // Step 4 — Results
-        result ? (() => {
+    const canNext = () => {
+        if (step === 0)
+            return form.firstName.trim().length > 0 && calcAge(form.dob) !== null;
+        if (step === 1)
+            return getWeightKg() > 0 && getHeightCm() > 0;
+        return true;
+    };
+    const renderStep = () => {
+        if (step === 0)
+            return (React.createElement("div", { key: "s0" },
+                React.createElement(CalcInputRow, { label: "First Name" },
+                    React.createElement(CalcTextInput, { value: form.firstName, onChange: e => set("firstName", e.target.value), placeholder: "e.g. Alex" })),
+                React.createElement(CalcInputRow, { label: "Last Name" },
+                    React.createElement(CalcTextInput, { value: form.lastName, onChange: e => set("lastName", e.target.value), placeholder: "e.g. Smith" })),
+                React.createElement(CalcInputRow, { label: "Date of Birth" },
+                    React.createElement(CalcTextInput, { value: form.dob, onChange: e => set("dob", e.target.value), type: "date", placeholder: "" })),
+                React.createElement(CalcInputRow, { label: "Gender" },
+                    React.createElement("div", { style: { display: "flex", gap: 8 } },
+                        React.createElement(CalcSegBtn, { selected: form.gender === "male", onClick: () => set("gender", "male"), label: "Male" }),
+                        React.createElement(CalcSegBtn, { selected: form.gender === "female", onClick: () => set("gender", "female"), label: "Female" }))),
+                form.dob && calcAge(form.dob) === null && (React.createElement("div", { style: { fontSize: 11, color: "#ef4444", marginTop: -8, marginBottom: 8 } }, "Please enter a valid date of birth"))));
+        if (step === 1)
+            return (React.createElement("div", { key: "s1" },
+                React.createElement(CalcInputRow, { label: "Height" },
+                    React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+                        React.createElement(CalcSegBtn, { selected: form.heightUnit === "cm", onClick: () => set("heightUnit", "cm"), label: "cm" }),
+                        React.createElement(CalcSegBtn, { selected: form.heightUnit === "ft", onClick: () => set("heightUnit", "ft"), label: "ft" })),
+                    React.createElement(CalcTextInput, { value: form.height, onChange: e => set("height", e.target.value), placeholder: form.heightUnit === "cm" ? "e.g. 183" : "e.g. 6.0", type: "number" }),
+                    React.createElement("div", { style: { fontSize: 10, color: "#3d4d66", marginTop: 4 } }, form.heightUnit === "ft" ? "Enter as decimal: 6ft 1in = 6.08" : "")),
+                React.createElement(CalcInputRow, { label: "Current Weight" },
+                    React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+                        React.createElement(CalcSegBtn, { selected: form.weightUnit === "kg", onClick: () => set("weightUnit", "kg"), label: "kg" }),
+                        React.createElement(CalcSegBtn, { selected: form.weightUnit === "lbs", onClick: () => set("weightUnit", "lbs"), label: "lbs" })),
+                    React.createElement(CalcTextInput, { value: form.weight, onChange: e => set("weight", e.target.value), placeholder: form.weightUnit === "kg" ? "e.g. 85" : "e.g. 187", type: "number" }))));
+        if (step === 2)
+            return (React.createElement("div", { key: "s2" },
+                React.createElement(CalcInputRow, { label: "Job Type" },
+                    React.createElement(CalcOptionBtn, { selected: form.job === "desk", onClick: () => set("job", "desk"), label: "\uD83D\uDDA5\uFE0F Desk / Office", sub: "Sitting most of the day" }),
+                    React.createElement(CalcOptionBtn, { selected: form.job === "light", onClick: () => set("job", "light"), label: "\uD83D\uDEB6 Light on feet", sub: "Standing, occasional walking" }),
+                    React.createElement(CalcOptionBtn, { selected: form.job === "moderate", onClick: () => set("job", "moderate"), label: "\u2699\uFE0F Moderately active", sub: "On feet most of the day" }),
+                    React.createElement(CalcOptionBtn, { selected: form.job === "physical", onClick: () => set("job", "physical"), label: "\uD83C\uDFD7\uFE0F Physical / Labour", sub: "Lifting, constant movement" })),
+                React.createElement(CalcInputRow, { label: "Average Daily Steps" },
+                    React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" } }, ["<3k", "3-6k", "6-10k", "10-15k", "15k+"].map(v => (React.createElement(CalcSegBtn, { key: v, selected: form.steps === v, onClick: () => set("steps", v), label: v }))))),
+                React.createElement(CalcInputRow, { label: "Training Sessions Per Week" },
+                    React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => (React.createElement(CalcSegBtn, { key: v, selected: form.training === v, onClick: () => set("training", v), label: v })))))));
+        if (step === 3)
+            return (React.createElement("div", { key: "s3" },
+                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "Calorie deficit \u00B7 High protein \u00B7 Preserve muscle" }),
+                React.createElement(CalcOptionBtn, { selected: form.goal === "maintain", onClick: () => set("goal", "maintain"), label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
+                React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })));
+        if (step === 4 && result) {
             const { bmr, tdee, bmi, macros, actLabel, age, w, h } = result;
             const bmiInfo = bmiLabel(bmi);
             const goalLabel = form.goal === "lose" ? "Fat Loss" : form.goal === "gain" ? "Muscle Gain" : "Maintenance";
-            const goalColor = form.goal === "lose" ? "#f97316" : form.goal === "gain" ? "#22c55e" : "#a78bfa";
+            const goalColor = form.goal === "lose" ? C.accent : form.goal === "gain" ? C.green : "#a78bfa";
             return (React.createElement("div", { key: "s4" },
                 React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
                     React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: C.text } },
-                        form.firstName || "Your",
-                        " Macro Profile"),
+                        form.firstName ? form.firstName + "'s" : "Your",
+                        " Results"),
                     React.createElement("div", { style: { fontSize: 12, color: C.sub, marginTop: 4 } },
                         age,
                         " yrs \u00B7 ",
@@ -2019,46 +2070,39 @@ function MacroCalculator({ C, onSave, unlocked }) {
                         w,
                         "kg \u00B7 ",
                         actLabel)),
-                React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: "16px 18px", marginBottom: 14 } },
-                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 } },
+                React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`,
+                        borderRadius: 14, padding: "16px 18px", marginBottom: 12 } },
+                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em" } },
                             goalLabel.toUpperCase(),
                             " TARGET"),
-                        React.createElement("div", { style: { fontSize: 10, background: goalColor, color: "#000", padding: "2px 9px", borderRadius: 10, fontWeight: 700 } }, goalLabel)),
+                        React.createElement("div", { style: { fontSize: 10, background: goalColor, color: "#000", padding: "2px 9px",
+                                borderRadius: 10, fontWeight: 700 } }, goalLabel)),
                     React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal),
                     React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "calories per day")),
-                React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px 18px", marginBottom: 14 } },
+                React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                        padding: "16px 18px", marginBottom: 12 } },
                     React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "DAILY MACROS"),
-                    React.createElement(MacroBar, { label: "Protein", val: macros.protein, max: 300, color: C.prot }),
-                    React.createElement(MacroBar, { label: "Carbohydrates", val: macros.carbs, max: 500, color: C.carb }),
-                    React.createElement(MacroBar, { label: "Fat", val: macros.fat, max: 150, color: "#a855f7" })),
-                React.createElement("div", { style: { display: "flex", gap: 10, marginBottom: 16 } },
-                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "BMI"),
-                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: bmiInfo.c } }, bmi),
-                        React.createElement("div", { style: { fontSize: 10, color: bmiInfo.c, marginTop: 2, fontWeight: 600 } }, bmiInfo.l)),
-                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "BMR"),
-                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text } }, bmr),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "kcal/day at rest")),
-                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "TDEE"),
-                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text } }, tdee),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "kcal/day total"))),
+                    React.createElement(CalcMacroBar, { label: "Protein", val: macros.protein, max: 300, color: C.prot }),
+                    React.createElement(CalcMacroBar, { label: "Carbohydrates", val: macros.carbs, max: 500, color: C.carb }),
+                    React.createElement(CalcMacroBar, { label: "Fat", val: macros.fat, max: 150, color: "#a855f7" })),
+                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 16 } }, [
+                    { l: "BMI", v: bmi, sub: bmiInfo.l, c: bmiInfo.c },
+                    { l: "BMR", v: bmr, sub: "kcal at rest", c: C.text },
+                    { l: "TDEE", v: tdee, sub: "kcal/day", c: C.text },
+                ].map(({ l, v, sub, c }) => (React.createElement("div", { key: l, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`,
+                        borderRadius: 12, padding: "12px", textAlign: "center" } },
+                    React.createElement("div", { style: { fontSize: 9, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, l),
+                    React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: c } }, v),
+                    React.createElement("div", { style: { fontSize: 9, color: l === "BMI" ? c : C.sub, marginTop: 2 } }, sub))))),
                 React.createElement("button", { onClick: saveProfile, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "14px",
-                        fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em", marginBottom: 10 } }, "\u2713 Save My Macros to App"),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center" } }, "This will update your calorie and macro targets across the whole app.")));
-        })() : React.createElement("div", { key: "s4c", style: { textAlign: "center", padding: "40px 0", color: C.sub } }, "Calculating...")
-    ];
-    const canNext = () => {
-        if (step === 0)
-            return form.firstName && form.dob;
-        if (step === 1)
-            return form.height && form.weight;
-        return true;
+                        fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", marginBottom: 10 } }, "\u2713 Save My Macros to App"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center" } }, "Saves your personalised targets to this device.")));
+        }
+        return React.createElement("div", { key: "loading", style: { textAlign: "center", padding: "40px 0", color: C.sub } }, "Calculating...");
     };
-    return (React.createElement("div", { className: "tab-anim" },
-        React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 20 } }, CALC_STEPS.map((s, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 3, borderRadius: 2,
+    return (React.createElement("div", null,
+        React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 20 } }, CALC_STEPS.map((_, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 3, borderRadius: 2,
                 background: i <= step ? C.accent : C.dim, transition: "background 0.3s" } })))),
         React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
             "STEP ",
@@ -2066,13 +2110,14 @@ function MacroCalculator({ C, onSave, unlocked }) {
             " OF ",
             CALC_STEPS.length),
         React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 18 } }, CALC_STEPS[step]),
-        steps_content[step],
+        renderStep(),
         step < CALC_STEPS.length - 1 && (React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
             step > 0 && (React.createElement("button", { onClick: prev, style: { flex: 1, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
                     padding: "12px", fontSize: 13, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Back")),
             React.createElement("button", { onClick: next, disabled: !canNext(), style: { flex: 2, background: canNext() ? C.accent : C.dim, border: "none", borderRadius: 10,
-                    padding: "12px", fontSize: 13, fontWeight: 700, color: canNext() ? "#000" : C.muted,
-                    cursor: canNext() ? "pointer" : "default", transition: "all 0.2s" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
+                    padding: "12px", fontSize: 13, fontWeight: 700,
+                    color: canNext() ? "#000" : C.muted, cursor: canNext() ? "pointer" : "default",
+                    transition: "all 0.2s", WebkitTapHighlightColor: "transparent" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
 }
 function ProfileTab({ C, unlocked }) {
     const [profile, setProfile] = useState(() => {
@@ -2084,18 +2129,16 @@ function ProfileTab({ C, unlocked }) {
         }
     });
     const reset = () => { localStorage.removeItem("mp_profile"); setProfile(null); };
-    if (!profile) {
+    if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
             React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
                 React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83E\uDDEE"),
-                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: "var(--text,#eef2ff)", marginBottom: 8 } }, "Your Macro Calculator"),
-                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto" } }, "Answer a few questions to get your personalised daily calorie and macro targets. Your results will automatically update across the whole app.")),
-            React.createElement(MacroCalculator, { C: C, onSave: p => { setProfile(p); }, unlocked: unlocked })));
-    }
-    // Saved profile view
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Your Macro Calculator"),
+                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto" } }, "Answer a few questions about your body, job and training to get your personalised daily calorie and macro targets.")),
+            React.createElement(MacroCalculator, { C: C, onSave: p => setProfile(p) })));
     const r = profile.result;
-    const macros = r.macros;
-    const bmiInfo = bmiLabel(r.bmi);
+    const macros = (r === null || r === void 0 ? void 0 : r.macros) || {};
+    const bmiInfo = bmiLabel((r === null || r === void 0 ? void 0 : r.bmi) || 0);
     const goalLabel = profile.goal === "lose" ? "Fat Loss" : profile.goal === "gain" ? "Muscle Gain" : "Maintenance";
     return (React.createElement("div", { className: "tab-anim" },
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 } },
@@ -2104,11 +2147,11 @@ function ProfileTab({ C, unlocked }) {
                     profile.firstName,
                     " ",
                     profile.lastName),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, r === null || r === void 0 ? void 0 :
                     r.age,
-                    " yrs \u00B7 ",
+                    " yrs \u00B7 ", r === null || r === void 0 ? void 0 :
                     r.h,
-                    "cm \u00B7 ",
+                    "cm \u00B7 ", r === null || r === void 0 ? void 0 :
                     r.w,
                     "kg \u00B7 ",
                     goalLabel)),
@@ -2117,26 +2160,26 @@ function ProfileTab({ C, unlocked }) {
         React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14,
                 padding: "16px 18px", marginBottom: 12 } },
             React.createElement("div", { style: { fontSize: 11, color: C.sub, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, "DAILY CALORIE TARGET"),
-            React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal),
+            React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal || "—"),
             React.createElement("div", { style: { fontSize: 11, color: C.sub } },
-                "kcal/day \u00B7 ",
+                "kcal/day \u00B7 ", r === null || r === void 0 ? void 0 :
                 r.actLabel)),
         React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 12 } }, [{ l: "Protein", v: macros.protein, c: C.prot }, { l: "Carbs", v: macros.carbs, c: C.carb }, { l: "Fat", v: macros.fat, c: "#a855f7" }].map(({ l, v, c }) => (React.createElement("div", { key: l, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
             React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: c } },
-                v,
+                v || 0,
                 "g"),
             React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 3 } }, l))))),
         React.createElement("div", { style: { display: "flex", gap: 8 } },
             React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
-                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: bmiInfo.c } }, r.bmi),
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: bmiInfo.c } }, (r === null || r === void 0 ? void 0 : r.bmi) || "—"),
                 React.createElement("div", { style: { fontSize: 9, color: bmiInfo.c, fontWeight: 700, marginTop: 2 } }, bmiInfo.l),
                 React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "BMI")),
             React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
-                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, r.bmr),
-                React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day at rest"),
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, (r === null || r === void 0 ? void 0 : r.bmr) || "—"),
+                React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal at rest"),
                 React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "BMR")),
             React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
-                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, r.tdee),
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, (r === null || r === void 0 ? void 0 : r.tdee) || "—"),
                 React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day total"),
                 React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "TDEE"))),
         React.createElement("div", { style: { marginTop: 12, fontSize: 11, color: C.muted, textAlign: "center" } },
