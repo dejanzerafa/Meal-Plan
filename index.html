@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Meal Plan — Dejan Zerafa</title>
+  <title>Meal Prep · High Protein</title>
   <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Meal Plan">
+  <meta name="apple-mobile-web-app-title" content="Meal Prep">
   <meta name="theme-color" content="#f97316">
   <link rel="apple-touch-icon" id="apple-touch-icon">
   <link rel="manifest" id="pwa-manifest">
@@ -35,178 +35,84 @@
   </style>
   <script>
     function buildIcon(size) {
-      const c = document.createElement('canvas');
-      c.width = size; c.height = size;
-      const ctx = c.getContext('2d');
-      const r = size * 0.18;
+      const c = document.createElement('canvas'); c.width = size; c.height = size;
+      const ctx = c.getContext('2d'); const r = size * 0.18;
       ctx.fillStyle = '#f97316';
       ctx.beginPath();
-      ctx.moveTo(r, 0); ctx.lineTo(size - r, 0);
-      ctx.quadraticCurveTo(size, 0, size, r);
-      ctx.lineTo(size, size - r);
-      ctx.quadraticCurveTo(size, size, size - r, size);
-      ctx.lineTo(r, size);
-      ctx.quadraticCurveTo(0, size, 0, size - r);
-      ctx.lineTo(0, r);
-      ctx.quadraticCurveTo(0, 0, r, 0);
-      ctx.closePath();
-      ctx.fill();
-      const fs = Math.round(size * 0.30);
-      ctx.font = fs + 'px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏋🏻‍♂️', size * 0.30, size * 0.36);
-      ctx.fillText('💪🏻',    size * 0.72, size * 0.36);
-      ctx.fillText('🥩',     size * 0.50, size * 0.72);
+      ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
+      ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
+      ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
+      ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();
+      const fs=Math.round(size*0.30);ctx.font=fs+'px serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('🏋🏻‍♂️',size*0.30,size*0.36);
+      ctx.fillText('💪🏻',size*0.72,size*0.36);
+      ctx.fillText('🥩',size*0.50,size*0.72);
       return c.toDataURL('image/png');
     }
-    document.addEventListener('DOMContentLoaded', function() {
-      const icon = buildIcon(180);
-      document.getElementById('apple-touch-icon').href = icon;
-      const manifest = {
-        name: "Meal Plan — Dejan Zerafa", short_name: "Meal Plan",
-        start_url: ".", display: "standalone",
-        background_color: "#08090d", theme_color: "#f97316",
-        icons: [{ src: icon, sizes: "180x180", type: "image/png" }]
-      };
-      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-      document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+    document.addEventListener('DOMContentLoaded',function(){
+      const icon=buildIcon(180);
+      document.getElementById('apple-touch-icon').href=icon;
+      const manifest={name:"Meal Prep · High Protein",short_name:"Meal Prep",
+        start_url:".",display:"standalone",background_color:"#08090d",theme_color:"#f97316",
+        icons:[{src:icon,sizes:"180x180",type:"image/png"}]};
+      const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+      document.getElementById('pwa-manifest').href=URL.createObjectURL(blob);
     });
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(() => console.log('✅ Offline ready'))
-          .catch(e => console.log('SW:', e.message));
-      });
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));
     }
   </script>
 </head>
 <body>
-  <!-- Loading screen — motivational quotes + macro bars -->
+  <!-- ── Loader — sits above #root, fades out after animations complete ── -->
   <div id="mp-loader" style="position:fixed;inset:0;background:#08090d;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
 
 ```
-<!-- ── Scattered quotes backdrop ── -->
-<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;">
-
-  <!-- TOP ZONE -->
-  <div style="position:absolute;top:3%;left:2%;max-width:55%;transform:rotate(-3deg);">
-    <div style="font-size:11px;font-weight:800;color:#fff;opacity:0.07;letter-spacing:0.04em;line-height:1.4;">"Discipline Equals Freedom."</div>
-    <div style="font-size:8px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
-  </div>
-
-  <div style="position:absolute;top:4%;right:3%;max-width:42%;transform:rotate(4deg);text-align:right;">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.06;letter-spacing:0.04em;line-height:1.4;">"Be comfortable being uncomfortable."</div>
-    <div style="font-size:7px;color:#3b82f6;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— MAT FRASER</div>
-  </div>
-
-  <div style="position:absolute;top:12%;left:4%;max-width:40%;transform:rotate(2deg);">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Train like you've never won. Perform like you've never lost."</div>
-    <div style="font-size:7px;color:#a855f7;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— RICH FRONING</div>
-  </div>
-
-  <div style="position:absolute;top:13%;right:2%;max-width:38%;transform:rotate(-5deg);text-align:right;">
-    <div style="font-size:10px;font-weight:800;color:#f97316;opacity:0.07;letter-spacing:0.04em;line-height:1.4;">"Get after it."</div>
-    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
-  </div>
-
-  <div style="position:absolute;top:21%;left:1%;max-width:48%;transform:rotate(-2deg);">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"The only limit is the one you set yourself."</div>
-    <div style="font-size:7px;color:#22c55e;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— TIA-CLAIR TOOMEY</div>
-  </div>
-
-  <div style="position:absolute;top:22%;right:1%;max-width:40%;transform:rotate(3deg);text-align:right;">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Be the hero of your own story."</div>
-    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOE ROGAN</div>
-  </div>
-
-  <!-- LARGE WATERMARK — sits behind everything -->
-  <div style="position:absolute;top:30%;left:50%;transform:translateX(-50%) rotate(-8deg);white-space:nowrap;">
-    <div style="font-size:48px;font-weight:900;color:#fff;opacity:0.018;letter-spacing:0.02em;">DO THE WORK.</div>
-  </div>
-
-  <!-- SIDE LEFT — vertical -->
-  <div style="position:absolute;top:38%;left:-8px;transform:rotate(-90deg);transform-origin:left center;white-space:nowrap;">
-    <div style="font-size:8px;font-weight:700;color:#f97316;opacity:0.06;letter-spacing:0.14em;">"Work harder than you think you did yesterday." — MAT FRASER</div>
-  </div>
-
-  <!-- SIDE RIGHT — vertical -->
-  <div style="position:absolute;top:35%;right:-8px;transform:rotate(90deg);transform-origin:right center;white-space:nowrap;">
-    <div style="font-size:8px;font-weight:700;color:#3b82f6;opacity:0.06;letter-spacing:0.14em;">"Nothing worth having comes easy." — ANNIE THORISDOTTIR</div>
-  </div>
-
-  <!-- BOTTOM ZONE -->
-  <div style="position:absolute;bottom:28%;left:3%;max-width:46%;transform:rotate(2deg);">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Don't count on motivation. Count on discipline."</div>
-    <div style="font-size:7px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— JOCKO WILLINK</div>
-  </div>
-
-  <div style="position:absolute;bottom:27%;right:2%;max-width:44%;transform:rotate(-4deg);text-align:right;">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Trust the process."</div>
-    <div style="font-size:7px;color:#a855f7;opacity:0.07;letter-spacing:0.1em;margin-top:2px;">— NOAH OHLSEN</div>
-  </div>
-
-  <div style="position:absolute;bottom:19%;left:2%;max-width:50%;transform:rotate(-2deg);">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Hard work beats talent when talent doesn't work hard."</div>
-    <div style="font-size:7px;color:#22c55e;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— RICH FRONING</div>
-  </div>
-
-  <div style="position:absolute;bottom:18%;right:1%;max-width:42%;transform:rotate(3deg);text-align:right;">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"The universe rewards action."</div>
-    <div style="font-size:7px;color:#fff;opacity:0.05;letter-spacing:0.1em;margin-top:2px;">— JOE ROGAN</div>
-  </div>
-
-  <div style="position:absolute;bottom:10%;left:3%;max-width:48%;transform:rotate(2deg);">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Control the controllables."</div>
-    <div style="font-size:7px;color:#3b82f6;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— BRENT FIKOWSKI</div>
-  </div>
-
-  <div style="position:absolute;bottom:9%;right:2%;max-width:44%;transform:rotate(-3deg);text-align:right;">
-    <div style="font-size:9px;font-weight:700;color:#fff;opacity:0.05;letter-spacing:0.04em;line-height:1.4;">"Believe in yourself and all that you are."</div>
-    <div style="font-size:7px;color:#f97316;opacity:0.06;letter-spacing:0.1em;margin-top:2px;">— TIA-CLAIR TOOMEY</div>
-  </div>
-
-  <div style="position:absolute;bottom:3%;left:50%;transform:translateX(-50%);white-space:nowrap;">
-    <div style="font-size:8px;font-weight:700;color:#fff;opacity:0.04;letter-spacing:0.16em;">"MAKE TODAY BETTER THAN YESTERDAY." — MAT FRASER</div>
-  </div>
-
-  <!-- Second large watermark -->
-  <div style="position:absolute;bottom:22%;left:50%;transform:translateX(-50%) rotate(5deg);white-space:nowrap;">
-    <div style="font-size:36px;font-weight:900;color:#f97316;opacity:0.022;letter-spacing:0.02em;">EARN IT.</div>
-  </div>
-
-</div>
-
-<!-- ── Bar content (generic — no personal numbers) ── -->
+<!-- Loader content -->
 <div style="position:relative;z-index:1;width:100%;max-width:320px;">
-  <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;">DOHA · QATAR</div>
-  <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;">MEAL PLAN</div>
-  <div class="loader-sub" style="font-size:14px;font-weight:400;color:#8b98b0;margin-bottom:48px;">Dejan Zerafa</div>
+
+  <!-- Food emoji grid -->
+  <div class="loader-title" style="font-size:28px;line-height:1.6;text-align:center;letter-spacing:6px;margin-bottom:20px;opacity:0.85;">
+    🥩🐟🥚🍗🧀🥛<br>🥦🥕🧄🫑🥑🍅<br>🍚🌾🫘🍋🫒🥜
+  </div>
+
+  <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;text-align:center;">REAL FOOD · MADE SIMPLE</div>
+  <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;text-align:center;">Meal Prep</div>
+  <div class="loader-sub" style="font-size:13px;font-weight:400;color:#8b98b0;margin-bottom:40px;text-align:center;">High Protein · Batch Cooked · Real Food</div>
+
   <div class="loader-bars">
+    <!-- Protein -->
     <div style="margin-bottom:20px;">
-      <div style="margin-bottom:7px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#f97316;">● PROTEIN</span>
+        <span style="font-size:10px;color:#4b5563;">Daily target</span>
       </div>
       <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
         <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#f97316,#fb923c);border-radius:2px;"></div>
       </div>
     </div>
+    <!-- Carbs -->
     <div style="margin-bottom:20px;">
-      <div style="margin-bottom:7px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#3b82f6;">● CARBS</span>
+        <span style="font-size:10px;color:#4b5563;">Daily target</span>
       </div>
       <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
         <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;"></div>
       </div>
     </div>
+    <!-- Fat -->
     <div style="margin-bottom:48px;">
-      <div style="margin-bottom:7px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#a855f7;">● FAT</span>
+        <span style="font-size:10px;color:#4b5563;">Daily target</span>
       </div>
       <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
         <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;"></div>
       </div>
     </div>
+
     <div style="font-size:9px;letter-spacing:0.12em;color:#374151;text-align:center;">PREPARING YOUR PLAN...</div>
   </div>
 </div>
@@ -248,7 +154,7 @@ const BREAKFAST = {
     kcal: 798, protein: 93, carbs: 64, fat: 19, fixed: true,
     items: ["200g fat-free cottage cheese", "100g smoked turkey", "2 whole eggs",
         "2 sl. Baker Street white bread", "150g cherry tomatoes",
-        "Double espresso + skimmed milk", "250mL Baladna skimmed milk", "1 scoop ON whey"],
+        "Double espresso + Baladna skimmed milk", "250mL Baladna skimmed milk", "1 scoop ON whey"],
     supplements: ["Creatine 10g", "Vitamin D 4000 IU", "Fish oil ×2"],
 };
 const PRE = {
@@ -270,7 +176,7 @@ const IDB = [
             { n: "Fat-free cottage cheese", kcal: 72, p: 12, c: 4, f: 0.5 },
             { n: "Fat-free cottage cheese (chive or natural)", kcal: 72, p: 12, c: 4, f: 0.5 },
             { n: "0% Greek yogurt", kcal: 57, p: 10, c: 3.6, f: 0.4 },
-            { n: "Light sour cream (Daisy Light)", kcal: 100, p: 1.5, c: 4, f: 8 },
+            { n: "Light sour cream (light)", kcal: 100, p: 1.5, c: 4, f: 8 },
             { n: "Baladna skimmed milk", kcal: 35, p: 3.5, c: 5, f: 0.1 },
             { n: "Fat-free mozzarella", kcal: 160, p: 36, c: 4, f: 0 },
             { n: "Fat-free cheddar", kcal: 155, p: 35, c: 3, f: 0 },
@@ -320,10 +226,10 @@ const IDB = [
 // ONE carb source per recipe — no pasta + rice ever.
 const RECIPES = [
     {
-        id: "l1", name: "Marry Me Chicken", subtitle: "Jasmine rice · mushrooms · peas & carrots",
+        category: "main", id: "m01", name: "Marry Me Chicken", subtitle: "Jasmine rice · mushrooms · peas & carrots",
         badge: "🥘 SC", carb: "Rice", portions: 7,
         perPortion: { kcal: 751, protein: 70, carbs: 86, fat: 14 },
-        note: "Stock: 1 Knorr chicken cube dissolved in 280mL hot water. Fold peas, carrots and spinach into hot rice off heat.",
+        note: "Stock: 1 bouillon chicken cube dissolved in 280mL hot water. Fold peas, carrots and spinach into hot rice off heat.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" },
             { key: "rice_white", label: "White rice (jasmine)", qty: 490, unit: "g", cat: "Carbs" },
@@ -348,7 +254,7 @@ const RECIPES = [
         ],
     },
     {
-        id: "l2", name: "Big Mac Protein Pasta", subtitle: "Lean beef · pasta · high-protein Big Mac sauce",
+        category: "main", id: "m02", name: "Big Mac Protein Pasta", subtitle: "Lean beef · pasta · high-protein Big Mac sauce",
         badge: "🍳 ST", carb: "Pasta", portions: 7,
         perPortion: { kcal: 756, protein: 58, carbs: 85, fat: 18 },
         note: "Drain beef thoroughly after browning — removes excess fat and keeps macro accurate. No cheese needed in this recipe.",
@@ -371,10 +277,10 @@ const RECIPES = [
         ],
     },
     {
-        id: "l3", name: "Marry Me Chicken — Pasta", subtitle: "Pasta · mushrooms · peas & carrots · highest protein",
+        category: "main", id: "m03", name: "Marry Me Chicken — Pasta", subtitle: "Pasta · mushrooms · peas & carrots · highest protein",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 782, protein: 76, carbs: 87, fat: 14 },
-        note: "Same slow cooker method as rice version. Stock: 1 Knorr chicken cube in 280mL hot water. Highest protein of all 14 recipes.",
+        note: "Same slow cooker method as rice version. Stock: 1 bouillon chicken cube in 280mL hot water. Highest protein of all 14 recipes.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 550, unit: "g", cat: "Carbs" },
@@ -399,7 +305,7 @@ const RECIPES = [
         ],
     },
     {
-        id: "d1", name: "Beef Mince Bake", subtitle: "Lean mince · white & sweet potato · roasted veg",
+        category: "main", id: "m04", name: "Beef Mince Bake", subtitle: "Lean mince · white & sweet potato · roasted veg",
         badge: "🌬️ AF", carb: "Potato", portions: 7,
         perPortion: { kcal: 709, protein: 53, carbs: 83, fat: 18 },
         note: "Use PAM spray only for roasting — the ½ tbsp olive oil drizzle is added at serving. 50/50 potato split gives better glycaemic balance vs all white potato.",
@@ -420,15 +326,15 @@ const RECIPES = [
         ],
     },
     {
-        id: "n1", name: "French Onion Pasta", subtitle: "Chicken · caramelized onions · cottage cheese & parmesan sauce",
+        category: "main", id: "m05", name: "French Onion Pasta", subtitle: "Chicken · caramelized onions · cottage cheese & parmesan sauce",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 728, protein: 60, carbs: 79, fat: 18 },
-        note: "Onions must turn dark brown — takes ~45 min, be patient. Cheese blend: 112g FF cottage cheese + 21g Président Light mozz + parmesan. Stock: 1 Knorr beef cube in 750mL hot water.",
+        note: "Onions must turn dark brown — takes ~45 min, be patient. Cheese blend: 112g FF cottage cheese + 21g Président Light mozzarella + parmesan. Stock: 1 bouillon beef cube in 750mL hot water.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1130, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (penne or short)", qty: 650, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 112, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella (shredded)", qty: 21, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella (shredded)", qty: 21, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan (sauce + topping)", qty: 107, unit: "g", cat: "Dairy" },
             { key: "milk_ff", label: "Baladna skimmed milk", qty: 266, unit: "mL", cat: "Dairy" },
             { key: "butter", label: "Butter", qty: 20, unit: "g", cat: "Dairy" },
@@ -441,13 +347,13 @@ const RECIPES = [
         steps: [
             "Slow cooker: add chicken, garlic, Dijon, Worcestershire, 250mL stock and seasonings. Cook HIGH 3hr.",
             "Caramelize 3 onions in butter + remaining stock over medium heat until dark brown (~45 min).",
-            "Blend fat-free cottage cheese, light mozzarella, parmesan, Baladna milk and ¾ caramelized onions until smooth.",
+            "Blend fat-free cottage cheese, Président Light mozzarella, parmesan,  milk and ¾ caramelized onions until smooth.",
             "Cook pasta al dente. Drain.",
             "Shred chicken. Add pasta, cheese sauce and remaining onions. Mix well. Divide into 7 containers. Add ½ tbsp olive oil.",
         ],
     },
     {
-        id: "n2", name: "Honey Chipotle Chicken Bowl", subtitle: "Slow-cooked chicken · honey chipotle · jasmine rice",
+        category: "main", id: "m06", name: "Honey Chipotle Chicken Bowl", subtitle: "Slow-cooked chicken · honey chipotle · jasmine rice",
         badge: "🥘 SC", carb: "Rice", portions: 7,
         perPortion: { kcal: 714, protein: 67, carbs: 79, fat: 13 },
         note: "Tortilla wraps removed — served as rice bowl. Cheese blend replaces fat-free mozzarella: 314g FF cottage cheese + 59g light mozz + 20g parmesan. Chicken increased to 1.57kg.",
@@ -455,7 +361,7 @@ const RECIPES = [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1565, unit: "g", cat: "Protein" },
             { key: "rice_white", label: "White rice (jasmine)", qty: 580, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 314, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 59, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 59, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan", qty: 20, unit: "g", cat: "Dairy" },
             { key: "milk_ff", label: "Baladna skimmed milk", qty: 84, unit: "mL", cat: "Dairy" },
             { key: "chipotle_peppers_adobo", label: "Chipotle peppers in adobo", qty: 198, unit: "g", cat: "Sauces" },
@@ -465,24 +371,24 @@ const RECIPES = [
         ],
         steps: [
             "Slow cooker: add chicken, chipotle peppers, 30g honey and seasonings. Cook HIGH 3hr.",
-            "Blend fat-free cottage cheese, light mozzarella, parmesan, tomato sauce, garlic, Baladna milk and remaining 12g honey until smooth.",
+            "Blend fat-free cottage cheese, Président Light mozzarella, parmesan, tomato sauce, garlic,  milk and remaining 12g honey until smooth.",
             "Cook 580g jasmine rice.",
             "Shred chicken. Pour blended sauce in and mix well.",
             "Divide rice into 7 bowls. Top with chicken mix. Add ½ tbsp olive oil.",
         ],
     },
     {
-        id: "n3", name: "Chipotle Chicken Bowl", subtitle: "Blended chipotle · rice · corn · pico · Daisy sour cream",
+        category: "main", id: "m07", name: "Chipotle Chicken Bowl", subtitle: "Blended chipotle · rice · corn · pico · Daisy sour cream",
         badge: "🥘 SC", carb: "Rice", portions: 7,
         perPortion: { kcal: 730, protein: 66, carbs: 81, fat: 14 },
-        note: "Rice reduced to 560g (carb correction). Cheese blend: 118g FF cottage cheese + 22g light mozz + 7g parmesan. Stock: 2 Knorr chicken cubes in 1L hot water. Daisy Light sour cream confirmed available Doha.",
+        note: "Rice reduced to 560g (carb correction). Cheese blend: 118g FF cottage cheese + 22g light mozz + 7g parmesan. Stock: 2 bouillon chicken cubes in 1L hot water. light sour cream confirmed available Doha.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1637, unit: "g", cat: "Protein" },
             { key: "rice_white", label: "White rice (long grain)", qty: 560, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 118, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 22, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 22, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan (optional topping)", qty: 7, unit: "g", cat: "Dairy" },
-            { key: "sour_cream_light", label: "Light sour cream (Daisy Light)", qty: 184, unit: "g", cat: "Dairy" },
+            { key: "sour_cream_light", label: "Light sour cream (light)", qty: 184, unit: "g", cat: "Dairy" },
             { key: "chipotle_peppers_adobo", label: "Chipotle peppers in adobo", qty: 298, unit: "g", cat: "Sauces" },
             { key: "corn_canned", label: "Canned sweet corn (drained)", qty: 368, unit: "g", cat: "Sauces" },
             { key: "pico_de_gallo", label: "Mild pico de gallo", qty: 84, unit: "g", cat: "Sauces" },
@@ -499,15 +405,15 @@ const RECIPES = [
         ],
     },
     {
-        id: "n4", name: "Lean Beef Hamburger Helper", subtitle: "Lean beef · pasta in beef broth · cottage cheese & parmesan sauce",
+        category: "main", id: "m08", name: "Lean Beef Hamburger Helper", subtitle: "Lean beef · pasta in beef broth · cottage cheese & parmesan sauce",
         badge: "🍳 ST", carb: "Pasta", portions: 7,
         perPortion: { kcal: 756, protein: 59, carbs: 83, fat: 19 },
-        note: "Beef increased to 1.32kg to maintain protein after cheese substitution. Cheese blend: 208g FF CC + 39g light mozz + 13g parmesan. Stock: 1 Knorr beef cube in 1L hot water. No oil drizzle — beef fat is sufficient.",
+        note: "Beef increased to 1.32kg to maintain protein after cheese substitution. Cheese blend: 208g FF CC + 39g light mozz + 13g parmesan. Stock: 1 bouillon beef cube in 1L hot water. No oil drizzle — beef fat is sufficient.",
         batchItems: [
             { key: "beef_mince_lean", label: "Lean beef mince (5%)", qty: 1315, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (elbow or short)", qty: 730, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 208, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 39, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 39, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan (topping)", qty: 13, unit: "g", cat: "Dairy" },
             { key: "tomato_paste", label: "Tomato paste", qty: 66, unit: "g", cat: "Sauces" },
             { key: "onion", label: "Onion", qty: 1, unit: "whole", cat: "Aromatics" },
@@ -518,12 +424,12 @@ const RECIPES = [
             "Sauté onion and garlic until softened.",
             "Add beef, season with chili powder, garlic powder and paprika. Brown fully. Drain excess fat.",
             "Pour in 1L beef stock. Add dry uncooked pasta. Cover and cook until al dente.",
-            "Stir in tomato paste, cottage cheese and light mozzarella until smooth. Top with parmesan.",
+            "Stir in tomato paste, cottage cheese and Président Light mozzarella until smooth. Top with parmesan.",
             "Divide into 7 containers. No extra oil needed — beef provides sufficient fat.",
         ],
     },
     {
-        id: "n5", name: "Buffalo Ranch Chicken Pasta", subtitle: "Slow-cooked buffalo chicken · pasta · beef bacon · ranch",
+        category: "main", id: "m09", name: "Buffalo Ranch Chicken Pasta", subtitle: "Slow-cooked buffalo chicken · pasta · beef bacon · ranch",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 733, protein: 64, carbs: 83, fat: 15 },
         note: "Fat-free ranch confirmed available in Doha. Cheese blend: 256g FF CC + 48g light mozz + 16g parmesan replaces fat-free mozzarella and cheddar. Chicken increased to 1.25kg for protein.",
@@ -532,22 +438,22 @@ const RECIPES = [
             { key: "bacon_bits", label: "Beef bacon (cooked and crumbled)", qty: 86, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (rigatoni or any)", qty: 700, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 256, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella (shredded)", qty: 48, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella (shredded)", qty: 48, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan", qty: 16, unit: "g", cat: "Dairy" },
             { key: "sun_dried_tom", label: "Sun-dried tomatoes", qty: 60, unit: "g", cat: "Vegetables" },
-            { key: "hot_sauce", label: "Buffalo hot sauce (Frank's)", qty: 166, unit: "mL", cat: "Sauces" },
-            { key: "ranch_dressing", label: "Fat-free ranch dressing", qty: 166, unit: "mL", cat: "Sauces" },
+            { key: "hot_sauce", label: "Frank's Red Hot Wings Sauce", qty: 166, unit: "mL", cat: "Sauces" },
+            { key: "ranch_dressing", label: "Hidden Valley Fat-Free Ranch", qty: 166, unit: "mL", cat: "Sauces" },
         ],
         steps: [
-            "Add chicken, hot sauce and ranch dressing to slow cooker. Cook HIGH 3hr.",
+            "Add chicken, Frank's Red Hot Sauce and ranch dressing to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Drain. Cook beef bacon until crispy, crumble.",
-            "Shred chicken. Add pasta, bacon, sun-dried tomatoes, cottage cheese and light mozzarella. Mix well.",
+            "Shred chicken. Add pasta, bacon, sun-dried tomatoes, cottage cheese and Président Light mozzarella. Mix well.",
             "Top each portion with a sprinkle of parmesan. Divide into 7 containers.",
             "Add ½ tbsp olive oil per portion.",
         ],
     },
     {
-        id: "n6", name: "Garlic Parmesan Chicken Pasta", subtitle: "Chicken · broccoli · garlic parmesan & cream cheese sauce",
+        category: "main", id: "m10", name: "Garlic Parmesan Chicken Pasta", subtitle: "Chicken · broccoli · garlic parmesan & cream cheese sauce",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 772, protein: 68, carbs: 84, fat: 18 },
         note: "Flying Saucy Garlic Parmesan not in Doha — use light cream pasta sauce + 4 tbsp minced garlic + Italian herbs. Cheese blend: 94g FF CC + 18g light mozz. Parmesan stays at 156g for the garlic parmesan flavour profile.",
@@ -558,20 +464,20 @@ const RECIPES = [
             { key: "sun_dried_tom", label: "Sun-dried tomatoes", qty: 69, unit: "g", cat: "Vegetables" },
             { key: "cream_cheese_ff", label: "Fat-free cream cheese (Philadelphia Light)", qty: 140, unit: "g", cat: "Dairy" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 94, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 18, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 18, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan (sauce + topping)", qty: 156, unit: "g", cat: "Dairy" },
             { key: "milk_ff", label: "Baladna skimmed milk", qty: 166, unit: "mL", cat: "Dairy" },
             { key: "garlic", label: "Minced garlic", qty: 28, unit: "g", cat: "Aromatics" },
         ],
         steps: [
-            "Add chicken, cream cheese, cottage cheese, light mozzarella, garlic and Baladna milk to slow cooker. Cook HIGH 3hr.",
+            "Add chicken, cream cheese, cottage cheese, Président Light mozzarella, garlic and  milk to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Steam broccoli separately.",
             "Shred chicken. Add pasta, broccoli, sun-dried tomatoes and parmesan. Cook 15 min more.",
             "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
         ],
     },
     {
-        id: "n7", name: "Green Pepper & Onion Pasta", subtitle: "Chicken · sautéed green peppers · creamy + tomato sauce",
+        category: "main", id: "m11", name: "Green Pepper & Onion Pasta", subtitle: "Chicken · sautéed green peppers · creamy + tomato sauce",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 741, protein: 62, carbs: 81, fat: 17 },
         note: "HEB Creamy Poblano not in Doha — use any light creamy pasta sauce + smoked paprika + chipotle powder. Chicken increased to 1.3kg + cottage cheese added to sauce to fix protein (was 46P, now 62P).",
@@ -597,7 +503,7 @@ const RECIPES = [
         ],
     },
     {
-        id: "n8", name: "Chicken Bacon Mac", subtitle: "Chicken · beef bacon · pasta · blended cottage cheese sauce",
+        category: "main", id: "m12", name: "Chicken Bacon Mac", subtitle: "Chicken · beef bacon · pasta · blended cottage cheese sauce",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 753, protein: 65, carbs: 79, fat: 18 },
         note: "Cheese blend: 490g FF CC + 22g light mozz + parmesan replaces all fat-free mozzarella and cheddar. Beef bacon replaces pork bacon. Most involved recipe but excellent flavour.",
@@ -606,7 +512,7 @@ const RECIPES = [
             { key: "bacon_beef", label: "Beef bacon", qty: 220, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (macaroni/shells)", qty: 640, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 490, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 22, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 22, unit: "g", cat: "Dairy" },
             { key: "cream_cheese_ff", label: "Fat-free cream cheese", qty: 32, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan", qty: 45, unit: "g", cat: "Dairy" },
             { key: "milk_ff", label: "Baladna skimmed milk", qty: 191, unit: "mL", cat: "Dairy" },
@@ -617,14 +523,14 @@ const RECIPES = [
         ],
         steps: [
             "Sauté diced peppers and onion. Add to slow cooker with chicken, buffalo sauce and seasonings. Cook HIGH 2hr.",
-            "Blend cottage cheese, cream cheese, light mozzarella, parmesan, Baladna milk and honey for 4–5 min until smooth.",
+            "Blend cottage cheese, cream cheese, Président Light mozzarella, parmesan,  milk and honey for 4–5 min until smooth.",
             "Cook pasta al dente. Cook beef bacon until crispy, chop.",
             "Shred chicken. Add pasta, cheese sauce and bacon. Cook 30 min more.",
             "Divide into 7 containers. Add ½ tbsp olive oil per portion.",
         ],
     },
     {
-        id: "n9", name: "Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
+        category: "main", id: "m13", name: "Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
         badge: "🍳 ST", carb: "Rice", portions: 7,
         perPortion: { kcal: 728, protein: 53, carbs: 78, fat: 20 },
         note: "Steak replaced with lean 5% beef mince. Cheese blend: 196g FF CC + 37g light mozz + 12g parmesan. Sour cream reduced to 140g to keep fat at target. Drain beef thoroughly.",
@@ -632,9 +538,9 @@ const RECIPES = [
             { key: "beef_mince_lean", label: "Lean beef mince (5%)", qty: 1300, unit: "g", cat: "Protein" },
             { key: "rice_white", label: "White rice (jasmine)", qty: 630, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 196, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 37, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 37, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan", qty: 12, unit: "g", cat: "Dairy" },
-            { key: "sour_cream_light", label: "Light sour cream (Daisy Light)", qty: 140, unit: "g", cat: "Dairy" },
+            { key: "sour_cream_light", label: "Light sour cream (light)", qty: 140, unit: "g", cat: "Dairy" },
             { key: "greek_yogurt_0", label: "0% Greek yogurt", qty: 131, unit: "g", cat: "Dairy" },
             { key: "bell_pepper_orange", label: "Orange bell peppers", qty: 2, unit: "whole", cat: "Vegetables" },
             { key: "chipotle_peppers_adobo", label: "Chipotle peppers in adobo", qty: 100, unit: "g", cat: "Sauces" },
@@ -644,12 +550,12 @@ const RECIPES = [
             "Cook 630g jasmine rice.",
             "Brown beef mince. Season well. Drain ALL excess fat — critical for macro accuracy.",
             "Sauté diced bell peppers and add to beef.",
-            "Blend sour cream, Greek yogurt, cottage cheese, light mozzarella, chipotle peppers and lime juice until smooth.",
+            "Blend sour cream, Greek yogurt, cottage cheese, Président Light mozzarella, chipotle peppers and lime juice until smooth.",
             "Portion rice into 7 containers. Top with beef-pepper mix and drizzle sauce. Add ½ tbsp olive oil.",
         ],
     },
     {
-        id: "n10", name: "Chicken Alfredo Red Sauce", subtitle: "Slow-cooked chicken · Alfredo · Italian tomato sauce · cottage cheese",
+        category: "main", id: "m14", name: "Chicken Alfredo Red Sauce", subtitle: "Slow-cooked chicken · Alfredo · Italian tomato sauce · cottage cheese",
         badge: "🥘 SC", carb: "Pasta", portions: 7,
         perPortion: { kcal: 747, protein: 58, carbs: 82, fat: 20 },
         note: "Chicken increased to 1.12kg. Cheese blend: 182g FF CC + 34g light mozz + 11g parmesan replaces fat-free mozzarella. Prego Alfredo and Italian sauces available at Carrefour and LuLu, Doha.",
@@ -657,7 +563,7 @@ const RECIPES = [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1119, unit: "g", cat: "Protein" },
             { key: "pasta_regular", label: "Pasta (farfalle or any)", qty: 600, unit: "g", cat: "Carbs" },
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 182, unit: "g", cat: "Dairy" },
-            { key: "mozz_light", label: "Président Light mozzarella", qty: 34, unit: "g", cat: "Dairy" },
+            { key: "mozz_light", label: "Président Light mozzarellaarella", qty: 34, unit: "g", cat: "Dairy" },
             { key: "parmesan", label: "Parmesan", qty: 11, unit: "g", cat: "Dairy" },
             { key: "garlic", label: "Minced garlic", qty: 28, unit: "g", cat: "Aromatics" },
             { key: "alfredo_sauce", label: "Alfredo sauce — Prego (1 jar)", qty: 624, unit: "g", cat: "Sauces" },
@@ -666,14 +572,673 @@ const RECIPES = [
         steps: [
             "Add chicken, both sauces and garlic to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Drain.",
-            "Shred chicken. Stir in cottage cheese and light mozzarella until smooth. Add pasta. Cook 15 min more.",
+            "Shred chicken. Stir in cottage cheese and Président Light mozzarella until smooth. Add pasta. Cook 15 min more.",
             "Divide into 7 containers. Top with parmesan. Add ½ tbsp olive oil per portion.",
         ],
     },
+    // ─── BREAKFAST RECIPES ──────────────────────────────────────────────────────
+    {
+        category: "breakfast", id: "bf1",
+        name: "Egg & Beef Breakfast Bowl",
+        subtitle: "8 servings · ~10 min",
+        badge: "🍳 Stovetop", carb: "Rice",
+        perPortion: { protein: 48, carbs: 45, fat: 15, kcal: 512 },
+        batchItems: [
+            { key: "bf1-eggs", label: "Large eggs", qty: 16, unit: "whole", cat: "Protein" },
+            { key: "bf1-beef", label: "96/4 lean ground beef (raw)", qty: 907, unit: "g", cat: "Protein" },
+            { key: "bf1-rice", label: "Jasmine rice (uncooked)", qty: 400, unit: "g", cat: "Carbs" },
+            { key: "bf1-cheddar", label: "Fat-free cheddar (shredded)", qty: 112, unit: "g", cat: "Dairy" },
+            { key: "bf1-mozz", label: "Fat-free mozzarella (shredded)", qty: 112, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Add rice and 400mL water to a rice cooker and cook until done.",
+            "In a large skillet, cook the ground beef until browned. Season with salt and pepper. Set aside.",
+            "In the same skillet, scramble the 16 eggs until fully cooked.",
+            "Transfer beef, eggs, and cooked rice to a large bowl. Mix well.",
+            "Weigh total, divide by 8, and portion into 8 containers.",
+            "Top each container with 14g mozzarella and 14g cheddar.",
+            "Optional: serve with sugar-free syrup on the side.",
+        ],
+        note: "Cook rice the night before and refrigerate — speeds up prep significantly.",
+    },
+    {
+        category: "breakfast", id: "bf2",
+        name: "Bacon & Hashbrown Bowl",
+        subtitle: "6 servings · ~20 min",
+        badge: "🍳 Stovetop", carb: "Potato",
+        perPortion: { protein: 49, carbs: 56, fat: 18, kcal: 560 },
+        batchItems: [
+            { key: "bf2-eggs", label: "Large eggs", qty: 16, unit: "whole", cat: "Protein" },
+            { key: "bf2-bacon", label: "Center-cut beef bacon (raw)", qty: 340, unit: "g", cat: "Protein" },
+            { key: "bf2-hash", label: "Frozen shredded hashbrowns", qty: 1730, unit: "g", cat: "Carbs" },
+            { key: "bf2-cheddar", label: "Fat-free cheddar (shredded)", qty: 370, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Lightly spray a large skillet with oil. Scramble all 16 eggs until cooked. Set aside.",
+            "In the same skillet, cook the beef bacon until crispy. Set aside on paper towels.",
+            "Without draining the pan, cook the frozen hashbrowns in the same skillet, stirring as they cook.",
+            "Once hashbrowns are golden, transfer to a large bowl and weigh. Divide by 6 and portion into containers.",
+            "Distribute scrambled eggs evenly among the 6 containers.",
+            "Add bacon (approx 1.5 strips per container).",
+            "Optional: serve with sugar-free ketchup.",
+        ],
+        note: "Qatar: use beef bacon from Lulu or Carrefour. The bacon fat in the pan adds flavour to the hashbrowns — do not drain.",
+    },
+    {
+        category: "breakfast", id: "bf3",
+        name: "Breakfast Bagel Sandwich",
+        subtitle: "4 sandwiches · ~15 min",
+        badge: "🍳 Stovetop", carb: "Bagel",
+        perPortion: { protein: 51, carbs: 34, fat: 29, kcal: 506 },
+        batchItems: [
+            { key: "bf3-turkey", label: "Ground turkey sausage (raw)", qty: 454, unit: "g", cat: "Protein" },
+            { key: "bf3-eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" },
+            { key: "bf3-bagels", label: "Everything bagels", qty: 4, unit: "whole", cat: "Carbs" },
+            { key: "bf3-cheese", label: "Pepper jack cheese (slices)", qty: 4, unit: "whole", cat: "Dairy" },
+            { key: "bf3-butter", label: "Salted butter", qty: 14, unit: "g", cat: "Fats" },
+        ],
+        steps: [
+            "Divide turkey sausage into 4 equal portions and shape into patties.",
+            "Cook patties in a lightly oiled skillet until fully cooked through. Set aside on paper towels.",
+            "Cook eggs to your preferred doneness in the same skillet. Set aside.",
+            "Rub the skillet with butter and toast the bagels face-down until golden.",
+            "Assemble: bagel bottom → cheese slice → turkey patty → egg → bagel top.",
+            "Serve immediately or wrap for meal prep.",
+        ],
+        note: "Qatar: substitute turkey sausage with chicken sausage or lean beef mince patties seasoned with garlic, paprika, and salt.",
+    },
+    {
+        category: "breakfast", id: "bf4",
+        name: "Eggs on Wholegrain Toast",
+        subtitle: "1 serving · ~10 min",
+        badge: "🍳 Stovetop", carb: "Wholegrain",
+        perPortion: { protein: 30, carbs: 28, fat: 10, kcal: 320 },
+        batchItems: [
+            { key: "bf4-eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
+            { key: "bf4-whites", label: "Egg whites", qty: 3, unit: "whole", cat: "Protein" },
+            { key: "bf4-toast", label: "Wholegrain bread slice", qty: 1, unit: "whole", cat: "Carbs" },
+        ],
+        steps: [
+            "Crack 2 whole eggs and 3 egg whites into a bowl and whisk.",
+            "Lightly spray a non-stick pan with oil and cook over medium heat.",
+            "Toast 1 slice wholegrain bread.",
+            "Serve eggs on toast. Optional: add smoked salmon for extra protein.",
+        ],
+        note: "No-cook version: cottage cheese and toast is faster on busy mornings. Swap eggs for 200g FF cottage cheese.",
+    },
+    {
+        category: "breakfast", id: "bf5",
+        name: "Greek Yogurt Protein Bowl",
+        subtitle: "1 serving · 2 min",
+        badge: "❄️ No Cook", carb: "Berries",
+        perPortion: { protein: 28, carbs: 25, fat: 5, kcal: 280 },
+        batchItems: [
+            { key: "bf5-yogurt", label: "0% Greek yogurt", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "bf5-seeds", label: "Mixed seeds", qty: 15, unit: "g", cat: "Fats" },
+            { key: "bf5-berries", label: "Mixed berries (fresh or frozen)", qty: 80, unit: "g", cat: "Carbs" },
+        ],
+        steps: [
+            "Spoon 200g of plain 0% Greek yogurt into a bowl.",
+            "Top with mixed seeds and berries.",
+            "Avoid flavoured yogurts — they add unnecessary sugar.",
+            "Optional: add a scoop of unflavoured protein powder for extra protein.",
+        ],
+        note: "Qatar: Danone 0% Greek yogurt or Al Safi plain yogurt work well. Pre-portion into containers on Sunday for the whole week.",
+    },
+    {
+        category: "breakfast", id: "bf6",
+        name: "Cottage Cheese & Toast",
+        subtitle: "1 serving · 3 min",
+        badge: "❄️ No Cook", carb: "Wholegrain",
+        perPortion: { protein: 28, carbs: 30, fat: 5, kcal: 300 },
+        batchItems: [
+            { key: "bf6-cc", label: "Low-fat cottage cheese", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "bf6-toast", label: "Wholegrain bread slice", qty: 2, unit: "whole", cat: "Carbs" },
+        ],
+        steps: [
+            "Toast 2 slices of wholegrain bread.",
+            "Season 200g cottage cheese with salt, pepper, and optional chilli flakes.",
+            "Spread cottage cheese on toast and serve.",
+            "Optional: add sliced tomato or cucumber on top.",
+        ],
+        note: "One of the fastest high-protein breakfasts. Keep cottage cheese pre-seasoned in the fridge for grab-and-go mornings.",
+    },
+    // ─── DESSERT RECIPES ────────────────────────────────────────────────────────
+    {
+        category: "dessert", id: "ds1",
+        name: "Protein Brownie Cookies",
+        subtitle: "4 cookies · ~25 min",
+        badge: "🌬️ Oven", carb: "Oat/Flour",
+        perPortion: { protein: 24, carbs: 35, fat: 7, kcal: 290 },
+        batchItems: [
+            { key: "ds1-yogurt", label: "Plain nonfat Greek yogurt (divided)", qty: 340, unit: "g", cat: "Dairy" },
+            { key: "ds1-pumpkin", label: "Pure pumpkin purée", qty: 122, unit: "g", cat: "Vegetables" },
+            { key: "ds1-flour", label: "Self-rising flour", qty: 30, unit: "g", cat: "Carbs" },
+            { key: "ds1-coconut", label: "Coconut flour", qty: 42, unit: "g", cat: "Carbs" },
+            { key: "ds1-protein", label: "Chocolate protein powder (1 scoop)", qty: 30, unit: "g", cat: "Protein" },
+            { key: "ds1-cacao", label: "70% cacao powder", qty: 90, unit: "g", cat: "Carbs" },
+            { key: "ds1-egg", label: "Large egg", qty: 1, unit: "whole", cat: "Protein" },
+            { key: "ds1-whip", label: "Zero-sugar whipped cream", qty: 60, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Preheat oven to 175°C (350°F). Line a baking tray with parchment paper.",
+            "In a large bowl, mix 170g Greek yogurt, pumpkin purée, both flours, cacao powder, protein powder, baking powder, vanilla, and sweetener.",
+            "Add 1 egg and mix until a cookie dough forms. Add a splash of milk if too dry.",
+            "Scoop onto the tray and bake for 20 minutes.",
+            "While cooling, mix remaining 170g Greek yogurt with pudding mix and whipped cream for frosting.",
+            "Once fully cooled, top each cookie with frosting.",
+            "Optional: crumble 1-2 Oreo-style biscuits on top per cookie.",
+        ],
+        note: "Use any chocolate protein powder. These freeze well — make a double batch and store for the week.",
+    },
+    {
+        category: "dessert", id: "ds2",
+        name: "Chocolate Protein Rice Cakes",
+        subtitle: "2 rice cakes · ~5 min + freeze",
+        badge: "❄️ No Cook", carb: "Rice Cake",
+        perPortion: { protein: 20, carbs: 30, fat: 7, kcal: 260 },
+        batchItems: [
+            { key: "ds2-cakes", label: "Lightly salted rice cakes", qty: 2, unit: "whole", cat: "Carbs" },
+            { key: "ds2-yogurt", label: "Plain nonfat Greek yogurt", qty: 88, unit: "g", cat: "Dairy" },
+            { key: "ds2-pbfit", label: "Powdered peanut butter (PB Fit)", qty: 14, unit: "g", cat: "Protein" },
+            { key: "ds2-protein", label: "Whey protein powder (vanilla/choc)", qty: 30, unit: "g", cat: "Protein" },
+            { key: "ds2-choc", label: "Dark chocolate chips", qty: 45, unit: "g", cat: "Carbs" },
+            { key: "ds2-honey", label: "Raw honey", qty: 7, unit: "g", cat: "Carbs" },
+        ],
+        steps: [
+            "Mix Greek yogurt, PB Fit, protein powder, and honey in a bowl until smooth.",
+            "Spread the mixture evenly over the 2 rice cakes.",
+            "Melt dark chocolate chips in a microwave-safe bowl (50% power, 30 sec intervals, stirring between each).",
+            "Spread melted chocolate over both rice cakes.",
+            "Sprinkle a pinch of sea salt on top.",
+            "Place in the freezer for at least 15 minutes to set.",
+            "Store in freezer and eat directly from frozen.",
+        ],
+        note: "Qatar: PB Fit available at Lulu or import section of Carrefour. Any PB Fit works.",
+    },
+    // ─── NEW MAIN MEAL RECIPES (from  cookbook) ───────────────────────────────
+    {
+        category: "main", id: "m15",
+        name: "Cheeseburger Burritos",
+        subtitle: "8 servings · ~25 min",
+        badge: "🍳 Stovetop", carb: "Tortilla",
+        perPortion: { protein: 58, carbs: 40, fat: 23, kcal: 527 },
+        batchItems: [
+            { key: "m1-beef", label: "96/4 lean ground beef (raw)", qty: 1361, unit: "g", cat: "Protein" },
+            { key: "m1-tortillas", label: "Large wholemeal tortilla wraps", qty: 8, unit: "whole", cat: "Carbs" },
+            { key: "m1-cheese", label: "Colby jack or light cheese (slices)", qty: 8, unit: "whole", cat: "Dairy" },
+            { key: "m1-lettuce", label: "Romaine lettuce (shredded)", qty: 250, unit: "g", cat: "Vegetables" },
+            { key: "m1-onion", label: "White onion (diced)", qty: 2, unit: "whole", cat: "Aromatics" },
+            { key: "m1-mayo", label: "Light mayonnaise", qty: 240, unit: "g", cat: "Sauces" },
+            { key: "m1-ketchup", label: "Ketchup", qty: 45, unit: "g", cat: "Sauces" },
+            { key: "m1-mustard", label: "Yellow mustard", qty: 20, unit: "g", cat: "Sauces" },
+        ],
+        steps: [
+            "Season beef with onion powder, paprika, and garlic powder. Cook in a large skillet until fully browned.",
+            "Make the sauce: mix mayo, ketchup, mustard, and a splash of pickle juice in a bowl.",
+            "Dice onions and shred lettuce. Set aside.",
+            "Lay out 8 tortillas. Distribute beef, diced onion, and sauce evenly among them.",
+            "Place 1 slice of cheese on each tortilla.",
+            "Fold both ends in, then roll tightly to form burritos.",
+            "Toast burritos on a lightly oiled skillet over medium-high heat until golden on both sides.",
+        ],
+        note: "Qatar: use light beef or chicken tortillas from Lulu. Beef mince is widely available. Adjust mustard quantity to taste.",
+    },
+    {
+        category: "main", id: "m16",
+        name: "Ranch Beef Bowl",
+        subtitle: "3 servings · ~20 min",
+        badge: "🍳 Stovetop", carb: "Rice",
+        perPortion: { protein: 51, carbs: 40, fat: 12, kcal: 478 },
+        batchItems: [
+            { key: "m2-beef", label: "93/7 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" },
+            { key: "m2-rice", label: "Instant white rice", qty: 92, unit: "g", cat: "Carbs" },
+            { key: "m2-cauli", label: "Riced cauliflower (frozen)", qty: 255, unit: "g", cat: "Vegetables" },
+            { key: "m2-veg", label: "Mixed frozen vegetables", qty: 315, unit: "g", cat: "Vegetables" },
+            { key: "m2-yogurt", label: "Plain nonfat Greek yogurt", qty: 150, unit: "g", cat: "Dairy" },
+            { key: "m2-mozz", label: "Fat-free mozzarella (shredded)", qty: 56, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Microwave the instant rice according to package instructions. Set aside.",
+            "Microwave the riced cauliflower in its bag. Set aside.",
+            "Cook the ground beef in a large skillet over medium-high heat with buffalo ranch seasoning (or garlic, onion powder, and paprika).",
+            "Add the cooked cauliflower rice to the skillet and mix well.",
+            "Boil or steam the frozen mixed vegetables until tender.",
+            "In a large bowl, combine beef-cauli mix, instant rice, vegetables, Greek yogurt, and shredded cheese.",
+            "Season with Frank's Red Hot Sauce or preferred seasoning. Mix well. Divide into 3 containers.",
+        ],
+        note: "Buffalo ranch seasoning can be substituted with a mix of Frank's Frank's Red Hot Sauce (available in Doha), garlic powder, and onion powder.",
+    },
+    {
+        category: "main", id: "m17",
+        name: "Lean Taco Salad",
+        subtitle: "3 servings · ~15 min",
+        badge: "🍳 Stovetop", carb: "Rice",
+        perPortion: { protein: 44, carbs: 45, fat: 14, kcal: 500 },
+        batchItems: [
+            { key: "m3-beef", label: "93/7 lean ground beef (raw)", qty: 454, unit: "g", cat: "Protein" },
+            { key: "m3-rice", label: "Instant rice cups", qty: 460, unit: "g", cat: "Carbs" },
+            { key: "m3-beans", label: "Canned black beans (drained)", qty: 120, unit: "g", cat: "Carbs" },
+            { key: "m3-corn", label: "Canned sweet corn (drained)", qty: 125, unit: "g", cat: "Carbs" },
+            { key: "m3-pico", label: "Pico de gallo / fresh salsa", qty: 56, unit: "g", cat: "Vegetables" },
+            { key: "m3-lettuce", label: "Iceberg lettuce (chopped)", qty: 160, unit: "g", cat: "Vegetables" },
+            { key: "m3-yogurt", label: "Plain nonfat Greek yogurt", qty: 176, unit: "g", cat: "Dairy" },
+            { key: "m3-cheese", label: "Fat-free cheddar (shredded)", qty: 56, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Cook ground beef with taco seasoning (cumin, paprika, garlic, lime, salt) until fully browned.",
+            "Microwave instant rice according to package. Set aside.",
+            "In a large bowl, combine cooked beef, rice, drained beans, corn, pico de gallo, and shredded cheese.",
+            "Add Greek yogurt and mix well (acts as sour cream substitute).",
+            "Add chopped lettuce and toss gently.",
+            "Season with Frank's Red Hot Sauce and divide into 3 containers.",
+        ],
+        note: "Qatar: canned black beans and corn at any Lulu/Carrefour. Fresh tomatoes and onion make great pico de gallo — just dice and mix with lime juice and coriander.",
+    },
+    {
+        category: "main", id: "m4",
+        name: "Hibachi Steak Bowl",
+        subtitle: "8 servings · ~30 min",
+        badge: "🍳 Stovetop", carb: "Rice",
+        perPortion: { protein: 47, carbs: 55, fat: 20, kcal: 580 },
+        batchItems: [
+            { key: "m4-steak", label: "Top sirloin steak (raw)", qty: 1134, unit: "g", cat: "Protein" },
+            { key: "m4-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" },
+            { key: "m4-rice", label: "Jasmine rice (uncooked)", qty: 400, unit: "g", cat: "Carbs" },
+            { key: "m4-peas", label: "Frozen peas", qty: 400, unit: "g", cat: "Vegetables" },
+            { key: "m4-carrots", label: "Frozen carrots", qty: 400, unit: "g", cat: "Vegetables" },
+            { key: "m4-onion", label: "Yellow onion (diced)", qty: 180, unit: "g", cat: "Aromatics" },
+            { key: "m4-mayo", label: "Light mayonnaise", qty: 120, unit: "g", cat: "Sauces" },
+        ],
+        steps: [
+            "Cook jasmine rice the night before and refrigerate — cold rice is essential for fried rice.",
+            "Cut steak into bite-sized cubes. Season and set aside.",
+            "Heat a large skillet over high heat. Add cold rice, frozen vegetables, and diced onion. Stir-fry for 5-10 mins.",
+            "Push rice to the edges. Crack eggs into the centre and scramble until cooked, then mix into the rice.",
+            "Remove rice from pan. Add steak cubes and cook to medium-rare (130-140°F internal).",
+            "Mix yum-yum sauce: mayo + Frank's Red Hot Sauce of your choice + squeeze of lime.",
+            "Combine steak, rice, and veg in a large bowl. Weigh, divide by 8, and distribute sauce per container.",
+        ],
+        note: "Qatar: top sirloin available at Sultan Centre or Carrefour fresh section. Any good cut of beef works.",
+    },
+    // ─── MAINS (new) ────────────────────────────────────────────────────────
+    {
+        id: "m15",
+        name: "Lean Beef & Potato Roast", subtitle: "Potato · Instant Pot",
+        badge: "🍲 IP", carb: "🥔 Potato",
+        perPortion: { kcal: 533, protein: 59, carbs: 28, fat: 21 },
+        batchItems: [
+            { key: "m15_beef", label: "Lean beef eye of round (raw)", qty: 2000, unit: "g", cat: "Protein" },
+            { key: "m15_pot", label: "Red potatoes (quartered)", qty: 950, unit: "g", cat: "Carbs" },
+            { key: "m15_carr", label: "Baby carrots", qty: 450, unit: "g", cat: "Vegetables" },
+            { key: "m15_onion", label: "Yellow onion (diced)", qty: 1, unit: "whole", cat: "Vegetables" },
+            { key: "m15_broth", label: "Beef bone broth", qty: 700, unit: "ml", cat: "Liquids" },
+        ],
+        steps: [
+            "Wash and quarter the potatoes. Dice the onion. Set both aside.",
+            "Pat the beef roast dry with paper towels. Season all over with sea salt, paprika, and pepper.",
+            "Set Instant Pot to Sauté mode, spray with oil. Sear the roast 3–5 min per side until browned.",
+            "Add bone broth, potatoes, carrots and onion to the Instant Pot around the roast.",
+            "Seal the lid. Set to Pressure Cook (High) for 40 minutes. Allow 10 min natural release, then quick release.",
+            "Transfer all contents to a large bowl. Weigh total in grams, divide by 7, portion evenly into 7 containers ensuring equal meat and potato distribution.",
+        ],
+        note: "Leftovers keep in the fridge for 5 days. Beef bone broth: use 1 large Knorr cube dissolved in 700mL boiling water.",
+    },
+    {
+        id: "m16",
+        name: "Honey Chipotle Chicken Burritos", subtitle: "Wrap + Rice · Crockpot",
+        badge: "🥘 SC", carb: "🌮 Wrap",
+        perPortion: { kcal: 455, protein: 65, carbs: 52, fat: 4 },
+        batchItems: [
+            { key: "m16_chk", label: "Chicken breast (raw)", qty: 1200, unit: "g", cat: "Protein" },
+            { key: "m16_cheese", label: "Fat-free mozzarella (shredded)", qty: 400, unit: "g", cat: "Dairy" },
+            { key: "m16_cott", label: "Fat-free cottage cheese", qty: 160, unit: "g", cat: "Dairy" },
+            { key: "m16_rice", label: "Jasmine rice (uncooked)", qty: 130, unit: "g", cat: "Carbs" },
+            { key: "m16_tort", label: "High-fiber tortilla wraps (110 cal)", qty: 7, unit: "whole", cat: "Carbs" },
+            { key: "m16_chip", label: "Chipotle peppers in adobo", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "m16_honey", label: "Raw honey", qty: 42, unit: "g", cat: "Sauces" },
+            { key: "m16_tom", label: "Tomato sauce", qty: 170, unit: "g", cat: "Sauces" },
+            { key: "m16_milk", label: "Fat-free milk", qty: 80, unit: "ml", cat: "Liquids" },
+            { key: "m16_garl", label: "Garlic cloves", qty: 3, unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "In a crockpot, add raw chicken, chipotle peppers in adobo sauce, 21g honey, garlic salt and onion powder. Stir to coat.",
+            "Cook on high for 3 hours.",
+            "Blend together: cottage cheese, tomato sauce, garlic cloves, remaining 21g honey, garlic salt. Blend until completely smooth. Set aside.",
+            "Cook rice in rice cooker with 130mL water.",
+            "Once chicken is done, drain excess liquid and shred with two forks. Pour blended sauce into crockpot and mix well.",
+            "Lay out 7 tortilla wraps. Divide chicken mixture, cooked rice and 57g mozzarella evenly among each.",
+            "Fold ends in, roll tightly. Toast each burrito on a nonstick skillet over medium-high heat until golden brown on both sides.",
+        ],
+        note: "Macros: 455 kcal · 65P · 52C · 4F per burrito. Exceptionally high protein to fat ratio. Freeze extras — reheat in air fryer at 180°C for 8 min.",
+    },
+    {
+        id: "m17",
+        name: "Egg, Beef & Cheese Breakfast Burritos", subtitle: "Wrap · Stovetop",
+        badge: "🍳 ST", carb: "🌮 Wrap",
+        perPortion: { kcal: 500, protein: 50, carbs: 34, fat: 30 },
+        batchItems: [
+            { key: "m17_beef", label: "93/7 ground beef (raw)", qty: 900, unit: "g", cat: "Protein" },
+            { key: "m17_eggs", label: "Large eggs", qty: 8, unit: "whole", cat: "Protein" },
+            { key: "m17_bacon", label: "Beef bacon slices", qty: 8, unit: "whole", cat: "Protein" },
+            { key: "m17_cheese", label: "Shredded Italian cheese blend", qty: 224, unit: "g", cat: "Dairy" },
+            { key: "m17_tort", label: "High-fiber 12-inch tortilla wraps", qty: 8, unit: "whole", cat: "Carbs" },
+        ],
+        steps: [
+            "In a large skillet, spray oil and scramble the eggs with salt and pepper until fully cooked. Set aside.",
+            "Using the same skillet, cook the ground beef until fully browned. Season with garlic, paprika, onion powder. Set aside.",
+            "Cook beef bacon until crispy. Set aside on paper towels.",
+            "Lay out 8 tortilla wraps. Add 28g shredded cheese, beef, scrambled eggs, and 1 slice of bacon to each wrap.",
+            "Drizzle sriracha mayo if desired. Fold ends in, roll tightly.",
+            "Toast each burrito on medium-high heat until golden brown on all sides.",
+            "Cool completely before refrigerating. Wrap individually in foil for easy grab-and-go.",
+        ],
+        note: "Best eaten within 4 days. Reheat in microwave 60–90 sec or air fryer 180°C for 5 min. Sriracha mayo optional — adds approx 40 kcal.",
+    },
+    // ─── BREAKFAST ──────────────────────────────────────────────────────────
+    {
+        id: "b1", category: "breakfast",
+        name: "Egg, Beef & Cheese Breakfast Bowl", subtitle: "7 portions · Stovetop",
+        badge: "🍳 ST", carb: "🌾 Rice",
+        perPortion: { kcal: 512, protein: 48, carbs: 45, fat: 15 },
+        batchItems: [
+            { key: "b1_beef", label: "93/7 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" },
+            { key: "b1_eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" },
+            { key: "b1_rice", label: "Jasmine rice (uncooked)", qty: 350, unit: "g", cat: "Carbs" },
+            { key: "b1_ched", label: "Fat-free cheddar (shredded)", qty: 100, unit: "g", cat: "Dairy" },
+            { key: "b1_mozz", label: "Fat-free mozzarella (shredded)", qty: 100, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Add rice and 350mL water to a rice cooker. Let cook fully.",
+            "In a large nonstick skillet, cook the ground beef until fully browned. Season with salt and pepper. Remove and set aside.",
+            "Using the same skillet, scramble the eggs until fully cooked. Set aside.",
+            "Once rice is done, transfer beef, eggs, and rice to a large bowl and mix well.",
+            "Weigh total mixture in grams, divide by 7, portion evenly into 7 meal prep containers.",
+            "Top each container with ~14g cheddar and ~14g mozzarella cheese.",
+            "Optional: pack a small portion of sugar-free syrup on the side for a sweet-savoury combo.",
+        ],
+        note: "Macros: 512 kcal · 48P · 45C · 15F per bowl. Keeps refrigerated for 5 days. Reheat covered in microwave 90 sec.",
+    },
+    {
+        id: "b2", category: "breakfast",
+        name: "Bacon, Egg & Hashbrown Bowl", subtitle: "6 portions · Stovetop",
+        badge: "🍳 ST", carb: "🥔 Potato",
+        perPortion: { kcal: 560, protein: 49, carbs: 56, fat: 18 },
+        batchItems: [
+            { key: "b2_eggs", label: "Large eggs", qty: 16, unit: "whole", cat: "Protein" },
+            { key: "b2_bac", label: "Beef bacon slices", qty: 9, unit: "whole", cat: "Protein" },
+            { key: "b2_hash", label: "Frozen shredded hashbrowns", qty: 1730, unit: "g", cat: "Carbs" },
+            { key: "b2_ched", label: "Fat-free cheddar (shredded)", qty: 370, unit: "g", cat: "Dairy" },
+        ],
+        steps: [
+            "Lightly spray a large skillet with oil and scramble all 16 eggs with salt and pepper. Set aside.",
+            "Using the same skillet, cook beef bacon to desired crispness. Set aside on paper towels to absorb excess oil.",
+            "Without draining, cook the frozen hashbrowns in the same skillet — scramble them as they cook and season with salt and pepper.",
+            "Once hashbrowns are cooked, transfer to a large bowl. Weigh total in grams, divide by 6, portion evenly into 6 containers.",
+            "Distribute scrambled eggs evenly across all 6 containers.",
+            "Distribute bacon (roughly 1.5 slices per container) among the containers.",
+            "Top each container with cheddar cheese. Optional: pack sugar-free ketchup on the side.",
+        ],
+        note: "Macros: 560 kcal · 49P · 56C · 18F per bowl. Makes 6 portions. Reheat uncovered in microwave 2 min or in a skillet. Hashbrowns crisp up better in the skillet.",
+    },
+    {
+        id: "b3", category: "breakfast",
+        name: "Turkey Sausage Breakfast Bagel", subtitle: "4 sandwiches · Stovetop",
+        badge: "🍳 ST", carb: "🥯 Bagel",
+        perPortion: { kcal: 506, protein: 51, carbs: 34, fat: 29 },
+        batchItems: [
+            { key: "b3_turk", label: "Lean ground turkey (raw)", qty: 450, unit: "g", cat: "Protein" },
+            { key: "b3_eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" },
+            { key: "b3_bag", label: "Whole grain everything bagels", qty: 4, unit: "whole", cat: "Carbs" },
+            { key: "b3_cheese", label: "Pepper jack cheese slices", qty: 4, unit: "whole", cat: "Dairy" },
+            { key: "b3_but", label: "Salted butter", qty: 1, unit: "whole", cat: "Sauces" },
+        ],
+        steps: [
+            "Divide ground turkey into 4 equal portions. Form each into a thick round patty.",
+            "Heat a large skillet over medium-high heat, spray with oil. Cook turkey patties until fully cooked through. Set aside on paper towels.",
+            "Cook each egg in the skillet to your preferred doneness (egg molds help keep them round).",
+            "Lightly coat the skillet with butter. Place bagels face-down and toast until golden.",
+            "Assemble each sandwich: bottom bagel half → 1 slice cheese → 1 turkey patty → 1 egg → top bagel half.",
+            "Serve immediately or wrap individually for meal prep. Reheat in microwave 60 sec.",
+        ],
+        note: "Macros: 506 kcal · 51P · 34C · 29F per sandwich. Makes 4 sandwiches. Note higher fat from eggs + butter. Great post-workout breakfast.",
+    },
+    // ─── DESSERTS ────────────────────────────────────────────────────────────
+    {
+        id: "d1", category: "dessert",
+        name: "Protein Brownie Cookies", subtitle: "4 cookies · Oven",
+        badge: "🌬️ AF", carb: "🍫 Chocolate",
+        perPortion: { kcal: 145, protein: 12, carbs: 18, fat: 3 },
+        batchItems: [
+            { key: "d1_yog", label: "Plain nonfat Greek yogurt", qty: 340, unit: "g", cat: "Dairy" },
+            { key: "d1_pump", label: "Pure pumpkin purée", qty: 122, unit: "g", cat: "Vegetables" },
+            { key: "d1_flr", label: "Self-rising flour", qty: 30, unit: "g", cat: "Carbs" },
+            { key: "d1_coc", label: "Coconut flour", qty: 42, unit: "g", cat: "Carbs" },
+            { key: "d1_prot", label: "Chocolate brownie protein powder", qty: 1, unit: "whole", cat: "Protein" },
+            { key: "d1_cacao", label: "70% cacao powder", qty: 90, unit: "g", cat: "Sauces" },
+            { key: "d1_sug", label: "Brown sugar alternative", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "d1_egg", label: "Large egg", qty: 1, unit: "whole", cat: "Protein" },
+            { key: "d1_van", label: "Real vanilla extract", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "d1_bak", label: "Baking powder", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "d1_mil", label: "Unsweetened almond milk", qty: 1, unit: "whole", cat: "Liquids" },
+        ],
+        steps: [
+            "Preheat oven to 180°C (350°F). Line a baking sheet with parchment paper.",
+            "In a large bowl, mix together: 122g Greek yogurt, pumpkin purée, self-rising flour, coconut flour, cacao powder, protein powder, baking powder, vanilla extract, Truvia brown sugar, and egg.",
+            "Add almond milk one tablespoon at a time until you reach a cookie dough consistency (not too wet).",
+            "Scoop 4 equal portions onto the parchment-lined baking sheet. Flatten slightly.",
+            "Bake at 180°C for 20 minutes until set. Remove and allow to cool completely.",
+            "Make the frosting: mix together 170g Greek yogurt + Jello vanilla sugar-free pudding mix + Cool Whip until combined.",
+            "Frost cooled cookies and top with crushed chocolate sandwich cookies if desired.",
+        ],
+        note: "Macros: 145 kcal · 12P · 18C · 3F per cookie. Makes 4 cookies. Store in the fridge for up to 5 days. These taste best chilled overnight.",
+    },
+    {
+        id: "d2", category: "dessert",
+        name: "Protein Brownie", subtitle: "1 portion · Oven or Microwave",
+        badge: "🌬️ AF", carb: "🍫 Chocolate",
+        perPortion: { kcal: 267, protein: 37, carbs: 17, fat: 9 },
+        batchItems: [
+            { key: "d2_yog", label: "Low-fat Greek yogurt", qty: 120, unit: "g", cat: "Dairy" },
+            { key: "d2_egg", label: "Large egg", qty: 1, unit: "whole", cat: "Protein" },
+            { key: "d2_cacao", label: "Low-fat cocoa powder", qty: 20, unit: "g", cat: "Sauces" },
+            { key: "d2_prot", label: "Chocolate protein powder", qty: 20, unit: "g", cat: "Protein" },
+        ],
+        steps: [
+            "In a bowl, mix Greek yogurt and egg until smooth and creamy.",
+            "Add cocoa powder and protein powder. Stir until batter is smooth and lump-free.",
+            "Pour into a microwave-safe bowl or small oven-safe dish.",
+            "MICROWAVE: Cook at maximum power for 2:30–3 minutes.",
+            "AIR FRYER / OVEN: Bake at 160°C for 15–20 minutes until set.",
+            "Allow to cool slightly before eating — the texture becomes firmer and creamier as it cools.",
+            "Optional: top with 60g Greek yogurt mixed with a small amount of chocolate protein powder as frosting.",
+        ],
+        note: "Macros: 267 kcal · 37P · 17C · 9F per brownie. Single serving. Can substitute oat flour (15g) for protein powder for a different texture. Top with berries or nut butter for variety.",
+    },
+    ,
+    // ─── NEW MAINS from Cooking Abs ────────────────────────────────────────────
+    {
+        id: "m18", category: "main",
+        name: "Chicken with Mustard & Coffee Sauce", subtitle: "Mushroom cream · 4 portions · Stovetop",
+        badge: "🍳 ST", carb: "🍄 Low Carb",
+        perPortion: { kcal: 208, protein: 39, carbs: 7, fat: 3 },
+        batchItems: [
+            { key: "m18_chk", label: "Chicken breast (raw)", qty: 600, unit: "g", cat: "Protein" },
+            { key: "m18_mush", label: "Sliced mushrooms", qty: 100, unit: "g", cat: "Vegetables" },
+            { key: "m18_onion", label: "White onion (chopped)", qty: 1, unit: "whole", cat: "Aromatics" },
+            { key: "m18_garl", label: "Garlic cloves (chopped)", qty: 2, unit: "whole", cat: "Aromatics" },
+            { key: "m18_yog", label: "Low-fat Greek yogurt", qty: 120, unit: "g", cat: "Dairy" },
+            { key: "m18_must", label: "Dijon mustard", qty: 15, unit: "g", cat: "Sauces" },
+            { key: "m18_esp", label: "Double espresso (60ml)", qty: 60, unit: "ml", cat: "Liquids" },
+        ],
+        steps: [
+            "Season the chicken breasts with salt, pepper, and garlic powder.",
+            "Heat a skillet over medium-high, spray with oil. Sauté onion, garlic, and mushrooms until golden, about 5 min. Set aside.",
+            "In the same pan, cook the chicken until fully done, about 6-7 min per side.",
+            "In a bowl, mix Greek yogurt, Dijon mustard, and espresso. Season with salt and pepper.",
+            "Turn off heat. Return mushroom mix to pan. Pour sauce over everything and stir — residual heat thickens the sauce.",
+            "Finish with fresh parsley. Serve with rice or roasted veg.",
+        ],
+        note: "Macros: 208 kcal · 39P · 7C · 3F (4 portions). Scale to 1.2kg chicken for 8 portions. The coffee adds depth — you won't taste it directly. Extremely lean, ideal cut meal.",
+    },
+    {
+        id: "m19", category: "main",
+        name: "Salmon & Avocado Burrito", subtitle: "Crispy wrap · Air fryer · 1 portion",
+        badge: "🌬️ AF", carb: "🌮 Wrap",
+        perPortion: { kcal: 504, protein: 38, carbs: 32, fat: 27 },
+        batchItems: [
+            { key: "m19_salm", label: "Salmon loin (cubed, raw)", qty: 100, unit: "g", cat: "Protein" },
+            { key: "m19_avo", label: "Ripe avocado (half)", qty: 0.5, unit: "whole", cat: "Vegetables" },
+            { key: "m19_onion", label: "Red onion (half, sliced)", qty: 0.5, unit: "whole", cat: "Aromatics" },
+            { key: "m19_feta", label: "Light feta cheese", qty: 30, unit: "g", cat: "Dairy" },
+            { key: "m19_tort", label: "Whole wheat wrap", qty: 1, unit: "whole", cat: "Carbs" },
+            { key: "m19_yog", label: "Low-fat Greek yogurt", qty: 100, unit: "g", cat: "Dairy" },
+            { key: "m19_lem", label: "Lemon (juice of half)", qty: 0.5, unit: "whole", cat: "Sauces" },
+        ],
+        steps: [
+            "Cut salmon into cubes. Season with salt, pepper, garlic powder.",
+            "Air fry at 180°C for 15–20 min, stirring halfway, until golden and cooked through.",
+            "In a bowl: combine chopped avocado, sliced red onion, feta cubed small. Add cooked salmon.",
+            "Make the sauce: mix yogurt, lemon juice, olive oil drizzle, salt, pepper, garlic powder. Pour over bowl and mix.",
+            "Place the mixture in the centre of the wrap. Fold sides in, roll tightly.",
+            "Air fry at 180°C for 10 min flipping halfway until wrap is golden and crispy. Serve immediately.",
+        ],
+        note: "Macros: 504 kcal · 38P · 32C · 27F (1 portion). Make fresh, not batch-cook. Optional: scatter sunflower seeds for extra crunch. Use canned salmon to save time.",
+    },
+    {
+        id: "m20", category: "main",
+        name: "Juicy Garlic Lemon Chicken", subtitle: "Yogurt-marinated · Air fryer · 35 min",
+        badge: "🌬️ AF", carb: "🍋 Low Carb",
+        perPortion: { kcal: 197, protein: 39, carbs: 2, fat: 4 },
+        batchItems: [
+            { key: "m20_chk", label: "Chicken breasts (raw)", qty: 600, unit: "g", cat: "Protein" },
+            { key: "m20_yog", label: "Low-fat Greek yogurt", qty: 240, unit: "g", cat: "Dairy" },
+            { key: "m20_lem", label: "Lemon (juice of half)", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "m20_garl", label: "Garlic cloves (chopped)", qty: 4, unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Season the chicken breasts with salt, pepper, paprika, and garlic powder.",
+            "Mix the yogurt, lemon juice, chopped garlic, and optional soy sauce in a bowl. Coat the chicken fully and marinate minimum 15 min (overnight = best).",
+            "Air fry at 180°C for 30 min, turning halfway. Or bake at 180°C for 40 min.",
+            "Ensure internal temp reaches 75°C (165°F). Rest 5 min before slicing.",
+            "Serve sliced. Pairs with rice, roasted potatoes, or salad.",
+        ],
+        note: "Macros: 197 kcal · 39P · 2C · 4F per 200g portion. Scale to 900g chicken for 4–5 portions. Outstanding protein-to-calorie ratio — ideal cut day or post-workout meal. Yogurt keeps it incredibly juicy.",
+    },
+    {
+        id: "m21", category: "main",
+        name: "Crispy Chicken Nuggets", subtitle: "Cornflake crusted · Air fryer · 25 min",
+        badge: "🌬️ AF", carb: "🌽 Cornflake",
+        perPortion: { kcal: 311, protein: 20, carbs: 31, fat: 13 },
+        batchItems: [
+            { key: "m21_chk", label: "Ground chicken (formed into balls)", qty: 400, unit: "g", cat: "Protein" },
+            { key: "m21_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
+            { key: "m21_corn", label: "Corn Flakes (crushed, sugar-free)", qty: 60, unit: "g", cat: "Carbs" },
+        ],
+        steps: [
+            "Form the ground chicken into equal-sized balls. Season with salt, pepper, paprika, and garlic powder.",
+            "Beat the eggs in a bowl. Add a few drops of Tabasco for a spicy version.",
+            "Put Corn Flakes in a zip-lock bag and crush into coarse crumbs. Spread on a plate.",
+            "Dip each chicken ball into beaten egg, then roll in crushed Corn Flakes, pressing to coat evenly.",
+            "Air fry at 180°C for 25–30 minutes until golden and crispy and internal temp reaches 75°C.",
+            "Serve with a dipping sauce — Greek yogurt mixed with Dijon mustard and garlic powder works perfectly.",
+        ],
+        note: "Macros: 311 kcal · 20P · 31C · 13F (2 portions). The Corn Flake crust gives real crunch without deep frying. Kids love these too. Double batch and freeze for meal prep.",
+    },
+    // ─── NEW BREAKFAST from Cooking Abs ────────────────────────────────────────
+    {
+        id: "b4", category: "breakfast",
+        name: "Protein Smoothie Bowl", subtitle: "1 portion · No cook · 5 min",
+        badge: "🍳 NC", carb: "🫐 Berries",
+        perPortion: { kcal: 294, protein: 41, carbs: 21, fat: 6 },
+        batchItems: [
+            { key: "b4_prot", label: "Chocolate protein powder", qty: 30, unit: "g", cat: "Protein" },
+            { key: "b4_yog", label: "0% Greek yogurt", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "b4_ber", label: "Frozen mixed berries", qty: 100, unit: "g", cat: "Carbs" },
+            { key: "b4_milk", label: "Unsweetened almond milk", qty: 50, unit: "ml", cat: "Liquids" },
+        ],
+        steps: [
+            "Add Greek yogurt, protein powder, frozen berries, and almond milk to a blender.",
+            "Blend on high until thick and smooth — thicker than a drink. Add more milk only if needed.",
+            "Pour into a bowl.",
+            "Top with mixed seeds, coconut flakes, crushed nuts, or more berries. Serve immediately.",
+        ],
+        note: "Macros: 294 kcal · 41P · 21C · 6F (1 portion). No cooking needed. Frozen berries chill and thicken the bowl naturally. Works with any protein powder flavour — vanilla is great too.",
+    },
+    {
+        id: "b5", category: "breakfast",
+        name: "Carrot Protein Pancakes", subtitle: "1 portion · Stovetop · 10 min",
+        badge: "🍳 ST", carb: "🥕 Carrot",
+        perPortion: { kcal: 359, protein: 41, carbs: 32, fat: 8 },
+        batchItems: [
+            { key: "b5_carrot", label: "Grated carrot", qty: 100, unit: "g", cat: "Vegetables" },
+            { key: "b5_yog", label: "0% Greek yogurt", qty: 150, unit: "g", cat: "Dairy" },
+            { key: "b5_prot", label: "Vanilla protein powder", qty: 30, unit: "g", cat: "Protein" },
+            { key: "b5_egg", label: "Large egg", qty: 1, unit: "whole", cat: "Protein" },
+            { key: "b5_oat", label: "Oat flour", qty: 30, unit: "g", cat: "Carbs" },
+        ],
+        steps: [
+            "Grate the carrot finely. Squeeze out excess moisture with a paper towel — this is important.",
+            "In a bowl, mix: grated carrot, Greek yogurt, protein powder, egg, oat flour, cinnamon, and a pinch of salt. Mix until thick batter forms.",
+            "Heat a non-stick pan over medium, spray with oil.",
+            "Scoop batter into the pan to form pancakes. Cook 3–4 min per side until golden and set.",
+            "For the chocolate topping: mix Greek yogurt + chocolate protein powder + a little milk until creamy. Pour over the pancakes.",
+            "Serve immediately. Optional: drizzle honey or add fresh berries.",
+        ],
+        note: "Macros: 359 kcal · 41P · 32C · 8F (1 portion). The carrot keeps these super moist. Don't skip squeezing out the moisture. The chocolate sauce makes this feel indulgent while staying on macros.",
+    },
+    // ─── NEW DESSERTS from Cooking Abs ─────────────────────────────────────────
+    {
+        id: "d3", category: "dessert",
+        name: "High-Protein Chocolate Cake", subtitle: "10 slices · Oven · 45 min",
+        badge: "🌬️ Oven", carb: "🍫 Chocolate",
+        perPortion: { kcal: 118, protein: 15, carbs: 9, fat: 3 },
+        batchItems: [
+            { key: "d3_cott", label: "Fat-free cottage cheese", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "d3_egg", label: "Egg whites", qty: 240, unit: "ml", cat: "Protein" },
+            { key: "d3_oat", label: "Oat flour", qty: 75, unit: "g", cat: "Carbs" },
+            { key: "d3_prot", label: "Chocolate protein powder", qty: 60, unit: "g", cat: "Protein" },
+            { key: "d3_cac", label: "Low-fat cocoa powder", qty: 45, unit: "g", cat: "Sauces" },
+            { key: "d3_milk", label: "Unsweetened almond milk", qty: 120, unit: "ml", cat: "Liquids" },
+        ],
+        steps: [
+            "Preheat oven to 180°C. Line a loaf tin with parchment paper or use a silicone mould.",
+            "Blend egg whites and cottage cheese until completely smooth.",
+            "Transfer to a bowl. Add oat flour, protein powder, cocoa powder, almond milk, and a pinch of salt. Mix into a smooth batter.",
+            "Pour into the mould. Bake 35–40 min. Toothpick should come out clean.",
+            "Cool completely before unmoulding.",
+            "Make the topping: mix Greek yogurt + protein powder + cocoa powder until creamy. Spread over the cooled cake.",
+            "Slice into 10 equal portions. Store in the fridge.",
+        ],
+        note: "Macros: 118 kcal · 15P · 9C · 3F per slice (10 slices). Gets better on day 2. Keeps 5 days refrigerated. Optional: top with crushed peanuts.",
+    },
+    {
+        id: "d4", category: "dessert",
+        name: "Matcha Banana Protein Bread", subtitle: "10 slices · Oven · 40 min",
+        badge: "🌬️ Oven", carb: "🍌 Banana",
+        perPortion: { kcal: 153, protein: 15, carbs: 16, fat: 3 },
+        batchItems: [
+            { key: "d4_ban", label: "Ripe bananas", qty: 2, unit: "whole", cat: "Carbs" },
+            { key: "d4_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
+            { key: "d4_cott", label: "Fat-free cottage cheese", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "d4_oat", label: "Oat flour", qty: 125, unit: "g", cat: "Carbs" },
+            { key: "d4_prot", label: "White chocolate protein powder", qty: 75, unit: "g", cat: "Protein" },
+            { key: "d4_match", label: "Matcha powder (2 dessert spoons)", qty: 2, unit: "whole", cat: "Sauces" },
+            { key: "d4_yog", label: "Low-fat Greek yogurt (topping)", qty: 120, unit: "g", cat: "Dairy" },
+            { key: "d4_ber", label: "Mixed berries (topping)", qty: 150, unit: "g", cat: "Carbs" },
+        ],
+        steps: [
+            "Preheat oven to 180°C. Line a loaf tin with parchment paper.",
+            "Blend bananas, eggs, and cottage cheese until completely smooth.",
+            "Transfer to a bowl. Add oat flour, protein powder, matcha powder, and optional baking powder. Stir until thick and uniform.",
+            "Pour into tin. Bake 30 min — toothpick should come out clean.",
+            "Make the topping while baking: mix Greek yogurt + matcha powder + protein powder until creamy.",
+            "Cool completely before unmoulding. Spread topping over bread.",
+            "Top with berries. Slice into 10 portions.",
+        ],
+        note: "Macros: 153 kcal · 15P · 16C · 3F per slice (10 slices). Riper bananas = sweeter bread with no added sugar. Keeps 5 days refrigerated. Matcha topping colour is dramatic and Instagrammable.",
+    },
 ];
-;
-;
-;
 // ─── FIXED 7-DAY SHOPPING ──────────────────────────────────────────────────
 const FIXED = {
     "🌅 Breakfast — 7 days": [
@@ -957,6 +1522,7 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner, portion
     const isD = r.id === activeDinner;
     const active = isL || isD;
     const lastCooked = getLastCooked(r.id);
+    const neverUsed = !localStorage.getItem(`mp_last_${r.id}`);
     const scale = (portions || 7) / 7;
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
     const toggleStep = i => setStepsDone(s => (Object.assign(Object.assign({}, s), { [i]: !s[i] })));
@@ -978,7 +1544,11 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner, portion
                         lastCooked && React.createElement("span", { style: { fontSize: 10, color: C.green, background: C.greenDim, border: `1px solid ${C.greenBorder}`,
                                 borderRadius: 4, padding: "2px 7px" } },
                             "\uD83D\uDD50 ",
-                            lastCooked)),
+                            lastCooked),
+                        neverUsed && !isL && !isD && React.createElement("span", { style: { fontSize: 10, color: "#fb923c", background: "rgba(251,146,60,0.12)", border: "1px solid rgba(251,146,60,0.35)",
+                                borderRadius: 4, padding: "2px 7px", fontWeight: 700 } }, "TRY ME \uD83E\uDD24"),
+                        r.isNew && React.createElement("span", { style: { fontSize: 10, color: "#f43f5e", background: "rgba(244,63,94,0.12)", border: "1px solid rgba(244,63,94,0.35)",
+                                borderRadius: 4, padding: "2px 7px", fontWeight: 700 } }, "NEW \uD83D\uDD25")),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
                     React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, r.subtitle))),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 10 } },
@@ -994,12 +1564,15 @@ function RecipeCard({ r, activeLunch, activeDinner, setLunch, setDinner, portion
                     r.perPortion.kcal,
                     " kcal")),
             React.createElement("div", { style: { display: "flex", gap: 8 } },
-                React.createElement("button", { onClick: () => setLunch(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none",
-                        cursor: "pointer", background: isL ? C.accent : C.card2,
-                        color: isL ? "#000" : C.sub, letterSpacing: "0.03em" } }, isL ? "☀️ Lunch ✓" : "☀️ Set Lunch"),
-                React.createElement("button", { onClick: () => setDinner(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none",
-                        cursor: "pointer", background: isD ? "#7c3aed" : C.card2,
-                        color: isD ? "#fff" : C.sub, letterSpacing: "0.03em" } }, isD ? "🌙 Dinner ✓" : "🌙 Set Dinner"),
+                (r.category || "main") === "main" && React.createElement(React.Fragment, null,
+                    React.createElement("button", { onClick: () => setLunch(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none",
+                            cursor: "pointer", background: isL ? C.accent : C.card2,
+                            color: isL ? "#000" : C.sub, letterSpacing: "0.03em" } }, isL ? "☀️ Lunch ✓" : "☀️ Set Lunch"),
+                    React.createElement("button", { onClick: () => setDinner(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none",
+                            cursor: "pointer", background: isD ? "#7c3aed" : C.card2,
+                            color: isD ? "#fff" : C.sub, letterSpacing: "0.03em" } }, isD ? "🌙 Dinner ✓" : "🌙 Set Dinner")),
+                (r.category || "main") !== "main" && (React.createElement("div", { style: { flex: 1, padding: "7px 10px", fontSize: 11, color: C.sub, background: C.card2,
+                        borderRadius: 8, textAlign: "center" } }, r.category === "breakfast" ? "🌅 Breakfast recipe" : "🍰 Dessert recipe")),
                 React.createElement("button", { onClick: () => setOpen(o => !o), style: { padding: "7px 10px", fontSize: 12, borderRadius: 8, border: `1px solid ${C.dim}`,
                         cursor: "pointer", background: "none", color: C.sub } }, open ? "▲" : "▼"))),
         open && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
@@ -1159,6 +1732,118 @@ function MacroRef() {
 }
 // ─── APP ───────────────────────────────────────────────────────────────────
 const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
+// ─── FREEMIUM ───────────────────────────────────────────────────────────────
+const FREE_IDS = new Set(["m01"]);
+const DEV_CODE = "BATCHMASTER"; // tap logo 5× to enter
+function LockedRecipeCard({ r, onUnlock }) {
+    return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
+            overflow: "hidden", marginBottom: 10, position: "relative", minHeight: 120 } },
+        React.createElement("div", { style: { padding: "12px 14px", filter: "blur(3px)", opacity: 0.45, pointerEvents: "none",
+                userSelect: "none" } },
+            React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
+                React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
+                        borderRadius: 4, padding: "2px 7px" } }, r.badge),
+                React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`,
+                        borderRadius: 4, padding: "2px 7px" } }, r.carb)),
+            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, r.subtitle),
+            React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } }, ["P", "C", "F"].map(l => (React.createElement("span", { key: l, style: { fontSize: 11, background: C.card2, border: `1px solid ${C.dim}`,
+                    borderRadius: 6, padding: "3px 14px", color: C.muted } }, "\u2014"))))),
+        React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", background: "rgba(8,9,13,0.75)",
+                borderRadius: 14, gap: 8 } },
+            React.createElement("span", { style: { fontSize: 26 } }, "\uD83D\uDD12"),
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Premium Recipe"),
+            React.createElement("button", { onClick: onUnlock, style: { background: C.accent, border: "none", borderRadius: 8, padding: "8px 18px",
+                    fontSize: 12, fontWeight: 700, color: "#000", cursor: "pointer" } }, "Unlock All Recipes \u2192"))));
+}
+function UpgradeModal({ onClose }) {
+    return (React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.88)", zIndex: 300,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "0 16px" } },
+        React.createElement("div", { style: { background: C.card, borderRadius: 20, padding: "24px 20px",
+                maxWidth: 340, width: "100%", boxShadow: "0 24px 64px rgba(0,0,0,0.6)" } },
+            React.createElement("div", { style: { textAlign: "center", fontSize: 22, letterSpacing: 4, marginBottom: 14,
+                    lineHeight: 1.7, opacity: 0.9 } },
+                "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F\uD83E\uDD90\uD83E\uDDC0",
+                React.createElement("br", null),
+                "\uD83E\uDD66\uD83E\uDD55\uD83E\uDDC4\uD83E\uDED1\uD83C\uDF45\uD83E\uDD51",
+                React.createElement("br", null),
+                "\uD83C\uDF5A\uD83C\uDF3E\uD83E\uDED8\uD83C\uDF4B\uD83E\uDED2\uD83E\uDD5C"),
+            React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, textAlign: "center", marginBottom: 4 } }, "Unlock All Recipes"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center", lineHeight: 1.6, marginBottom: 20 } }, "Real food. Verified macros. High protein. Every recipe batch-cook ready."),
+            React.createElement("div", { style: { background: C.accentDim, border: `1.5px solid ${C.accentBorder}`, borderRadius: 14,
+                    padding: "14px 16px", marginBottom: 10, cursor: "pointer" } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+                    React.createElement("div", null,
+                        React.createElement("div", { style: { fontSize: 10, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "ONE-TIME \u00B7 LIFETIME ACCESS"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes, no expiry"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Less than a cookbook. Keep it forever.")),
+                    React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: C.accent, flexShrink: 0 } }, "$34.99"))),
+            React.createElement("div", { style: { background: "rgba(34,197,94,0.08)", border: "1.5px solid rgba(34,197,94,0.30)",
+                    borderRadius: 14, padding: "14px 16px", marginBottom: 10, cursor: "pointer", position: "relative" } },
+                React.createElement("div", { style: { position: "absolute", top: -10, right: 12, background: C.green,
+                        borderRadius: 20, padding: "2px 10px", fontSize: 9, fontWeight: 800, color: "#000",
+                        letterSpacing: "0.05em" } }, "\u2B50 BEST VALUE"),
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+                    React.createElement("div", null,
+                        React.createElement("div", { style: { fontSize: 10, color: C.green, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "ANNUAL \u00B7 SAVE 37%"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + new monthly drops"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Only $5/mo \u00B7 Billed annually")),
+                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0 } },
+                        React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: C.green } }, "$59.99"),
+                        React.createElement("div", { style: { fontSize: 9, color: C.green, opacity: 0.7 } }, "/yr")))),
+            React.createElement("div", { style: { background: "rgba(124,58,237,0.10)", border: "1.5px solid rgba(124,58,237,0.30)",
+                    borderRadius: 14, padding: "14px 16px", marginBottom: 18, cursor: "pointer", position: "relative" } },
+                React.createElement("div", { style: { position: "absolute", top: -10, right: 12, background: "#f97316",
+                        borderRadius: 20, padding: "2px 10px", fontSize: 9, fontWeight: 800, color: "#000",
+                        letterSpacing: "0.05em" } }, "\uD83C\uDF89 15% OFF FIRST MONTH"),
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+                    React.createElement("div", null,
+                        React.createElement("div", { style: { fontSize: 10, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "MONTHLY \u00B7 CANCEL ANYTIME"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + monthly new drops"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } },
+                            React.createElement("span", { style: { textDecoration: "line-through", opacity: 0.6 } }, "$7.99/mo"),
+                            React.createElement("span", { style: { color: "#f97316", fontWeight: 700, marginLeft: 5 } }, "$6.79 first month"))),
+                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0 } },
+                        React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: "#a78bfa" } }, "$7.99"),
+                        React.createElement("div", { style: { fontSize: 9, color: "#a78bfa", opacity: 0.7 } }, "/mo after")))),
+            React.createElement("button", { style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
+                    padding: "14px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer",
+                    marginBottom: 10, letterSpacing: "0.03em" } }, "Get Access Now \u2192"),
+            React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
+                    fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
+}
+function DevModal({ onClose, onUnlock }) {
+    const [code, setCode] = useState("");
+    const [error, setError] = useState(false);
+    const submit = () => {
+        if (code.toUpperCase().trim() === DEV_CODE) {
+            onUnlock();
+            onClose();
+        }
+        else {
+            setError(true);
+            setCode("");
+            setTimeout(() => setError(false), 1500);
+        }
+    };
+    return (React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" } },
+        React.createElement("div", { style: { background: C.card, borderRadius: 16, padding: "24px 20px",
+                maxWidth: 280, width: "100%" } },
+            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.12em",
+                    marginBottom: 14 } }, "\u2699\uFE0F DEVELOPER ACCESS"),
+            React.createElement("input", { value: code, onChange: e => setCode(e.target.value), onKeyDown: e => e.key === "Enter" && submit(), placeholder: "Enter access code", type: "password", style: { width: "100%", background: error ? "rgba(239,68,68,0.1)" : C.card2,
+                    border: `1px solid ${error ? "#ef4444" : C.dim}`, borderRadius: 8,
+                    padding: "10px 12px", color: C.text, fontSize: 14, fontFamily: "inherit",
+                    outline: "none", marginBottom: 10, boxSizing: "border-box" } }),
+            error && React.createElement("div", { style: { fontSize: 11, color: "#ef4444", marginBottom: 8 } }, "Incorrect code"),
+            React.createElement("div", { style: { display: "flex", gap: 8 } },
+                React.createElement("button", { onClick: onClose, style: { flex: 1, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
+                        padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "Cancel"),
+                React.createElement("button", { onClick: submit, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
+                        padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Unlock")))));
+}
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
 const TAB_META = [
     { id: "meals", label: "Meals", icon: "🍽️" },
@@ -1166,13 +1851,310 @@ const TAB_META = [
     { id: "recipes", label: "Recipes", icon: "📋" },
     { id: "macros", label: "Macros", icon: "📊" },
     { id: "history", label: "History", icon: "📅" },
+    { id: "profile", label: "Me", icon: "👤" },
 ];
+// ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
+const CALC_STEPS = ["About You", "Body", "Lifestyle", "Your Goal", "Results"];
+function calcBMR(w, h, age, gender) {
+    const base = 10 * w + 6.25 * h - 5 * age;
+    return gender === "male" ? base + 5 : base - 161;
+}
+function calcBMI(w, h) { return w / ((h / 100) * (h / 100)); }
+function bmiLabel(b) {
+    if (b < 18.5)
+        return { l: "Underweight", c: "#60a5fa" };
+    if (b < 25)
+        return { l: "Normal", c: "#22c55e" };
+    if (b < 30)
+        return { l: "Overweight", c: "#f97316" };
+    return { l: "Obese", c: "#ef4444" };
+}
+function calcActivityMultiplier(job, steps, training) {
+    const j = { desk: 0, light: 1, moderate: 2, physical: 3 }[job] || 0;
+    const s = { "<3k": 0, "3-6k": 1, "6-10k": 2, "10-15k": 3, "15k+": 4 }[steps] || 0;
+    const t = { "0": 0, "1-2": 1, "3-4": 2, "5-6": 3, "7+": 4 }[training] || 0;
+    const score = j + s + t;
+    if (score <= 2)
+        return 1.2;
+    if (score <= 4)
+        return 1.375;
+    if (score <= 6)
+        return 1.55;
+    if (score <= 8)
+        return 1.725;
+    return 1.9;
+}
+function calcMacros(tdee, weight, goal) {
+    let kcal = Math.round(goal === "lose" ? tdee * 0.80 : goal === "gain" ? tdee * 1.10 : tdee);
+    const proteinG = Math.round(goal === "gain" ? weight * 2.4 : weight * 2.0);
+    const fatG = Math.round((kcal * 0.25) / 9);
+    const carbG = Math.round((kcal - proteinG * 4 - fatG * 9) / 4);
+    return { kcal, protein: proteinG, carbs: carbG, fat: fatG };
+}
+function MacroCalculator({ C, onSave, unlocked }) {
+    const [step, setStep] = useState(0);
+    const [form, setForm] = useState({
+        firstName: "", lastName: "", dob: "", gender: "male",
+        height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+        job: "desk", steps: "6-10k", training: "3-4", goal: "lose"
+    });
+    const [result, setResult] = useState(null);
+    const [showGate, setShowGate] = useState(false);
+    const set = (k, v) => setForm(f => (Object.assign(Object.assign({}, f), { [k]: v })));
+    const calcAge = (dob) => {
+        if (!dob)
+            return 25;
+        const b = new Date(dob), n = new Date();
+        let a = n.getFullYear() - b.getFullYear();
+        if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate()))
+            a--;
+        return a;
+    };
+    const getWeightKg = () => {
+        const w = parseFloat(form.weight);
+        return form.weightUnit === "lbs" ? w / 2.205 : w;
+    };
+    const getHeightCm = () => {
+        const h = parseFloat(form.height);
+        return form.heightUnit === "ft" ? h * 30.48 : h;
+    };
+    const computeResult = () => {
+        const w = getWeightKg(), h = getHeightCm(), age = calcAge(form.dob);
+        const bmr = Math.round(calcBMR(w, h, age, form.gender));
+        const mult = calcActivityMultiplier(form.job, form.steps, form.training);
+        const tdee = Math.round(bmr * mult);
+        const bmi = parseFloat(calcBMI(w, h).toFixed(1));
+        const macros = calcMacros(tdee, w, form.goal);
+        const actLabel = mult <= 1.2 ? "Sedentary" : mult <= 1.375 ? "Lightly Active" : mult <= 1.55 ? "Moderately Active" : mult <= 1.725 ? "Very Active" : "Extra Active";
+        return { bmr, tdee, bmi, macros, actLabel, age, w: Math.round(w), h: Math.round(h) };
+    };
+    const next = () => {
+        if (step === CALC_STEPS.length - 2) {
+            const r = computeResult();
+            setResult(r);
+            setStep(s => s + 1);
+        }
+        else {
+            setStep(s => s + 1);
+        }
+    };
+    const prev = () => setStep(s => s - 1);
+    const saveProfile = () => {
+        const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString() });
+        localStorage.setItem("mp_profile", JSON.stringify(profile));
+        onSave(profile);
+    };
+    const InputRow = ({ label, children }) => (React.createElement("div", { style: { marginBottom: 16 } },
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.07em", marginBottom: 7, textTransform: "uppercase" } }, label),
+        children));
+    const TextInput = ({ field, placeholder, type = "text" }) => (React.createElement("input", { value: form[field], onChange: e => set(field, e.target.value), placeholder: placeholder, type: type, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
+            color: C.text, fontSize: 14, padding: "11px 14px", fontFamily: "inherit", outline: "none" } }));
+    const OptionBtn = ({ field, val, label, sub }) => (React.createElement("button", { onClick: () => set(field, val), style: { width: "100%", background: form[field] === val ? C.accentDim : C.card2,
+            border: `1.5px solid ${form[field] === val ? C.accent : C.dim}`, borderRadius: 10,
+            padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, transition: "all 0.15s" } },
+        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form[field] === val ? C.accent : C.text } }, label),
+        sub && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, sub)));
+    const SegBtn = ({ field, val, label }) => (React.createElement("button", { onClick: () => set(field, val), style: { flex: 1, padding: "9px 4px", fontSize: 11, fontWeight: 700, borderRadius: 8,
+            border: `1px solid ${form[field] === val ? C.accent : C.dim}`,
+            background: form[field] === val ? C.accentDim : C.card2,
+            color: form[field] === val ? C.accent : C.sub, cursor: "pointer" } }, label));
+    const MacroBar = ({ label, val, max, color }) => (React.createElement("div", { style: { marginBottom: 12 } },
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 5 } },
+            React.createElement("span", { style: { fontSize: 11, color: C.sub, fontWeight: 600 } }, label),
+            React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color } },
+                val,
+                "g")),
+        React.createElement("div", { style: { height: 6, background: C.card2, borderRadius: 3, overflow: "hidden" } },
+            React.createElement("div", { style: { width: `${Math.min(100, (val / max) * 100)}%`, height: "100%", background: color, borderRadius: 3, transition: "width 0.5s" } }))));
+    // ─── STEPS ───────────────────────────────────────────────────────────────
+    const steps_content = [
+        React.createElement("div", { key: "s0" },
+            React.createElement(InputRow, { label: "First Name" },
+                React.createElement(TextInput, { field: "firstName", placeholder: "e.g. Alex" })),
+            React.createElement(InputRow, { label: "Last Name" },
+                React.createElement(TextInput, { field: "lastName", placeholder: "e.g. Smith" })),
+            React.createElement(InputRow, { label: "Date of Birth" },
+                React.createElement(TextInput, { field: "dob", type: "date" })),
+            React.createElement(InputRow, { label: "Gender" },
+                React.createElement("div", { style: { display: "flex", gap: 8 } },
+                    React.createElement(SegBtn, { field: "gender", val: "male", label: "Male" }),
+                    React.createElement(SegBtn, { field: "gender", val: "female", label: "Female" })))),
+        React.createElement("div", { key: "s1" },
+            React.createElement(InputRow, { label: "Height" },
+                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+                    React.createElement(SegBtn, { field: "heightUnit", val: "cm", label: "cm" }),
+                    React.createElement(SegBtn, { field: "heightUnit", val: "ft", label: "ft" })),
+                React.createElement(TextInput, { field: "height", placeholder: form.heightUnit === "cm" ? "e.g. 183" : "e.g. 6.0", type: "number" })),
+            React.createElement(InputRow, { label: "Current Weight" },
+                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+                    React.createElement(SegBtn, { field: "weightUnit", val: "kg", label: "kg" }),
+                    React.createElement(SegBtn, { field: "weightUnit", val: "lbs", label: "lbs" })),
+                React.createElement(TextInput, { field: "weight", placeholder: form.weightUnit === "kg" ? "e.g. 85" : "e.g. 187", type: "number" }))),
+        React.createElement("div", { key: "s2" },
+            React.createElement(InputRow, { label: "Job Type" },
+                React.createElement(OptionBtn, { field: "job", val: "desk", label: "\uD83D\uDDA5\uFE0F Desk / Office", sub: "Sitting most of the day" }),
+                React.createElement(OptionBtn, { field: "job", val: "light", label: "\uD83D\uDEB6 Light on feet", sub: "Standing, walking occasionally" }),
+                React.createElement(OptionBtn, { field: "job", val: "moderate", label: "\u2699\uFE0F Moderately active", sub: "On feet most of the day" }),
+                React.createElement(OptionBtn, { field: "job", val: "physical", label: "\uD83C\uDFD7\uFE0F Physical / Labour", sub: "Lifting, building, constant movement" })),
+            React.createElement(InputRow, { label: "Average Daily Steps" },
+                React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" } }, ["<3k", "3-6k", "6-10k", "10-15k", "15k+"].map(v => React.createElement(SegBtn, { key: v, field: "steps", val: v, label: v })))),
+            React.createElement(InputRow, { label: "Training Sessions Per Week" },
+                React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => React.createElement(SegBtn, { key: v, field: "training", val: v, label: v }))))),
+        React.createElement("div", { key: "s3" },
+            React.createElement(OptionBtn, { field: "goal", val: "lose", label: "\uD83D\uDD25 Lose Body Fat", sub: "Calorie deficit \u00B7 High protein \u00B7 Preserve muscle" }),
+            React.createElement(OptionBtn, { field: "goal", val: "maintain", label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
+            React.createElement(OptionBtn, { field: "goal", val: "gain", label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })),
+        // Step 4 — Results
+        result ? (() => {
+            const { bmr, tdee, bmi, macros, actLabel, age, w, h } = result;
+            const bmiInfo = bmiLabel(bmi);
+            const goalLabel = form.goal === "lose" ? "Fat Loss" : form.goal === "gain" ? "Muscle Gain" : "Maintenance";
+            const goalColor = form.goal === "lose" ? "#f97316" : form.goal === "gain" ? "#22c55e" : "#a78bfa";
+            return (React.createElement("div", { key: "s4" },
+                React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
+                    React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: C.text } },
+                        form.firstName || "Your",
+                        " Macro Profile"),
+                    React.createElement("div", { style: { fontSize: 12, color: C.sub, marginTop: 4 } },
+                        age,
+                        " yrs \u00B7 ",
+                        h,
+                        "cm \u00B7 ",
+                        w,
+                        "kg \u00B7 ",
+                        actLabel)),
+                React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: "16px 18px", marginBottom: 14 } },
+                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 } },
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em" } },
+                            goalLabel.toUpperCase(),
+                            " TARGET"),
+                        React.createElement("div", { style: { fontSize: 10, background: goalColor, color: "#000", padding: "2px 9px", borderRadius: 10, fontWeight: 700 } }, goalLabel)),
+                    React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal),
+                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "calories per day")),
+                React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px 18px", marginBottom: 14 } },
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "DAILY MACROS"),
+                    React.createElement(MacroBar, { label: "Protein", val: macros.protein, max: 300, color: C.prot }),
+                    React.createElement(MacroBar, { label: "Carbohydrates", val: macros.carbs, max: 500, color: C.carb }),
+                    React.createElement(MacroBar, { label: "Fat", val: macros.fat, max: 150, color: "#a855f7" })),
+                React.createElement("div", { style: { display: "flex", gap: 10, marginBottom: 16 } },
+                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "BMI"),
+                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: bmiInfo.c } }, bmi),
+                        React.createElement("div", { style: { fontSize: 10, color: bmiInfo.c, marginTop: 2, fontWeight: 600 } }, bmiInfo.l)),
+                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "BMR"),
+                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text } }, bmr),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "kcal/day at rest")),
+                    React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 4 } }, "TDEE"),
+                        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text } }, tdee),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "kcal/day total"))),
+                React.createElement("button", { onClick: saveProfile, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "14px",
+                        fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em", marginBottom: 10 } }, "\u2713 Save My Macros to App"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center" } }, "This will update your calorie and macro targets across the whole app.")));
+        })() : React.createElement("div", { key: "s4c", style: { textAlign: "center", padding: "40px 0", color: C.sub } }, "Calculating...")
+    ];
+    const canNext = () => {
+        if (step === 0)
+            return form.firstName && form.dob;
+        if (step === 1)
+            return form.height && form.weight;
+        return true;
+    };
+    return (React.createElement("div", { className: "tab-anim" },
+        React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 20 } }, CALC_STEPS.map((s, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 3, borderRadius: 2,
+                background: i <= step ? C.accent : C.dim, transition: "background 0.3s" } })))),
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
+            "STEP ",
+            step + 1,
+            " OF ",
+            CALC_STEPS.length),
+        React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 18 } }, CALC_STEPS[step]),
+        steps_content[step],
+        step < CALC_STEPS.length - 1 && (React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+            step > 0 && (React.createElement("button", { onClick: prev, style: { flex: 1, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
+                    padding: "12px", fontSize: 13, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Back")),
+            React.createElement("button", { onClick: next, disabled: !canNext(), style: { flex: 2, background: canNext() ? C.accent : C.dim, border: "none", borderRadius: 10,
+                    padding: "12px", fontSize: 13, fontWeight: 700, color: canNext() ? "#000" : C.muted,
+                    cursor: canNext() ? "pointer" : "default", transition: "all 0.2s" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
+}
+function ProfileTab({ C, unlocked }) {
+    const [profile, setProfile] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("mp_profile") || "null");
+        }
+        catch (_a) {
+            return null;
+        }
+    });
+    const reset = () => { localStorage.removeItem("mp_profile"); setProfile(null); };
+    if (!profile) {
+        return (React.createElement("div", { className: "tab-anim" },
+            React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
+                React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83E\uDDEE"),
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: "var(--text,#eef2ff)", marginBottom: 8 } }, "Your Macro Calculator"),
+                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto" } }, "Answer a few questions to get your personalised daily calorie and macro targets. Your results will automatically update across the whole app.")),
+            React.createElement(MacroCalculator, { C: C, onSave: p => { setProfile(p); }, unlocked: unlocked })));
+    }
+    // Saved profile view
+    const r = profile.result;
+    const macros = r.macros;
+    const bmiInfo = bmiLabel(r.bmi);
+    const goalLabel = profile.goal === "lose" ? "Fat Loss" : profile.goal === "gain" ? "Muscle Gain" : "Maintenance";
+    return (React.createElement("div", { className: "tab-anim" },
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 } },
+            React.createElement("div", null,
+                React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: C.text } },
+                    profile.firstName,
+                    " ",
+                    profile.lastName),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                    r.age,
+                    " yrs \u00B7 ",
+                    r.h,
+                    "cm \u00B7 ",
+                    r.w,
+                    "kg \u00B7 ",
+                    goalLabel)),
+            React.createElement("button", { onClick: reset, style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
+                    padding: "6px 12px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Recalculate")),
+        React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14,
+                padding: "16px 18px", marginBottom: 12 } },
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, "DAILY CALORIE TARGET"),
+            React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                "kcal/day \u00B7 ",
+                r.actLabel)),
+        React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 12 } }, [{ l: "Protein", v: macros.protein, c: C.prot }, { l: "Carbs", v: macros.carbs, c: C.carb }, { l: "Fat", v: macros.fat, c: "#a855f7" }].map(({ l, v, c }) => (React.createElement("div", { key: l, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
+            React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: c } },
+                v,
+                "g"),
+            React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 3 } }, l))))),
+        React.createElement("div", { style: { display: "flex", gap: 8 } },
+            React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: bmiInfo.c } }, r.bmi),
+                React.createElement("div", { style: { fontSize: 9, color: bmiInfo.c, fontWeight: 700, marginTop: 2 } }, bmiInfo.l),
+                React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "BMI")),
+            React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, r.bmr),
+                React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day at rest"),
+                React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "BMR")),
+            React.createElement("div", { style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", textAlign: "center" } },
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, r.tdee),
+                React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day total"),
+                React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "TDEE"))),
+        React.createElement("div", { style: { marginTop: 12, fontSize: 11, color: C.muted, textAlign: "center" } },
+            "Saved ",
+            new Date(profile.savedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))));
+}
 function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
-    const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "l1");
-    const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "d1");
+    const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "m01");
+    const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "m04");
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
+    const [catFilter, setCatFilter] = useState("main");
+    const [recipeCat, setRecipeCat] = useState("main");
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "dark");
     const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
@@ -1188,6 +2170,38 @@ function App() {
     // ── PWA install prompt (iOS only) ───────────────────────────────────────────
     const [showPWA, setShowPWA] = useState(() => IS_IOS && !IS_STANDALONE && !localStorage.getItem("mp_pwa_ok"));
     const dismissPWA = () => { localStorage.setItem("mp_pwa_ok", "1"); setShowPWA(false); };
+    // ── Profile state ───────────────────────────────────────────────────────────────
+    const [profile, setProfile] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("mp_profile") || "null");
+        }
+        catch (_a) {
+            return null;
+        }
+    });
+    const handleProfileSave = (p) => { setProfile(p); };
+    // ── Freemium unlock state ────────────────────────────────────────────────────
+    const [unlocked, setUnlocked] = useState(() => localStorage.getItem("mp_unlocked") === "true");
+    const [showUpgrade, setShowUpgrade] = useState(false);
+    const [showDevModal, setShowDevModal] = useState(false);
+    const [logoTaps, setLogoTaps] = useState(0);
+    const tapLogo = () => {
+        const t = logoTaps + 1;
+        if (t >= 5) {
+            setShowDevModal(true);
+            setLogoTaps(0);
+        }
+        else
+            setLogoTaps(t);
+    };
+    const devUnlock = () => { localStorage.setItem("mp_unlocked", "true"); setUnlocked(true); };
+    const devLock = () => { localStorage.removeItem("mp_unlocked"); setUnlocked(false); };
+    const canView = id => {
+        const r = RECIPES.find(x => x.id === id);
+        if (r && (r.category || "main") !== "main")
+            return true; // breakfast/dessert always free
+        return FREE_IDS.has(id) || unlocked;
+    };
     // ── Sunday reminder banner ─────────────────────────────────────────────────
     const [sundayBanner, setSundayBanner] = useState(() => {
         const day = new Date().getDay();
@@ -1215,6 +2229,10 @@ function App() {
     const dr = RECIPES.find(r => r.id === dinner) || RECIPES[3];
     const { L, D, total } = computeMeals(lr, dr);
     const filteredRecipes = RECIPES.filter(r => {
+        if ((r.category || "main") !== recipeCat)
+            return false;
+        if (recipeCat !== "main")
+            return true;
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
     });
@@ -1228,9 +2246,10 @@ function App() {
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.dim}`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 16, paddingBottom: 24, zIndex: 100 } },
-            React.createElement("div", { style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
+            React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 18, marginBottom: 28, flexShrink: 0 } }, "\uD83E\uDD57"),
+                    fontSize: 18, marginBottom: 28, flexShrink: 0, cursor: "pointer",
+                    WebkitTapHighlightColor: "transparent" } }, "\uD83E\uDD57"),
             TAB_META.map(t => {
                 const active = tab === t.id;
                 return (React.createElement("button", { key: t.id, onClick: () => setTab(t.id), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
@@ -1257,10 +2276,8 @@ function App() {
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
-                React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "DOHA \u00B7 QATAR"),
-                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginTop: 1, lineHeight: 1.2 } },
-                    "Meal Plan",
-                    React.createElement("span", { style: { fontWeight: 400, color: C.sub } }, " \u2014 Dejan Zerafa")),
+                React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD \u00B7 MADE SIMPLE"),
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginTop: 1, lineHeight: 1.2 } }, "Meal Prep"),
                 React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 3 } },
                     "\u2600\uFE0F ",
                     React.createElement("span", { style: { color: C.text } }, lr.name),
@@ -1287,15 +2304,29 @@ function App() {
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" },
                     React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions })),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
-                    React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 10, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 60, padding: "6px 4px", fontSize: 10, fontWeight: 700,
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["main", "🍽️ Mains"], ["breakfast", "🌅 Breakfast"], ["dessert", "🍫 Treats"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
+                            border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
+                            background: recipeCat === cat ? C.accentDim : C.card2,
+                            color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
+                    recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 10, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "5px 4px", fontSize: 10, fontWeight: 700,
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
                             background: filter === f ? C.accent : C.card2,
-                            color: filter === f ? "#000" : C.sub } }, f)))),
+                            color: filter === f ? "#000" : C.sub } }, f))))),
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 10 } },
                         filteredRecipes.length,
                         " recipe",
-                        filteredRecipes.length !== 1 ? "s" : ""),
-                    filteredRecipes.map(r => (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, portions: portions })))),
+                        filteredRecipes.length !== 1 ? "s" : "",
+                        recipeCat === "breakfast" && " · All free",
+                        recipeCat === "dessert" && " · High protein treats"),
+                    !unlocked && (React.createElement("div", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
+                            borderRadius: 8, padding: "6px 12px", marginBottom: 10, textAlign: "center" } },
+                        "\uD83D\uDD13 1 free recipe \u00B7 \uD83D\uDD12 Unlock ",
+                        RECIPES.filter(r => (r.category || "main") === "main").length - 1,
+                        " more + all breakfast & desserts")),
+                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, portions: portions })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true) }))),
+                    !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
+                            padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
+                            marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192"))),
                 tab === "macros" && React.createElement("div", { className: "tab-anim", key: "mac" },
                     React.createElement(MacroRef, null)),
                 tab === "settings" && React.createElement("div", { className: "tab-anim", key: "settings" },
@@ -1325,11 +2356,11 @@ function App() {
                                 marginBottom: 14 } }, "\u2696\uFE0F LEGAL & COPYRIGHT"),
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 12,
                                 padding: "8px 12px", background: C.accentDim, borderRadius: 8,
-                                border: `1px solid ${C.accentBorder}` } }, "\u00A9 2025 Dejan Zerafa. All Rights Reserved."),
+                                border: `1px solid ${C.accentBorder}` } }, "\u00A9 2025 All Rights Reserved."),
                         [
                             {
                                 title: "Intellectual Property",
-                                body: "This application — including all source code, design, visual elements, functionality, recipe data, nutritional information, and all other content — constitutes the exclusive intellectual property of Dejan Zerafa. All rights are reserved in all jurisdictions worldwide."
+                                body: "This application — including all source code, design, visual elements, functionality, recipe data, nutritional information, and all other content — constitutes the proprietary product. All rights reserved in all jurisdictions worldwide."
                             },
                             {
                                 title: "Confidentiality",
@@ -1337,7 +2368,7 @@ function App() {
                             },
                             {
                                 title: "Prohibited Activities",
-                                body: "Unauthorised copying, reproduction, reverse engineering, decompilation, modification, distribution, sublicensing, sale, or any other exploitation of this application or any portion of its contents — in whole or in part — is strictly prohibited without the express prior written permission of Dejan Zerafa."
+                                body: "Unauthorised copying, reproduction, reverse engineering, decompilation, modification, distribution, sublicensing, sale, or any other exploitation of this application or any portion of its contents — in whole or in part — is strictly prohibited without the express prior written permission of the owner."
                             },
                             {
                                 title: "Data & Privacy",
@@ -1353,9 +2384,10 @@ function App() {
                             React.createElement("div", { style: { fontSize: 11, color: C.text, lineHeight: 1.65 } }, body)))),
                         React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, marginTop: 16, paddingTop: 12,
                                 fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.6 } },
-                            "Built & owned by Dejan Zerafa \u00B7 Doha, Qatar \u00B7 2025",
+                            "High Protein \u00B7 Real Food \u00B7 Batch Cooked \u00B7 2025",
                             "\n",
                             "dejan-mealplan.netlify.app"))),
+                tab === "profile" && (React.createElement(ProfileTab, { C: C, unlocked: unlocked, onSave: handleProfileSave })),
                 tab === "history" && (() => {
                     const hist = getHistory();
                     return (React.createElement("div", { className: "tab-anim" },
@@ -1382,6 +2414,12 @@ function App() {
                                         React.createElement("div", { style: { fontSize: 12, color: C.text } }, drH ? drH.name : h.dinner)))));
                         })));
                 })())),
+        showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
+        showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
+        unlocked && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
+                borderRadius: 20, padding: "5px 10px", fontSize: 9, fontWeight: 700,
+                color: "#000", cursor: "pointer", zIndex: 400, letterSpacing: "0.08em",
+                boxShadow: "0 2px 8px rgba(34,197,94,0.4)" } }, "\uD83D\uDD13 DEV \u00B7 TAP TO LOCK")),
         showPWA && (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
                 width: "100%", maxWidth: 520, background: C.card2, borderTop: `1px solid ${C.accent}`,
                 padding: "12px 16px", zIndex: 200, display: "flex", alignItems: "center", gap: 10 } },
