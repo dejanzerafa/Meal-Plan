@@ -1,40 +1,91 @@
-// Meal Plan — Service Worker
-// Caches the full app for offline use. Update CACHE_NAME when deploying a new version.
+// Meal Plan — Service Worker v2
+// Full offline support: caches app shell + CDN resources on first load
 
-const CACHE_NAME = ‘meal-plan-v1’;
-const CORE = [’/’];
+const CACHE_NAME = 'meal-plan-v3';
 
-// ── Install: cache the app shell ────────────────────────────────────────────
-self.addEventListener(‘install’, event => {
-event.waitUntil(
-caches.open(CACHE_NAME).then(cache => cache.addAll(CORE))
-);
-self.skipWaiting();
+// App shell — cached immediately on install
+const PRECACHE = [
+  '/',
+  '/index.html',
+  '/sw.js',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+];
+
+// CDN resources — cached on first network fetch
+const CDN_HOSTS = ['unpkg.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
+
+// ── Install: precache app shell ──────────────────────────────────────────────
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      // Cache what we can — ignore individual failures so install always succeeds
+      return Promise.allSettled(PRECACHE.map(url => cache.add(url)));
+    })
+  );
+  self.skipWaiting();
 });
 
-// ── Activate: clean up old caches ───────────────────────────────────────────
-self.addEventListener(‘activate’, event => {
-event.waitUntil(
-caches.keys().then(keys =>
-Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-)
-);
-self.clients.claim();
+// ── Activate: remove old caches ──────────────────────────────────────────────
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
 });
 
-// ── Fetch: serve from cache, fall back to network, cache new responses ───────
-self.addEventListener(‘fetch’, event => {
-// Only handle GET requests
-if (event.request.method !== ‘GET’) return;
+// ── Fetch: cache-first for CDN, network-first for app shell ─────────────────
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
 
-event.respondWith(
-caches.match(event.request).then(cached => {
-if (cached) return cached;
+  const url = new URL(event.request.url);
+  const isCDN = CDN_HOSTS.some(h => url.hostname.includes(h));
+  const isApp = url.hostname === self.location.hostname;
 
-```
-  return fetch(event.request).then(response => {
-    // Cache valid responses (not opaque / error)
-    if (!response || response.status !== 200 || response.type === 'error') {
+  if (isCDN) {
+    // CDN resources: cache-first (they're versioned, safe to cache long-term)
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(res => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return res;
+        }).catch(() => cached || new Response('', { status: 503 }));
+      })
+    );
+    return;
+  }
+
+  if (isApp) {
+    // App resources: network-first, fall back to cache
+    event.respondWith(
+      fetch(event.request)
+        .then(res => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return res;
+        })
+        .catch(() =>
+          // Offline — serve cached version or index.html as fallback
+          caches.match(event.request).then(cached =>
+            cached || caches.match('/') || caches.match('/index.html')
+          )
+        )
+    );
+    return;
+  }
+
+  // Everything else: network only
+  event.respondWith(fetch(event.request).catch(() => new Response('', { status: 503 })));
+});    if (!response || response.status !== 200 || response.type === 'error') {
       return response;
     }
     const clone = response.clone();
