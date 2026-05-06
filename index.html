@@ -2837,19 +2837,29 @@ function CalendarTab({ lunch, dinner }) {
                     if(batch.isPrepDay){bg="#7c3aed";textColor="#fff";fw=800;botIcon="👨‍🍳";}
                     else if(batch.isShopDay){botIcon="🛒";}
                 }
+                // Today: white pill box, accent text — distinct from prep start (terracotta fill)
+                var todayOverride = isToday && !batch;
+                if(todayOverride){ bg="#ffffff"; textColor=C.accent; fw=800; }
+                var borderStyle = isSelected ? "2px solid "+C.accent
+                    : isToday ? "2px solid "+C.accent
+                    : "1.5px solid transparent";
                 return React.createElement("div",{
                     key:dayStr,
                     onClick:function(theDay){ return function(){ setSelectedDay(selectedDay===theDay?null:theDay); }; }(day),
                     style:{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",
                         justifyContent:"center",borderRadius:8,background:bg,cursor:"pointer",
-                        border:isSelected?"2px solid "+C.accent:isToday&&!batch?"1.5px solid "+C.accent:"1.5px solid transparent"}},
+                        border:borderStyle,
+                        boxShadow:isToday?"0 0 0 0px "+C.accent:"none"}},
                     topDot&&React.createElement("div",{style:{fontSize:7,color:"rgba(0,0,0,0.5)",lineHeight:1,marginBottom:1}},topDot),
-                    React.createElement("div",{style:{fontSize:13,fontWeight:fw,color:isToday&&!batch?C.accent:textColor,lineHeight:1}},day),
-                    botIcon&&React.createElement("div",{style:{fontSize:9,lineHeight:1,marginTop:1}},botIcon));
+                    React.createElement("div",{style:{fontSize:13,fontWeight:fw,color:textColor,lineHeight:1}},day),
+                    isToday&&React.createElement("div",{style:{fontSize:7,fontWeight:800,color:textColor,letterSpacing:"0.04em",lineHeight:1,marginTop:1}},"TODAY"),
+                    !isToday&&botIcon&&React.createElement("div",{style:{fontSize:9,lineHeight:1,marginTop:1}},botIcon),
+                    isToday&&botIcon&&React.createElement("div",{style:{fontSize:8,lineHeight:1,marginTop:1}},botIcon));
             })),
         React.createElement("div",{style:{display:"flex",gap:10,marginTop:10,flexWrap:"wrap"}},
-            [{dot:C.accent,label:"Prep start"},{dot:"rgba(184,74,31,0.20)",label:"Active batch"},{dot:"#7c3aed",label:"👨‍🍳 Prep again"},{text:"🛒",label:"Shop soon"}]
+            [{box:"#ffffff",outline:C.accent,label:"Today"},{dot:C.accent,label:"Prep start"},{dot:"rgba(184,74,31,0.20)",label:"Active batch"},{dot:"#7c3aed",label:"👨‍🍳 Prep again"},{text:"🛒",label:"Shop soon"}]
             .map(function(item,i){return React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:4,fontSize:10,color:C.sub}},
+                item.box&&React.createElement("div",{style:{width:9,height:9,borderRadius:2,background:item.box,border:"1.5px solid "+(item.outline||C.dim),flexShrink:0}}),
                 item.dot&&React.createElement("div",{style:{width:9,height:9,borderRadius:2,background:item.dot,flexShrink:0}}),
                 item.text&&React.createElement("span",null,item.text),item.label);})),
         selectedDay&&React.createElement("div",{style:{marginTop:14,background:C.card,border:"1px solid "+C.dim,borderRadius:16,overflow:"hidden"}},
