@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -68,56 +67,53 @@
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
   <div id="mp-loader" style="position:fixed;inset:0;background:#08090d;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
 
-```
-<!-- Loader content -->
-<div style="position:relative;z-index:1;width:100%;max-width:320px;">
+    <!-- Loader content -->
+    <div style="position:relative;z-index:1;width:100%;max-width:320px;">
 
-  <!-- Food emoji grid -->
-  <div class="loader-title" style="font-size:28px;line-height:1.6;text-align:center;letter-spacing:6px;margin-bottom:20px;opacity:0.85;">
-    🥩🐟🥚🍗🧀🥛<br>🥦🥕🧄🫑🥑🍅<br>🍚🌾🫘🍋🫒🥜
-  </div>
-
-  <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;text-align:center;">REAL FOOD · MADE SIMPLE</div>
-  <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;text-align:center;">Meal Prep</div>
-  <div class="loader-sub" style="font-size:13px;font-weight:400;color:#8b98b0;margin-bottom:40px;text-align:center;">High Protein · Batch Cooked · Real Food</div>
-
-  <div class="loader-bars">
-    <!-- Protein -->
-    <div style="margin-bottom:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#f97316;">● PROTEIN</span>
-        <span style="font-size:10px;color:#4b5563;">Daily target</span>
+      <!-- Food emoji grid -->
+      <div class="loader-title" style="font-size:28px;line-height:1.6;text-align:center;letter-spacing:6px;margin-bottom:20px;opacity:0.85;">
+        🥩🐟🥚🍗🧀🥛<br>🥦🥕🧄🫑🥑🍅<br>🍚🌾🫘🍋🫒🥜
       </div>
-      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-        <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#f97316,#fb923c);border-radius:2px;"></div>
+
+      <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;text-align:center;">REAL FOOD · MADE SIMPLE</div>
+      <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;text-align:center;">Meal Prep</div>
+      <div class="loader-sub" style="font-size:13px;font-weight:400;color:#8b98b0;margin-bottom:40px;text-align:center;">High Protein · Batch Cooked · Real Food</div>
+
+      <div class="loader-bars">
+        <!-- Protein -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#f97316;">● PROTEIN</span>
+            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+          </div>
+          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+            <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#f97316,#fb923c);border-radius:2px;"></div>
+          </div>
+        </div>
+        <!-- Carbs -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#3b82f6;">● CARBS</span>
+            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+          </div>
+          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+            <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;"></div>
+          </div>
+        </div>
+        <!-- Fat -->
+        <div style="margin-bottom:48px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#a855f7;">● FAT</span>
+            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+          </div>
+          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
+            <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <div style="font-size:9px;letter-spacing:0.12em;color:#374151;text-align:center;">PREPARING YOUR PLAN...</div>
       </div>
     </div>
-    <!-- Carbs -->
-    <div style="margin-bottom:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#3b82f6;">● CARBS</span>
-        <span style="font-size:10px;color:#4b5563;">Daily target</span>
-      </div>
-      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-        <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;"></div>
-      </div>
-    </div>
-    <!-- Fat -->
-    <div style="margin-bottom:48px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#a855f7;">● FAT</span>
-        <span style="font-size:10px;color:#4b5563;">Daily target</span>
-      </div>
-      <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-        <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;"></div>
-      </div>
-    </div>
-
-    <div style="font-size:9px;letter-spacing:0.12em;color:#374151;text-align:center;">PREPARING YOUR PLAN...</div>
-  </div>
-</div>
-```
-
   </div>
 
   <div id="root"></div>
@@ -2940,10 +2936,7 @@ setTimeout(() => {
         l.parentNode.removeChild(l); }, 700);
 }, 2900);
 
-```
-setTimeout(function(){var l=document.getElementById("mp-loader");if(!l)return;l.style.animation="loaderOut 0.7s ease forwards";setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},700);},2900);
-```
-
+    setTimeout(function(){var l=document.getElementById("mp-loader");if(!l)return;l.style.animation="loaderOut 0.7s ease forwards";setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},700);},2900);
   </script>
 </body>
 </html>
