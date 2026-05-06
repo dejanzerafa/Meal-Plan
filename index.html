@@ -173,6 +173,46 @@
   <script>
 "use strict";
 const { useState } = React;
+// ─── i18n ─────────────────────────────────────────────────────────────────
+let _lang = (function(){ try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } })();
+const TRANSLATIONS = {
+  en: {
+    tab_meals:"Meals", tab_shop:"Shop", tab_recipes:"Recipes",
+    tab_macros:"Macros", tab_history:"History", tab_me:"Me",
+    account_title:"My Account", account_name:"Full Name", account_email:"Email Address",
+    account_save:"Save Profile", account_saving:"Saving…", account_saved:"Profile Saved",
+    account_edit:"Edit", account_greeting:"Hello", account_subtitle:"Your profile is saved.",
+    lang_label:"🌐 LANGUAGE",
+  },
+  fr: {
+    tab_meals:"Repas", tab_shop:"Courses", tab_recipes:"Recettes",
+    tab_macros:"Macros", tab_history:"Historique", tab_me:"Moi",
+    account_title:"Mon Compte", account_name:"Nom Complet", account_email:"Adresse e-mail",
+    account_save:"Enregistrer", account_saving:"Enregistrement…", account_saved:"Profil Enregistré",
+    account_edit:"Modifier", account_greeting:"Bonjour", account_subtitle:"Votre profil est sauvegardé.",
+    lang_label:"🌐 LANGUE",
+  },
+  es: {
+    tab_meals:"Comidas", tab_shop:"Compras", tab_recipes:"Recetas",
+    tab_macros:"Macros", tab_history:"Historial", tab_me:"Yo",
+    account_title:"Mi Cuenta", account_name:"Nombre Completo", account_email:"Correo Electrónico",
+    account_save:"Guardar Perfil", account_saving:"Guardando…", account_saved:"Perfil Guardado",
+    account_edit:"Editar", account_greeting:"Hola", account_subtitle:"Tu perfil está guardado.",
+    lang_label:"🌐 IDIOMA",
+  },
+  it: {
+    tab_meals:"Pasti", tab_shop:"Spesa", tab_recipes:"Ricette",
+    tab_macros:"Macro", tab_history:"Cronologia", tab_me:"Io",
+    account_title:"Il Mio Account", account_name:"Nome Completo", account_email:"Indirizzo Email",
+    account_save:"Salva Profilo", account_saving:"Salvataggio…", account_saved:"Profilo Salvato",
+    account_edit:"Modifica", account_greeting:"Ciao", account_subtitle:"Il tuo profilo è salvato.",
+    lang_label:"🌐 LINGUA",
+  },
+};
+function t(key) {
+  var d = TRANSLATIONS[_lang] || TRANSLATIONS.en;
+  return d[key] !== undefined ? d[key] : (TRANSLATIONS.en[key] || key);
+}
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 // ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
 // ── PAPER (light, default) — matches method.html ─────────────────────────
@@ -2237,14 +2277,14 @@ function DevModal({ onClose, onUnlock }) {
                         padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Unlock")))));
 }
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
-const TAB_META = [
-    { id: "meals", label: "Meals", icon: "🍽️" },
-    { id: "shopping", label: "Shop", icon: "🛒" },
-    { id: "recipes", label: "Recipes", icon: "📋" },
-    { id: "macros", label: "Macros", icon: "📊" },
-    { id: "history", label: "History", icon: "📅" },
-    { id: "profile", label: "Me", icon: "👤" },
-];
+function getTabMeta() { return [
+    { id: "meals",    label: t("tab_meals"),   icon: "🍽️" },
+    { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
+    { id: "recipes",  label: t("tab_recipes"), icon: "📋" },
+    { id: "macros",   label: t("tab_macros"),  icon: "📊" },
+    { id: "history",  label: t("tab_history"), icon: "📅" },
+    { id: "profile",  label: t("tab_me"),      icon: "👤" },
+]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
 // All helper components defined OUTSIDE MacroCalculator to prevent focus loss
 const CALC_STEPS = ["About You", "Body", "Lifestyle", "Your Goal", "Results"];
@@ -2538,6 +2578,50 @@ function MacroCalculator({ C, onSave, initialProfile }) {
                     color: canNext() ? "#000" : C.muted, cursor: canNext() ? "pointer" : "default",
                     transition: "all 0.2s", WebkitTapHighlightColor: "transparent" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
 }
+// ─── ACCOUNT CARD ─────────────────────────────────────────────────────────
+function AccountCard({ C }) {
+    const [name, setName] = useState(() => { try { return localStorage.getItem("mp_acc_name") || ""; } catch(e){ return ""; } });
+    const [email, setEmail] = useState(() => { try { return localStorage.getItem("mp_acc_email") || ""; } catch(e){ return ""; } });
+    const [saved, setSaved] = useState(() => { try { return !!localStorage.getItem("mp_acc_name"); } catch(e){ return false; } });
+    const [saving, setSaving] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const inputStyle = { width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${C.dim}`,
+        background: C.card2, color: C.text, fontSize: 14, fontFamily: "inherit", outline: "none", marginBottom: 10 };
+    const handleSave = async () => {
+        if (!name.trim() || !email.trim()) return;
+        setSaving(true);
+        try {
+            localStorage.setItem("mp_acc_name", name.trim());
+            localStorage.setItem("mp_acc_email", email.trim());
+            await fetch("/.netlify/functions/landing-signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+            }).catch(() => {});
+        } catch(e) {}
+        setSaved(true);
+        setEditing(false);
+        setSaving(false);
+    };
+    if (saved && !editing) {
+        return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 12 } }, t("account_title")),
+            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 } }, t("account_greeting") + ", " + name + "!"),
+            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 14 } }, t("account_subtitle")),
+            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 4 } }, email),
+            React.createElement("button", { onClick: () => setEditing(true), style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 8,
+                padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.accent, cursor: "pointer" } }, t("account_edit")));
+    }
+    return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 14 } }, t("account_title")),
+        React.createElement("input", { type: "text", placeholder: t("account_name"), value: name, onChange: e => setName(e.target.value), style: inputStyle }),
+        React.createElement("input", { type: "email", placeholder: t("account_email"), value: email, onChange: e => setEmail(e.target.value), style: inputStyle }),
+        React.createElement("button", { onClick: handleSave, disabled: saving || !name.trim() || !email.trim(),
+            style: { width: "100%", background: (saving || !name.trim() || !email.trim()) ? C.dim : C.accent,
+                border: "none", borderRadius: 8, padding: "11px", fontSize: 13, fontWeight: 700,
+                color: "#000", cursor: (saving || !name.trim() || !email.trim()) ? "default" : "pointer" } },
+            saving ? t("account_saving") : t("account_save")));
+}
 function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
     const [profile, setProfile] = useState(() => {
         try {
@@ -2676,7 +2760,10 @@ function App() {
     const [recipeQuery, setRecipeQuery] = useState("");
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
-    const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
+    const setTheme = th => { setThemeState(th); localStorage.setItem("mp_theme", th); };
+    // ── Language ──────────────────────────────────────────────────────────────
+    const [lang, setLangState] = useState(() => { try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } });
+    const setLang = l => { _lang = l; setLangState(l); try { localStorage.setItem("mp_lang", l); } catch(e){} document.documentElement.lang = l; };
     const resolvedTheme = theme === "system"
         ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
         : theme;
@@ -2860,16 +2947,16 @@ function App() {
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: C.accent } }, "METHOD"))),
-            TAB_META.map(t => {
-                const active = tab === t.id;
-                return (React.createElement("button", { key: t.id, onClick: () => setTab(t.id), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
+            getTabMeta().map(tm => {
+                const active = tab === tm.id;
+                return (React.createElement("button", { key: tm.id, onClick: () => setTab(tm.id), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
                         background: active ? C.accentDim : "none",
                         border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
                         alignItems: "center", gap: 4, transition: "all 0.15s" } },
-                    React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, t.icon),
+                    React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, tm.icon),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
-                            color: active ? C.accent : C.muted } }, t.label.toUpperCase())));
+                            color: active ? C.accent : C.muted } }, tm.label.toUpperCase())));
             }),
             React.createElement("div", { style: { flex: 1 } }),
             (() => {
@@ -3064,6 +3151,17 @@ function App() {
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                             padding: "14px 16px", marginBottom: 16 } },
                         React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
+                                marginBottom: 14 } }, t("lang_label")),
+                        React.createElement("div", { style: { display: "flex", gap: 8 } },
+                            [["en","EN"],["fr","FR"],["es","ES"],["it","IT"]].map(([code, label]) =>
+                                React.createElement("button", { key: code, onClick: () => setLang(code),
+                                    style: { flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${lang === code ? C.accentBorder : C.dim}`,
+                                        background: lang === code ? C.accentDim : C.card2,
+                                        color: lang === code ? C.accent : C.sub,
+                                        fontSize: 13, fontWeight: 700, cursor: "pointer" } }, label)))),
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                            padding: "14px 16px", marginBottom: 16 } },
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
                                 marginBottom: 14 } }, "\uD83C\uDFA8 APPEARANCE"),
                         [
                             { id: "dark", label: "🌙 Dark", desc: "Default — easy on the eyes" },
@@ -3118,7 +3216,9 @@ function App() {
                             "High Protein \u00B7 Real Food \u00B7 Batch Cooked \u00B7 2025",
                             "\n",
                             "dejan-mealplan.netlify.app"))),
-                tab === "profile" && (React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
+                tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile" },
+                    React.createElement(AccountCard, { C: C }),
+                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
                 tab === "history" && (() => {
                     // Filter out entries with deleted/renamed recipe IDs that no longer exist
                     const allHist = getHistory();
