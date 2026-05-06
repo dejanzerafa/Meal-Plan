@@ -6,20 +6,36 @@
   <title>Meal Prep · High Protein</title>
   <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.3/babel.min.js"></script>
+  <!-- PWA / Home Screen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Meal Prep">
-  <meta name="theme-color" content="#f97316">
+  <meta name="apple-mobile-web-app-title" content="Meal Plan">
+  <meta name="theme-color" content="#b84a1f">
   <link rel="apple-touch-icon" id="apple-touch-icon">
   <link rel="manifest" id="pwa-manifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: #08090d; color: #eef2ff;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+    html, body {
+      height: 100%;
+      background: #f3ece0;
+      color: #1a1612;
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
+      font-feature-settings: "ss01", "ss02";
+    }
     #root { height: 100%; }
     button { font-family: inherit; }
     ::-webkit-scrollbar { width: 0; }
+    .serif { font-family: "Fraunces", Georgia, serif; font-weight: 500; letter-spacing: -0.01em; }
+    .display { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -0.02em; }
+    /* ── Macro bar loader animations ── */
     @keyframes barFill { 0%{width:0%} 100%{width:100%} }
     @keyframes fadeUp  { 0%{opacity:0;transform:translateY(8px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes loaderOut { 0%{opacity:1} 100%{opacity:0;pointer-events:none} }
@@ -32,40 +48,76 @@
     .loader-sub   { animation: fadeUp 0.6s ease 0.25s both; }
     .loader-bars  { animation: fadeUp 0.6s ease 0.4s both; }
   </style>
+
   <script>
+    // Generate home screen icon on canvas — terracotta bg + emojis
     function buildIcon(size) {
-      const c = document.createElement('canvas'); c.width = size; c.height = size;
-      const ctx = c.getContext('2d'); const r = size * 0.18;
-      ctx.fillStyle = '#f97316';
+      const c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      const ctx = c.getContext('2d');
+      const r = size * 0.18; // corner radius
+
+      // Terracotta rounded background
+      ctx.fillStyle = '#b84a1f';
       ctx.beginPath();
-      ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
-      ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
-      ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
-      ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();
-      const fs=Math.round(size*0.30);ctx.font=fs+'px serif';
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('🏋🏻‍♂️',size*0.30,size*0.36);
-      ctx.fillText('💪🏻',size*0.72,size*0.36);
-      ctx.fillText('🥩',size*0.50,size*0.72);
+      ctx.moveTo(r, 0);
+      ctx.lineTo(size - r, 0);
+      ctx.quadraticCurveTo(size, 0, size, r);
+      ctx.lineTo(size, size - r);
+      ctx.quadraticCurveTo(size, size, size - r, size);
+      ctx.lineTo(r, size);
+      ctx.quadraticCurveTo(0, size, 0, size - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Emojis — top row: lifter + bicep, bottom row: meat
+      const top = size * 0.36;
+      const bot = size * 0.72;
+      const fs  = Math.round(size * 0.30);
+      ctx.font = `${fs}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🏋🏻‍♂️', size * 0.30, top);
+      ctx.fillText('💪🏻',    size * 0.72, top);
+      ctx.fillText('🥩',     size * 0.50, bot);
+
       return c.toDataURL('image/png');
     }
-    document.addEventListener('DOMContentLoaded',function(){
-      const icon=buildIcon(180);
-      document.getElementById('apple-touch-icon').href=icon;
-      const manifest={name:"Meal Prep · High Protein",short_name:"Meal Prep",
-        start_url:".",display:"standalone",background_color:"#08090d",theme_color:"#f97316",
-        icons:[{src:icon,sizes:"180x180",type:"image/png"}]};
-      const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
-      document.getElementById('pwa-manifest').href=URL.createObjectURL(blob);
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const icon = buildIcon(180);
+
+      // Apple touch icon
+      document.getElementById('apple-touch-icon').href = icon;
+
+      // Web App Manifest (blob URL so icons array works)
+      const manifest = {
+        name: "Meal Prep · High Protein",
+        short_name: "Meal Plan",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#f3ece0",
+        theme_color: "#b84a1f",
+        icons: [{ src: icon, sizes: "180x180", type: "image/png" }]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
     });
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));
+    // ── Service Worker — enables full offline use ────────────────────────────
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(() => console.log('✅ Offline ready'))
+          .catch(e => console.log('SW:', e.message));
+      });
     }
   </script>
 </head>
 <body>
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
-  <div id="mp-loader" style="position:fixed;inset:0;background:#08090d;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div id="mp-loader" style="position:fixed;inset:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
 
     <!-- Loader content -->
     <div style="position:relative;z-index:1;width:100%;max-width:320px;">
@@ -75,43 +127,43 @@
         🥩🐟🥚🍗🧀🥛<br>🥦🥕🧄🫑🥑🍅<br>🍚🌾🫘🍋🫒🥜
       </div>
 
-      <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#4b5563;margin-bottom:6px;text-align:center;">REAL FOOD · MADE SIMPLE</div>
-      <div class="loader-title" style="font-size:30px;font-weight:800;color:#eef2ff;line-height:1.1;margin-bottom:2px;text-align:center;">Meal Prep</div>
-      <div class="loader-sub" style="font-size:13px;font-weight:400;color:#8b98b0;margin-bottom:40px;text-align:center;">High Protein · Batch Cooked · Real Food</div>
+      <div class="loader-title" style="font-size:10px;letter-spacing:0.18em;color:#7a6d5e;margin-bottom:6px;text-align:center;">REAL FOOD · MADE SIMPLE</div>
+      <div class="loader-title display" style="font-size:34px;color:#1a1612;line-height:1.1;margin-bottom:4px;text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-0.02em;">Meal Prep</div>
+      <div class="loader-sub" style="font-size:13px;font-weight:400;color:#4a3f33;margin-bottom:40px;text-align:center;font-style:italic;">High Protein · Batch Cooked · Real Food</div>
 
       <div class="loader-bars">
         <!-- Protein -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#f97316;">● PROTEIN</span>
-            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#b84a1f;">● PROTEIN</span>
+            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-            <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#f97316,#fb923c);border-radius:2px;"></div>
+          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+            <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#b84a1f,#d56a3c);border-radius:2px;"></div>
           </div>
         </div>
         <!-- Carbs -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#3b82f6;">● CARBS</span>
-            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#5a6536;">● CARBS</span>
+            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-            <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;"></div>
+          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+            <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#5a6536,#9aa86a);border-radius:2px;"></div>
           </div>
         </div>
         <!-- Fat -->
         <div style="margin-bottom:48px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#a855f7;">● FAT</span>
-            <span style="font-size:10px;color:#4b5563;">Daily target</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#8a3614;">● FAT</span>
+            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#1e2433;border-radius:2px;overflow:hidden;">
-            <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;"></div>
+          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+            <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#8a3614,#b84a1f);border-radius:2px;"></div>
           </div>
         </div>
 
-        <div style="font-size:9px;letter-spacing:0.12em;color:#374151;text-align:center;">PREPARING YOUR PLAN...</div>
+        <div style="font-size:9px;letter-spacing:0.12em;color:#7a6d5e;text-align:center;">PREPARING YOUR PLAN...</div>
       </div>
     </div>
   </div>
@@ -122,24 +174,52 @@
 const { useState } = React;
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 // ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
-const DARK_C = {
-    bg: "#08090d", card: "#0f1117", card2: "#161b24", border: "#1e2433",
-    accent: "#f97316", accentDim: "rgba(249,115,22,0.12)", accentBorder: "rgba(249,115,22,0.30)",
-    prot: "#f97316", carb: "#3b82f6", fat: "#a855f7",
-    green: "#22c55e", greenDim: "rgba(34,197,94,0.08)", greenBorder: "rgba(34,197,94,0.25)",
-    blueDim: "rgba(59,130,246,0.10)", blueBorder: "rgba(59,130,246,0.28)",
-    text: "#eef2ff", sub: "#8b98b0", muted: "#4b5563", dim: "#1e2433",
-};
+// ── PAPER (light, default) — matches method.html ─────────────────────────
 const LIGHT_C = {
-    bg: "#f4f6f9", card: "#ffffff", card2: "#edf0f7", border: "#dde2ef",
-    accent: "#f97316", accentDim: "rgba(249,115,22,0.09)", accentBorder: "rgba(249,115,22,0.35)",
-    prot: "#ea6d0e", carb: "#2563eb", fat: "#9333ea",
-    green: "#16a34a", greenDim: "rgba(22,163,74,0.07)", greenBorder: "rgba(22,163,74,0.30)",
-    blueDim: "rgba(37,99,235,0.07)", blueBorder: "rgba(37,99,235,0.30)",
-    text: "#111827", sub: "#4b5563", muted: "#9ca3af", dim: "#dde2ef",
+    bg: "#f3ece0",
+    card: "#ebe2d3",
+    card2: "#e3d9c8",
+    border: "#c9bda9",
+    accent: "#b84a1f",
+    accentDim: "rgba(184,74,31,0.08)",
+    accentBorder: "rgba(184,74,31,0.28)",
+    prot: "#b84a1f",
+    carb: "#5a6536",
+    fat: "#8a3614",
+    green: "#5a6536",
+    greenDim: "rgba(90,101,54,0.08)",
+    greenBorder: "rgba(90,101,54,0.28)",
+    blueDim: "rgba(90,101,54,0.06)",
+    blueBorder: "rgba(90,101,54,0.22)",
+    text: "#1a1612",
+    sub: "#4a3f33",
+    muted: "#7a6d5e",
+    dim: "#c9bda9",
 };
-// Mutable global — reassigned at top of every App render based on active theme
-let C = Object.assign({}, DARK_C);
+// ── INK (dark, alt) — warm dark mode, same family ─────────────────────────
+const DARK_C = {
+    bg: "#1a1612",
+    card: "#241e18",
+    card2: "#2e261d",
+    border: "#3a2f24",
+    accent: "#d56a3c",
+    accentDim: "rgba(213,106,60,0.12)",
+    accentBorder: "rgba(213,106,60,0.32)",
+    prot: "#d56a3c",
+    carb: "#9aa86a",
+    fat: "#b84a1f",
+    green: "#9aa86a",
+    greenDim: "rgba(154,168,106,0.10)",
+    greenBorder: "rgba(154,168,106,0.30)",
+    blueDim: "rgba(154,168,106,0.08)",
+    blueBorder: "rgba(154,168,106,0.24)",
+    text: "#f3ece0",
+    sub: "#b8a890",
+    muted: "#7a6d5e",
+    dim: "#3a2f24",
+};
+// Default: PAPER (matches method.html). Mutable; reassigned per render.
+let C = Object.assign({}, LIGHT_C);
 const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Aromatics", "Sauces", "Liquids"];
@@ -932,6 +1012,33 @@ const RECIPES = [
         note: "Best eaten within 4 days. Reheat in microwave 60–90 sec or air fryer 180°C for 5 min. Sriracha mayo optional — adds approx 40 kcal.",
     },
     // ─── BREAKFAST ──────────────────────────────────────────────────────────
+    {
+        id: "b0", category: "breakfast",
+        name: "High-Protein Breakfast (Daily)", subtitle: "1 portion · Assembled · 5 min",
+        badge: "🍳 NC", carb: "🥛 Cottage Cheese",
+        perPortion: { kcal: 798, protein: 93, carbs: 64, fat: 19 },
+        batchItems: [
+            { key: "b0_cott", label: "Fat-free cottage cheese", qty: 200, unit: "g", cat: "Dairy" },
+            { key: "b0_turk", label: "Smoked turkey (sliced)", qty: 100, unit: "g", cat: "Protein" },
+            { key: "b0_egg", label: "Whole eggs", qty: 2, unit: "whole", cat: "Protein" },
+            { key: "b0_bread", label: "Baker Street white bread (slices)", qty: 2, unit: "whole", cat: "Carbs" },
+            { key: "b0_tom", label: "Cherry tomatoes", qty: 150, unit: "g", cat: "Vegetables" },
+            { key: "b0_milk", label: "Skimmed milk", qty: 250, unit: "ml", cat: "Dairy" },
+            { key: "b0_whey", label: "Whey protein (1 scoop)", qty: 30, unit: "g", cat: "Protein" },
+            { key: "b0_coffee", label: "Double espresso (with milk above)", qty: 1, unit: "whole", cat: "Liquids" },
+        ],
+        steps: [
+            "Cook 2 whole eggs to your preference (scrambled, fried, or boiled).",
+            "Slice 100g smoked turkey and arrange alongside the eggs.",
+            "Toast 2 slices of white bread and serve.",
+            "Plate 200g fat-free cottage cheese in a small bowl.",
+            "Halve 150g cherry tomatoes for freshness and acidity.",
+            "Pull a double espresso and combine with 250mL skimmed milk.",
+            "Blend 1 scoop whey with the espresso-milk for the protein hit.",
+            "Optional supplements: Creatine 10g · Vitamin D 4000 IU · Fish oil ×2.",
+        ],
+        note: "Macros: 798 kcal · 93P · 64C · 19F (1 portion). The default daily breakfast — designed to hit ~50% of daily protein in one meal. Assembled, not cooked: just toast, plate, drink. Can be prepped in 5 min before training.",
+    },
     {
         id: "b1", category: "breakfast",
         name: "Egg, Beef & Cheese Breakfast Bowl", subtitle: "7 portions · Stovetop",
@@ -1960,7 +2067,7 @@ function MacroRef() {
 // ─── APP ───────────────────────────────────────────────────────────────────
 const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
-const FREE_IDS = new Set(["m01", "b1", "d1"]);
+const FREE_IDS = new Set(["m01", "b0", "d1"]);
 const DEV_CODE = "BATCHMASTER"; // tap logo 5× to enter
 function LockedRecipeCard({ r, onUnlock }) {
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
@@ -2021,7 +2128,7 @@ function UpgradeModal({ onClose }) {
                         React.createElement("div", { style: { fontSize: 9, color: C.green, opacity: 0.7 } }, "/yr")))),
             React.createElement("div", { style: { background: "rgba(124,58,237,0.10)", border: "1.5px solid rgba(124,58,237,0.30)",
                     borderRadius: 14, padding: "14px 16px", marginBottom: 18, cursor: "pointer", position: "relative" } },
-                React.createElement("div", { style: { position: "absolute", top: -10, right: 12, background: "#f97316",
+                React.createElement("div", { style: { position: "absolute", top: -10, right: 12, background: "#b84a1f",
                         borderRadius: 20, padding: "2px 10px", fontSize: 9, fontWeight: 800, color: "#000",
                         letterSpacing: "0.05em" } }, "\uD83C\uDF89 15% OFF FIRST MONTH"),
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
@@ -2030,7 +2137,7 @@ function UpgradeModal({ onClose }) {
                         React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + monthly new drops"),
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } },
                             React.createElement("span", { style: { textDecoration: "line-through", opacity: 0.6 } }, "$7.99/mo"),
-                            React.createElement("span", { style: { color: "#f97316", fontWeight: 700, marginLeft: 5 } }, "$6.79 first month"))),
+                            React.createElement("span", { style: { color: "#b84a1f", fontWeight: 700, marginLeft: 5 } }, "$6.79 first month"))),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0 } },
                         React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: "#a78bfa" } }, "$7.99"),
                         React.createElement("div", { style: { fontSize: 9, color: "#a78bfa", opacity: 0.7 } }, "/mo after")))),
@@ -2103,7 +2210,7 @@ function bmiLabel(b) {
     if (b < 25)
         return { l: "Normal", c: "#22c55e" };
     if (b < 30)
-        return { l: "Overweight", c: "#f97316" };
+        return { l: "Overweight", c: "#b84a1f" };
     return { l: "Obese", c: "#ef4444" };
 }
 function calcActivityMultiplier(job, steps, training) {
@@ -2138,24 +2245,24 @@ function CalcInputRow({ label, children }) {
         children));
 }
 function CalcTextInput({ value, onChange, placeholder, type }) {
-    return (React.createElement("input", { value: value, onChange: onChange, placeholder: placeholder, type: type || "text", autoComplete: "off", style: { width: "100%", background: "#161b24", border: "1px solid #1e2433", borderRadius: 10,
-            color: "#eef2ff", fontSize: 14, padding: "11px 14px", fontFamily: "inherit",
+    return (React.createElement("input", { value: value, onChange: onChange, placeholder: placeholder, type: type || "text", autoComplete: "off", style: { width: "100%", background: "#e3d9c8", border: "1px solid #1e2433", borderRadius: 10,
+            color: "#1a1612", fontSize: 14, padding: "11px 14px", fontFamily: "inherit",
             outline: "none", WebkitAppearance: "none", boxSizing: "border-box" } }));
 }
 function CalcSegBtn({ selected, onClick, label, accent }) {
-    const ac = accent || "#f97316";
+    const ac = accent || "#b84a1f";
     return (React.createElement("button", { onClick: onClick, style: { flex: 1, padding: "9px 4px", fontSize: 11, fontWeight: 700, borderRadius: 8,
-            border: `1px solid ${selected ? ac : "#1e2433"}`,
-            background: selected ? `rgba(249,115,22,0.12)` : "#161b24",
+            border: `1px solid ${selected ? ac : "#c9bda9"}`,
+            background: selected ? `rgba(184,74,31,0.12)` : "#e3d9c8",
             color: selected ? ac : "#8896b3", cursor: "pointer",
             WebkitTapHighlightColor: "transparent" } }, label));
 }
 function CalcOptionBtn({ selected, onClick, label, sub }) {
-    return (React.createElement("button", { onClick: onClick, style: { width: "100%", background: selected ? "rgba(249,115,22,0.12)" : "#161b24",
-            border: `1.5px solid ${selected ? "#f97316" : "#1e2433"}`, borderRadius: 10,
+    return (React.createElement("button", { onClick: onClick, style: { width: "100%", background: selected ? "rgba(184,74,31,0.12)" : "#e3d9c8",
+            border: `1.5px solid ${selected ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10,
             padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8,
             WebkitTapHighlightColor: "transparent", transition: "border-color 0.15s" } },
-        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: selected ? "#f97316" : "#eef2ff" } }, label),
+        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: selected ? "#b84a1f" : "#1a1612" } }, label),
         sub && React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, sub)));
 }
 function CalcMacroBar({ label, val, max, color }) {
@@ -2165,7 +2272,7 @@ function CalcMacroBar({ label, val, max, color }) {
             React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color } },
                 val,
                 "g")),
-        React.createElement("div", { style: { height: 6, background: "#161b24", borderRadius: 3, overflow: "hidden" } },
+        React.createElement("div", { style: { height: 6, background: "#e3d9c8", borderRadius: 3, overflow: "hidden" } },
             React.createElement("div", { style: { width: `${Math.min(100, (val / max) * 100)}%`, height: "100%",
                     background: color, borderRadius: 3, transition: "width 0.6s ease" } }))));
 }
@@ -2509,7 +2616,7 @@ function App() {
     const [recipeCat, setRecipeCat] = useState("breakfast");
     const [recipeQuery, setRecipeQuery] = useState("");
     // ── Theme ─────────────────────────────────────────────────────────────────
-    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "dark");
+    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
     const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
     const resolvedTheme = theme === "system"
         ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
@@ -2618,6 +2725,13 @@ function App() {
             return true;
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
+    }).sort((a, b) => {
+        // Unlocked recipes first, then locked. Within each group: alphabetical by name.
+        const aViewable = canView(a.id) ? 0 : 1;
+        const bViewable = canView(b.id) ? 0 : 1;
+        if (aViewable !== bViewable)
+            return aViewable - bViewable;
+        return a.name.localeCompare(b.name);
     });
     const handleSetBreakfast = () => { setBreakfastSkipped(false); setPendingSlot(null); setTab("meals"); };
     const handleSetLunch = id => { setLunch(id); setPendingSlot(null); setTab("meals"); };
@@ -2675,7 +2789,7 @@ function App() {
                     React.createElement("span", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#22c55e", marginBottom: 2 } }, "Sunday \u2014 Prep Day"),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8b98b0", lineHeight: 1.5 } }, "Set your lunch & dinner recipes, then head to Shopping for your full grocery list.")),
+                        React.createElement("div", { style: { fontSize: 11, color: "#7a6d5e", lineHeight: 1.5 } }, "Set your lunch & dinner recipes, then head to Shopping for your full grocery list.")),
                     React.createElement("button", { onClick: dismissSunday, style: { background: "none", border: "none", color: "#4b5563",
                             fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0, lineHeight: 1 } }, "\u2715"))),
                 tab === "meals" && React.createElement("div", { className: "tab-anim", key: "meals" },
