@@ -4,7 +4,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meal Prep · High Protein · Real Food</title>
+
+  <!-- Primary SEO -->
+
+  <title>Meal Prep · High Protein, Macro-Verified Recipes for People Who Train</title>
+  <meta name="description" content="High-protein, batch-cooked meal plans with macro-verified recipes for athletes and fitness-focused eaters. Real food. Personalised calorie targets. Cook once, eat all week." />
+  <meta name="keywords" content="meal prep, high protein recipes, macro tracking, batch cooking, fitness meal plan, protein recipes, healthy meal prep, calorie tracking, macro calculator" />
+  <meta name="author" content="Meal Prep" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://dejan-mealplan.netlify.app/landing.html" />
+
+  <!-- Open Graph / Facebook -->
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dejan-mealplan.netlify.app/landing.html" />
+  <meta property="og:title" content="Meal Prep · High Protein, Macro-Verified Recipes" />
+  <meta property="og:description" content="Real food. Seriously good macros. 30+ batch-cooked recipes for people who train hard and eat well." />
+  <meta property="og:image" content="https://dejan-mealplan.netlify.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Meal Prep" />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter -->
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://dejan-mealplan.netlify.app/landing.html" />
+  <meta name="twitter:title" content="Meal Prep · High Protein, Macro-Verified Recipes" />
+  <meta name="twitter:description" content="Real food. Seriously good macros. 30+ batch-cooked recipes for people who train hard." />
+  <meta name="twitter:image" content="https://dejan-mealplan.netlify.app/og-image.png" />
+
+  <!-- Mobile / PWA -->
+
+  <meta name="theme-color" content="#f97316" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Meal Prep" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- JSON-LD structured data — helps Google understand the product -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "Meal Prep",
+    "operatingSystem": "Any (PWA)",
+    "applicationCategory": "HealthApplication",
+    "description": "High-protein, batch-cooked meal plans with macro-verified recipes for athletes and fitness-focused eaters.",
+    "offers": [
+      { "@type": "Offer", "name": "Lifetime Access", "price": "34.99", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "Annual Plan",     "price": "59.99", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "Monthly Plan",    "price": "7.99",  "priceCurrency": "USD" }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -537,6 +597,14 @@ footer a:hover { color: var(--text); }
 </head>
 <body>
 
+<!-- Netlify Forms detection (hidden, required for build-time form registration) -->
+
+<form name="signup" netlify netlify-honeypot="bot-field" hidden>
+  <input type="email" name="email" />
+  <input type="text" name="source" />
+  <input type="text" name="bot-field" />
+</form>
+
 <!-- NAV -->
 
 <nav>
@@ -879,12 +947,56 @@ footer a:hover { color: var(--text); }
   </div>
 </section>
 
+<!-- EMAIL CAPTURE -->
+
+<section id="signup" style="padding:80px 24px;background:linear-gradient(180deg,transparent,rgba(249,115,22,0.04));">
+  <div style="max-width:520px;margin:0 auto;text-align:center;">
+    <div class="section-tag">Get notified</div>
+    <h2 class="section-title reveal" style="margin-bottom:14px;">Be first to know.</h2>
+    <p class="section-sub reveal" style="margin:0 auto 32px;">New recipes, early-access launches, and an exclusive launch discount when we go premium. No spam — promise.</p>
+
+```
+<!-- Netlify Forms — captures emails server-side, free up to 100 submissions/month -->
+<form
+  name="signup"
+  method="POST"
+  data-netlify="true"
+  data-netlify-honeypot="bot-field"
+  class="reveal"
+  onsubmit="document.getElementById('signup-success').style.display='block';this.style.display='none';"
+  style="display:flex;gap:8px;flex-wrap:wrap;max-width:440px;margin:0 auto;">
+  <input type="hidden" name="form-name" value="signup" />
+  <input type="hidden" name="source" value="landing-footer" />
+  <p style="position:absolute;left:-9999px;" aria-hidden="true">
+    <label>Don't fill this: <input name="bot-field" /></label>
+  </p>
+  <input
+    type="email"
+    name="email"
+    required
+    placeholder="your@email.com"
+    autocomplete="email"
+    aria-label="Email address"
+    style="flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;padding:14px 18px;outline:none;font-family:inherit;-webkit-appearance:none;" />
+  <button type="submit" class="btn-primary" style="white-space:nowrap;">Sign me up →</button>
+</form>
+<div id="signup-success" style="display:none;margin-top:16px;color:var(--green);font-size:14px;font-weight:600;">
+  ✓ You're on the list — we'll be in touch.
+</div>
+<div style="font-size:11px;color:var(--muted);margin-top:14px;">
+  We'll only email you about Meal Prep updates. Unsubscribe anytime.
+</div>
+```
+
+  </div>
+</section>
+
 <!-- FOOTER CTA -->
 
 <div class="footer-cta">
   <span class="emoji-big">🍗🥩🥦</span>
   <h2>Stop guessing.<br>Start prepping.</h2>
-  <p>5 free recipes. No card needed. Open the app and cook tonight.</p>
+  <p>1 recipe free, no card needed. Open the app and cook tonight.</p>
   <a href="https://dejan-mealplan.netlify.app" class="btn-primary">Open the App →</a>
 </div>
 
@@ -893,6 +1005,7 @@ footer a:hover { color: var(--text); }
 <footer>
   <div class="nav-logo" style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text)">Meal<span style="color:var(--orange)">Prep</span></div>
   <div class="footer-links">
+    <a href="#signup">Sign Up</a>
     <a href="/terms.html">Terms</a>
     <a href="/privacy.html">Privacy</a>
     <a href="https://dejan-mealplan.netlify.app">App</a>
