@@ -153,6 +153,7 @@ const { useState } = React;
 
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
 let _lang = (function(){ try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } })();
+(function(){ document.documentElement.dir = _lang === "ar" ? "rtl" : "ltr"; document.documentElement.lang = _lang; })();
 const TRANSLATIONS = {
   en: {
     app_name:"Meal Prep", tagline:"REAL FOOD · SIMPLE",
@@ -506,11 +507,248 @@ const TRANSLATIONS = {
     legal_disc_body:"Le informazioni nutrizionali, gli obiettivi macro, i piani alimentari e i contenuti delle ricette in questa applicazione sono preparati esclusivamente per uso personale e non costituiscono consulenza medica, dietetica o nutrizionale professionale. Consultare un professionista sanitario qualificato prima di apportare modifiche significative.",
     copyright:"© 2025 Tutti i diritti riservati.",
   },
+  ar: {
+    app_name:"تحضير الوجبات",
+    tagline:"طعام حقيقي · بسيط",
+    loader_sub:"غني بالبروتين · طهي دفعي · طعام حقيقي",
+    daily_target:"الهدف اليومي",
+    tab_meals:"الوجبات",
+    tab_shop:"التسوق",
+    tab_recipes:"الوصفات",
+    tab_macros:"الماكرو",
+    tab_history:"السجل",
+    tab_me:"أنا",
+    method:"الطريقة",
+    settings:"الإعدادات",
+    choose_access:"اختر وصولك",
+    modal_sub:"طعام حقيقي. ماكرو موثّق. اطبخ مرة، كل طوال الأسبوع.",
+    best_value:"⭐ أفضل قيمة",
+    save_17:"وفّر 17%",
+    tier_lifetime_label:"مدى الحياة · دفعة واحدة",
+    tier_lifetime_title:"كل شيء، للأبد",
+    tier_lifetime_desc:"جميع الوصفات الحالية والمستقبلية. تشمل حاسبة الماكرو.",
+    once:"مرة واحدة",
+    tier_quarterly_label:"ربع سنوي · 3 أشهر",
+    tier_quarterly_title:"جميع الوصفات + إضافات جديدة",
+    tier_quarterly_desc:"8.33$ شهرياً · تجديد تلقائي كل 3 أشهر",
+    per_3months:"/3 أشهر",
+    tier_monthly_label:"شهري · إلغاء في أي وقت",
+    tier_monthly_title:"جميع الوصفات + 2 جديدة شهرياً",
+    tier_monthly_desc:"الأكثر مرونة · جرّب بلا مخاطرة",
+    per_month:"/شهر",
+    or_just:"أو فقط ما تحتاجه",
+    single_recipe:"وصفة واحدة",
+    pick_any:"اضغط على القفل في الوصفة",
+    calculator_label:"الحاسبة",
+    macros_only:"الماكرو فقط",
+    cta_lifetime:"وصول مدى الحياة — 59.99$ ←",
+    maybe_later:"ربما لاحقاً",
+    secure_stripe:"🔒 دفع آمن عبر Stripe · Apple Pay و Google Pay مقبولان",
+    your_account:"👤 حسابك",
+    create_account:"👤 إنشاء حسابك",
+    account_desc:"احجز مكانك وتلقَّ إشعارات بالوصفات الجديدة — لا حاجة للشراء.",
+    first_name:"الاسم الأول (اختياري)",
+    email_addr:"البريد الإلكتروني",
+    save_updated:"حفظ والبقاء على اطلاع",
+    no_spam:"لا بريد عشوائي. وصفات جديدة فقط.",
+    edit:"تعديل",
+    saved_msg:"✓ تم الحفظ — ستتلقى التحديثات هنا",
+    saving:"جارٍ الحفظ…",
+    appearance:"🎨 المظهر",
+    dark_mode:"🌙 داكن",
+    light_mode:"☀️ فاتح",
+    system_mode:"⚙️ إعداد النظام",
+    dark_desc:"افتراضي — مريح للعيون",
+    light_desc:"واجهة نظيفة ومضيئة",
+    system_desc:"يتبع إعداد جهازك",
+    legal:"⚖️ قانوني وحقوق النشر",
+    language_label:"🌐 اللغة",
+    macro_calc:"حاسبة الماكرو الشخصية",
+    what_you_get:"ما ستحصل عليه",
+    unlock_calc:"🔓 فتح الحاسبة — 5.99$",
+    unlock_all:"أو افتح كل شيء (وصفات + حاسبة) ←",
+    full_app_price:"التطبيق الكامل من 9.99$/شهر · 59.99$ مدى الحياة",
+    sunday_prep:"الأحد — يوم التحضير",
+    no_lunch:"لا غداء",
+    no_dinner:"لا عشاء",
+    shop_empty:"اختر وصفة غداء وعشاء من تبويب الوجبات لإنشاء قائمتك.",
+    add_home:"إضافة إلى الشاشة الرئيسية",
+    add_home_desc:"اضغط على مشاركة ↑ ثم أضف إلى الشاشة الرئيسية",
+    no_history:"لا سجل حتى الآن. اختر وصفاتك وستظهر هنا.",
+    sessions:"جلسة",
+    sessions_plural:"جلسات",
+    recipe_calc:"حاسبة الماكرو الخاصة بك",
+    recipe_calc_desc:"أجب على بعض الأسئلة حول جسمك وأسلوب حياتك للحصول على أهدافك اليومية.",
+    unlock_recipes:"🔓 فتح جميع الوصفات ←",
+    coming_soon:"📅 قريباً",
+    calc_intro:"احصل على أهدافك الدقيقة من السعرات والماكرو — محسوبة من جسمك وأسلوب حياتك وهدفك. تزامن تلقائي مع خطة وجباتك.",
+    feat_bmr:"BMR وBMI وTDEE",
+    feat_bmr_desc:"محسوب من بيانات جسمك",
+    feat_cal:"هدف السعرات اليومية",
+    feat_cal_desc:"مخصص للخسارة أو الحفاظ أو الزيادة",
+    feat_macro:"توزيع الماكرو",
+    feat_macro_desc:"بروتين وكارب ودهون بالجرام",
+    feat_sync:"تزامن تلقائي",
+    feat_sync_desc:"يحدّث إجماليات الوجبات في كل مكان",
+    feat_save:"حفظ وإعادة الحساب",
+    feat_save_desc:"حدّث وزنك شهرياً، تبقى هويتك",
+    calc_form_desc:"أجب على بعض الأسئلة حول جسمك وعملك وتدريبك للحصول على أهداف السعرات والماكرو الشخصية.",
+    daily_cal_target:"هدف السعرات اليومية",
+    fat_loss:"خسارة الدهون",
+    muscle_gain:"بناء العضلات",
+    maintenance:"المحافظة",
+    protein_label:"بروتين",
+    carbs_label:"كارب",
+    calc_only_label:"الحاسبة فقط · مدى الحياة",
+    calc_onetime:"دفعة واحدة · حاسبة الماكرو فقط",
+    clear_profile:"مسح جميع بيانات ملفك الشخصي بما في ذلك الاسم وتاريخ الميلاد؟",
+    bfast_skipped:"تم تخطي الإفطار",
+    bfast_fill:"سد الفجوة أو تصفح وصفات الإفطار",
+    lunch_skipped:"تم تخطي الغداء",
+    meal_fill:"سد الفجوة بطعام إضافي أو إضافة وصفة",
+    dinner_skipped:"تم تخطي العشاء",
+    hi_prot_desserts:"حلويات غنية بالبروتين",
+    no_recipes:"لم يتم العثور على وصفات",
+    clear_search_btn:"مسح البحث",
+    quarterly_note:"العروض الموسمية الفصلية متاحة بشكل منفصل.",
+    macros_note:"البروتين والحبوب ومنتجات الألبان والخضروات لكل 100 جم نيئ/جاف. الزيوت والتوابل لكل حصة. نصف ملعقة زيت زيتون لكل حصة وجبة. زيت السمك (+18 سعر · +2 جم دهون) للعشاء فقط.",
+    item_col:"المنتج",
+    legal_ip_title:"الملكية الفكرية",
+    legal_ip_body:"هذا التطبيق — بما في ذلك جميع الكود المصدري والتصميم والعناصر المرئية والوظائف وبيانات الوصفات والمعلومات الغذائية وجميع المحتويات الأخرى — يُشكّل منتجاً مملوكاً. جميع الحقوق محفوظة في جميع الولايات القضائية حول العالم.",
+    legal_conf_title:"السرية",
+    legal_conf_body:"هذا تطبيق خاص وشخصي. جميع المقاييس الصحية الشخصية وبيانات تكوين الجسم والأهداف الغذائية وخطط الماكرو والمعلومات الغذائية الواردة في هذا التطبيق سرية تماماً وملك حصري للمالك.",
+    legal_prohib_title:"الأنشطة المحظورة",
+    legal_prohib_body:"يُحظر تماماً النسخ أو الاستنساخ أو الهندسة العكسية أو التفكيك أو التعديل أو التوزيع أو إعادة الترخيص أو البيع أو أي استغلال غير مصرح به لهذا التطبيق — كلياً أو جزئياً — دون إذن كتابي مسبق صريح من المالك.",
+    legal_priv_title:"البيانات والخصوصية",
+    legal_priv_body:"يعمل هذا التطبيق بالكامل على جانب العميل. لا يتم نقل أو تخزين أي بيانات شخصية أو معلومات صحية أو بيانات استخدام على أي خادم خارجي. تُخزَّن جميع البيانات محلياً على هذا الجهاز.",
+    legal_disc_title:"إخلاء المسؤولية",
+    legal_disc_body:"المعلومات الغذائية وأهداف الماكرو وخطط الوجبات ومحتوى الوصفات في هذا التطبيق مُعدَّة للاستخدام الشخصي فقط ولا تُشكّل نصيحة طبية أو غذائية متخصصة. استشر متخصص رعاية صحية مؤهلاً قبل إجراء تغييرات جوهرية.",
+    copyright:"© 2025 جميع الحقوق محفوظة.",
+  },
+  uk: {
+    app_name:"Приготування їжі",
+    tagline:"СПРАВЖНЯ ЇЖА · ПРОСТО",
+    loader_sub:"Багато білка · Пакетне приготування · Справжня їжа",
+    daily_target:"Денна ціль",
+    tab_meals:"Страви",
+    tab_shop:"Покупки",
+    tab_recipes:"Рецепти",
+    tab_macros:"Макро",
+    tab_history:"Історія",
+    tab_me:"Я",
+    method:"МЕТОД",
+    settings:"НАЛАШТУВАННЯ",
+    choose_access:"Оберіть доступ",
+    modal_sub:"Справжня їжа. Перевірені макро. Готуй раз — їж цілий тиждень.",
+    best_value:"⭐ НАЙКРАЩА ЦІНА",
+    save_17:"ЕКОНОМІЯ 17%",
+    tier_lifetime_label:"НАЗАВЖДИ · ОДНОРАЗОВО",
+    tier_lifetime_title:"Все, назавжди",
+    tier_lifetime_desc:"Усі поточні та майбутні рецепти. Калькулятор макро включено.",
+    once:"одноразово",
+    tier_quarterly_label:"КВАРТАЛЬНИЙ · 3 МІСЯЦІ",
+    tier_quarterly_title:"Усі рецепти + нові надходження",
+    tier_quarterly_desc:"Ефективно $8.33/міс · Автооновлення кожні 3 місяці",
+    per_3months:"/3 місяці",
+    tier_monthly_label:"ЩОМІСЯЧНИЙ · СКАСУЙ БУДЬ-КОЛИ",
+    tier_monthly_title:"Усі рецепти + 2 нові щомісяця",
+    tier_monthly_desc:"Найгнучкіший · Спробуй без ризику",
+    per_month:"/міс",
+    or_just:"АБО ЛИШЕ ТЕ, ЩО ПОТРІБНО",
+    single_recipe:"ОДИН РЕЦЕПТ",
+    pick_any:"Натисни замок на рецепті",
+    calculator_label:"КАЛЬКУЛЯТОР",
+    macros_only:"Лише макро",
+    cta_lifetime:"Довічний доступ — $59.99 →",
+    maybe_later:"Можливо пізніше",
+    secure_stripe:"🔒 Безпечна оплата через Stripe · Apple Pay та Google Pay прийняті",
+    your_account:"👤 ВАШ АКАУНТ",
+    create_account:"👤 СТВОРИТИ АКАУНТ",
+    account_desc:"Збережіть місце та отримуйте сповіщення про нові рецепти — без покупки.",
+    first_name:"Ім'я (необов'язково)",
+    email_addr:"Електронна пошта",
+    save_updated:"Зберегти та бути в курсі",
+    no_spam:"Без спаму. Тільки нові рецепти.",
+    edit:"Редагувати",
+    saved_msg:"✓ Збережено — тут отримуватимете оновлення",
+    saving:"Збереження…",
+    appearance:"🎨 ВИГЛЯД",
+    dark_mode:"🌙 Темний",
+    light_mode:"☀️ Світлий",
+    system_mode:"⚙️ Системний",
+    dark_desc:"За замовчуванням — приємно для очей",
+    light_desc:"Чистий, яскравий інтерфейс",
+    system_desc:"Відповідає налаштуванням пристрою",
+    legal:"⚖️ ПРАВОВА ІНФОРМАЦІЯ",
+    language_label:"🌐 МОВА",
+    macro_calc:"Персоналізований калькулятор макро",
+    what_you_get:"ЩО ВИ ОТРИМАЄТЕ",
+    unlock_calc:"🔓 Відкрити калькулятор — $5.99",
+    unlock_all:"Або відкрити все (рецепти + калькулятор) →",
+    full_app_price:"Повний додаток від $9.99/міс · $59.99 назавжди",
+    sunday_prep:"Неділя — День приготування",
+    no_lunch:"Без обіду",
+    no_dinner:"Без вечері",
+    shop_empty:"Оберіть рецепти обіду та вечері у вкладці Страви для формування списку.",
+    add_home:"Додати на головний екран",
+    add_home_desc:"Натисніть Поділитися ↑ потім Додати на головний екран",
+    no_history:"Ще немає історії. Оберіть рецепти — вони з'являться тут.",
+    sessions:"сесія",
+    sessions_plural:"сесії",
+    recipe_calc:"Ваш калькулятор макро",
+    recipe_calc_desc:"Дайте відповіді на кілька запитань про своє тіло та спосіб життя для персоналізованих цілей.",
+    unlock_recipes:"🔓 Відкрити всі рецепти →",
+    coming_soon:"📅 НЕЗАБАРОМ",
+    calc_intro:"Отримайте точні щоденні цілі по калоріях та макро — розраховані з вашого тіла, способу життя та мети. Автосинхронізація з планом харчування.",
+    feat_bmr:"BMR, ІМТ та TDEE",
+    feat_bmr_desc:"Розраховано за даними вашого тіла",
+    feat_cal:"Денна ціль калорій",
+    feat_cal_desc:"Персоналізовано для схуднення, підтримки або набору",
+    feat_macro:"Розбивка макро",
+    feat_macro_desc:"Точні білки, вуглеводи, жири у грамах",
+    feat_sync:"Автосинхронізація",
+    feat_sync_desc:"Оновлює підсумки страв скрізь",
+    feat_save:"Зберегти та перерахувати",
+    feat_save_desc:"Оновлюйте вагу щомісяця, профіль залишається",
+    calc_form_desc:"Дайте відповіді на кілька запитань про своє тіло, роботу та тренування для отримання персоналізованих цілей.",
+    daily_cal_target:"ДЕННА ЦІЛЬ КАЛОРІЙ",
+    fat_loss:"Спалювання жиру",
+    muscle_gain:"Набір м'язів",
+    maintenance:"Підтримка",
+    protein_label:"Білки",
+    carbs_label:"Вуглеводи",
+    calc_only_label:"ЛИШЕ КАЛЬКУЛЯТОР · НАЗАВЖДИ",
+    calc_onetime:"Одноразово · Лише калькулятор макро",
+    clear_profile:"Очистити всі дані профілю, включаючи ім'я та дату народження?",
+    bfast_skipped:"Сніданок пропущено",
+    bfast_fill:"Заповніть прогалину або перегляньте рецепти сніданку",
+    lunch_skipped:"Обід пропущено",
+    meal_fill:"Заповніть прогалину додатковою їжею або додайте рецепт",
+    dinner_skipped:"Вечеря пропущена",
+    hi_prot_desserts:"Десерти з високим вмістом білка",
+    no_recipes:"Рецепти не знайдено",
+    clear_search_btn:"Очистити пошук",
+    quarterly_note:"Квартальні сезонні спецпропозиції доступні окремо.",
+    macros_note:"Білки, крупи, молочні продукти та овочі — на 100 г сирого/сухого. Олії та приправи — на порцію. ½ ст. л. оливкової олії на порцію страви. Риб'ячий жир (+18 ккал · +2 г жиру) лише для вечері.",
+    item_col:"Продукт",
+    legal_ip_title:"Інтелектуальна власність",
+    legal_ip_body:"Цей додаток — включаючи весь вихідний код, дизайн, візуальні елементи, функціональність, дані рецептів, харчову інформацію та весь інший вміст — є власницьким продуктом. Всі права захищені в усіх юрисдикціях світу.",
+    legal_conf_title:"Конфіденційність",
+    legal_conf_body:"Це приватний персональний додаток. Усі особисті показники здоров'я, дані складу тіла, харчові цілі, плани макро та дієтична інформація є суворо конфіденційними та виключною власністю власника.",
+    legal_prohib_title:"Заборонені дії",
+    legal_prohib_body:"Несанкціоноване копіювання, відтворення, зворотна розробка, декомпіляція, модифікація, розповсюдження, субліцензування, продаж або будь-яке інше використання цього додатку — повністю або частково — суворо заборонені без письмового дозволу власника.",
+    legal_priv_title:"Дані та конфіденційність",
+    legal_priv_body:"Цей додаток працює повністю на стороні клієнта. Жодні особисті дані, медична інформація або дані використання не передаються на зовнішні сервери. Усі дані зберігаються локально на цьому пристрої через localStorage браузера.",
+    legal_disc_title:"Відмова від відповідальності",
+    legal_disc_body:"Харчова інформація, цілі макро, плани харчування та вміст рецептів у цьому додатку призначені лише для особистого використання і не є професійною медичною чи дієтологічною порадою. Проконсультуйтеся з кваліфікованим спеціалістом перед суттєвими змінами раціону.",
+    copyright:"© 2025 Усі права захищені.",
+  },
 };
 function t(key) {
   var d = TRANSLATIONS[_lang] || TRANSLATIONS.en;
   return d[key] !== undefined ? d[key] : (TRANSLATIONS.en[key] || key);
 }
+const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2NxM0oYR46xTbBmFCdAqXkpyE9H6fieIuWZ24ZHWZIww7v00AV7lCr12";
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 // ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
 // ── PAPER (light, default) — matches method.html ─────────────────────────
@@ -2025,13 +2263,6 @@ function KPill({ v }) {
         v,
         " kcal");
 }
-function Bar({ v, t, color }) {
-    const p = pct(v, t);
-    const over = v > t;
-    return (React.createElement("div", { style: { height: 5, background: C.dim, borderRadius: 3, overflow: "hidden" } },
-        React.createElement("div", { style: { height: "100%", width: `${Math.min(p, 100)}%`,
-                background: over ? "#ef4444" : color, borderRadius: 3, transition: "width 0.4s" } })));
-}
 // ─── MEAL CARD ──────────────────────────────────────────────────────────────
 function MealCard({ meal, macros, slot }) {
     const [open, setOpen] = useState(false);
@@ -2409,7 +2640,6 @@ const FREE_IDS = new Set(["m01", "b0", "d1"]);
 // Set STRIPE_ENABLED=true once Netlify env vars are configured.
 // While false: upgrade buttons show "launching soon" (safe for friend testing).
 const STRIPE_ENABLED = false;
-const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2NxM0oYR46xTbBmFCdAqXkpyE9H6fieIuWZ24ZHWZIww7v00AV7lCr12";
 const STRIPE_PRICES = {
     lifetime: "price_1TU80BGjmPEqu9q9dV53ktaZ",
     quarterly: "price_1TU81SGjmPEqu9q9UVg827sE",
@@ -3081,7 +3311,13 @@ function App() {
     const setTheme = t => { setThemeState(t); localStorage.setItem("mp_theme", t); };
     // ── Language ──────────────────────────────────────────────────────────────
     const [lang, setLangState] = useState(() => { try { return localStorage.getItem("mp_lang") || "en"; } catch(e) { return "en"; } });
-    const setLang = l => { _lang = l; setLangState(l); try { localStorage.setItem("mp_lang", l); } catch(e) {} };
+    const setLang = l => {
+        _lang = l;
+        setLangState(l);
+        try { localStorage.setItem("mp_lang", l); } catch(e) {}
+        document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+        document.documentElement.lang = l;
+    };
     const resolvedTheme = theme === "system"
         ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
         : theme;
@@ -3153,16 +3389,6 @@ function App() {
     };
     // Calculator-only unlock — $5.99 tier
     const unlockCalculator = () => setUnlocks(Object.assign(Object.assign({}, unlocks), { calculator: true }));
-    // canView — recipe access check
-    const canView = id => {
-        if (FREE_IDS.has(id))
-            return true;
-        if (unlocks.allRecipes)
-            return true;
-        if (unlocks.recipes && unlocks.recipes.includes(id))
-            return true;
-        return false;
-    };
     // canUseCalculator — separate from recipe access
     const canUseCalculator = () => {
         return unlocks.calculator || unlocks.allRecipes;
@@ -3475,6 +3701,8 @@ function App() {
                             { id: "fr", flag: "🇫🇷", label: "Français" },
                             { id: "es", flag: "🇪🇸", label: "Español" },
                             { id: "it", flag: "🇮🇹", label: "Italiano" },
+                            { id: "ar", flag: "🇦🇪", label: "العربية" },
+                            { id: "uk", flag: "🇺🇦", label: "Українська" },
                         ].map(({ id, flag, label }) => (React.createElement("button", { key: id, onClick: () => setLang(id), style: { width: "100%", display: "flex", alignItems: "center", gap: 12,
                                 padding: "11px 14px", marginBottom: 8, borderRadius: 10, cursor: "pointer",
                                 background: lang === id ? C.accentDim : C.card2,
