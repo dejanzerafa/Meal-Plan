@@ -2801,7 +2801,7 @@ function MacroCalculator({ C, onSave, initialProfile }) {
         if (step === 4 && result) {
             const { bmr, tdee, bmi, macros, actLabel, age, w, h } = result;
             const bmiInfo = bmiLabel(bmi);
-            const goalLabel = form.goal === "lose" ? "Fat Loss" : form.goal === "gain" ? "Muscle Gain" : "Maintenance";
+            const goalLabel = form.goal === "lose" ? t("fat_loss") : form.goal === "gain" ? t("muscle_gain") : t("maintenance");
             const goalColor = form.goal === "lose" ? C.accent : form.goal === "gain" ? C.green : "#a78bfa";
             return (React.createElement("div", { key: "s4" },
                 React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
@@ -3018,7 +3018,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
     const r = profile.result;
     const macros = (r === null || r === void 0 ? void 0 : r.macros) || {};
     const bmiInfo = bmiLabel((r === null || r === void 0 ? void 0 : r.bmi) || 0);
-    const goalLabel = profile.goal === "lose" ? "Fat Loss" : profile.goal === "gain" ? "Muscle Gain" : "Maintenance";
+    const goalLabel = profile.goal === "lose" ? t("fat_loss") : profile.goal === "gain" ? t("muscle_gain") : t("maintenance");
     return (React.createElement("div", { className: "tab-anim" },
         React.createElement(AccountCard, { C: C }),
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 } },
@@ -3039,7 +3039,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
                     padding: "6px 12px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "\uD83D\uDD04 Recalculate")),
         React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14,
                 padding: "16px 18px", marginBottom: 12 } },
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, "DAILY CALORIE TARGET"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, t("daily_cal_target")),
             React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal || "—"),
             React.createElement("div", { style: { fontSize: 11, color: C.sub } },
                 "kcal/day \u00B7 ", r === null || r === void 0 ? void 0 :
@@ -3441,10 +3441,10 @@ function App() {
                         " more + all breakfast & desserts")),
                     filteredRecipes.length === 0 && (React.createElement("div", { style: { textAlign: "center", padding: "40px 20px", color: C.sub } },
                         React.createElement("div", { style: { fontSize: 28, marginBottom: 10 } }, "\uD83D\uDD0D"),
-                        React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, "No recipes found"),
+                        React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, t("no_recipes")),
                         React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
-                                borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
+                                borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, t("clear_search_btn"))))),
                     filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, setLunch: handleSetLunch, setDinner: handleSetDinner, pendingSlot: pendingSlot, setBreakfast: handleSetBreakfast, portions: portions })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
