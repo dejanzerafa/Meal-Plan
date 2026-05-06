@@ -178,7 +178,7 @@ let _lang = (function(){ try { return localStorage.getItem("mp_lang") || "en"; }
 const TRANSLATIONS = {
   en: {
     tab_meals:"Meals", tab_shop:"Shop", tab_recipes:"Recipes",
-    tab_macros:"Macros", tab_history:"History", tab_me:"Me",
+    tab_macros:"Macros", tab_history:"Calendar", tab_me:"Me",
     account_title:"My Account", account_name:"Full Name", account_email:"Email Address",
     account_save:"Save Profile", account_saving:"Saving…", account_saved:"Profile Saved",
     account_edit:"Edit", account_greeting:"Hello", account_subtitle:"Your profile is saved.",
@@ -186,7 +186,7 @@ const TRANSLATIONS = {
   },
   fr: {
     tab_meals:"Repas", tab_shop:"Courses", tab_recipes:"Recettes",
-    tab_macros:"Macros", tab_history:"Historique", tab_me:"Moi",
+    tab_macros:"Macros", tab_history:"Calendrier", tab_me:"Moi",
     account_title:"Mon Compte", account_name:"Nom Complet", account_email:"Adresse e-mail",
     account_save:"Enregistrer", account_saving:"Enregistrement…", account_saved:"Profil Enregistré",
     account_edit:"Modifier", account_greeting:"Bonjour", account_subtitle:"Votre profil est sauvegardé.",
@@ -194,7 +194,7 @@ const TRANSLATIONS = {
   },
   es: {
     tab_meals:"Comidas", tab_shop:"Compras", tab_recipes:"Recetas",
-    tab_macros:"Macros", tab_history:"Historial", tab_me:"Yo",
+    tab_macros:"Macros", tab_history:"Calendario", tab_me:"Yo",
     account_title:"Mi Cuenta", account_name:"Nombre Completo", account_email:"Correo Electrónico",
     account_save:"Guardar Perfil", account_saving:"Guardando…", account_saved:"Perfil Guardado",
     account_edit:"Editar", account_greeting:"Hola", account_subtitle:"Tu perfil está guardado.",
@@ -202,7 +202,7 @@ const TRANSLATIONS = {
   },
   it: {
     tab_meals:"Pasti", tab_shop:"Spesa", tab_recipes:"Ricette",
-    tab_macros:"Macro", tab_history:"Cronologia", tab_me:"Io",
+    tab_macros:"Macro", tab_history:"Calendario", tab_me:"Io",
     account_title:"Il Mio Account", account_name:"Nome Completo", account_email:"Indirizzo Email",
     account_save:"Salva Profilo", account_saving:"Salvataggio…", account_saved:"Profilo Salvato",
     account_edit:"Modifica", account_greeting:"Ciao", account_subtitle:"Il tuo profilo è salvato.",
@@ -2755,6 +2755,159 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
             "Saved ",
             new Date(profile.savedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))));
 }
+
+// ─── CALENDAR TAB ─────────────────────────────────────────────────────────
+function CalendarTab({ lunch, dinner }) {
+    var todayObj = new Date();
+    const [calYear,  setCalYear]     = React.useState(todayObj.getFullYear());
+    const [calMonth, setCalMonth]    = React.useState(todayObj.getMonth());
+    const [selectedDay, setSelectedDay] = React.useState(null);
+    const [logBatchSize, setLogBatchSize] = React.useState(7);
+    const [batchLogs, setBatchLogs]  = React.useState(function(){
+        try{ return JSON.parse(localStorage.getItem("mp_cal_logs")||"[]"); }catch(e){ return []; }
+    });
+    const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const WDAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+    function toDS(y,m,d){ return y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"); }
+    var todayStr=toDS(todayObj.getFullYear(),todayObj.getMonth(),todayObj.getDate());
+    var batchMap={};
+    batchLogs.forEach(function(log){
+        var start=new Date(log.date+"T00:00:00");
+        for(var i=0;i<log.batchSize;i++){
+            var dd=new Date(start); dd.setDate(dd.getDate()+i);
+            var key=toDS(dd.getFullYear(),dd.getMonth(),dd.getDate());
+            batchMap[key]={ lunchId:log.lunchId, dinnerId:log.dinnerId, batchSize:log.batchSize,
+                startDate:log.date, dayIndex:i, isStart:i===0, isEnd:i===log.batchSize-1,
+                daysLeft:log.batchSize-i,
+                isShopDay: i===Math.max(0,log.batchSize-3)&&log.batchSize>3,
+                isPrepDay: i===log.batchSize-1 };
+        }
+    });
+    var firstDow=new Date(calYear,calMonth,1).getDay();
+    var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+    var selectedStr=selectedDay?toDS(calYear,calMonth,selectedDay):null;
+    var selectedBatch=selectedStr?batchMap[selectedStr]:null;
+    var lrSel=selectedBatch?RECIPES.find(function(r){return r.id===selectedBatch.lunchId;}):null;
+    var drSel=selectedBatch?RECIPES.find(function(r){return r.id===selectedBatch.dinnerId;}):null;
+    var lrCur=lunch?RECIPES.find(function(r){return r.id===lunch;}):null;
+    var drCur=dinner?RECIPES.find(function(r){return r.id===dinner;}):null;
+    function prevMonth(){ if(calMonth===0){setCalMonth(11);setCalYear(function(y){return y-1;});}else setCalMonth(function(m){return m-1;}); }
+    function nextMonth(){ if(calMonth===11){setCalMonth(0);setCalYear(function(y){return y+1;});}else setCalMonth(function(m){return m+1;}); }
+    function logBatch(){
+        if(!selectedDay||!lunch||!dinner) return;
+        var key=toDS(calYear,calMonth,selectedDay);
+        var newLog={date:key,lunchId:lunch,dinnerId:dinner,batchSize:logBatchSize};
+        var newLogs=batchLogs.filter(function(l){return l.date!==key;}).concat([newLog]);
+        setBatchLogs(newLogs);
+        try{localStorage.setItem("mp_cal_logs",JSON.stringify(newLogs));}catch(e){}
+    }
+    function removeBatch(startDate){
+        var newLogs=batchLogs.filter(function(l){return l.date!==startDate;});
+        setBatchLogs(newLogs);
+        try{localStorage.setItem("mp_cal_logs",JSON.stringify(newLogs));}catch(e){}
+        setSelectedDay(null);
+    }
+    var prepDaysThisMonth=0;
+    for(var pd=1;pd<=daysInMonth;pd++){ if(batchMap[toDS(calYear,calMonth,pd)]&&batchMap[toDS(calYear,calMonth,pd)].isPrepDay) prepDaysThisMonth++; }
+    var cells=[];
+    for(var e=0;e<firstDow;e++) cells.push(null);
+    for(var dc=1;dc<=daysInMonth;dc++) cells.push(dc);
+    return React.createElement("div",{className:"tab-anim"},
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}},
+            React.createElement("button",{onClick:prevMonth,style:{background:C.card2,border:"1px solid "+C.dim,borderRadius:8,width:36,height:36,fontSize:20,cursor:"pointer",color:C.sub,display:"flex",alignItems:"center",justifyContent:"center"}},"‹"),
+            React.createElement("div",{style:{textAlign:"center"}},
+                React.createElement("div",{style:{fontSize:16,fontWeight:800,color:C.text}},MONTHS[calMonth]+" "+calYear),
+                prepDaysThisMonth>0&&React.createElement("div",{style:{fontSize:10,color:"#7c3aed",fontWeight:700}},prepDaysThisMonth+" prep day"+(prepDaysThisMonth>1?"s":"")+" this month")),
+            React.createElement("button",{onClick:nextMonth,style:{background:C.card2,border:"1px solid "+C.dim,borderRadius:8,width:36,height:36,fontSize:20,cursor:"pointer",color:C.sub,display:"flex",alignItems:"center",justifyContent:"center"}},"›")),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4}},
+            WDAYS.map(function(d){return React.createElement("div",{key:d,style:{textAlign:"center",fontSize:10,fontWeight:700,color:C.muted,padding:"3px 0"}},d);})),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}},
+            cells.map(function(day,idx){
+                if(!day) return React.createElement("div",{key:"e"+idx,style:{aspectRatio:"1"}});
+                var dayStr=toDS(calYear,calMonth,day);
+                var batch=batchMap[dayStr];
+                var isToday=dayStr===todayStr;
+                var isSelected=dayStr===selectedStr;
+                var bg="transparent",textColor=C.text,fw=500,botIcon=null,topDot=null;
+                if(batch){
+                    var prog=batch.dayIndex/Math.max(1,batch.batchSize-1);
+                    var alpha=Math.round((0.28-prog*0.16)*100)/100;
+                    bg="rgba(184,74,31,"+alpha+")";
+                    if(batch.isStart){bg=C.accent;textColor="#000";fw=800;topDot="▶";}
+                    if(batch.isPrepDay){bg="#7c3aed";textColor="#fff";fw=800;botIcon="👨‍🍳";}
+                    else if(batch.isShopDay){botIcon="🛒";}
+                }
+                return React.createElement("div",{
+                    key:dayStr,
+                    onClick:function(theDay){ return function(){ setSelectedDay(selectedDay===theDay?null:theDay); }; }(day),
+                    style:{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",
+                        justifyContent:"center",borderRadius:8,background:bg,cursor:"pointer",
+                        border:isSelected?"2px solid "+C.accent:isToday&&!batch?"1.5px solid "+C.accent:"1.5px solid transparent"}},
+                    topDot&&React.createElement("div",{style:{fontSize:7,color:"rgba(0,0,0,0.5)",lineHeight:1,marginBottom:1}},topDot),
+                    React.createElement("div",{style:{fontSize:13,fontWeight:fw,color:isToday&&!batch?C.accent:textColor,lineHeight:1}},day),
+                    botIcon&&React.createElement("div",{style:{fontSize:9,lineHeight:1,marginTop:1}},botIcon));
+            })),
+        React.createElement("div",{style:{display:"flex",gap:10,marginTop:10,flexWrap:"wrap"}},
+            [{dot:C.accent,label:"Prep start"},{dot:"rgba(184,74,31,0.20)",label:"Active batch"},{dot:"#7c3aed",label:"👨‍🍳 Prep again"},{text:"🛒",label:"Shop soon"}]
+            .map(function(item,i){return React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:4,fontSize:10,color:C.sub}},
+                item.dot&&React.createElement("div",{style:{width:9,height:9,borderRadius:2,background:item.dot,flexShrink:0}}),
+                item.text&&React.createElement("span",null,item.text),item.label);})),
+        selectedDay&&React.createElement("div",{style:{marginTop:14,background:C.card,border:"1px solid "+C.dim,borderRadius:16,overflow:"hidden"}},
+            React.createElement("div",{style:{padding:"12px 14px",borderBottom:"1px solid "+C.dim,display:"flex",justifyContent:"space-between",alignItems:"center"}},
+                React.createElement("div",{style:{fontSize:13,fontWeight:700,color:C.text}},
+                    new Date(calYear,calMonth,selectedDay).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})),
+                React.createElement("button",{onClick:function(){setSelectedDay(null);},style:{background:"none",border:"none",color:C.muted,fontSize:16,cursor:"pointer",lineHeight:1}},"✕")),
+            React.createElement("div",{style:{padding:"12px 14px"}},
+                selectedBatch?React.createElement("div",null,
+                    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+                        React.createElement("div",{style:{fontSize:11,color:C.sub}},"Day "+(selectedBatch.dayIndex+1)+" of "+selectedBatch.batchSize+"-day batch"),
+                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:selectedBatch.daysLeft<=2?C.accent:C.green}},selectedBatch.daysLeft+" day"+(selectedBatch.daysLeft!==1?"s":"")+" left")),
+                    lrSel&&React.createElement("div",{style:{background:C.accentDim,border:"1px solid "+C.accentBorder,borderRadius:10,padding:"8px 12px",marginBottom:6}},
+                        React.createElement("div",{style:{fontSize:9,color:C.accent,fontWeight:700,letterSpacing:"0.07em",marginBottom:3}},"☀️ LUNCH"),
+                        React.createElement("div",{style:{fontSize:13,color:C.text,fontWeight:600}},lrSel.name),
+                        React.createElement("div",{style:{fontSize:10,color:C.sub,marginTop:2}},lrSel.perPortion.kcal+" kcal · "+lrSel.perPortion.protein+"g protein")),
+                    drSel&&React.createElement("div",{style:{background:"rgba(90,101,54,0.08)",border:"1px solid rgba(90,101,54,0.22)",borderRadius:10,padding:"8px 12px",marginBottom:12}},
+                        React.createElement("div",{style:{fontSize:9,color:C.green,fontWeight:700,letterSpacing:"0.07em",marginBottom:3}},"🌙 DINNER"),
+                        React.createElement("div",{style:{fontSize:13,color:C.text,fontWeight:600}},drSel.name),
+                        React.createElement("div",{style:{fontSize:10,color:C.sub,marginTop:2}},drSel.perPortion.kcal+" kcal · "+drSel.perPortion.protein+"g protein")),
+                    React.createElement("div",{style:{display:"flex",gap:6,marginBottom:10}},
+                        React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:8,padding:"8px",textAlign:"center"}},
+                            React.createElement("div",{style:{fontSize:10,color:C.muted,marginBottom:2}},"Prep again"),
+                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:"#7c3aed"}},(function(sB){return function(){var e=new Date(sB.startDate+"T00:00:00");e.setDate(e.getDate()+sB.batchSize-1);return e.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch))),
+                        React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:8,padding:"8px",textAlign:"center"}},
+                            React.createElement("div",{style:{fontSize:10,color:C.muted,marginBottom:2}},"Shop day"),
+                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.green}},(function(sB){return function(){var s=new Date(sB.startDate+"T00:00:00");s.setDate(s.getDate()+Math.max(0,sB.batchSize-3));return s.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch)))),
+                    React.createElement("button",{onClick:function(){removeBatch(selectedBatch.startDate);},style:{width:"100%",background:"none",border:"1px solid "+C.dim,borderRadius:10,padding:"9px",fontSize:12,color:C.muted,cursor:"pointer"}},"✕ Remove batch"))
+                :React.createElement("div",null,
+                    React.createElement("div",{style:{fontSize:12,color:C.sub,marginBottom:12}},"No batch logged here."),
+                    lunch&&dinner?React.createElement("div",null,
+                        React.createElement("div",{style:{background:C.card2,borderRadius:8,padding:"8px 10px",marginBottom:10,fontSize:11,color:C.sub}},
+                            "☀️ "+(lrCur?lrCur.name:lunch)+" · 🌙 "+(drCur?drCur.name:dinner)),
+                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.text,marginBottom:6}},"Batch size:"),
+                        React.createElement("div",{style:{display:"flex",gap:6,marginBottom:10}},
+                            [3,5,7].map(function(n){return React.createElement("button",{key:n,onClick:function(nn){return function(){setLogBatchSize(nn);};}(n),style:{flex:1,padding:"9px 0",fontSize:12,fontWeight:700,borderRadius:8,border:"none",background:logBatchSize===n?C.accent:C.card2,color:logBatchSize===n?"#000":C.sub,cursor:"pointer"}},n+" days");})),
+                        React.createElement("button",{onClick:logBatch,style:{width:"100%",background:C.accent,border:"none",borderRadius:10,padding:"11px",fontSize:13,fontWeight:800,color:"#000",cursor:"pointer"}},"📅 Log "+logBatchSize+"-day batch"))
+                    :React.createElement("div",{style:{fontSize:11,color:C.muted,fontStyle:"italic",lineHeight:1.6}},"Select lunch & dinner in the Meals tab first.")))),
+        React.createElement("div",{style:{marginTop:16}},
+            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:8}},"NEXT 14 DAYS"),
+            (function(){
+                var items=[];
+                for(var i=0;i<14;i++){
+                    var dd=new Date(); dd.setDate(dd.getDate()+i);
+                    var key=toDS(dd.getFullYear(),dd.getMonth(),dd.getDate());
+                    var b=batchMap[key];
+                    if(!b) continue;
+                    var lbl=dd.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+                    var tag=b.isStart?"🥘 Prep start":b.isPrepDay?"👨‍🍳 Prep again!":b.isShopDay?"🛒 Shop day":"Day "+(b.dayIndex+1)+" / "+b.batchSize;
+                    var tagColor=b.isStart?C.accent:b.isPrepDay?"#7c3aed":b.isShopDay?C.green:C.sub;
+                    items.push(React.createElement("div",{key:key,style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 12px",background:C.card,borderRadius:10,marginBottom:5}},
+                        React.createElement("div",{style:{fontSize:12,fontWeight:600,color:C.text}},lbl),
+                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:tagColor}},tag)));
+                }
+                if(items.length===0) return React.createElement("div",{style:{fontSize:11,color:C.muted,textAlign:"center",padding:"16px 0"}},"No batches logged yet — tap a day above to log your first prep.");
+                return React.createElement("div",null,items);
+            })()));
+}
 // ─── MACRO BALANCER ───────────────────────────────────────────────────────
 function MacroBalancer({ allSet, total, targets, L, D, lunchScale, dinnerScale, showBalance, setShowBalance, setLunchScale, setDinnerScale }) {
     if (!allSet) return null;
@@ -3044,7 +3197,10 @@ function App() {
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
                 React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD \u00B7 MADE SIMPLE"),
+                React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 600 } },
+                    (function(){ var d=new Date(); return d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"}); })())),
                 React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginTop: 1, lineHeight: 1.2 } }, "Meal Prep"),
                 React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 3 } },
                     "\u2600\uFE0F ",
@@ -3079,6 +3235,8 @@ function App() {
                     : React.createElement("div", { style: { marginBottom: 10 } },
                         React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST }),
                         React.createElement("button", { onClick: () => { setPendingSlot("breakfast"); setRecipeCat("breakfast"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83C\uDF05 Swap to a different breakfast recipe \u2192")),
+                    React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\u26A1 PRE-WORKOUT"),
+                    React.createElement(MealCard, { meal: PRE, macros: PRE }),
                     React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\uD83C\uDF7D\uFE0F MAINS"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\u2600\uFE0F LUNCH"),
@@ -3152,7 +3310,7 @@ function App() {
                             borderRadius: 12, padding: "10px 14px", marginBottom: 12,
                             display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
                         React.createElement("div", null,
-                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, pendingSlot === "lunch" ? "☀️ Selecting for Lunch" : pendingSlot === "dinner" ? "🌙 Selecting for Dinner" : "🌅 Selecting for Breakfast"),
+                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, pendingSlot === "lunch" ? "☀️ Selecting for Lunch" : pendingSlot === "dinner" ? "🌙 Selecting for Dinner" : pendingSlot === "dessert" ? "🍰 Selecting for Dessert" : "🌅 Selecting for Breakfast"),
                             React.createElement("div", { style: { fontSize: 11, color: C.sub } },
                                 "Tap ",
                                 pendingSlot === "breakfast" ? "+ Add as Breakfast" : "+ Add as " + pendingSlot.charAt(0).toUpperCase() + pendingSlot.slice(1),
@@ -3285,41 +3443,7 @@ function App() {
                 tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile" },
                     React.createElement(AccountCard, { C: C }),
                     React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
-                tab === "history" && (() => {
-                    // Filter out entries with deleted/renamed recipe IDs that no longer exist
-                    const allHist = getHistory();
-                    const hist = allHist.filter(h => RECIPES.find(r => r.id === h.lunch) && RECIPES.find(r => r.id === h.dinner));
-                    // Auto-clean stale entries from localStorage so they don't reappear
-                    if (hist.length !== allHist.length) {
-                        try {
-                            localStorage.setItem("mp_history", JSON.stringify(hist));
-                        }
-                        catch (e) { }
-                    }
-                    return (React.createElement("div", { className: "tab-anim" },
-                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 14 } },
-                            "Recipe selections \u2014 last ",
-                            hist.length,
-                            " session",
-                            hist.length !== 1 ? "s" : ""),
-                        hist.length === 0 && (React.createElement("div", { style: { color: C.muted, fontSize: 12, textAlign: "center", marginTop: 60 } }, "No history yet. Set your recipes and they'll appear here.")),
-                        hist.map((h, i) => {
-                            const lrH = RECIPES.find(r => r.id === h.lunch);
-                            const drH = RECIPES.find(r => r.id === h.dinner);
-                            const d = new Date(h.date);
-                            const label = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-                            return (React.createElement("div", { key: i, style: { background: C.card, border: `1px solid ${C.dim}`,
-                                    borderRadius: 12, padding: "10px 14px", marginBottom: 8 } },
-                                React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, label),
-                                React.createElement("div", { style: { display: "flex", gap: 10 } },
-                                    React.createElement("div", { style: { flex: 1, background: C.accentDim, borderRadius: 8, padding: "6px 10px" } },
-                                        React.createElement("div", { style: { fontSize: 9, color: C.accent, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 2 } }, "\u2600\uFE0F LUNCH"),
-                                        React.createElement("div", { style: { fontSize: 12, color: C.text } }, lrH.name)),
-                                    React.createElement("div", { style: { flex: 1, background: `${C.green}1a`, borderRadius: 8, padding: "6px 10px" } },
-                                        React.createElement("div", { style: { fontSize: 9, color: C.green, fontWeight: 700, letterSpacing: "0.07em", marginBottom: 2 } }, "\uD83C\uDF19 DINNER"),
-                                        React.createElement("div", { style: { fontSize: 12, color: C.text } }, drH.name)))));
-                        })));
-                })())),
+                tab === "history" && React.createElement(CalendarTab, { lunch: lunch, dinner: dinner }))),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
         (unlocks.tier === "dev") && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
