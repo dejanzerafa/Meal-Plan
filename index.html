@@ -2174,9 +2174,23 @@ function CalcMacroBar({ label, val, max, color }) {
                     background: color, borderRadius: 3, transition: "width 0.6s ease" } }))));
 }
 // ── Main Calculator component ──────────────────────────────────────────────
-function MacroCalculator({ C, onSave }) {
-    const [step, setStep] = useState(0);
-    const [form, setForm] = useState({
+function MacroCalculator({ C, onSave, initialProfile }) {
+    const isRecalc = !!initialProfile;
+    const [step, setStep] = useState(isRecalc ? 1 : 0); // skip identity step on recalc
+    const [form, setForm] = useState(() => initialProfile ? {
+        firstName: initialProfile.firstName || "",
+        lastName: initialProfile.lastName || "",
+        dob: initialProfile.dob || "",
+        gender: initialProfile.gender || "male",
+        height: initialProfile.height || "",
+        weight: initialProfile.weight || "",
+        heightUnit: initialProfile.heightUnit || "cm",
+        weightUnit: initialProfile.weightUnit || "kg",
+        job: initialProfile.job || "desk",
+        steps: initialProfile.steps || "6-10k",
+        training: initialProfile.training || "3-4",
+        goal: initialProfile.goal || "lose",
+    } : {
         firstName: "", lastName: "", dob: "", gender: "male",
         height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
         job: "desk", steps: "6-10k", training: "3-4", goal: "lose"
@@ -2337,6 +2351,15 @@ function MacroCalculator({ C, onSave }) {
         return React.createElement("div", { key: "loading", style: { textAlign: "center", padding: "40px 0", color: C.sub } }, "Calculating...");
     };
     return (React.createElement("div", null,
+        isRecalc && (React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 12,
+                padding: "10px 14px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 } },
+            React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDD04"),
+            React.createElement("div", { style: { flex: 1, minWidth: 0 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } },
+                    "Updating ",
+                    form.firstName || "your",
+                    " macros"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Personal info kept \u00B7 Update weight, lifestyle, or goal")))),
         React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 20 } }, CALC_STEPS.map((_, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 3, borderRadius: 2,
                 background: i <= step ? C.accent : C.dim, transition: "background 0.3s" } })))),
         React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
@@ -2363,17 +2386,23 @@ function ProfileTab({ C, unlocked, onSave }) {
             return null;
         }
     });
-    const reset = () => {
+    const [recalcMode, setRecalcMode] = useState(false);
+    const fullReset = () => {
+        if (!confirm("Clear all your profile data including name and date of birth?"))
+            return;
         localStorage.removeItem("mp_profile");
         setProfile(null);
+        setRecalcMode(false);
         if (onSave)
-            onSave(null); // 🔑 propagate to App so effectiveTargets resets
+            onSave(null);
     };
     const handleSave = (p) => {
         setProfile(p);
+        setRecalcMode(false);
         if (onSave)
-            onSave(p); // 🔑 propagate to App so TotalBar/macros refresh instantly
+            onSave(p);
     };
+    // First-time: no profile saved
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
             React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
@@ -2381,6 +2410,13 @@ function ProfileTab({ C, unlocked, onSave }) {
                 React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Your Macro Calculator"),
                 React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto" } }, "Answer a few questions about your body, job and training to get your personalised daily calorie and macro targets.")),
             React.createElement(MacroCalculator, { C: C, onSave: handleSave })));
+    // Recalc mode: show pre-filled calculator with identity preserved
+    if (recalcMode)
+        return (React.createElement("div", { className: "tab-anim" },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 } },
+                React.createElement("button", { onClick: () => setRecalcMode(false), style: { background: "none", border: "none", fontSize: 12, color: C.sub, cursor: "pointer", padding: 0 } }, "\u2190 Cancel"),
+                React.createElement("button", { onClick: fullReset, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: 0 } }, "\uD83D\uDDD1 Clear all data")),
+            React.createElement(MacroCalculator, { C: C, onSave: handleSave, initialProfile: profile })));
     const r = profile.result;
     const macros = (r === null || r === void 0 ? void 0 : r.macros) || {};
     const bmiInfo = bmiLabel((r === null || r === void 0 ? void 0 : r.bmi) || 0);
@@ -2400,8 +2436,8 @@ function ProfileTab({ C, unlocked, onSave }) {
                     r.w,
                     "kg \u00B7 ",
                     goalLabel)),
-            React.createElement("button", { onClick: reset, style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
-                    padding: "6px 12px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Recalculate")),
+            React.createElement("button", { onClick: () => setRecalcMode(true), style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
+                    padding: "6px 12px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "\uD83D\uDD04 Recalculate")),
         React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14,
                 padding: "16px 18px", marginBottom: 12 } },
             React.createElement("div", { style: { fontSize: 11, color: C.sub, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 } }, "DAILY CALORIE TARGET"),
