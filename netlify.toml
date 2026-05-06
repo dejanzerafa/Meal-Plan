@@ -1,0 +1,22 @@
+# Netlify configuration for Meal Prep app
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Custom redirects (PWA-friendly)
+[[redirects]]
+  from = "/portal"
+  to = "/.netlify/functions/customer-portal"
+  status = 200
+
+# CORS for fonts (Fraunces, Instrument Sans)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
