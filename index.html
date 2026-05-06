@@ -1695,7 +1695,7 @@ function mergeItems(lr, dr) {
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
 }
 const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
-function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale) {
+function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer) {
     const ls = lScale || 1, ds = dScale || 1;
     const Lraw = lr ? Object.assign({}, lr.perPortion) : EMPTY_MACROS;
     const L = { kcal: Math.round(Lraw.kcal*ls), protein: Math.round(Lraw.protein*ls), carbs: Math.round(Lraw.carbs*ls), fat: +((Lraw.fat*ls).toFixed(1)) };
@@ -1703,11 +1703,12 @@ function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale) {
     const D = { kcal: Math.round(Draw.kcal*ds), protein: Math.round(Draw.protein*ds), carbs: Math.round(Draw.carbs*ds), fat: +((Draw.fat*ds).toFixed(1)) };
     const BF = bfSkipped ? EMPTY_MACROS : (bfr ? Object.assign({}, bfr.perPortion) : BREAKFAST);
     const DS = desr ? Object.assign({}, desr.perPortion) : EMPTY_MACROS;
+    const PRE_M = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
     const total = {
-        kcal: BF.kcal + PRE.kcal + L.kcal + D.kcal + DS.kcal,
-        protein: BF.protein + PRE.protein + L.protein + D.protein + DS.protein,
-        carbs: BF.carbs + PRE.carbs + L.carbs + D.carbs + DS.carbs,
-        fat: +(BF.fat + PRE.fat + L.fat + D.fat + DS.fat).toFixed(1),
+        kcal: BF.kcal + PRE_M.kcal + L.kcal + D.kcal + DS.kcal,
+        protein: BF.protein + PRE_M.protein + L.protein + D.protein + DS.protein,
+        carbs: BF.carbs + PRE_M.carbs + L.carbs + D.carbs + DS.carbs,
+        fat: +(BF.fat + PRE_M.fat + L.fat + D.fat + DS.fat).toFixed(1),
     };
     return { L, D, BF, DS, total };
 }
@@ -1875,7 +1876,7 @@ function TotalBar({ total, targets, profileName }) {
         })));
 }
 // ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
-function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, setLunch, setDinner, setBreakfastRecipe, setDessert, portions, pendingSlot }) {
+function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot }) {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState("ingredients");
     const [stepsDone, setStepsDone] = useState({});
@@ -1884,7 +1885,8 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     const isD = r.id === activeDinner;
     const isBF = r.id === activeBreakfast;
     const isDS = r.id === activeDessert;
-    const active = isL || isD || isBF || isDS;
+    const isPRE = r.id === activePreWorkout;
+    const active = isL || isD || isBF || isDS || isPRE;
     const lastCooked = getLastCooked(r.id);
     const neverUsed = !localStorage.getItem(`mp_last_${r.id}`);
     const scale = (portions || 7) / 7;
@@ -1909,6 +1911,8 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                                 borderRadius: 4, padding: "2px 7px" } }, "\uD83C\uDF05 Breakfast"),
                         isDS && React.createElement("span", { style: { fontSize: 10, color: "#ec4899", background: "rgba(236,72,153,0.10)", border: "1px solid rgba(236,72,153,0.25)",
                                 borderRadius: 4, padding: "2px 7px" } }, "\uD83C\uDF70 Dessert"),
+                        isPRE && React.createElement("span", { style: { fontSize: 10, color: "#f97316", background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.3)",
+                                borderRadius: 4, padding: "2px 7px" } }, "\u26A1 Pre-Workout"),
                         lastCooked && React.createElement("span", { style: { fontSize: 10, color: C.green, background: C.greenDim, border: `1px solid ${C.greenBorder}`,
                                 borderRadius: 4, padding: "2px 7px" } },
                             "\uD83D\uDD50 ",
@@ -1935,6 +1939,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 (r.category || "main") === "main" && React.createElement(React.Fragment, null,
                     pendingSlot === "lunch" ? React.createElement("button", { onClick: () => setLunch(r.id), style: { flex: 2, padding: "9px 0", fontSize: 12, fontWeight: 800, borderRadius: 8, border: "none", cursor: "pointer", background: C.accent, color: "#000", letterSpacing: "0.03em" } }, "+ Add as Lunch \u2600\uFE0F")
                     : pendingSlot === "dinner" ? React.createElement("button", { onClick: () => setDinner(r.id), style: { flex: 2, padding: "9px 0", fontSize: 12, fontWeight: 800, borderRadius: 8, border: "none", cursor: "pointer", background: "#7c3aed", color: "#fff", letterSpacing: "0.03em" } }, "+ Add as Dinner \uD83C\uDF19")
+                    : pendingSlot === "preworkout" ? React.createElement("button", { onClick: () => setPreWorkout && setPreWorkout(r.id), style: { flex: 2, padding: "9px 0", fontSize: 12, fontWeight: 800, borderRadius: 8, border: "none", cursor: "pointer", background: "#f97316", color: "#fff", letterSpacing: "0.03em" } }, "\u26A1 Set as Pre-Workout")
                     : React.createElement(React.Fragment, null,
                         React.createElement("button", { onClick: () => setLunch(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none", cursor: "pointer", background: isL ? C.accent : C.card2, color: isL ? "#000" : C.sub, letterSpacing: "0.03em" } }, isL ? "\u2600\uFE0F Lunch ✓" : "\u2600\uFE0F Set Lunch"),
                         React.createElement("button", { onClick: () => setDinner(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none", cursor: "pointer", background: isD ? "#7c3aed" : C.card2, color: isD ? "#fff" : C.sub, letterSpacing: "0.03em" } }, isD ? "\uD83C\uDF19 Dinner ✓" : "\uD83C\uDF19 Set Dinner"))),
@@ -2161,22 +2166,23 @@ const DEV_CODE = "DEVACCESS"; // tap logo 5× to enter
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10, position: "relative", minHeight: 140 } },
-        React.createElement("div", { style: { padding: "12px 14px", filter: "blur(3px)", opacity: 0.45, pointerEvents: "none",
+        React.createElement("div", { style: { padding: "12px 14px", filter: "blur(6px)", opacity: 0.5, pointerEvents: "none",
                 userSelect: "none" } },
             React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
                 React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
-                        borderRadius: 4, padding: "2px 7px" } }, r.badge),
+                        borderRadius: 4, padding: "2px 7px" } }, "████"),
                 React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`,
-                        borderRadius: 4, padding: "2px 7px" } }, r.carb)),
-            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, r.subtitle),
+                        borderRadius: 4, padding: "2px 7px" } }, "██g")),
+            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, "████████████"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, "███████ ████████"),
             React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } }, ["P", "C", "F"].map(l => (React.createElement("span", { key: l, style: { fontSize: 11, background: C.card2, border: `1px solid ${C.dim}`,
                     borderRadius: 6, padding: "3px 14px", color: C.muted } }, "\u2014"))))),
         React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center", background: "rgba(26,22,18,0.78)",
                 borderRadius: 14, gap: 6, padding: "12px" } },
             React.createElement("span", { style: { fontSize: 24 } }, "\uD83D\uDD12"),
-            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#f3ece0", marginBottom: 4 } }, r.name),
+            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#f3ece0", marginBottom: 2 } }, "Locked Recipe"),
+            React.createElement("div", { style: { fontSize: 10, color: "rgba(243,236,224,0.6)", marginBottom: 6 } }, "Unlock to reveal name & method"),
             React.createElement("div", { style: { display: "flex", gap: 6, width: "100%", maxWidth: 280 } },
                 React.createElement("button", { onClick: () => onUnlockSingle && onUnlockSingle(r.id, r.name), style: { flex: 1, background: "rgba(243,236,224,0.15)", border: "1px solid rgba(243,236,224,0.3)",
                         borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 700,
@@ -2966,6 +2972,8 @@ function MacroBalancer({ allSet, total, targets, L, D, lunchScale, dinnerScale, 
 function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
+    const [preSkipped, setPreSkippedState] = useState(() => localStorage.getItem("mp_pre_skip") === "1");
+    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || null);
     const [pendingSlot, setPendingSlot] = useState(null); // null | "lunch" | "dinner" | "breakfast" | "dessert"
     const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "m01");
     const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "m04");
@@ -3116,6 +3124,16 @@ function App() {
         setLunchScale(1); setDinnerScale(1); setShowBalance(false);
         setPendingSlot(null); setTab("meals");
     };
+    const setPreSkipped = (val) => {
+        setPreSkippedState(val);
+        if (val) localStorage.setItem("mp_pre_skip", "1"); else localStorage.removeItem("mp_pre_skip");
+    };
+    const handleSetPreWorkout = id => {
+        setPreRecipeState(id);
+        if (id) { localStorage.setItem("mp_preworkout", id); setPreSkipped(false); }
+        else localStorage.removeItem("mp_preworkout");
+        setPendingSlot(null); setTab("meals");
+    };
     const setDessert = id => {
         setDessertState(id);
         if (id) { localStorage.setItem("mp_dessert", id); setLunchScale(1); setDinnerScale(1); setShowBalance(false); }
@@ -3125,8 +3143,10 @@ function App() {
     const lr = lunch ? (RECIPES.find(r => r.id === lunch) || null) : null;
     const dr = dinner ? (RECIPES.find(r => r.id === dinner) || null) : null;
     const bfr = breakfastRecipe ? (RECIPES.find(r => r.id === breakfastRecipe) || null) : null;
+    const prer = preRecipe ? (RECIPES.find(r => r.id === preRecipe) || null) : null;
+    const PRE_M = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
     const desr = dessert ? (RECIPES.find(r => r.id === dessert) || null) : null;
-    const { L, D, BF, DS, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale);
+    const { L, D, BF, DS, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer);
     // Effective targets — profile macros override defaults when available
     const effectiveTargets = (profile && profile.result && profile.result.macros && profile.result.macros.kcal)
         ? { kcal: profile.result.macros.kcal,
@@ -3245,8 +3265,20 @@ function App() {
                     : React.createElement("div", { style: { marginBottom: 10 } },
                         React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST }),
                         React.createElement("button", { onClick: () => { setPendingSlot("breakfast"); setRecipeCat("breakfast"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83C\uDF05 Swap to a different breakfast recipe \u2192")),
-                    React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\u26A1 PRE-WORKOUT"),
-                    React.createElement(MealCard, { meal: PRE, macros: PRE }),
+                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, marginBottom: 6 } },
+                        React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em" } }, "\u26A1 PRE-WORKOUT"),
+                        React.createElement("div", { style: { display: "flex", gap: 8 } },
+                            preRecipe && React.createElement("button", { onClick: () => { setPreRecipeState(null); localStorage.removeItem("mp_preworkout"); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove recipe"),
+                            !preSkipped && !preRecipe && React.createElement("button", { onClick: () => setPreSkipped(true), style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Skip"))),
+                    preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
+                        React.createElement("div", { style: { display: "flex", gap: 8 } },
+                            React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
+                            React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Assign Meal \u2192"))))
+                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout" })
+                    : React.createElement("div", { style: { marginBottom: 10 } },
+                        React.createElement(MealCard, { meal: PRE, macros: PRE }),
+                        React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\u26A1 Swap to a different pre-workout meal \u2192")),
                     React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\uD83C\uDF7D\uFE0F MAINS"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\u2600\uFE0F LUNCH"),
@@ -3320,10 +3352,10 @@ function App() {
                             borderRadius: 12, padding: "10px 14px", marginBottom: 12,
                             display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
                         React.createElement("div", null,
-                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, pendingSlot === "lunch" ? "☀️ Selecting for Lunch" : pendingSlot === "dinner" ? "🌙 Selecting for Dinner" : pendingSlot === "dessert" ? "🍰 Selecting for Dessert" : "🌅 Selecting for Breakfast"),
+                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, pendingSlot === "lunch" ? "☀️ Selecting for Lunch" : pendingSlot === "dinner" ? "🌙 Selecting for Dinner" : pendingSlot === "dessert" ? "🍰 Selecting for Dessert" : pendingSlot === "preworkout" ? "⚡ Selecting for Pre-Workout" : "🌅 Selecting for Breakfast"),
                             React.createElement("div", { style: { fontSize: 11, color: C.sub } },
                                 "Tap ",
-                                pendingSlot === "breakfast" ? "+ Add as Breakfast" : "+ Add as " + pendingSlot.charAt(0).toUpperCase() + pendingSlot.slice(1),
+                                pendingSlot === "breakfast" ? "+ Add as Breakfast" : pendingSlot === "preworkout" ? "\u26A1 Set as Pre-Workout" : "+ Add as " + pendingSlot.charAt(0).toUpperCase() + pendingSlot.slice(1),
                                 " on any recipe below")),
                         React.createElement("button", { onClick: () => { setPendingSlot(null); setTab("meals"); }, style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
                                 padding: "5px 10px", fontSize: 11, color: C.sub, cursor: "pointer", whiteSpace: "nowrap" } }, "\u2715 Cancel"))),
@@ -3361,7 +3393,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
-                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, portions: portions, pendingSlot: pendingSlot })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
+                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, pendingSlot: pendingSlot })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
