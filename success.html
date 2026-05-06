@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful · Meal Prep</title>
+  <meta name="theme-color" content="#b84a1f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%;
+      background: #f3ece0;
+      color: #1a1612;
+      font-family: "Instrument Sans", -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      max-width: 460px;
+      width: 100%;
+      background: #ebe2d3;
+      border: 1px solid #c9bda9;
+      border-radius: 18px;
+      padding: 40px 28px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(26,22,18,0.08);
+    }
+    .check-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #b84a1f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #fff;
+      animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .lede {
+      color: #4a3f33;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .tier-badge {
+      display: inline-block;
+      background: rgba(184,74,31,0.08);
+      border: 1px solid rgba(184,74,31,0.28);
+      color: #b84a1f;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-block;
+      background: #b84a1f;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.01em;
+      transition: transform 0.15s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .small { font-size: 12px; color: #7a6d5e; margin-top: 18px; }
+    .error { color: #8a3614; font-weight: 600; }
+    .loader {
+      display: inline-block;
+      width: 24px; height: 24px;
+      border: 3px solid #c9bda9;
+      border-top-color: #b84a1f;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="loader"></div>
+    <h1 style="margin-top:20px;">Verifying your payment...</h1>
+    <p class="lede">One moment while we confirm with Stripe.</p>
+  </div>
+
+<script>
+const TIER_LABELS = {
+  lifetime:   { label: "Lifetime Access · Everything Unlocked",  emoji: "🎉" },
+  quarterly:  { label: "Quarterly Plan · 3-Month Subscription",  emoji: "🍳" },
+  monthly:    { label: "Monthly Plan · Cancel Anytime",          emoji: "🥩" },
+  calculator: { label: "Macro Calculator · Lifetime",            emoji: "📊" },
+  single:     { label: "Single Recipe Unlocked",                  emoji: "🍽️" },
+};
+
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
+  const card = document.getElementById("card");
+
+  if (!sessionId) {
+    card.innerHTML = `
+      <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+      <h1>Something went wrong</h1>
+      <p class="lede">No session ID in URL.</p>
+      <a href="/" class="btn">Back to App</a>
+    `;
+    return;
+  }
+
+  try {
+    const res = await fetch(`/.netlify/functions/verify-session?session_id=${sessionId}`);
+    const data = await res.json();
+
+    if (!data.paid) {
+      card.innerHTML = `
+        <div style="font-size:48px;margin-bottom:12px;">⏳</div>
+        <h1>Payment pending</h1>
+        <p class="lede">Your payment is processing. We'll email you when it clears.</p>
+        <a href="/" class="btn">Back to App</a>
+      `;
+      return;
+    }
+
+    // Apply unlocks to localStorage
+    if (data.unlocks) {
+      try {
+        const existing = JSON.parse(localStorage.getItem("mp_unlocks") || "{}");
+        const merged = {
+          calculator: existing.calculator || data.unlocks.calculator,
+          allRecipes: existing.allRecipes || data.unlocks.allRecipes,
+          recipes: Array.from(new Set([...(existing.recipes || []), ...(data.unlocks.recipes || [])])),
+          tier: data.unlocks.tier || existing.tier,
+        };
+        localStorage.setItem("mp_unlocks", JSON.stringify(merged));
+      } catch (e) {
+        localStorage.setItem("mp_unlocks", JSON.stringify(data.unlocks));
+      }
+    }
+
+    // Save customer email + ID for future portal access
+    if (data.email)      localStorage.setItem("mp_customer_email", data.email);
+    if (data.customerId) localStorage.setItem("mp_stripe_customer_id", data.customerId);
+
+    const tier = TIER_LABELS[data.tier] || { label: "Access Unlocked", emoji: "✓" };
+    card.innerHTML = `
+      <div class="check-icon">${tier.emoji}</div>
+      <div class="tier-badge">${tier.label}</div>
+      <h1>You're in.</h1>
+      <p class="lede">Welcome aboard. Your access is unlocked and a receipt is on the way to your email.</p>
+      <a href="/" class="btn">Open the App →</a>
+      <p class="small">You can cancel or manage your plan anytime in <a href="/.netlify/functions/customer-portal?email=${encodeURIComponent(data.email||'')}" style="color:#b84a1f;">Settings → Manage Subscription</a></p>
+    `;
+  } catch (err) {
+    console.error(err);
+    card.innerHTML = `
+      <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+      <h1>Verification failed</h1>
+      <p class="lede error">We couldn't verify your payment. If your card was charged, email support and we'll sort it.</p>
+      <a href="/" class="btn">Back to App</a>
+    `;
+  }
+})();
+</script>
+</body>
+</html>
