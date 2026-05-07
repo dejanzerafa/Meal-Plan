@@ -4,10 +4,10 @@
 // 3. Sends welcome email inline via Resend (first save only)
 //
 // Required env vars:
-//   SUPABASE_URL         — https://xxxx.supabase.co
-//   SUPABASE_SERVICE_KEY — service_role key (not anon)
-//   RESEND_API_KEY       — re_xxxx...
-//   RESEND_AUDIENCE_ID   — (from Resend → Audiences)
+//   SUPABASE_URL         â€” https://xxxx.supabase.co
+//   SUPABASE_SERVICE_KEY â€” service_role key (not anon)
+//   RESEND_API_KEY       â€” re_xxxx...
+//   RESEND_AUDIENCE_ID   â€” (from Resend â†’ Audiences)
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -35,12 +35,12 @@ exports.handler = async (event) => {
   const appUrl      = process.env.APP_URL || "https://soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey) {
-    console.log("Supabase not configured — skipping");
+    console.log("Supabase not configured â€” skipping");
     return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true }) };
   }
 
   try {
-    // ── 1. Upsert user in Supabase ────────────────────────────────────────────
+    // â”€â”€ 1. Upsert user in Supabase â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // ?on_conflict=email tells PostgREST which column to use for merge
     const upsertRes = await fetch(
       `${supabaseUrl}/rest/v1/users?on_conflict=email`,
@@ -71,7 +71,7 @@ exports.handler = async (event) => {
       console.error("Supabase upsert error:", err);
     }
 
-    // ── 2. Add contact to Resend Audience ─────────────────────────────────────
+    // â”€â”€ 2. Add contact to Resend Audience â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (resendKey && audienceId && marketing_opt_in) {
       fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
         method: "POST",
@@ -88,7 +88,7 @@ exports.handler = async (event) => {
       }).catch((e) => console.error("Resend audience error:", e));
     }
 
-    // ── 3. Send welcome email inline (no internal HTTP call) ──────────────────
+    // â”€â”€ 3. Send welcome email inline (no internal HTTP call) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const alreadySent = userData?.welcome_sent;
     if (!alreadySent && resendKey) {
       const firstName = first_name || (email.split("@")[0]) || "there";
@@ -104,7 +104,7 @@ exports.handler = async (event) => {
           body: JSON.stringify({
             from:    fromEmail,
             to:      email,
-            subject: "Welcome to SoulGainz — your meal plan is ready 🍳",
+            subject: "Welcome to SoulGainz â€” your meal plan is ready ðŸ³",
             html:    buildWelcomeEmail(firstName, appUrl),
           }),
         });
@@ -140,12 +140,12 @@ exports.handler = async (event) => {
   }
 };
 
-// ── Welcome email HTML ────────────────────────────────────────────────────────
+// â”€â”€ Welcome email HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildWelcomeEmail(firstName, appUrl) {
   const steps = [
-    ["🍽️", "Pick your recipes", "Head to the Recipes tab and assign a lunch and dinner. Breakfast, pre-workout, and dessert slots are there too."],
-    ["🛒", "Generate your grocery list", "The Shop tab builds your full ingredient list automatically, scaled to your batch size."],
-    ["📅", "Log your first batch", "In the Calendar tab, mark the day you're cooking. The app tracks your prep day and next shop day."],
+    ["ðŸ½ï¸", "Pick your recipes", "Head to the Recipes tab and assign a lunch and dinner. Breakfast, pre-workout, and dessert slots are there too."],
+    ["ðŸ›’", "Generate your grocery list", "The Shop tab builds your full ingredient list automatically, scaled to your batch size."],
+    ["ðŸ“…", "Log your first batch", "In the Calendar tab, mark the day you're cooking. The app tracks your prep day and next shop day."],
   ];
 
   return `<!DOCTYPE html>
@@ -161,15 +161,15 @@ function buildWelcomeEmail(firstName, appUrl) {
             <div style="font-family:Georgia,serif;font-size:22px;letter-spacing:0.06em;">
               <span style="color:#E07B2A;">SOUL</span><span style="color:#F2EDE6;">GAINZ</span>
             </div>
-            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL · FUEL YOUR GAINZ</div>
+            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL Â· FUEL YOUR GAINZ</div>
           </td>
         </tr>
 
         <tr>
           <td style="padding:32px;">
-            <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 10px;">Hey ${firstName} 👋</h1>
+            <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 10px;">Hey ${firstName} ðŸ‘‹</h1>
             <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
-              You're in. Your meal plan is live and waiting — here's how to get the most out of it in your first session:
+              You're in. Your meal plan is live and waiting â€” here's how to get the most out of it in your first session:
             </p>
 
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
@@ -187,7 +187,7 @@ function buildWelcomeEmail(firstName, appUrl) {
               <tr>
                 <td align="center">
                   <a href="${appUrl}" style="display:inline-block;background:#E07B2A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 40px;border-radius:10px;letter-spacing:0.02em;">
-                    Open SoulGainz →
+                    Open SoulGainz â†’
                   </a>
                 </td>
               </tr>
@@ -195,7 +195,7 @@ function buildWelcomeEmail(firstName, appUrl) {
 
             <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:10px;padding:16px 18px;">
               <div style="font-size:12px;color:#4a3f33;line-height:1.7;">
-                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock any single recipe for $1.99, or go lifetime for $59.99 — every recipe we've ever made, plus every future drop.
+                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock any single recipe for $1.99, or go lifetime for $59.99 â€” every recipe we've ever made, plus every future drop.
               </div>
             </div>
           </td>
