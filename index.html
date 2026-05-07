@@ -5052,11 +5052,13 @@ function App() {
     if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => setOnboardStep("app") });
 
     return (React.createElement("div", { style: { display: "flex", height: "100vh", maxWidth: 520, margin: "0 auto",
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            paddingBottom: "env(safe-area-inset-bottom, 0px)",
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
             color: C.text, background: C.bg, overflow: "hidden" } },
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.dim}`, display: "flex", flexDirection: "column",
-                alignItems: "center", paddingTop: "max(16px, calc(env(safe-area-inset-top) + 8px))", paddingBottom: "max(24px, calc(env(safe-area-inset-bottom) + 8px))", zIndex: 100 } },
+                alignItems: "center", paddingTop: 16, paddingBottom: 24, zIndex: 100 } },
             React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                     gap: 1, marginBottom: 14, flexShrink: 0, cursor: "pointer",
@@ -5104,7 +5106,7 @@ function App() {
                             color: active ? C.accent : C.muted } }, "SETTINGS")));
             })()),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
-            React.createElement("div", { style: { padding: "16px 14px 10px", paddingTop: "max(16px, calc(env(safe-area-inset-top) + 8px))", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
+            React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
                 React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD \u00B7 MADE SIMPLE"),
@@ -5434,7 +5436,7 @@ function App() {
                                 React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.05em", marginTop: 2 } }, l))))
                 ))),
         showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
-            React.createElement("div", { style: { padding: "10px 14px", background: C.card, borderBottom: "1px solid "+C.dim, display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
+            React.createElement("div", { style: { padding: "10px 14px", paddingTop: "max(10px, calc(env(safe-area-inset-top) + 6px))", background: C.card, borderBottom: "1px solid "+C.dim, display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
                 React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: C.sub, padding: "2px 8px 2px 0", lineHeight: 1, fontWeight: 700 } }, "\u2190"),
                 React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, "\uD83D\uDCD6 The Method"),
                 React.createElement("div", { style: { flex: 1 } }),
