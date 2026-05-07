@@ -1,6 +1,6 @@
 // netlify/functions/admin-friend-code.js
 // Generates a 100% off Stripe promo code for a friend and optionally emails it to them.
-// Protected by ADMIN_SECRET — never expose this URL publicly.
+// Protected by ADMIN_SECRET â€” never expose this URL publicly.
 //
 // Usage:
 //   curl -X POST https://soulgainz.app/.netlify/functions/admin-friend-code \
@@ -13,20 +13,20 @@
 //         }'
 //
 // Optional params:
-//   "send_email": false   — generate code only, don't email the friend
-//   "note": "Enjoy!"     — personal note added to the email
-//   "expires_days": 30   — how many days until the code expires (default: 90)
+//   "send_email": false   â€” generate code only, don't email the friend
+//   "note": "Enjoy!"     â€” personal note added to the email
+//   "expires_days": 30   â€” how many days until the code expires (default: 90)
 //
 // Required env vars:
-//   ADMIN_SECRET              — your private passphrase
-//   STRIPE_SECRET_KEY         — sk_live_xxxx...
-//   STRIPE_FRIENDS_COUPON_ID  — 100% off coupon ID created in Stripe Dashboard
-//   RESEND_API_KEY            — re_xxxx...
-//   FROM_EMAIL                — SoulGainz <admin@soulgainz.app>
-//   APP_URL                   — https://soulgainz.app
+//   ADMIN_SECRET              â€” your private passphrase
+//   STRIPE_SECRET_KEY         â€” sk_live_xxxx...
+//   STRIPE_FRIENDS_COUPON_ID  â€” 100% off coupon ID created in Stripe Dashboard
+//   RESEND_API_KEY            â€” re_xxxx...
+//   FROM_EMAIL                â€” SoulGainz <admin@soulgainz.app>
+//   APP_URL                   â€” https://soulgainz.app
 //
 // One-time Stripe setup:
-//   Dashboard → Coupons → Create coupon → 100% off → name "Friends & Family"
+//   Dashboard â†’ Coupons â†’ Create coupon â†’ 100% off â†’ name "Friends & Family"
 //   Copy the coupon ID into STRIPE_FRIENDS_COUPON_ID env var.
 
 exports.handler = async (event) => {
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const adminSecret = process.env.ADMIN_SECRET;
   if (!adminSecret || payload.secret !== adminSecret) {
     return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
@@ -64,14 +64,14 @@ exports.handler = async (event) => {
   const expiresDays   = parseInt(payload.expires_days || "90", 10);
   const expiresAt     = Math.floor((Date.now() + expiresDays * 24 * 60 * 60 * 1000) / 1000);
 
-  // ── Generate a readable promo code ───────────────────────────────────────
+  // â”€â”€ Generate a readable promo code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Format: FRIEND-NAME-XXXX  e.g. FRIEND-AHMED-K4R2
   const namePart   = friendName.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
   const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
   const promoCode  = `FRIEND-${namePart}-${randomPart}`;
 
   try {
-    // ── Create Stripe promotional code ───────────────────────────────────────
+    // â”€â”€ Create Stripe promotional code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const stripeBody = new URLSearchParams({
       coupon:       couponId,
       code:         promoCode,
@@ -101,13 +101,13 @@ exports.handler = async (event) => {
     }
 
     const stripeData = await stripeRes.json();
-    console.log("Friend code created:", promoCode, "→ Stripe ID:", stripeData.id);
+    console.log("Friend code created:", promoCode, "â†’ Stripe ID:", stripeData.id);
 
     const expiryLabel = new Date(expiresAt * 1000).toLocaleDateString("en-AU", {
       day: "numeric", month: "long", year: "numeric",
     });
 
-    // ── Send email to friend (optional) ──────────────────────────────────────
+    // â”€â”€ Send email to friend (optional) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let emailSent = false;
     if (sendEmail) {
       const emailRes = await fetch("https://api.resend.com/emails", {
@@ -119,7 +119,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           from:    fromEmail,
           to:      friendEmail,
-          subject: `${friendName}, you've got lifetime access to SoulGainz 🎁`,
+          subject: `${friendName}, you've got lifetime access to SoulGainz ðŸŽ`,
           html:    buildFriendEmail(friendName, promoCode, appUrl, expiryLabel, personalNote),
         }),
       });
@@ -143,7 +143,7 @@ exports.handler = async (event) => {
         email:       friendEmail || null,
         email_sent:  emailSent,
         expires:     expiryLabel,
-        discount:    "100% off — single use",
+        discount:    "100% off â€” single use",
       }),
     };
 
@@ -153,7 +153,7 @@ exports.handler = async (event) => {
   }
 };
 
-// ── Friend invite email HTML ──────────────────────────────────────────────────
+// â”€â”€ Friend invite email HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
   const firstName = name.split(" ")[0];
   const noteBlock = personalNote
@@ -176,14 +176,14 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
             <div style="font-family:Georgia,serif;font-size:22px;letter-spacing:0.06em;">
               <span style="color:#E07B2A;">SOUL</span><span style="color:#F2EDE6;">GAINZ</span>
             </div>
-            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL · FUEL YOUR GAINZ</div>
+            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL Â· FUEL YOUR GAINZ</div>
           </td>
         </tr>
 
         <!-- Gift hero -->
         <tr>
           <td style="background:linear-gradient(135deg,#1a1612 0%,#2d1f0e 100%);padding:32px;text-align:center;">
-            <div style="font-size:52px;margin-bottom:12px;">🎁</div>
+            <div style="font-size:52px;margin-bottom:12px;">ðŸŽ</div>
             <h1 style="font-family:Georgia,serif;font-size:26px;color:#F2EDE6;margin:0 0 8px;">${firstName}, you're in.</h1>
             <p style="font-size:12px;color:#8C8279;margin:0;letter-spacing:0.1em;text-transform:uppercase;">You've been gifted full access to SoulGainz</p>
           </td>
@@ -193,7 +193,7 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
         <tr>
           <td style="padding:32px;">
             <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 20px;">
-              Hey ${firstName} 👋 — someone thinks you deserve to eat well. They've gifted you <strong style="color:#1a1612;">100% free access</strong> to SoulGainz. No catch. No credit card needed.
+              Hey ${firstName} ðŸ‘‹ â€” someone thinks you deserve to eat well. They've gifted you <strong style="color:#1a1612;">100% free access</strong> to SoulGainz. No catch. No credit card needed.
             </p>
 
             ${noteBlock}
@@ -204,7 +204,7 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
                 <td style="background:#1a1612;border-radius:12px;padding:24px;text-align:center;">
                   <div style="font-size:11px;color:#8C8279;letter-spacing:0.14em;margin-bottom:10px;">YOUR ACCESS CODE</div>
                   <div style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#E07B2A;letter-spacing:0.1em;">${promoCode}</div>
-                  <div style="font-size:11px;color:#8C8279;margin-top:10px;">100% off · single use · expires ${expiryDate}</div>
+                  <div style="font-size:11px;color:#8C8279;margin-top:10px;">100% off Â· single use Â· expires ${expiryDate}</div>
                 </td>
               </tr>
             </table>
@@ -212,21 +212,21 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
             <!-- What they get -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">🍽️</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">ðŸ½ï¸</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Every recipe unlocked</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Full access to every recipe in the library — and every future drop.</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Full access to every recipe in the library â€” and every future drop.</div>
                 </td>
               </tr>
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">🛒</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">ðŸ›’</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Auto grocery lists</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Pick your recipes, hit Shop — your full ingredient list is built in one tap.</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Pick your recipes, hit Shop â€” your full ingredient list is built in one tap.</div>
                 </td>
               </tr>
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">📅</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">ðŸ“…</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Meal prep calendar</div>
                   <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Log your batch cook day. The app tracks your next shop and prep sessions.</div>
@@ -239,7 +239,7 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
               <tr>
                 <td align="center">
                   <a href="${appUrl}" style="display:inline-block;background:#E07B2A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 40px;border-radius:10px;letter-spacing:0.02em;">
-                    Claim Your Free Access →
+                    Claim Your Free Access â†’
                   </a>
                 </td>
               </tr>
