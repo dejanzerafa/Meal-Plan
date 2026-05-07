@@ -1032,6 +1032,7 @@ const RECIPES = [
     {
         id: "m17",
         name: "Egg, Beef & Cheese Breakfast Burritos", subtitle: "Wrap · Stovetop",
+        portions: 8,
         badge: "🍳 ST", carb: "🌮 Wrap",
         perPortion: { kcal: 606, protein: 50, carbs: 34, fat: 30 },
         batchItems: [
@@ -1718,6 +1719,7 @@ const RECIPES = [
     {
         id: "b0", category: "breakfast",
         name: "High-Protein Breakfast", subtitle: "1 portion · Assembled · 5 min",
+        portions: 1,
         badge: "🍳 NC", carb: "🥛 Cottage Cheese",
         perPortion: { kcal: 798, protein: 93, carbs: 64, fat: 19 },
         batchItems: [
@@ -1790,6 +1792,7 @@ const RECIPES = [
     {
         id: "b3", category: "breakfast",
         name: "Turkey Sausage Breakfast Bagel", subtitle: "4 sandwiches · Stovetop",
+        portions: 4,
         badge: "🍳 ST", carb: "🥯 Bagel",
         perPortion: { kcal: 601, protein: 51, carbs: 34, fat: 29 },
         batchItems: [
@@ -1813,6 +1816,7 @@ const RECIPES = [
     {
         id: "d1", category: "dessert",
         name: "Protein Brownie Cookies", subtitle: "4 cookies · Oven",
+        portions: 4,
         badge: "🌬️ AF", carb: "🍫 Chocolate",
         perPortion: { kcal: 145, protein: 12, carbs: 18, fat: 3 },
         batchItems: [
@@ -1912,6 +1916,7 @@ const RECIPES = [
     {
         id: "m20", category: "main",
         name: "Juicy Garlic Lemon Chicken", subtitle: "Yogurt-marinated · Air fryer · 35 min",
+        portions: 3,
         badge: "🌬️ AF", carb: "🍋 Low Carb",
         perPortion: { kcal: 197, protein: 39, carbs: 2, fat: 4 },
         batchItems: [
@@ -1932,6 +1937,7 @@ const RECIPES = [
     {
         id: "m21", category: "main",
         name: "Crispy Chicken Nuggets", subtitle: "Cornflake crusted · Air fryer · 25 min",
+        portions: 2,
         badge: "🌬️ AF", carb: "🌽 Cornflake",
         perPortion: { kcal: 311, protein: 20, carbs: 31, fat: 13 },
         batchItems: [
@@ -1993,6 +1999,7 @@ const RECIPES = [
     {
         id: "d3", category: "dessert",
         name: "High-Protein Chocolate Cake", subtitle: "10 slices · Oven · 45 min",
+        portions: 10,
         badge: "🌬️ Oven", carb: "🍫 Chocolate",
         perPortion: { kcal: 118, protein: 15, carbs: 9, fat: 3 },
         batchItems: [
@@ -2017,6 +2024,7 @@ const RECIPES = [
     {
         id: "d4", category: "dessert",
         name: "Matcha Banana Protein Bread", subtitle: "10 slices · Oven · 40 min",
+        portions: 10,
         badge: "🌬️ Oven", carb: "🍌 Banana",
         perPortion: { kcal: 153, protein: 15, carbs: 16, fat: 3 },
         batchItems: [
@@ -2854,9 +2862,10 @@ const INGREDIENT_MACROS = {
 function getPortions(recipe) {
     if (!recipe) return 7;
     if (recipe.portions) return recipe.portions;
-    const m = (recipe.subtitle || "").match(/^(\d+)\s+serv/i);
+    // Match "N portions/portion/servings/serving" anywhere in the subtitle
+    const m = (recipe.subtitle || "").match(/(\d+)\s+port/i);
     if (m) return parseInt(m[1]);
-    const m2 = (recipe.subtitle || "").match(/^(\d+)\s+cook/i);
+    const m2 = (recipe.subtitle || "").match(/(\d+)\s+serv/i);
     if (m2) return parseInt(m2[1]);
     return 7;
 }
