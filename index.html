@@ -4720,7 +4720,8 @@ function OnboardingSignup({ onDone }) {
     const [status, setStatus] = React.useState("idle");
 
     function finishOnboarding() {
-        localStorage.setItem("sg_onboarded", "1");
+        localStorage.setItem("sg_onboarded", "skipped");
+        localStorage.setItem("sg_skip_ts", Date.now().toString());
         if (window.startLoaderSequence) window.startLoaderSequence();
         onDone();
     }
@@ -4741,6 +4742,8 @@ function OnboardingSignup({ onDone }) {
                 }),
             });
             localStorage.setItem("mp_acc_email", email.trim());
+            localStorage.setItem("sg_onboarded", "registered");
+            localStorage.removeItem("sg_skip_ts");
             setStatus("done");
             setTimeout(finishOnboarding, 1600);
         } catch(e) { setStatus("error"); }
@@ -4819,7 +4822,20 @@ function App() {
     const [showFeedback, setShowFeedback] = useState(false);
     // Onboarding: "story" | "signup" | "app"
     const [onboardStep, setOnboardStep] = useState(() => {
-        try { return localStorage.getItem("sg_onboarded") ? "app" : "story"; } catch(e) { return "app"; }
+        try {
+            const status = localStorage.getItem("sg_onboarded");
+            if (status === "registered") return "app";
+            if (status === "skipped") {
+                const ts = parseInt(localStorage.getItem("sg_skip_ts") || "0", 10);
+                const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+                if (Date.now() - ts < THREE_DAYS) return "app";
+                // Timer expired — clear and re-prompt (skip story, go straight to signup)
+                localStorage.removeItem("sg_onboarded");
+                localStorage.removeItem("sg_skip_ts");
+                return "signup";
+            }
+            return "story"; // first ever visit
+        } catch(e) { return "app"; }
     });
 
     useEffect(function() {
