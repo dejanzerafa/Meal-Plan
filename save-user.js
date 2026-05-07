@@ -40,20 +40,21 @@ exports.handler = async (event) => {
   }
 
   try {
-    // â”€â”€ 1. Upsert user in Supabase â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // ?on_conflict=email tells PostgREST which column to use for merge
-    const upsertRes = await fetch(
-      `${supabaseUrl}/rest/v1/users?on_conflict=email`,
+    // â”€â”€ 1. Save user in Supabase â€” PATCH existing, INSERT if new â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    let userData = null;
+
+    // First try to update an existing row
+    const patchRes = await fetch(
+      `${supabaseUrl}/rest/v1/users?email=eq.${encodeURIComponent(email)}`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "apikey": supabaseKey,
           "Authorization": `Bearer ${supabaseKey}`,
-          "Prefer": "resolution=merge-duplicates,return=representation",
+          "Prefer": "return=representation",
         },
         body: JSON.stringify({
-          email,
           first_name: first_name || null,
           last_name:  last_name  || null,
           marketing_opt_in,
@@ -62,13 +63,39 @@ exports.handler = async (event) => {
       }
     );
 
-    let userData = null;
-    if (upsertRes.ok) {
-      const rows = await upsertRes.json();
-      userData = Array.isArray(rows) ? rows[0] : rows;
-    } else {
-      const err = await upsertRes.text();
-      console.error("Supabase upsert error:", err);
+    if (patchRes.ok) {
+      const rows = await patchRes.json();
+      userData = Array.isArray(rows) ? rows[0] : (rows || null);
+      if (userData) console.log("Supabase: updated existing user", email);
+    }
+
+    // No existing row found â€” insert new user
+    if (!userData) {
+      const insertRes = await fetch(`${supabaseUrl}/rest/v1/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": supabaseKey,
+          "Authorization": `Bearer ${supabaseKey}`,
+          "Prefer": "return=representation",
+        },
+        body: JSON.stringify({
+          email,
+          first_name: first_name || null,
+          last_name:  last_name  || null,
+          marketing_opt_in,
+          updated_at: new Date().toISOString(),
+        }),
+      });
+
+      if (insertRes.ok) {
+        const rows = await insertRes.json();
+        userData = Array.isArray(rows) ? rows[0] : rows;
+        console.log("Supabase: inserted new user", email);
+      } else {
+        const err = await insertRes.text();
+        console.error("Supabase insert error:", err);
+      }
     }
 
     // â”€â”€ 2. Add contact to Resend Audience â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
