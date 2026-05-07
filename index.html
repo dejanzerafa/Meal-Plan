@@ -4014,8 +4014,6 @@ function App() {
     const bfr = breakfastRecipe ? (RECIPES.find(r => r.id === breakfastRecipe) || null) : null;
     const prer = preRecipe ? (RECIPES.find(r => r.id === preRecipe) || null) : null;
     const desr = dessert ? (RECIPES.find(r => r.id === dessert) || null) : null;
-    const profileScale = (effectiveTargets.kcal && TARGETS.kcal && Math.abs(effectiveTargets.kcal - TARGETS.kcal) > 50) ? +(effectiveTargets.kcal / TARGETS.kcal).toFixed(4) : 1;
-    const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
     // Effective targets — profile macros override defaults when available
     const effectiveTargets = (profile && profile.result && profile.result.macros && profile.result.macros.kcal)
         ? { kcal: profile.result.macros.kcal,
@@ -4023,6 +4021,8 @@ function App() {
             carbs: profile.result.macros.carbs,
             fat: profile.result.macros.fat }
         : TARGETS;
+    const profileScale = (effectiveTargets.kcal && TARGETS.kcal && Math.abs(effectiveTargets.kcal - TARGETS.kcal) > 50) ? +(effectiveTargets.kcal / TARGETS.kcal).toFixed(4) : 1;
+    const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
     const profileName = profile ? (profile.firstName || "").trim() : "";
     const filteredRecipes = RECIPES.filter(r => {
         if ((r.category || "main") !== recipeCat)
