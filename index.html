@@ -1592,6 +1592,128 @@ const RECIPES = [
         note: "Pulled chicken freezes exceptionally well. Make double and freeze half in individual portions. Passata adds flavour without fat.",
     },
 
+
+    // ─── PRE-WORKOUT MEALS ───────────────────────────────────────────────────
+    {
+        category: "preworkout", id: "pw1",
+        name: "Rice Cake & Peanut Butter Stack",
+        subtitle: "Rice cakes · peanut butter · banana · honey",
+        badge: "⚡ No Cook", carb: "🍌 Banana",
+        perPortion: { kcal: 290, protein: 8, carbs: 48, fat: 9 },
+        batchItems: [
+            { key: "pw_ricecake", label: "Plain rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
+            { key: "pw_pb", label: "Natural peanut butter", qty: 112, unit: "g", cat: "Fats" },
+            { key: "pw_banana", label: "Bananas (ripe)", qty: 3, unit: "whole", cat: "Fruits" },
+            { key: "pw_honey", label: "Honey", qty: 42, unit: "g", cat: "Sauces" },
+        ],
+        steps: [
+            "No prep needed — assemble fresh each morning.",
+            "Spread ~16g peanut butter across 2–3 rice cakes.",
+            "Slice half a banana over the top.",
+            "Drizzle 6g honey. Eat 30–45 min before training.",
+        ],
+        note: "Fast-digesting carbs + a small amount of fat and protein. Keep bananas and rice cakes stocked — nothing to cook.",
+    },
+    {
+        category: "preworkout", id: "pw2",
+        name: "Banana & Oat Protein Smoothie",
+        subtitle: "Banana · oats · protein powder · almond milk",
+        badge: "⚡ Blender", carb: "🍌 Banana",
+        perPortion: { kcal: 314, protein: 28, carbs: 42, fat: 5 },
+        batchItems: [
+            { key: "pw_banana2", label: "Bananas (ripe, frozen)", qty: 7, unit: "whole", cat: "Fruits" },
+            { key: "pw_oats", label: "Rolled oats", qty: 245, unit: "g", cat: "Carbs" },
+            { key: "pw_protein", label: "Whey or plant protein powder (vanilla)", qty: 7, unit: "whole", cat: "Protein" },
+            { key: "pw_almond", label: "Unsweetened almond milk (1L carton)", qty: 2, unit: "whole", cat: "Liquids" },
+        ],
+        steps: [
+            "Freeze bananas in advance — peel and bag them whole.",
+            "Each serving: blend 1 frozen banana + 35g oats + 1 scoop protein powder + 250mL almond milk.",
+            "Blend 45 seconds until smooth. Drink immediately.",
+            "Can batch-prep oat+powder portions in zip bags for fast morning assembly.",
+        ],
+        note: "One of the most effective pre-workout combinations — fast carbs, sustained energy from oats, protein primer. Consume 30–45 min before.",
+    },
+    {
+        category: "preworkout", id: "pw3",
+        name: "Greek Yogurt & Berry Bowl",
+        subtitle: "Fat-free Greek yogurt · mixed berries · granola · honey",
+        badge: "⚡ No Cook", carb: "🫐 Berry",
+        perPortion: { kcal: 265, protein: 20, carbs: 38, fat: 2 },
+        batchItems: [
+            { key: "pw_yogurt", label: "Fat-free Greek yogurt (1kg tub)", qty: 2, unit: "whole", cat: "Dairy" },
+            { key: "pw_berries", label: "Mixed frozen berries", qty: 700, unit: "g", cat: "Fruits" },
+            { key: "pw_granola", label: "Low-sugar granola", qty: 245, unit: "g", cat: "Carbs" },
+            { key: "pw_honey2", label: "Honey", qty: 42, unit: "g", cat: "Sauces" },
+        ],
+        steps: [
+            "Portion 200g Greek yogurt per serving into 7 containers.",
+            "Add 100g thawed or frozen mixed berries to each.",
+            "Top with 35g granola and a 6g drizzle of honey.",
+            "Keep granola separate until eating if prepping more than 2 days ahead — prevents sogging.",
+        ],
+        note: "High protein for a pre-workout — great if you train mid-morning. Berries provide antioxidants to reduce exercise-induced inflammation.",
+    },
+    {
+        category: "preworkout", id: "pw4",
+        name: "Egg White & Toast with Jam",
+        subtitle: "Liquid egg whites · wholegrain toast · strawberry jam",
+        badge: "⚡ Stovetop", carb: "🍞 Toast",
+        perPortion: { kcal: 258, protein: 22, carbs: 36, fat: 2 },
+        batchItems: [
+            { key: "pw_ew2", label: "Liquid egg whites", qty: 700, unit: "g", cat: "Protein" },
+            { key: "pw_bread", label: "Wholegrain bread (loaf)", qty: 1, unit: "whole", cat: "Carbs" },
+            { key: "pw_jam", label: "Strawberry jam (low-sugar)", qty: 140, unit: "g", cat: "Sauces" },
+        ],
+        steps: [
+            "Cook 100g liquid egg whites in a non-stick pan over medium heat, stirring until just set — 2–3 min.",
+            "Toast 2 slices of wholegrain bread.",
+            "Spread 20g jam across the toast. Serve egg whites alongside.",
+            "Quick to make fresh each morning — no bulk prep needed.",
+        ],
+        note: "Ultra-lean protein source with fast-digesting carbs from the toast and jam. Easy to digest before a workout.",
+    },
+    {
+        category: "preworkout", id: "pw5",
+        name: "Overnight Oats with Protein",
+        subtitle: "Rolled oats · protein powder · almond milk · chia seeds · fruit",
+        badge: "⚡ Prep Ahead", carb: "🌾 Oat",
+        perPortion: { kcal: 305, protein: 26, carbs: 40, fat: 6 },
+        batchItems: [
+            { key: "pw_oats2", label: "Rolled oats", qty: 350, unit: "g", cat: "Carbs" },
+            { key: "pw_protein2", label: "Whey or plant protein powder (vanilla)", qty: 7, unit: "whole", cat: "Protein" },
+            { key: "pw_almond2", label: "Unsweetened almond milk (1L carton)", qty: 2, unit: "whole", cat: "Liquids" },
+            { key: "pw_chia", label: "Chia seeds", qty: 70, unit: "g", cat: "Fats" },
+            { key: "pw_banana3", label: "Bananas or berries for topping", qty: 7, unit: "whole", cat: "Fruits" },
+        ],
+        steps: [
+            "In each of 7 jars or containers: combine 50g rolled oats + 1 scoop protein powder + 10g chia seeds.",
+            "Pour 200mL almond milk over each. Stir well.",
+            "Seal and refrigerate overnight (or up to 4 days).",
+            "In the morning, top with sliced banana or berries. Eat cold or microwave 60 sec.",
+        ],
+        note: "The gold-standard batch pre-workout meal — prep all 7 on Sunday and grab one each morning. Chia seeds gel overnight adding satiety without heaviness.",
+    },
+    {
+        category: "preworkout", id: "pw6",
+        name: "Chocolate Milk & Banana",
+        subtitle: "Low-fat chocolate milk · banana · rice cakes",
+        badge: "⚡ No Cook", carb: "🍌 Banana",
+        perPortion: { kcal: 245, protein: 10, carbs: 44, fat: 3 },
+        batchItems: [
+            { key: "pw_chocmilk", label: "Low-fat chocolate milk (1L cartons)", qty: 2, unit: "whole", cat: "Dairy" },
+            { key: "pw_banana4", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
+            { key: "pw_ricecake2", label: "Plain rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
+        ],
+        steps: [
+            "No prep required.",
+            "Portion 250mL chocolate milk per serving (keep cartons refrigerated).",
+            "Pair with 1 banana and 2–3 rice cakes.",
+            "Consume 30–45 min before training.",
+        ],
+        note: "Chocolate milk has a near-perfect carb-to-protein ratio for pre-workout fuelling. Backed by sports nutrition research. Simplest option in the list.",
+    },
+
     // ─── BREAKFAST ──────────────────────────────────────────────────────────
     {
         id: "b0", category: "breakfast",
@@ -2235,45 +2357,50 @@ function mergeItems(lr, dr) {
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
 }
 // mergeAllItems: extends mergeItems to include all assigned meal slots
-function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, lScale, dScale) {
+function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, lScale, dScale, profileScale) {
     const p = portions || 7;
     const ls = lScale || 1, ds = dScale || 1;
+    const gl = profileScale || 1;
     const map = {};
     const add = (arr, scale) => arr && arr.forEach(i => {
         const qty = i.unit === "whole" ? Math.ceil(i.qty * (scale||1)) : +(i.qty * (scale||1)).toFixed(0);
         if (map[i.key]) map[i.key] = Object.assign(Object.assign({}, map[i.key]), { qty: map[i.key].qty + qty });
         else map[i.key] = Object.assign(Object.assign({}, i), { qty });
     });
-    const mainScale = p / 7;
+    const mainScale = (p / 7) * gl;
     if (lr && dr) {
         if (lr.id === dr.id) add(lr.batchItems.map(i => Object.assign(Object.assign({}, i), { qty: i.qty * (ls + ds) })), mainScale);
         else { add(lr.batchItems, mainScale * ls); add(dr.batchItems, mainScale * ds); }
     }
-    if (!bfSkipped && bfr && bfr.batchItems) { const srv = parseInt((bfr.subtitle||"").match(/\d+/)||[p]); add(bfr.batchItems, p / (srv||p)); }
-    if (desr && desr.batchItems) add(desr.batchItems, 1);
-    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, 1);
+    if (!bfSkipped && bfr && bfr.batchItems) { const srv = parseInt((bfr.subtitle||"").match(/\d+/)||[p]); add(bfr.batchItems, (p / (srv||p)) * gl); }
+    if (desr && desr.batchItems) add(desr.batchItems, gl);
+    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, gl);
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
     Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
 }
 const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
-function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer) {
-    const ls = lScale || 1, ds = dScale || 1;
+function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer, bfScale, preScale, desScale, pScale) {
+    const gl = pScale || 1;
+    const ls = (lScale || 1) * gl, ds = (dScale || 1) * gl, bs = (bfScale || 1) * gl, ps = (preScale || 1) * gl, dss = (desScale || 1) * gl;
     const Lraw = lr ? Object.assign({}, lr.perPortion) : EMPTY_MACROS;
     const L = { kcal: Math.round(Lraw.kcal*ls), protein: Math.round(Lraw.protein*ls), carbs: Math.round(Lraw.carbs*ls), fat: +((Lraw.fat*ls).toFixed(1)) };
     const Draw = dr ? { kcal: dr.perPortion.kcal + FISH_OIL.kcal, protein: dr.perPortion.protein, carbs: dr.perPortion.carbs, fat: +(dr.perPortion.fat + FISH_OIL.fat).toFixed(1) } : EMPTY_MACROS;
     const D = { kcal: Math.round(Draw.kcal*ds), protein: Math.round(Draw.protein*ds), carbs: Math.round(Draw.carbs*ds), fat: +((Draw.fat*ds).toFixed(1)) };
-    const BF = bfSkipped ? EMPTY_MACROS : (bfr ? Object.assign({}, bfr.perPortion) : BREAKFAST);
-    const DS = desr ? Object.assign({}, desr.perPortion) : EMPTY_MACROS;
-    const PRE_M = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
+    const BFbase = bfSkipped ? EMPTY_MACROS : (bfr ? Object.assign({}, bfr.perPortion) : BREAKFAST);
+    const BF = bfSkipped ? EMPTY_MACROS : { kcal: Math.round(BFbase.kcal*bs), protein: Math.round(BFbase.protein*bs), carbs: Math.round(BFbase.carbs*bs), fat: +((BFbase.fat*bs).toFixed(1)) };
+    const DSbase = desr ? Object.assign({}, desr.perPortion) : EMPTY_MACROS;
+    const DS = { kcal: Math.round(DSbase.kcal*dss), protein: Math.round(DSbase.protein*dss), carbs: Math.round(DSbase.carbs*dss), fat: +((DSbase.fat*dss).toFixed(1)) };
+    const PREbase = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
+    const PRE_M = preSkipped ? EMPTY_MACROS : { kcal: Math.round(PREbase.kcal*ps), protein: Math.round(PREbase.protein*ps), carbs: Math.round(PREbase.carbs*ps), fat: +((PREbase.fat*ps).toFixed(1)) };
     const total = {
         kcal: BF.kcal + PRE_M.kcal + L.kcal + D.kcal + DS.kcal,
         protein: BF.protein + PRE_M.protein + L.protein + D.protein + DS.protein,
         carbs: BF.carbs + PRE_M.carbs + L.carbs + D.carbs + DS.carbs,
         fat: +(BF.fat + PRE_M.fat + L.fat + D.fat + DS.fat).toFixed(1),
     };
-    return { L, D, BF, DS, total };
+    return { L, D, BF, DS, PRE_M, total };
 }
 function pct(v, t) { return Math.min(100, Math.round(v / t * 100)); }
 // ─── SMALL COMPONENTS ──────────────────────────────────────────────────────
@@ -2578,15 +2705,17 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
-function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr, desr, prer, preSkipped, bfSkipped, lunchScale, dinnerScale }) {
-    const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${portions||7}`;
+function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr, desr, prer, preSkipped, bfSkipped, lunchScale, dinnerScale, profileScale }) {
+    const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${(bfr||{}).id||'_'}_${(prer||{}).id||'_'}_${(desr||{}).id||'_'}_${portions||7}`;
     const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
     const p = portions || 7;
     const scale = p / 7;
     if (!lr || !dr)
         return null;
-    const batch = mergeAllItems(lr, dr, bfr, desr, prer, p, bfSkipped, preSkipped, lunchScale, dinnerScale);
+    const batch = mergeAllItems(lr, dr, bfr, desr, prer, p, bfSkipped, preSkipped, lunchScale, dinnerScale, profileScale);
+    const scalePct = Math.round((profileScale || 1) * 100);
+    const showScaleNote = !!(profileScale && Math.abs(profileScale - 1) > 0.05);
     const sameRecipe = lr.id === dr.id;
     const Checkbox = ({ k, label }) => (React.createElement("div", { onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
             background: checked[k] ? C.card2 : C.card, borderRadius: 8, marginBottom: 4,
@@ -2630,6 +2759,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
             React.createElement("div", { style: { fontSize: 12, color: C.text } },
                 "\u2600\uFE0F ", lr.name, " ", sameRecipe ? "× 2 slots (×2 qty)" : `+ 🌙 ${dr.name}`),
             sameRecipe && React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Same recipe both meals \u2014 quantities doubled."),
+            showScaleNote && React.createElement("div", { style: { fontSize: 10, color: "#7c3aed", marginTop: 3, fontWeight: 600 } }, "📊 Quantities at " + scalePct + "% · " + (targets.kcal||2500) + " kcal profile"),
             !bfSkipped && bfr && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
                 "\uD83C\uDF05 ", React.createElement("span", { style: { color: C.muted } }, "Breakfast: "), React.createElement("span", { style: { color: C.text } }, bfr.name)),
             !preSkipped && prer && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
@@ -3427,10 +3557,13 @@ function CalendarTab({ lunch, dinner }) {
             var shopMs = shopDay.getTime() - Date.now();
             var prepMs = nextPrep.getTime() - Date.now();
             navigator.serviceWorker.ready.then(function(reg) {
-                if (shopMs > 0) {
+                // Store dates — setTimeout unreliable beyond ~1 day; app-open check in useEffect handles longer delays
+                try { if (shopDay) localStorage.setItem("mp_next_shop", shopDay.toISOString()); } catch(e2) {}
+                try { if (nextPrep) localStorage.setItem("mp_next_prep", nextPrep.toISOString()); } catch(e2) {}
+                if (shopMs > 0 && shopMs < 86400000) {
                     setTimeout(function(){ reg.showNotification("🛒 Shop day", { body: "Grocery run today — your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day" }); }, shopMs);
                 }
-                if (prepMs > 0) {
+                if (prepMs > 0 && prepMs < 86400000) {
                     setTimeout(function(){ reg.showNotification("👨‍🍳 Prep day!", { body: "Your meals run out today — time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day" }); }, prepMs);
                 }
                 try { localStorage.setItem("mp_notif_granted", "1"); } catch(e){}
@@ -3597,49 +3730,97 @@ function CalendarTab({ lunch, dinner }) {
             })()));
 }
 // ─── MACRO BALANCER ───────────────────────────────────────────────────────
-function MacroBalancer({ allSet, total, targets, L, D, lunchScale, dinnerScale, showBalance, setShowBalance, setLunchScale, setDinnerScale }) {
+function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
+    lunchScale, dinnerScale, bfScale, preScale, desScale,
+    showBalance, setShowBalance,
+    setLunchScale, setDinnerScale, setBfScale, setPreScale, setDesScale,
+    bfActive, preActive, desActive,
+    setBreakfastSkipped, setPreSkipped, setDessert, profileScale }) {
     if (!allSet) return null;
     const excess = total.kcal - targets.kcal;
+    const mealCount = 2 + (bfActive ? 1 : 0) + (preActive ? 1 : 0) + (desActive ? 1 : 0);
+    const statusText = excess > 0 ? (excess + " kcal over target") : excess < 0 ? (Math.abs(excess) + " kcal under target") : "Exactly on target";
     if (!showBalance) {
         return React.createElement("div", { style: { background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: 14, padding: "14px 16px", marginTop: 10 } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
                 React.createElement("div", null,
-                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#7c3aed", marginBottom: 2 } }, "⚖️ All 4 meals set!"),
-                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, excess > 0 ? excess + " kcal over target · Tap to balance" : "✅ Macros on track")),
-                React.createElement("button", { onClick: () => setShowBalance(true), style: { background: "#7c3aed", border: "none", borderRadius: 9, padding: "9px 14px", fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer" } }, "Balance →")));
+                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#7c3aed", marginBottom: 2 } }, "⚖️ " + mealCount + " meals active"),
+                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, excess === 0 ? "✅ Macros on track" : statusText + " · Tap to adjust"),
+                    (profileScale && Math.abs(profileScale-1) > 0.05) && React.createElement("div", { style: { fontSize: 10, color: "#7c3aed", marginTop: 2 } }, "📊 Scaled to " + Math.round((profileScale||1)*100) + "% · " + targets.kcal + " kcal")),
+                    !(profileScale && Math.abs(profileScale-1) > 0.05) && React.createElement("span", null),
+                React.createElement("button", { onClick: () => setShowBalance(true), style: { background: "#7c3aed", border: "none", borderRadius: 9, padding: "9px 14px", fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer" } }, "Adjust →")));
     }
-    const lKcal = L.kcal, dKcal = D.kcal;
     const suggest = [];
-    if (excess > 0 && lKcal > 0) {
-        const cut = Math.min(excess, lKcal * 0.5);
-        const scale = +((lKcal - cut) / lKcal).toFixed(2);
-        suggest.push({ label: "☀️ Reduce Lunch " + Math.round((1 - scale) * 100) + "%", slot: "lunch", scale, saves: Math.round(cut) });
+    // Breakfast
+    if (bfActive && BF.kcal > 0) {
+        if (excess > 0) {
+            const cut = Math.min(excess, BF.kcal * 0.5);
+            const pct = Math.round(cut / BF.kcal * 100);
+            if (pct >= 5) suggest.push({ label: "🌅 Reduce Breakfast " + pct + "%", saves: Math.round(cut), action: function() { setBfScale(+(bfScale * (BF.kcal - cut) / BF.kcal).toFixed(2)); } });
+        }
+        suggest.push({ label: "🌅 Skip Breakfast", saves: BF.kcal, skip: true, action: function() { setBreakfastSkipped(true); setBfScale(1); } });
     }
-    if (excess > 0 && dKcal > 0) {
-        const cut = Math.min(excess, dKcal * 0.5);
-        const scale = +((dKcal - cut) / dKcal).toFixed(2);
-        suggest.push({ label: "🌙 Reduce Dinner " + Math.round((1 - scale) * 100) + "%", slot: "dinner", scale, saves: Math.round(cut) });
+    // Pre-Workout
+    if (preActive && PRE_M.kcal > 0) {
+        if (excess > 0) {
+            const cut = Math.min(excess, PRE_M.kcal * 0.5);
+            const pct = Math.round(cut / PRE_M.kcal * 100);
+            if (pct >= 5) suggest.push({ label: "⚡ Reduce Pre-Workout " + pct + "%", saves: Math.round(cut), action: function() { setPreScale(+(preScale * (PRE_M.kcal - cut) / PRE_M.kcal).toFixed(2)); } });
+        }
+        suggest.push({ label: "⚡ Skip Pre-Workout", saves: PRE_M.kcal, skip: true, action: function() { setPreSkipped(true); setPreScale(1); } });
     }
-    if (lKcal > 0 && dKcal > 0 && excess > 0) {
-        const cutEach = excess / 2;
-        const ls = +((lKcal - Math.min(cutEach, lKcal * 0.5)) / lKcal).toFixed(2);
-        const ds = +((dKcal - Math.min(cutEach, dKcal * 0.5)) / dKcal).toFixed(2);
-        suggest.push({ label: "⚡ Split evenly (lunch + dinner)", slot: "both", lScale: ls, dScale: ds, saves: Math.round(cutEach * 2) });
+    // Lunch
+    if (excess > 0 && L.kcal > 0) {
+        const cut = Math.min(excess, L.kcal * 0.5);
+        const pct = Math.round(cut / L.kcal * 100);
+        if (pct >= 5) suggest.push({ label: "☀️ Reduce Lunch " + pct + "%", saves: Math.round(cut), action: function() { setLunchScale(+(lunchScale * (L.kcal - cut) / L.kcal).toFixed(2)); } });
     }
+    // Dinner
+    if (excess > 0 && D.kcal > 0) {
+        const cut = Math.min(excess, D.kcal * 0.5);
+        const pct = Math.round(cut / D.kcal * 100);
+        if (pct >= 5) suggest.push({ label: "🌙 Reduce Dinner " + pct + "%", saves: Math.round(cut), action: function() { setDinnerScale(+(dinnerScale * (D.kcal - cut) / D.kcal).toFixed(2)); } });
+    }
+    // Split lunch + dinner
+    if (excess > 0 && L.kcal > 0 && D.kcal > 0) {
+        const ce = excess / 2;
+        const ls2 = +(lunchScale * (L.kcal - Math.min(ce, L.kcal * 0.5)) / L.kcal).toFixed(2);
+        const ds2 = +(dinnerScale * (D.kcal - Math.min(ce, D.kcal * 0.5)) / D.kcal).toFixed(2);
+        const saves2 = Math.round(Math.min(ce, L.kcal * 0.5) + Math.min(ce, D.kcal * 0.5));
+        suggest.push({ label: "⚡ Split evenly (lunch + dinner)", saves: saves2, action: function() { setLunchScale(ls2); setDinnerScale(ds2); } });
+    }
+    // Dessert
+    if (desActive && DS.kcal > 0) {
+        if (excess > 0) {
+            const cut = Math.min(excess, DS.kcal * 0.5);
+            const pct = Math.round(cut / DS.kcal * 100);
+            if (pct >= 5) suggest.push({ label: "🍰 Reduce Dessert " + pct + "%", saves: Math.round(cut), action: function() { setDesScale(+(desScale * (DS.kcal - cut) / DS.kcal).toFixed(2)); } });
+        }
+        suggest.push({ label: "🍰 Remove Dessert", saves: DS.kcal, skip: true, action: function() { setDessert(null); setDesScale(1); } });
+    }
+    const anyAdjusted = lunchScale !== 1 || dinnerScale !== 1 || bfScale !== 1 || preScale !== 1 || desScale !== 1;
+    const hasSuggestions = suggest.filter(function(s) { return !s.skip || excess > 0; }).length > 0 || suggest.some(function(s) { return s.skip; });
     return React.createElement("div", { style: { background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: 14, padding: "14px 16px", marginTop: 10 } },
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
-            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#7c3aed" } }, "⚖️ Macro Balance"),
-            React.createElement("button", { onClick: () => { setShowBalance(false); setLunchScale(1); setDinnerScale(1); }, style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕")),
-        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 10 } },
-            excess > 0 ? excess + " kcal over target · Choose an adjustment:" : "✅ Macros on target — no adjustment needed"),
-        excess > 0 && suggest.map(function(s, i) {
-            return React.createElement("button", { key: i, onClick: () => { if (s.slot === "lunch") setLunchScale(s.scale); else if (s.slot === "dinner") setDinnerScale(s.scale); else { setLunchScale(s.lScale); setDinnerScale(s.dScale); } }, style: { width: "100%", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px 14px", fontSize: 12, fontWeight: 600, color: C.text, cursor: "pointer", textAlign: "left" } },
+            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#7c3aed" } }, "⚖️ Meal Adjuster"),
+            React.createElement("button", { onClick: function() { setShowBalance(false); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); }, style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕")),
+        React.createElement("div", { style: { fontSize: 11, color: excess > 0 ? "#ef4444" : C.sub, marginBottom: 10, fontWeight: excess > 0 ? 600 : 400 } },
+            excess > 0 ? ("⚠️ " + statusText + " · reduce a meal below:") : ("✅ " + statusText + " · adjust meals as needed:"),
+            (profileScale && Math.abs(profileScale-1) > 0.05) && " · Portions at " + Math.round((profileScale||1)*100) + "% of base recipe"),
+        !(profileScale && Math.abs(profileScale-1) > 0.05) && React.createElement("span", null),
+        suggest.map(function(s, i) {
+            const isSkip = !!s.skip;
+            return React.createElement("button", { key: i, onClick: function() { s.action(); }, style: { width: "100%", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", background: isSkip ? C.card : C.card2, border: "1px solid " + (isSkip ? C.muted : C.dim), borderRadius: 10, padding: "10px 14px", fontSize: 12, fontWeight: 600, color: isSkip ? C.sub : C.text, cursor: "pointer", textAlign: "left" } },
                 React.createElement("span", null, s.label),
-                React.createElement("span", { style: { fontSize: 11, color: "#7c3aed", fontWeight: 700 } }, "−" + s.saves + " kcal"));
+                React.createElement("span", { style: { fontSize: 11, color: isSkip ? C.muted : "#7c3aed", fontWeight: 700 } }, "−" + s.saves + " kcal"));
         }),
-        (lunchScale !== 1 || dinnerScale !== 1) && React.createElement("div", { style: { marginTop: 8, padding: "8px 10px", background: C.card, borderRadius: 8, fontSize: 11, color: C.sub } },
-            lunchScale !== 1 && React.createElement("div", null, "☀️ Lunch scaled to " + Math.round(lunchScale * 100) + "% · " + L.kcal + " kcal"),
-            dinnerScale !== 1 && React.createElement("div", null, "🌙 Dinner scaled to " + Math.round(dinnerScale * 100) + "% · " + D.kcal + " kcal")));
+        anyAdjusted && React.createElement("div", { style: { marginTop: 8, padding: "8px 10px", background: C.card, borderRadius: 8, fontSize: 11, color: C.sub } },
+            React.createElement("div", { style: { fontWeight: 700, marginBottom: 4, color: C.text } }, "Active adjustments:"),
+            bfScale !== 1 && React.createElement("div", null, "🌅 Breakfast at " + Math.round(bfScale * 100) + "% · " + BF.kcal + " kcal"),
+            preScale !== 1 && React.createElement("div", null, "⚡ Pre-Workout at " + Math.round(preScale * 100) + "% · " + PRE_M.kcal + " kcal"),
+            lunchScale !== 1 && React.createElement("div", null, "☀️ Lunch at " + Math.round(lunchScale * 100) + "% · " + L.kcal + " kcal"),
+            dinnerScale !== 1 && React.createElement("div", null, "🌙 Dinner at " + Math.round(dinnerScale * 100) + "% · " + D.kcal + " kcal"),
+            desScale !== 1 && React.createElement("div", null, "🍰 Dessert at " + Math.round(desScale * 100) + "% · " + DS.kcal + " kcal")));
 }
 function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
@@ -3653,9 +3834,24 @@ function App() {
     const [dessert, setDessertState] = useState(() => localStorage.getItem("mp_dessert") || null);
     const [lunchScale, setLunchScale] = useState(1);
     const [dinnerScale, setDinnerScale] = useState(1);
+    const [bfScale, setBfScale] = useState(1);
+    const [preScale, setPreScale] = useState(1);
+    const [desScale, setDesScale] = useState(1);
     const [showBalance, setShowBalance] = useState(false);
+    const [shopAlert, setShopAlert] = useState(false);
+    const [prepAlert, setPrepAlert] = useState(false);
     const [showMethod, setShowMethod] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
+
+    useEffect(function() {
+        try {
+            var shopDate = localStorage.getItem("mp_next_shop");
+            var prepDate = localStorage.getItem("mp_next_prep");
+            var now = new Date();
+            if (shopDate && new Date(shopDate) <= now) { setShopAlert(true); localStorage.removeItem("mp_next_shop"); }
+            if (prepDate && new Date(prepDate) <= now) { setPrepAlert(true); localStorage.removeItem("mp_next_prep"); }
+        } catch(e) {}
+    }, []);
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
     const [recipeCat, setRecipeCat] = useState("main");
@@ -3794,7 +3990,7 @@ function App() {
         setBreakfastRecipeState(id);
         if (id) { localStorage.setItem("mp_breakfast", id); setBreakfastSkipped(false); }
         else localStorage.removeItem("mp_breakfast");
-        setLunchScale(1); setDinnerScale(1); setShowBalance(false);
+        setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); setShowBalance(false);
         setPendingSlot(null); setTab("meals");
     };
     const setPreSkipped = (val) => {
@@ -3809,7 +4005,7 @@ function App() {
     };
     const setDessert = id => {
         setDessertState(id);
-        if (id) { localStorage.setItem("mp_dessert", id); setLunchScale(1); setDinnerScale(1); setShowBalance(false); }
+        if (id) { localStorage.setItem("mp_dessert", id); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); setShowBalance(false); }
         else localStorage.removeItem("mp_dessert");
         setPendingSlot(null); setTab("meals");
     };
@@ -3817,9 +4013,9 @@ function App() {
     const dr = dinner ? (RECIPES.find(r => r.id === dinner) || null) : null;
     const bfr = breakfastRecipe ? (RECIPES.find(r => r.id === breakfastRecipe) || null) : null;
     const prer = preRecipe ? (RECIPES.find(r => r.id === preRecipe) || null) : null;
-    const PRE_M = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
     const desr = dessert ? (RECIPES.find(r => r.id === dessert) || null) : null;
-    const { L, D, BF, DS, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer);
+    const profileScale = (effectiveTargets.kcal && TARGETS.kcal && Math.abs(effectiveTargets.kcal - TARGETS.kcal) > 50) ? +(effectiveTargets.kcal / TARGETS.kcal).toFixed(4) : 1;
+    const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
     // Effective targets — profile macros override defaults when available
     const effectiveTargets = (profile && profile.result && profile.result.macros && profile.result.macros.kcal)
         ? { kcal: profile.result.macros.kcal,
@@ -3922,6 +4118,27 @@ function App() {
                     React.createElement("button", { onClick: dismissSunday, style: { background: "none", border: "none", color: "#4b5563",
                             fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0, lineHeight: 1 } }, "\u2715"))),
                 tab === "meals" && React.createElement("div", { className: "tab-anim", key: "meals" },
+                    shopAlert && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 12, padding: "12px 14px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 20 } }, "\uD83D\uDED2"),
+                        React.createElement("div", { style: { flex: 1 } },
+                            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#2563eb" } }, "Shop day today"),
+                            React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Time to grab your groceries \xB7 Your shopping list is ready")),
+                        React.createElement("button", { onClick: () => setShopAlert(false), style: { background: "none", border: "none", color: C.sub, cursor: "pointer", fontSize: 16 } }, "\u2715")),
+                    prepAlert && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.3)", borderRadius: 12, padding: "12px 14px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 20 } }, "\uD83D\uDC68\u200D\uD83C\uDF73"),
+                        React.createElement("div", { style: { flex: 1 } },
+                            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#ea580c" } }, "Prep day today"),
+                            React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Your current batch runs out today \xB7 Time to cook a new one")),
+                        React.createElement("button", { onClick: () => setPrepAlert(false), style: { background: "none", border: "none", color: C.sub, cursor: "pointer", fontSize: 16 } }, "\u2715")),
+                    !profile && React.createElement("div", { onClick: () => setTab("profile"), style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" } },
+                        React.createElement("div", { style: { fontSize: 22 } }, "\uD83D\uDCCA"),
+                        React.createElement("div", null,
+                            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#7c3aed" } }, "Set your macro target"),
+                            React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Macros and shopping quantities adjust to YOUR calories \xB7 Tap to set up")),
+                        React.createElement("div", { style: { marginLeft: "auto", fontSize: 14, color: "#7c3aed" } }, "\u2192")),
+                    profile && Math.abs(profileScale - 1) > 0.05 && React.createElement("div", { style: { background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 10, padding: "8px 12px", marginBottom: 10, fontSize: 11, color: "#7c3aed", fontWeight: 600 } },
+                        "\uD83D\uDCCA All portions scaled to your " + effectiveTargets.kcal + " kcal target (" + Math.round(profileScale * 100) + "% of base recipe)"),
+
                     React.createElement(TotalBar, { total: total, targets: effectiveTargets, profileName: profileName }),
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, textAlign: "center", margin: "8px 0 12px", lineHeight: 1.6 } }, "\uD83C\uDF19 Dinner + fish oil (+18 kcal \u00B7 +2g fat) \u00B7 Before bed: Magnesium glycinate"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
@@ -4005,7 +4222,7 @@ function App() {
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em" } }, "\uD83C\uDF70 DESSERT"),
-                        dessert && React.createElement("button", { onClick: () => { setDessertState(null); localStorage.removeItem("mp_dessert"); setLunchScale(1); setDinnerScale(1); setShowBalance(false); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove")),
+                        dessert && React.createElement("button", { onClick: () => { setDessertState(null); localStorage.removeItem("mp_dessert"); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); setShowBalance(false); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove")),
                     dessert && desr
                         ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert" })
                         : React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
@@ -4015,11 +4232,11 @@ function App() {
                                     React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "High-protein treats \u00B7 79\u2013267 kcal")),
                                 React.createElement("span", { style: { fontSize: 26 } }, "\uD83C\uDF70")),
                             React.createElement("button", { onClick: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Add Dessert \u2192")),
-                    React.createElement(MacroBalancer, { allSet: !breakfastSkipped && !!lr && !!dr && !!dessert && !!desr, total: total, targets: effectiveTargets, L: L, D: D, lunchScale: lunchScale, dinnerScale: dinnerScale, showBalance: showBalance, setShowBalance: setShowBalance, setLunchScale: setLunchScale, setDinnerScale: setDinnerScale })),
+                    React.createElement(MacroBalancer, { allSet: !!(lr || dr || bfr || prer || desr), total: total, targets: effectiveTargets, L: L, D: D, BF: BF, PRE_M: PRE_M, DS: DS, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, showBalance: showBalance, setShowBalance: setShowBalance, setLunchScale: setLunchScale, setDinnerScale: setDinnerScale, setBfScale: setBfScale, setPreScale: setPreScale, setDesScale: setDesScale, bfActive: !breakfastSkipped, preActive: !preSkipped, desActive: !!desr, setBreakfastSkipped: setBreakfastSkipped, setPreSkipped: setPreSkipped, setDessert: setDessert, profileScale: profileScale })),
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" }, (!lr || !dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
                     React.createElement("div", { style: { fontSize: 32, marginBottom: 12 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
-                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale }))),
+                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
                     pendingSlot && (React.createElement("div", { style: { background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.3)",
                             borderRadius: 12, padding: "10px 14px", marginBottom: 12,
