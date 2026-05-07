@@ -7,6 +7,16 @@
 [functions]
   node_bundler = "esbuild"
 
+# ── Scheduled functions ──────────────────────────────────────────────────────
+# Requires Netlify Pro / Team plan. These run automatically via cron.
+# To test manually: POST /.netlify/functions/<name> (event.body will be empty)
+
+[functions."birthday-emails"]
+  schedule = "0 8 * * *"      # Daily at 08:00 UTC — check + send birthday emails
+
+[functions."holiday-emails"]
+  schedule = "0 7 * * *"      # Daily at 07:00 UTC — check + send holiday emails
+
 # Custom redirects (PWA-friendly)
 [[redirects]]
   from = "/portal"
