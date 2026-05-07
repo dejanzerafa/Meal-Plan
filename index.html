@@ -1717,7 +1717,7 @@ const RECIPES = [
     // ─── BREAKFAST ──────────────────────────────────────────────────────────
     {
         id: "b0", category: "breakfast",
-        name: "High-Protein Breakfast (Daily)", subtitle: "1 portion · Assembled · 5 min",
+        name: "High-Protein Breakfast", subtitle: "1 portion · Assembled · 5 min",
         badge: "🍳 NC", carb: "🥛 Cottage Cheese",
         perPortion: { kcal: 798, protein: 93, carbs: 64, fat: 19 },
         batchItems: [
@@ -2994,7 +2994,7 @@ function MealCard({ meal, macros, slot }) {
                     padding: "6px 10px", marginBottom: 10, lineHeight: 1.5 } },
                 "\uD83D\uDCA1 ",
                 meal.note),
-            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83E\uDDFA BATCH INGREDIENTS \u2014 " + ((portions || 7)) + " PORTIONS"),
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83E\uDDFA BATCH INGREDIENTS \u2014 7 PORTIONS"),
             CAT_ORDER.map(cat => {
                 const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
                 if (!catItems.length)
