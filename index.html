@@ -3373,8 +3373,10 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                 const scaledItem = Object.assign({}, item, { qty: scaledQty });
                 return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
             })))),
-        // ── Supplements / fixed items ────────────────────────────────────────
-        Object.entries(FIXED).map(([section, items]) => (React.createElement("div", { key: section, style: { marginBottom: 14 } },
+        // ── Supplements / fixed items (breakfast & pre-workout now dynamic above) ──
+        Object.entries(FIXED)
+            .filter(([section]) => !section.startsWith("🌅") && !section.startsWith("⚡"))
+            .map(([section, items]) => (React.createElement("div", { key: section, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em",
                     marginBottom: 6, marginTop: 4 } }, section.toUpperCase()),
             items.map((item, i) => React.createElement(Checkbox, { key: i, k: `f_${section}_${i}`, label: item })))))));
@@ -3496,11 +3498,16 @@ function FeedbackModal({ onClose }) {
     function submit() {
         if (!msg.trim()) return;
         setStatus("sending");
+        const payload = { category: cat, message: msg };
+        if (email && email.trim()) payload._replyto = email.trim();
         fetch("https://formspree.io/f/" + FORMSPREE_ID, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify({ category: cat, message: msg, email: email || "—" })
-        }).then(function(r){ setStatus(r.ok ? "ok" : "err"); }).catch(function(){ setStatus("err"); });
+            body: JSON.stringify(payload)
+        }).then(function(r){
+            if (r.ok) { setStatus("ok"); }
+            else { r.json().then(function(d){ console.warn("Formspree error:", d); }).catch(function(){}); setStatus("err"); }
+        }).catch(function(e){ console.warn("Formspree fetch error:", e); setStatus("err"); });
     }
     var cats = ["Bug", "Feature", "Recipe", "Content", "Other"];
     var inp = { background: C.card2, border: "1px solid " + C.dim, borderRadius: 8,
