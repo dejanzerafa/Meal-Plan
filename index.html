@@ -3259,16 +3259,40 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
+// Build a flat sorted item list for a single meal slot
+function buildSlotItems(batchItems, totalScale) {
+    if (!batchItems || !batchItems.length) return [];
+    const map = {};
+    batchItems.forEach(function(i) {
+        const qty = i.unit === "whole" ? Math.ceil(i.qty * totalScale) : +(i.qty * totalScale).toFixed(1);
+        if (map[i.key]) map[i.key] = Object.assign({}, map[i.key], { qty: map[i.key].qty + qty });
+        else map[i.key] = Object.assign({}, i, { qty: qty });
+    });
+    const arr = Object.values(map);
+    arr.sort(function(a, b) {
+        var ai = CAT_ORDER.indexOf(a.cat), bi = CAT_ORDER.indexOf(b.cat);
+        return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
+    });
+    return arr;
+}
 function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr, desr, prer, preSkipped, bfSkipped, lunchScale, dinnerScale, profileScale }) {
     const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${(bfr||{}).id||'_'}_${(prer||{}).id||'_'}_${(desr||{}).id||'_'}_${portions||7}`;
     const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
     const p = portions || 7;
     const scale = p / 7;
+    const gl = profileScale || 1;
     if (!lr || !dr)
         return null;
-    const batch = mergeAllItems(lr, dr, bfr, desr, prer, p, bfSkipped, preSkipped, lunchScale, dinnerScale, profileScale);
-    const scalePct = Math.round((profileScale || 1) * 100);
+    // Per-slot item lists (breakfast and pre-workout shown as own sections)
+    const bfSrv = parseInt((bfr && bfr.subtitle || "").match(/\d+/) || [p]);
+    const bfItems = (!bfSkipped && bfr && bfr.batchItems)
+        ? buildSlotItems(bfr.batchItems, (p / (bfSrv || p)) * gl) : [];
+    const preItems = (!preSkipped && prer && prer.batchItems)
+        ? buildSlotItems(prer.batchItems, gl) : [];
+    // Main batch = lunch + dinner + dessert only, grouped by category
+    const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale);
+    const scalePct = Math.round(gl * 100);
     const showScaleNote = !!(profileScale && Math.abs(profileScale - 1) > 0.05);
     const sameRecipe = lr.id === dr.id;
     const Checkbox = ({ k, label }) => (React.createElement("div", { onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
@@ -3320,16 +3344,36 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                 "\u26A1 ", React.createElement("span", { style: { color: C.muted } }, "Pre-workout: "), React.createElement("span", { style: { color: C.text } }, prer.name)),
             desr && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
                 "\uD83C\uDF70 ", React.createElement("span", { style: { color: C.muted } }, "Dessert: "), React.createElement("span", { style: { color: C.text } }, desr.name))),
-        Object.entries(batch).map(([cat, items]) => (React.createElement("div", { key: cat, style: { marginBottom: 14 } },
+        // ── Breakfast section ────────────────────────────────────────────────
+        bfItems.length > 0 && (React.createElement("div", { style: { marginBottom: 14 } },
+            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#f59e0b",
+                    letterSpacing: "0.08em", marginBottom: 6,
+                    borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "🌅 BREAKFAST"),
+            bfItems.map(item => {
+                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
+                const scaledItem = Object.assign({}, item, { qty: scaledQty });
+                return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
+            }))),
+        // ── Pre-workout section ──────────────────────────────────────────────
+        preItems.length > 0 && (React.createElement("div", { style: { marginBottom: 14 } },
+            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#22c55e",
+                    letterSpacing: "0.08em", marginBottom: 6,
+                    borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "⚡ PRE-WORKOUT"),
+            preItems.map(item => {
+                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
+                const scaledItem = Object.assign({}, item, { qty: scaledQty });
+                return React.createElement(Checkbox, { key: item.key, k: `pre_${item.key}`, label: fmtItem(scaledItem) });
+            }))),
+        // ── Lunch / Dinner / Dessert — by category ───────────────────────────
+        Object.entries(mainBatch).map(([cat, items]) => (React.createElement("div", { key: cat, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
-                CAT_ICON[cat],
-                " ",
-                cat.toUpperCase()),
+                CAT_ICON[cat], " ", cat.toUpperCase()),
             items.map(item => {
                 const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
-                const scaledItem = Object.assign(Object.assign({}, item), { qty: scaledQty });
+                const scaledItem = Object.assign({}, item, { qty: scaledQty });
                 return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
             })))),
+        // ── Supplements / fixed items ────────────────────────────────────────
         Object.entries(FIXED).map(([section, items]) => (React.createElement("div", { key: section, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em",
                     marginBottom: 6, marginTop: 4 } }, section.toUpperCase()),
