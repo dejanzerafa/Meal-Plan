@@ -1,7 +1,7 @@
 // Meal Plan — Service Worker v12
 // Caches app shell only — CDN scripts handled natively by browser
 
-const CACHE_NAME = 'meal-plan-v18';
+const CACHE_NAME = 'meal-plan-v20';
 
 // App shell — cached immediately on install
 const PRECACHE = [
