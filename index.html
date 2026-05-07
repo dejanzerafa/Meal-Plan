@@ -3703,10 +3703,10 @@ function DevModal({ onClose, onUnlock }) {
 }
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
 function getTabMeta() { return [
-    { id: "meals",    label: t("tab_meals"),   icon: "🍽️" },
+    { id: "meals",    label: t("tab_meals"),   icon: "🥩" },
     { id: "history",  label: t("tab_history"), icon: "📅" },
     { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
-    { id: "recipes",  label: t("tab_recipes"), icon: "📋" },
+    { id: "recipes",  label: t("tab_recipes"), icon: "🍳" },
     { id: "macros",   label: t("tab_macros"),  icon: "📊" },
     { id: "profile",  label: t("tab_me"),      icon: "👤" },
 ]; }
@@ -4119,10 +4119,16 @@ function AccountCard({ C }) {
         try {
             localStorage.setItem("mp_acc_name", name.trim());
             localStorage.setItem("mp_acc_email", email.trim());
-            await fetch("/.netlify/functions/landing-signup", {
+            const nameParts = name.trim().split(" ");
+            await fetch("/.netlify/functions/save-user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: name.trim(), email: email.trim(), source: "app-account" }),
+                body: JSON.stringify({
+                    email: email.trim(),
+                    first_name: nameParts[0] || "",
+                    last_name: nameParts.slice(1).join(" ") || "",
+                    marketing_opt_in: true,
+                }),
             }).catch(() => {});
         } catch(e) {}
         setSaved(true);
@@ -4606,6 +4612,113 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
             dinnerScale !== 1 && React.createElement("div", null, "🌙 Dinner at " + Math.round(dinnerScale * 100) + "% · " + D.kcal + " kcal"),
             desScale !== 1 && React.createElement("div", null, "🍰 Dessert at " + Math.round(desScale * 100) + "% · " + DS.kcal + " kcal")));
 }
+// ─── WELCOME OVERLAY ───────────────────────────────────────────────────────
+function WelcomeOverlay({ onDismiss }) {
+    const [name,   setName]   = React.useState("");
+    const [email,  setEmail]  = React.useState("");
+    const [status, setStatus] = React.useState("idle"); // idle | loading | done | error
+
+    async function handleSignup() {
+        if (!email.trim() || !email.includes("@")) return;
+        setStatus("loading");
+        const nameParts = name.trim().split(" ");
+        try {
+            await fetch("/.netlify/functions/save-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: email.trim(),
+                    first_name: nameParts[0] || "",
+                    last_name: nameParts.slice(1).join(" ") || "",
+                    marketing_opt_in: true,
+                }),
+            });
+            localStorage.setItem("mp_acc_email", email.trim());
+            setStatus("done");
+            setTimeout(onDismiss, 1800);
+        } catch(e) { setStatus("error"); }
+    }
+
+    const flamePath = "M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z";
+
+    return React.createElement("div", { style: {
+        position: "fixed", inset: 0, zIndex: 9998,
+        background: "#0C0B0A", overflowY: "auto",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        padding: "56px 24px 48px",
+        fontFamily: "'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif"
+    }},
+        // ── X dismiss button ──────────────────────────────────────────────
+        React.createElement("button", { onClick: () => { sessionStorage.setItem("sg_dismissed","1"); onDismiss(); },
+            style: { position: "fixed", top: 16, right: 16, background: "rgba(255,255,255,0.08)",
+                border: "none", width: 34, height: 34, borderRadius: 17, color: "#8C8279",
+                fontSize: 20, lineHeight: 1, cursor: "pointer", display: "flex",
+                alignItems: "center", justifyContent: "center", zIndex: 1 } }, "×"),
+
+        // ── Flame mark ───────────────────────────────────────────────────
+        React.createElement("svg", { width: 40, height: 58, viewBox: "-12 -32 24 44", style: { marginBottom: 16 } },
+            React.createElement("path", { d: flamePath, fill: "#E07B2A" })),
+
+        // ── Wordmark ──────────────────────────────────────────────────────
+        React.createElement("div", { style: { marginBottom: 4 } },
+            React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: 26,
+                fontWeight: 700, color: "#E07B2A", letterSpacing: "0.1em" } }, "SOUL"),
+            React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: 26,
+                fontWeight: 700, color: "#F2EDE6", letterSpacing: "0.1em" } }, "GAINZ")),
+        React.createElement("div", { style: { fontSize: 8, color: "#8C8279", letterSpacing: "0.22em",
+            fontWeight: 500, marginBottom: 40, textAlign: "center" } }, "FEED YOUR SOUL · FUEL YOUR GAINZ"),
+
+        // ── Headline ──────────────────────────────────────────────────────
+        React.createElement("h2", { style: { fontFamily: "Georgia,'Times New Roman',serif",
+            fontSize: "clamp(20px,5.5vw,34px)", fontWeight: 700, color: "#F2EDE6",
+            textAlign: "center", lineHeight: 1.2, marginBottom: 16, maxWidth: 420 } },
+            "Stop paying ",
+            React.createElement("em", { style: { color: "#E07B2A", fontStyle: "italic" } }, "nearly $10,000 a year"),
+            " for food you don't even like."),
+
+        React.createElement("p", { style: { fontSize: 14, color: "#8C8279", textAlign: "center",
+            lineHeight: 1.75, marginBottom: 40, maxWidth: 340 } },
+            "30+ real recipes. Max 10 ingredients. Under $300 a fortnight. Cook once. Eat all week. Know exactly what's in every bite."),
+
+        // ── Sign-up form / success ────────────────────────────────────────
+        status === "done"
+            ? React.createElement("div", { style: { background: "rgba(34,197,94,0.1)",
+                border: "1px solid rgba(34,197,94,0.3)", borderRadius: 12,
+                padding: "20px 24px", textAlign: "center", color: "#4ade80",
+                fontSize: 15, fontWeight: 600, maxWidth: 360, width: "100%" } },
+                "You're in. Check your inbox — your welcome guide is on its way. 🔥")
+            : React.createElement("div", { style: { display: "flex", flexDirection: "column",
+                gap: 10, width: "100%", maxWidth: 360 } },
+                React.createElement("input", { value: name, onChange: e => setName(e.target.value),
+                    placeholder: "Your first name", autocomplete: "given-name",
+                    style: { width: "100%", padding: "13px 16px", background: "#161412",
+                        border: "1.5px solid #2a2520", borderRadius: 10, color: "#F2EDE6",
+                        fontSize: 15, fontFamily: "inherit", outline: "none", boxSizing: "border-box" } }),
+                React.createElement("input", { value: email, onChange: e => setEmail(e.target.value),
+                    type: "email", placeholder: "Your email address", autocomplete: "email",
+                    onKeyDown: e => e.key === "Enter" && handleSignup(),
+                    style: { width: "100%", padding: "13px 16px", background: "#161412",
+                        border: "1.5px solid #2a2520", borderRadius: 10, color: "#F2EDE6",
+                        fontSize: 15, fontFamily: "inherit", outline: "none", boxSizing: "border-box" } }),
+                React.createElement("button", { onClick: handleSignup, disabled: status === "loading",
+                    style: { width: "100%", background: "#E07B2A", color: "#fff",
+                        border: "none", borderRadius: 10, padding: "15px 16px",
+                        fontSize: 15, fontWeight: 700, fontFamily: "inherit",
+                        cursor: status === "loading" ? "default" : "pointer",
+                        opacity: status === "loading" ? 0.6 : 1, letterSpacing: "0.02em" } },
+                    status === "loading" ? "Saving…" : "Get Early Access + Welcome Guide →"),
+                status === "error" && React.createElement("p", { style: { fontSize: 12, color: "#ef4444",
+                    textAlign: "center", margin: 0 } }, "Something went wrong — please try again."),
+                React.createElement("p", { style: { fontSize: 11, color: "#8C8279",
+                    textAlign: "center", margin: 0 } }, "No spam. Just food, recipes, and the occasional fire tip."),
+                React.createElement("button", { onClick: () => { sessionStorage.setItem("sg_dismissed","1"); onDismiss(); },
+                    style: { background: "none", border: "none", color: "#8C8279", fontSize: 12,
+                        cursor: "pointer", padding: "8px 0", fontFamily: "inherit",
+                        textDecoration: "underline", textUnderlineOffset: 3 } },
+                    "Skip for now → Enter the app"))
+    );
+}
+
 function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
@@ -4627,6 +4740,13 @@ function App() {
     const [showMethod, setShowMethod] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
     const [showFeedback, setShowFeedback] = useState(false);
+    const [showOverlay, setShowOverlay] = useState(() => {
+        try {
+            const hasEmail = !!localStorage.getItem("mp_acc_email");
+            const dismissed = !!sessionStorage.getItem("sg_dismissed");
+            return !hasEmail && !dismissed;
+        } catch(e) { return false; }
+    });
 
     useEffect(function() {
         try {
@@ -4837,16 +4957,22 @@ function App() {
     const handleSetDinner = id => { setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); setTab("meals"); };
     // ── Sidebar width ────────────────────────────────────────────────────────
     const SW = 72;
-    return (React.createElement("div", { style: { display: "flex", height: "100vh", maxWidth: 520, margin: "0 auto",
+    return (React.createElement(React.Fragment, null,
+        showOverlay && React.createElement(WelcomeOverlay, { onDismiss: () => setShowOverlay(false) }),
+        React.createElement("div", { style: { display: "flex", height: "100vh", maxWidth: 520, margin: "0 auto",
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
             color: C.text, background: C.bg, overflow: "hidden" } },
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.dim}`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 16, paddingBottom: 24, zIndex: 100 } },
             React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 18, marginBottom: 14, flexShrink: 0, cursor: "pointer",
-                    WebkitTapHighlightColor: "transparent" } }, "\uD83E\uDD57"),
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                    gap: 1, marginBottom: 14, flexShrink: 0, cursor: "pointer",
+                    WebkitTapHighlightColor: "transparent" } },
+                React.createElement("svg", { width: 14, height: 20, viewBox: "-12 -32 24 44", xmlns: "http://www.w3.org/2000/svg" },
+                    React.createElement("path", { d: "M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z", fill: "#fff" })),
+                React.createElement("span", { style: { fontSize: 7, fontWeight: 800, color: "#fff", letterSpacing: "0.06em",
+                    fontFamily: "Georgia,'Times New Roman',serif", lineHeight: 1 } }, "S\u00B7G")),
             React.createElement("button", { onClick: () => setShowMethod(true), style: { textDecoration: "none", marginBottom: 18, background: "none", border: "none", padding: 0, cursor: "pointer", WebkitTapHighlightColor: "transparent" } },
                 React.createElement("div", { style: { width: 52, paddingTop: 10, paddingBottom: 10,
                         background: C.accentDim, border: `1px solid ${C.accentBorder}`,
@@ -5196,7 +5322,7 @@ function App() {
                     " then ",
                     React.createElement("b", { style: { color: C.text } }, "Add to Home Screen"))),
             React.createElement("button", { onClick: dismissPWA, style: { background: "none", border: "none",
-                    color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")))));
+                    color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715"))))));
 }
 // Dismiss loader after bar animations finish (~2.65s)
 function dismissLoader() {
