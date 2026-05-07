@@ -1694,6 +1694,28 @@ function mergeItems(lr, dr) {
     Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
 }
+// mergeAllItems: extends mergeItems to include all assigned meal slots
+function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped) {
+    const p = portions || 7;
+    const map = {};
+    const add = (arr, scale) => arr && arr.forEach(i => {
+        const qty = i.unit === "whole" ? Math.ceil(i.qty * (scale||1)) : +(i.qty * (scale||1)).toFixed(0);
+        if (map[i.key]) map[i.key] = Object.assign(Object.assign({}, map[i.key]), { qty: map[i.key].qty + qty });
+        else map[i.key] = Object.assign(Object.assign({}, i), { qty });
+    });
+    const mainScale = p / 7;
+    if (lr && dr) {
+        if (lr.id === dr.id) add(lr.batchItems.map(i => Object.assign(Object.assign({}, i), { qty: i.qty * 2 })), mainScale);
+        else { add(lr.batchItems, mainScale); add(dr.batchItems, mainScale); }
+    }
+    if (!bfSkipped && bfr && bfr.batchItems) { const srv = parseInt((bfr.subtitle||"").match(/\d+/)||[p]); add(bfr.batchItems, p / (srv||p)); }
+    if (desr && desr.batchItems) add(desr.batchItems, 1);
+    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, 1);
+    const grouped = {};
+    CAT_ORDER.forEach(c => { grouped[c] = []; });
+    Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
+    return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
+}
 const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
 function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer) {
     const ls = lScale || 1, ds = dScale || 1;
@@ -2015,14 +2037,15 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
-function ShoppingList({ lr, dr, portions, setPortions, targets, profileName }) {
-    const [checked, setChecked] = useState({});
-    const toggle = k => setChecked(c => (Object.assign(Object.assign({}, c), { [k]: !c[k] })));
+function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr, desr, prer, preSkipped, bfSkipped }) {
+    const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${portions||7}`;
+    const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
+    const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
     const p = portions || 7;
     const scale = p / 7;
     if (!lr || !dr)
         return null;
-    const batch = mergeItems(lr, dr);
+    const batch = mergeAllItems(lr, dr, bfr, desr, prer, p, bfSkipped, preSkipped);
     const sameRecipe = lr.id === dr.id;
     const Checkbox = ({ k, label }) => (React.createElement("div", { onClick: () => toggle(k), style: { display: "flex", alignItems: "center", gap: 10, padding: "7px 10px",
             background: checked[k] ? C.card2 : C.card, borderRadius: 8, marginBottom: 4,
@@ -2054,7 +2077,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName }) {
                 borderRadius: 12, padding: "10px 14px", marginBottom: 12 } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 } },
                 React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.07em" } },
-                    "BATCH INGREDIENTS \u2014 ",
+                    "ALL MEAL INGREDIENTS \u2014 ",
                     p,
                     " DAYS"),
                 targets && targets.kcal !== 2500 && (React.createElement("div", { style: { fontSize: 9, color: C.green, fontWeight: 700 } },
@@ -2189,6 +2212,45 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
                         color: "#f3ece0", cursor: "pointer" } }, "\uD83D\uDCB3 $1.99"),
                 React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
                         padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")))));
+}
+function OnboardingModal({ onClose }) {
+    const [step, setStep] = React.useState(0);
+    const steps = [
+        {
+            icon: "🍽️",
+            title: "Pick your meals",
+            body: "Head to the Recipes tab and choose a lunch and dinner recipe. Set breakfast, pre-workout, and dessert too — every slot is optional.",
+            action: null,
+        },
+        {
+            icon: "🛒",
+            title: "Generate your list",
+            body: "Once your recipes are set, the Shop tab builds your full grocery list automatically — scaled to your batch size (3, 5, or 7 days).",
+            action: null,
+        },
+        {
+            icon: "📅",
+            title: "Log your batch",
+            body: "In the Calendar tab, tap a day, pick your batch size, and log it. The calendar marks your shop day and next prep day for you.",
+            action: "Let's go →",
+        },
+    ];
+    var s = steps[step];
+    var isLast = step === steps.length - 1;
+    return React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.82)", zIndex: 600, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" } },
+        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "28px 22px 36px", maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)" } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 } },
+                React.createElement("div", { style: { display: "flex", gap: 6 } },
+                    [0,1,2].map(function(i){ return React.createElement("div", { key: i, style: { width: i === step ? 20 : 6, height: 6, borderRadius: 3, background: i === step ? C.accent : C.dim, transition: "width 0.3s" } }); })),
+                React.createElement("button", { onClick: onClose, style: { background: "none", border: "none", color: C.muted, fontSize: 13, cursor: "pointer" } }, "Skip")),
+            React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
+                React.createElement("div", { style: { fontSize: 48, marginBottom: 12 } }, s.icon),
+                React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, marginBottom: 10 } }, s.title),
+                React.createElement("div", { style: { fontSize: 14, color: C.sub, lineHeight: 1.7, maxWidth: 320, margin: "0 auto" } }, s.body)),
+            React.createElement("button", {
+                onClick: function(){ if(isLast){ onClose(); } else { setStep(function(s){ return s+1; }); } },
+                style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em" }
+            }, isLast ? "Let's go →" : "Next →")));
 }
 function UpgradeModal({ onClose }) {
     return (React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.88)", zIndex: 300,
@@ -2609,7 +2671,7 @@ function AccountCard({ C }) {
             await fetch("/.netlify/functions/landing-signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+                body: JSON.stringify({ name: name.trim(), email: email.trim(), source: "app-account" }),
             }).catch(() => {});
         } catch(e) {}
         setSaved(true);
@@ -2806,6 +2868,30 @@ function CalendarTab({ lunch, dinner }) {
         var newLogs=batchLogs.filter(function(l){return l.date!==key;}).concat([newLog]);
         setBatchLogs(newLogs);
         try{localStorage.setItem("mp_cal_logs",JSON.stringify(newLogs));}catch(e){}
+        schedulePrepNotification(newLog, logBatchSize);
+    }
+    function schedulePrepNotification(log, batchSize) {
+        if (!("Notification" in window) || !navigator.serviceWorker) return;
+        Notification.requestPermission().then(function(perm) {
+            if (perm !== "granted") return;
+            var parts = log.date.split("-");
+            var prepStart = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+            var shopDay = new Date(prepStart);
+            shopDay.setDate(prepStart.getDate() + batchSize - 2);
+            var nextPrep = new Date(prepStart);
+            nextPrep.setDate(prepStart.getDate() + batchSize - 1);
+            var shopMs = shopDay.getTime() - Date.now();
+            var prepMs = nextPrep.getTime() - Date.now();
+            navigator.serviceWorker.ready.then(function(reg) {
+                if (shopMs > 0) {
+                    setTimeout(function(){ reg.showNotification("🛒 Shop day", { body: "Grocery run today — your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day" }); }, shopMs);
+                }
+                if (prepMs > 0) {
+                    setTimeout(function(){ reg.showNotification("👨‍🍳 Prep day!", { body: "Your meals run out today — time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day" }); }, prepMs);
+                }
+                try { localStorage.setItem("mp_notif_granted", "1"); } catch(e){}
+            });
+        });
     }
     function removeBatch(startDate){
         var newLogs=batchLogs.filter(function(l){return l.date!==startDate;});
@@ -2815,6 +2901,30 @@ function CalendarTab({ lunch, dinner }) {
     }
     var prepDaysThisMonth=0;
     for(var pd=1;pd<=daysInMonth;pd++){ if(batchMap[toDS(calYear,calMonth,pd)]&&batchMap[toDS(calYear,calMonth,pd)].isPrepDay) prepDaysThisMonth++; }
+    // ── Weekly stats from mp_cal_logs ──────────────────────────────────────
+    var weeklyStats=(function(){
+        if(batchLogs.length===0) return null;
+        var now=new Date(); var cutoff=new Date(now); cutoff.setDate(now.getDate()-28);
+        var recentLogs=batchLogs.filter(function(l){ var d=new Date(l.date); return d>=cutoff&&d<=now; });
+        if(recentLogs.length===0) return null;
+        var totalDays=0; recentLogs.forEach(function(l){ totalDays+=l.batchSize||7; });
+        var batchCount=recentLogs.length;
+        var avgBatch=Math.round(totalDays/batchCount);
+        var allLunchIds=[]; var allDinnerIds=[];
+        recentLogs.forEach(function(l){ if(l.lunchId) allLunchIds.push(l.lunchId); if(l.dinnerId) allDinnerIds.push(l.dinnerId); });
+        var favLunch=(function(ids){ var freq={}; var best=null,bestN=0; ids.forEach(function(id){ freq[id]=(freq[id]||0)+1; if(freq[id]>bestN){ bestN=freq[id]; best=id; } }); return best; })(allLunchIds);
+        var favDinner=(function(ids){ var freq={}; var best=null,bestN=0; ids.forEach(function(id){ freq[id]=(freq[id]||0)+1; if(freq[id]>bestN){ bestN=freq[id]; best=id; } }); return best; })(allDinnerIds);
+        var favLunchName=favLunch?(RECIPES.find(function(r){return r.id===favLunch;})||{name:"—"}).name:"—";
+        var favDinnerName=favDinner?(RECIPES.find(function(r){return r.id===favDinner;})||{name:"—"}).name:"—";
+        var streak=0; var checkDate=new Date(now);
+        while(true){
+            var ds=toDS(checkDate.getFullYear(),checkDate.getMonth(),checkDate.getDate());
+            if(batchMap[ds]){ streak++; } else { break; }
+            checkDate.setDate(checkDate.getDate()-1);
+            if(streak>90) break;
+        }
+        return { batchCount:batchCount, avgBatch:avgBatch, streak:streak, favLunchName:favLunchName, favDinnerName:favDinnerName };
+    })();
     var cells=[];
     for(var e=0;e<firstDow;e++) cells.push(null);
     for(var dc=1;dc<=daysInMonth;dc++) cells.push(dc);
@@ -2825,6 +2935,24 @@ function CalendarTab({ lunch, dinner }) {
                 React.createElement("div",{style:{fontSize:16,fontWeight:800,color:C.text}},MONTHS[calMonth]+" "+calYear),
                 prepDaysThisMonth>0&&React.createElement("div",{style:{fontSize:10,color:"#7c3aed",fontWeight:700}},prepDaysThisMonth+" prep day"+(prepDaysThisMonth>1?"s":"")+" this month")),
             React.createElement("button",{onClick:nextMonth,style:{background:C.card2,border:"1px solid "+C.dim,borderRadius:8,width:36,height:36,fontSize:20,cursor:"pointer",color:C.sub,display:"flex",alignItems:"center",justifyContent:"center"}},"›")),
+        weeklyStats&&React.createElement("div",{style:{background:C.card,border:"1px solid "+C.dim,borderRadius:14,padding:"14px 14px 10px",marginBottom:14}},
+            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.09em",marginBottom:10}},"LAST 4 WEEKS"),
+            React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}},
+                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
+                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:C.accent}},""+weeklyStats.batchCount),
+                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"BATCHES LOGGED")),
+                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
+                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:C.accent}},""+weeklyStats.avgBatch+"d"),
+                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"AVG BATCH SIZE")),
+                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
+                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:weeklyStats.streak>0?C.green:C.muted}},""+weeklyStats.streak+"d"),
+                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"CURRENT STREAK"))),
+            weeklyStats.favLunchName!=="—"&&React.createElement("div",{style:{fontSize:11,color:C.sub,borderTop:"1px solid "+C.dim,paddingTop:8}},
+                React.createElement("span",{style:{color:C.muted,fontSize:10}},"Fav lunch: "),
+                React.createElement("span",{style:{color:C.text,fontWeight:600}},weeklyStats.favLunchName)),
+            weeklyStats.favDinnerName!=="—"&&React.createElement("div",{style:{fontSize:11,color:C.sub,marginTop:4}},
+                React.createElement("span",{style:{color:C.muted,fontSize:10}},"Fav dinner: "),
+                React.createElement("span",{style:{color:C.text,fontWeight:600}},weeklyStats.favDinnerName))),
         React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4}},
             WDAYS.map(function(d){return React.createElement("div",{key:d,style:{textAlign:"center",fontSize:10,fontWeight:700,color:C.muted,padding:"3px 0"}},d);})),
         React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}},
@@ -2983,6 +3111,7 @@ function App() {
     const [dinnerScale, setDinnerScale] = useState(1);
     const [showBalance, setShowBalance] = useState(false);
     const [showMethod, setShowMethod] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
     const [tab, setTab] = useState("meals");
     const [filter, setFilter] = useState("All");
     const [recipeCat, setRecipeCat] = useState("main");
@@ -3346,7 +3475,7 @@ function App() {
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" }, (!lr || !dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
                     React.createElement("div", { style: { fontSize: 32, marginBottom: 12 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
-                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName }))),
+                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
                     pendingSlot && (React.createElement("div", { style: { background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.3)",
                             borderRadius: 12, padding: "10px 14px", marginBottom: 12,
@@ -3359,7 +3488,7 @@ function App() {
                                 " on any recipe below")),
                         React.createElement("button", { onClick: () => { setPendingSlot(null); setTab("meals"); }, style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
                                 padding: "5px 10px", fontSize: 11, color: C.sub, cursor: "pointer", whiteSpace: "nowrap" } }, "\u2715 Cancel"))),
-                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["breakfast", "🌅 Breakfast"], ["main", "🍽️ Mains"], ["dessert", "🍫 Treats"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["breakfast", "🌅 Breakfast"], ["main", "🍽️ Mains"], ["preworkout", "⚡ Pre-Workout"], ["dessert", "🍫 Treats"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                             border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
                             background: recipeCat === cat ? C.accentDim : C.card2,
                             color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
@@ -3381,6 +3510,7 @@ function App() {
                         " recipe",
                         filteredRecipes.length !== 1 ? "s" : "",
                         recipeCat === "breakfast" && " · All free",
+                        recipeCat === "preworkout" && " · All free · Pick one 30–45 min before training",
                         recipeCat === "dessert" && " · High protein treats"),
                     !unlocked && (React.createElement("div", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                             borderRadius: 8, padding: "6px 12px", marginBottom: 10, textAlign: "center" } },
@@ -3493,6 +3623,7 @@ function App() {
                 React.createElement("div", { style: { flex: 1 } }),
                 React.createElement("button", { onClick: () => setShowMethod(false), style: { background: C.accentDim, border: "1px solid "+C.accentBorder, borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: C.accent, cursor: "pointer" } }, "Done")),
             React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: C.bg }, title: "The Method" })),
+        showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
         (unlocks.tier === "dev") && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
