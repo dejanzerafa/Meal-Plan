@@ -2381,18 +2381,555 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
 }
 const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+// INGREDIENT_MACROS — per 100g (or per 100mL for liquids; unitG = grams per whole unit)
+// Auto-generated from 458 ingredient keys across all recipes
+const INGREDIENT_MACROS = {
+  "alfredo_sauce": {kcal:150,p:3.0,c:5.0,f:12.0},
+  "b0_bread": {kcal:265,p:9.5,c:46.0,f:4.3,unitG:40},
+  "b0_coffee": {kcal:2,p:0.1,c:0.3,f:0.0},
+  "b0_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "b0_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "b0_milk": {kcal:35,p:3.5,c:5.0,f:0.1},
+  "b0_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "b0_turk": {kcal:99,p:18.0,c:2.5,f:1.7},
+  "b0_whey": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "b1_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "b1_ched": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "b1_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "b1_mozz": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "b1_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "b2_bac": {kcal:170,p:15.0,c:0.0,f:12.0},
+  "b2_ched": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "b2_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "b2_hash": {kcal:200,p:2.0,c:30.0,f:8.0},
+  "b3_bag": {kcal:250,p:9.0,c:49.0,f:2.0,unitG:105},
+  "b3_but": {kcal:717,p:0.9,c:0.1,f:81.0,unitG:14},
+  "b3_cheese": {kcal:357,p:21.0,c:1.0,f:29.0,unitG:30},
+  "b3_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "b3_turk": {kcal:149,p:21.0,c:0.0,f:7.0},
+  "b4_ber": {kcal:57,p:0.8,c:14.0,f:0.3},
+  "b4_milk": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "b4_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "b4_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "b5_carrot": {kcal:41,p:0.9,c:9.6,f:0.2,unitG:100},
+  "b5_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "b5_oat": {kcal:404,p:15.0,c:66.0,f:9.0},
+  "b5_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "b5_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "b6_ban": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "b6_blue": {kcal:57,p:0.7,c:14.5,f:0.3},
+  "b6_milk": {kcal:35,p:3.5,c:5.0,f:0.1},
+  "b6_oats": {kcal:389,p:17.0,c:66.0,f:7.0},
+  "b6_pb": {kcal:588,p:25.0,c:20.0,f:50.0},
+  "b6_whey": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "b6_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "bacon_beef": {kcal:170,p:15.0,c:0.0,f:12.0},
+  "bacon_bits": {kcal:170,p:15.0,c:0.0,f:12.0},
+  "beef_broth": {kcal:5,p:0.5,c:0.5,f:0.2},
+  "beef_mince_lean": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "bell_pepper_green": {kcal:20,p:0.9,c:4.6,f:0.2,unitG:120},
+  "bell_pepper_orange": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "bell_pepper_red": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "bf1-beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "bf1-cheddar": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "bf1-eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "bf1-mozz": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "bf1-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "bf2-bacon": {kcal:170,p:15.0,c:0.0,f:12.0},
+  "bf2-cheddar": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "bf2-eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "bf2-hash": {kcal:200,p:2.0,c:30.0,f:8.0},
+  "bf3-bagels": {kcal:250,p:9.0,c:49.0,f:2.0,unitG:105},
+  "bf3-butter": {kcal:717,p:0.9,c:0.1,f:81.0,unitG:14},
+  "bf3-cheese": {kcal:357,p:21.0,c:1.0,f:29.0,unitG:30},
+  "bf3-eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "bf3-turkey": {kcal:149,p:21.0,c:0.0,f:7.0},
+  "bf4-eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "bf4-toast": {kcal:247,p:10.0,c:41.0,f:4.0,unitG:40},
+  "bf4-whites": {kcal:52,p:11.0,c:0.7,f:0.2},
+  "bf5-berries": {kcal:57,p:0.8,c:14.0,f:0.3},
+  "bf5-seeds": {kcal:500,p:20.0,c:20.0,f:40.0},
+  "bf5-yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "bf6-cc": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "bf6-toast": {kcal:247,p:10.0,c:41.0,f:4.0,unitG:40},
+  "broccoli": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "buffalo_sauce": {kcal:24,p:1.7,c:2.6,f:0.9},
+  "butter": {kcal:717,p:0.9,c:0.1,f:81.0,unitG:14},
+  "carrots": {kcal:41,p:0.9,c:9.6,f:0.2,unitG:100},
+  "chicken_breast": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "chicken_broth": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "chicken_stock": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "chipotle_peppers_adobo": {kcal:120,p:3.0,c:20.0,f:3.0,unitG:200},
+  "corn_canned": {kcal:86,p:3.2,c:18.7,f:1.2},
+  "cottage_cheese_ff": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "cream_cheese_ff": {kcal:105,p:14.0,c:8.0,f:0.5},
+  "d1_bak": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "d1_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
+  "d1_coc": {kcal:400,p:20.0,c:60.0,f:15.0},
+  "d1_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "d1_flr": {kcal:361,p:10.0,c:75.0,f:1.0},
+  "d1_mil": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "d1_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "d1_pump": {kcal:82,p:2.7,c:20.0,f:0.3},
+  "d1_sug": {kcal:20,p:0.0,c:5.0,f:0.0},
+  "d1_van": {kcal:288,p:0.1,c:12.5,f:0.1},
+  "d1_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "d2_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
+  "d2_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "d2_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "d2_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "d3_cac": {kcal:228,p:20.0,c:54.0,f:14.0},
+  "d3_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "d3_egg": {kcal:52,p:11.0,c:0.7,f:0.2},
+  "d3_milk": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "d3_oat": {kcal:404,p:15.0,c:66.0,f:9.0},
+  "d3_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "d4_ban": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "d4_ber": {kcal:57,p:0.8,c:14.0,f:0.3},
+  "d4_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "d4_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "d4_match": {kcal:324,p:30.0,c:38.0,f:5.0},
+  "d4_oat": {kcal:404,p:15.0,c:66.0,f:9.0},
+  "d4_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "d4_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "d5_alm": {kcal:614,p:21.0,c:22.0,f:56.0},
+  "d5_cac": {kcal:228,p:20.0,c:54.0,f:14.0},
+  "d5_chia": {kcal:486,p:17.0,c:42.0,f:31.0},
+  "d5_choc": {kcal:600,p:5.0,c:45.0,f:43.0},
+  "d5_maple": {kcal:260,p:0.0,c:67.0,f:0.0},
+  "d5_water": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "d5_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "dijon_mustard": {kcal:60,p:3.7,c:5.3,f:3.6},
+  "ds1-cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
+  "ds1-coconut": {kcal:400,p:20.0,c:60.0,f:15.0},
+  "ds1-egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "ds1-flour": {kcal:361,p:10.0,c:75.0,f:1.0},
+  "ds1-protein": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "ds1-pumpkin": {kcal:82,p:2.7,c:20.0,f:0.3},
+  "ds1-whip": {kcal:15,p:0.5,c:2.0,f:0.5},
+  "ds1-yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "ds2-cakes": {kcal:385,p:7.0,c:83.0,f:1.8,unitG:9},
+  "ds2-choc": {kcal:547,p:5.0,c:60.0,f:33.0},
+  "ds2-honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "ds2-pbfit": {kcal:375,p:35.0,c:30.0,f:13.0},
+  "ds2-protein": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "ds2-yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "frozen_peas": {kcal:81,p:5.4,c:14.0,f:0.4},
+  "garlic": {kcal:149,p:6.4,c:33.0,f:0.5},
+  "greek_yogurt_0": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "hot_sauce": {kcal:24,p:1.7,c:2.6,f:0.9},
+  "italian_sauce": {kcal:60,p:2.0,c:10.0,f:1.5},
+  "ketchup_sf": {kcal:25,p:0.5,c:5.0,f:0.0},
+  "lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
+  "loading": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m1-beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m1-cheese": {kcal:394,p:23.0,c:2.4,f:33.0,unitG:30},
+  "m1-ketchup": {kcal:25,p:0.5,c:5.0,f:0.0},
+  "m1-lettuce": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m1-mayo": {kcal:300,p:1.0,c:8.0,f:29.0},
+  "m1-mustard": {kcal:66,p:4.0,c:6.0,f:4.0},
+  "m1-onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m1-tortillas": {kcal:218,p:6.0,c:36.0,f:5.0,unitG:70},
+  "m15_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m15_broth": {kcal:5,p:0.5,c:0.5,f:0.2},
+  "m15_carr": {kcal:41,p:0.9,c:9.6,f:0.2,unitG:100},
+  "m15_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m15_pot": {kcal:77,p:2.0,c:17.0,f:0.1},
+  "m16_cheese": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "m16_chip": {kcal:120,p:3.0,c:20.0,f:3.0,unitG:200},
+  "m16_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m16_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "m16_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m16_honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "m16_milk": {kcal:35,p:3.5,c:5.0,f:0.1},
+  "m16_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m16_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m16_tort": {kcal:175,p:8.0,c:30.0,f:3.5,unitG:55},
+  "m17_bacon": {kcal:170,p:15.0,c:0.0,f:12.0},
+  "m17_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m17_cheese": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "m17_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m17_tort": {kcal:175,p:8.0,c:30.0,f:3.5,unitG:55},
+  "m18_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m18_esp": {kcal:2,p:0.1,c:0.3,f:0.0},
+  "m18_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m18_mush": {kcal:22,p:3.1,c:3.3,f:0.3},
+  "m18_must": {kcal:60,p:3.7,c:5.3,f:3.6},
+  "m18_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m18_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "m19_avo": {kcal:160,p:2.0,c:9.0,f:15.0,unitG:150},
+  "m19_feta": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "m19_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m19_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m19_salm": {kcal:208,p:20.0,c:0.0,f:13.0},
+  "m19_tort": {kcal:218,p:6.0,c:36.0,f:5.0,unitG:70},
+  "m19_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "m2-beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m2-cauli": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "m2-mozz": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "m2-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m2-veg": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m2-yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "m20_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m20_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m20_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m20_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "m21_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m21_corn": {kcal:86,p:3.2,c:18.7,f:1.2},
+  "m21_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m22_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m22_bspr": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m22_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m22_honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "m22_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m22_sp": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m22_tpaste": {kcal:82,p:4.0,c:19.0,f:0.4},
+  "m23_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m23_cheese": {kcal:394,p:23.0,c:2.4,f:33.0,unitG:30},
+  "m23_cream": {kcal:105,p:14.0,c:8.0,f:0.5},
+  "m23_pasta": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "m23_pepp": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m23_sauce": {kcal:60,p:2.0,c:10.0,f:1.5},
+  "m23_tsaus": {kcal:29,p:1.3,c:6.5,f:0.4},
+  "m24_cap": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "m24_cash": {kcal:553,p:18.0,c:30.0,f:44.0},
+  "m24_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m24_ging": {kcal:80,p:1.8,c:18.0,f:0.8},
+  "m24_hois": {kcal:220,p:5.0,c:43.0,f:3.0},
+  "m24_honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "m24_oys": {kcal:105,p:4.0,c:23.0,f:0.4},
+  "m24_snap": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m24_soy1": {kcal:53,p:8.0,c:5.0,f:0.6},
+  "m24_soy2": {kcal:53,p:8.0,c:5.0,f:0.6},
+  "m24_stock": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "m24_vineg": {kcal:18,p:0.0,c:0.7,f:0.0},
+  "m25_ched": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "m25_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m25_cream": {kcal:105,p:14.0,c:8.0,f:0.5},
+  "m25_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m25_flour": {kcal:361,p:10.0,c:75.0,f:1.0},
+  "m25_mac": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "m25_milk": {kcal:78,p:8.0,c:11.5,f:0.2},
+  "m26_broth": {kcal:5,p:0.5,c:0.5,f:0.2},
+  "m26_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "m26_cream": {kcal:200,p:3.5,c:6.0,f:18.0},
+  "m26_evap": {kcal:78,p:8.0,c:11.5,f:0.2},
+  "m26_gruy": {kcal:413,p:30.0,c:0.4,f:32.0},
+  "m26_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m26_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m26_parm": {kcal:431,p:38.0,c:4.0,f:29.0},
+  "m26_pasta": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "m26_steak": {kcal:217,p:26.0,c:0.0,f:12.0},
+  "m27_asp": {kcal:20,p:2.2,c:3.9,f:0.2},
+  "m27_asparagus": {kcal:20,p:2.2,c:3.9,f:0.2},
+  "m27_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m27_parm": {kcal:431,p:38.0,c:4.0,f:29.0},
+  "m27_sp": {kcal:20,p:2.2,c:3.9,f:0.2},
+  "m27_toms": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m27_zucc": {kcal:17,p:1.2,c:3.5,f:0.3,unitG:200},
+  "m3-beans": {kcal:132,p:9.0,c:24.0,f:0.5,unitG:400},
+  "m3-beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m3-cheese": {kcal:155,p:35.0,c:3.0,f:0.0},
+  "m3-corn": {kcal:86,p:3.2,c:18.7,f:1.2},
+  "m3-lettuce": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m3-pico": {kcal:36,p:1.5,c:7.0,f:0.5},
+  "m3-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m3-yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "m31_broc": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m31_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m31_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m31_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m31_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m31_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m32_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
+  "m32_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m32_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m32_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m32_sp": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m32_stk": {kcal:217,p:26.0,c:0.0,f:12.0},
+  "m32_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m33_broth": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "m33_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m33_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m33_pep": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "m33_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m33_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m33_turk": {kcal:149,p:21.0,c:0.0,f:7.0},
+  "m34_asp": {kcal:20,p:2.2,c:3.9,f:0.2},
+  "m34_dill": {kcal:43,p:3.5,c:7.0,f:1.1},
+  "m34_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m34_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m34_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m34_quin": {kcal:368,p:14.0,c:64.0,f:6.0},
+  "m34_salm": {kcal:208,p:20.0,c:0.0,f:13.0},
+  "m35_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m35_ging": {kcal:80,p:1.8,c:18.0,f:0.8},
+  "m35_peas": {kcal:81,p:5.4,c:14.0,f:0.4},
+  "m35_pep": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "m35_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m35_ses": {kcal:500,p:20.0,c:20.0,f:40.0},
+  "m35_shrimp": {kcal:99,p:21.0,c:0.0,f:1.0},
+  "m35_soy": {kcal:53,p:8.0,c:5.0,f:0.6},
+  "m35_zuc": {kcal:17,p:1.2,c:3.5,f:0.3,unitG:200},
+  "m36_chick": {kcal:164,p:9.0,c:27.4,f:2.6,unitG:400},
+  "m36_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
+  "m36_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m36_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m36_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m36_parsly": {kcal:36,p:3.0,c:6.3,f:0.8},
+  "m36_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m36_tuna": {kcal:116,p:26.0,c:0.0,f:0.6},
+  "m37_cod": {kcal:82,p:18.0,c:0.0,f:0.7},
+  "m37_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m37_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m37_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m37_pot": {kcal:77,p:2.0,c:17.0,f:0.1},
+  "m37_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m37_zuc": {kcal:17,p:1.2,c:3.5,f:0.3,unitG:200},
+  "m38_cauli": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m38_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m38_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m38_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m38_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m38_spin": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m38_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m39_beans": {kcal:132,p:9.0,c:24.0,f:0.5,unitG:400},
+  "m39_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m39_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
+  "m39_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m39_pep": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "m39_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m39_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m39_turk": {kcal:149,p:21.0,c:0.0,f:7.0},
+  "m4-carrots": {kcal:41,p:0.9,c:9.6,f:0.2,unitG:100},
+  "m4-eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m4-mayo": {kcal:300,p:1.0,c:8.0,f:29.0},
+  "m4-onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m4-peas": {kcal:81,p:5.4,c:14.0,f:0.4},
+  "m4-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m4-steak": {kcal:217,p:26.0,c:0.0,f:12.0},
+  "m40_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m40_gb": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m40_herbs": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m40_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m40_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m40_pot": {kcal:77,p:2.0,c:17.0,f:0.1},
+  "m40_thigh": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m41_dij": {kcal:60,p:3.7,c:5.3,f:3.6},
+  "m41_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m41_gb": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m41_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m41_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m41_pork": {kcal:143,p:26.0,c:0.0,f:4.0},
+  "m41_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m42_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
+  "m42_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
+  "m42_fish": {kcal:100,p:20.0,c:0.0,f:2.0},
+  "m42_jalapeno": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m42_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
+  "m42_mango": {kcal:60,p:0.8,c:15.0,f:0.4,unitG:300},
+  "m42_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m42_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m43_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
+  "m43_ew": {kcal:52,p:11.0,c:0.7,f:0.2},
+  "m43_feta": {kcal:72,p:12.0,c:4.0,f:0.5},
+  "m43_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m43_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m43_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m43_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m43_pep": {kcal:31,p:1.0,c:6.0,f:0.3,unitG:150},
+  "m43_pot": {kcal:77,p:2.0,c:17.0,f:0.1},
+  "m43_spin": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m44_beef": {kcal:137,p:21.0,c:0.0,f:5.0},
+  "m44_broc": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m44_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m44_ging": {kcal:80,p:1.8,c:18.0,f:0.8},
+  "m44_oys": {kcal:105,p:4.0,c:23.0,f:0.4},
+  "m44_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m44_ses": {kcal:500,p:20.0,c:20.0,f:40.0},
+  "m44_soy": {kcal:53,p:8.0,c:5.0,f:0.6},
+  "m45_broth": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "m45_carr": {kcal:41,p:0.9,c:9.6,f:0.2,unitG:100},
+  "m45_cel": {kcal:16,p:0.7,c:3.0,f:0.2,unitG:40},
+  "m45_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m45_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m45_lent": {kcal:116,p:9.0,c:20.0,f:0.4},
+  "m45_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m45_spin": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "m45_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "m46_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m46_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
+  "m46_feta": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "m46_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m46_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m46_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m46_olives": {kcal:145,p:1.0,c:3.8,f:15.0},
+  "m46_orzo": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "m46_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m47_broc": {kcal:34,p:2.8,c:7.0,f:0.4},
+  "m47_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m47_corn": {kcal:86,p:3.2,c:18.7,f:1.2},
+  "m47_edam": {kcal:357,p:25.0,c:1.4,f:28.0},
+  "m47_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m47_ging": {kcal:80,p:1.8,c:18.0,f:0.8},
+  "m47_hon": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "m47_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m47_soy": {kcal:53,p:8.0,c:5.0,f:0.6},
+  "m48_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
+  "m48_lem": {kcal:29,p:1.1,c:9.3,f:0.3,unitG:50},
+  "m48_oil": {kcal:884,p:0.0,c:0.0,f:100.0},
+  "m48_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m48_pars": {kcal:36,p:3.0,c:6.3,f:0.8},
+  "m48_quin": {kcal:368,p:14.0,c:64.0,f:6.0},
+  "m48_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
+  "m48_tuna": {kcal:116,p:26.0,c:0.0,f:0.6},
+  "m49_avo": {kcal:160,p:2.0,c:9.0,f:15.0,unitG:150},
+  "m49_chilli": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m49_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
+  "m49_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m49_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
+  "m49_mango": {kcal:60,p:0.8,c:15.0,f:0.4,unitG:300},
+  "m49_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m49_prawn": {kcal:99,p:21.0,c:0.0,f:1.0},
+  "m49_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m50_broth": {kcal:4,p:0.4,c:0.4,f:0.1},
+  "m50_chk": {kcal:110,p:23.0,c:0.0,f:1.2},
+  "m50_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
+  "m50_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "m50_rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m50_sp": {kcal:86,p:1.6,c:20.0,f:0.1},
+  "m50_tom": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "milk_ff": {kcal:35,p:3.5,c:5.0,f:0.1},
+  "mozz_light": {kcal:160,p:36.0,c:4.0,f:0.0},
+  "mushrooms": {kcal:22,p:3.1,c:3.3,f:0.3},
+  "mustard_yellow": {kcal:66,p:4.0,c:6.0,f:4.0},
+  "onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
+  "parmesan": {kcal:431,p:38.0,c:4.0,f:29.0},
+  "pasta_regular": {kcal:360,p:13.0,c:73.0,f:1.3},
+  "pasta_sauce_cream": {kcal:110,p:2.5,c:8.0,f:7.0},
+  "pasta_sauce_tom": {kcal:60,p:2.0,c:10.0,f:1.5},
+  "pico_de_gallo": {kcal:36,p:1.5,c:7.0,f:0.5},
+  "pw_almond": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "pw_almond2": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "pw_banana": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "pw_banana2": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "pw_banana3": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "pw_banana4": {kcal:89,p:1.1,c:23.0,f:0.3,unitG:120},
+  "pw_berries": {kcal:57,p:0.8,c:14.0,f:0.3},
+  "pw_bread": {kcal:247,p:10.0,c:41.0,f:4.0,unitG:40},
+  "pw_chia": {kcal:486,p:17.0,c:42.0,f:31.0},
+  "pw_chocmilk": {kcal:68,p:3.5,c:11.2,f:1.0},
+  "pw_ew2": {kcal:52,p:11.0,c:0.7,f:0.2},
+  "pw_granola": {kcal:450,p:10.0,c:60.0,f:18.0},
+  "pw_honey": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "pw_honey2": {kcal:304,p:0.3,c:82.0,f:0.0},
+  "pw_jam": {kcal:250,p:0.4,c:62.0,f:0.1},
+  "pw_oats": {kcal:389,p:17.0,c:66.0,f:7.0},
+  "pw_oats2": {kcal:389,p:17.0,c:66.0,f:7.0},
+  "pw_pb": {kcal:588,p:25.0,c:20.0,f:50.0},
+  "pw_protein": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "pw_protein2": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
+  "pw_ricecake": {kcal:385,p:7.0,c:83.0,f:1.8,unitG:9},
+  "pw_ricecake2": {kcal:385,p:7.0,c:83.0,f:1.8,unitG:9},
+  "pw_yogurt": {kcal:57,p:10.0,c:3.6,f:0.4},
+  "ranch_dressing": {kcal:50,p:1.0,c:9.0,f:1.0},
+  "rice_white": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "sour_cream_light": {kcal:100,p:1.5,c:4.0,f:8.0},
+  "spinach": {kcal:23,p:2.9,c:3.6,f:0.4},
+  "sun_dried_tom": {kcal:258,p:14.0,c:55.0,f:3.0},
+  "sweet_potato": {kcal:86,p:1.6,c:20.0,f:0.1},
+  "sweet_relish": {kcal:105,p:0.3,c:25.0,f:0.5},
+  "tomato_paste": {kcal:82,p:4.0,c:19.0,f:0.4},
+  "tomato_sauce": {kcal:29,p:1.3,c:6.5,f:0.4},
+  "tomatoes_chopped": {kcal:20,p:0.9,c:3.5,f:0.2},
+  "white_potato": {kcal:77,p:2.0,c:17.0,f:0.1},
+  "worcestershire": {kcal:78,p:2.6,c:17.0,f:0.2},
+  "zucchini": {kcal:17,p:1.2,c:3.5,f:0.3,unitG:200},
+};
+
+
+// ─── BOTTOM-UP MACRO COMPUTATION ─────────────────────────────────────────
+// Parses portion count from recipe subtitle (e.g. "8 servings · ~10 min" → 8)
+function getPortions(recipe) {
+    if (!recipe) return 7;
+    if (recipe.portions) return recipe.portions;
+    const m = (recipe.subtitle || "").match(/^(\d+)\s+serv/i);
+    if (m) return parseInt(m[1]);
+    const m2 = (recipe.subtitle || "").match(/^(\d+)\s+cook/i);
+    if (m2) return parseInt(m2[1]);
+    return 7;
+}
+
+// Computes per-portion macros from batchItems × INGREDIENT_MACROS.
+// scale = profileScale (1 when no custom targets set).
+// Falls back to recipe.perPortion if ingredient data is insufficient.
+function computePerPortion(recipe, scale) {
+    const gl = scale || 1;
+    if (!recipe) return { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+    // Pre-workout batchItems are weekly shopping units (1 pack, 3 bananas = week supply),
+    // not per-portion quantities — always use hardcoded perPortion for this category.
+    if (recipe.category === 'preworkout') {
+        const pp = recipe.perPortion || { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+        return { kcal: Math.round(pp.kcal * gl), protein: Math.round(pp.protein * gl),
+                 carbs: Math.round(pp.carbs * gl), fat: +((pp.fat * gl).toFixed(1)) };
+    }
+    const portions = getPortions(recipe);
+    const items = recipe.batchItems;
+    if (!items || items.length === 0) {
+        const pp = recipe.perPortion || { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+        return { kcal: Math.round(pp.kcal * gl), protein: Math.round(pp.protein * gl),
+                 carbs: Math.round(pp.carbs * gl), fat: +((pp.fat * gl).toFixed(1)) };
+    }
+    let totalKcal = 0, totalP = 0, totalC = 0, totalF = 0, covered = 0;
+    items.forEach(item => {
+        const md = INGREDIENT_MACROS[item.key];
+        if (!md) return;
+        let grams = 0;
+        if (item.unit === 'whole') {
+            const unitG = md.unitG || 0;
+            grams = item.qty * unitG;
+        } else if (item.unit === 'mL') {
+            grams = item.qty; // treat mL as g (water-like density for broths)
+        } else {
+            grams = item.qty; // g
+        }
+        if (grams <= 0) return;
+        totalKcal += (md.kcal / 100) * grams;
+        totalP    += (md.p    / 100) * grams;
+        totalC    += (md.c    / 100) * grams;
+        totalF    += (md.f    / 100) * grams;
+        covered++;
+    });
+    // Need at least 3 mapped ingredients to trust bottom-up; else fall back
+    if (covered < 3) {
+        const pp = recipe.perPortion || { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+        return { kcal: Math.round(pp.kcal * gl), protein: Math.round(pp.protein * gl),
+                 carbs: Math.round(pp.carbs * gl), fat: +((pp.fat * gl).toFixed(1)) };
+    }
+    const perP = { kcal: totalKcal / portions, protein: totalP / portions,
+                   carbs: totalC / portions, fat: totalF / portions };
+    return {
+        kcal:    Math.round(perP.kcal    * gl),
+        protein: Math.round(perP.protein * gl),
+        carbs:   Math.round(perP.carbs   * gl),
+        fat:     +((perP.fat * gl).toFixed(1)),
+    };
+}
 function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer, bfScale, preScale, desScale, pScale) {
     const gl = pScale || 1;
-    const ls = (lScale || 1) * gl, ds = (dScale || 1) * gl, bs = (bfScale || 1) * gl, ps = (preScale || 1) * gl, dss = (desScale || 1) * gl;
-    const Lraw = lr ? Object.assign({}, lr.perPortion) : EMPTY_MACROS;
-    const L = { kcal: Math.round(Lraw.kcal*ls), protein: Math.round(Lraw.protein*ls), carbs: Math.round(Lraw.carbs*ls), fat: +((Lraw.fat*ls).toFixed(1)) };
-    const Draw = dr ? { kcal: dr.perPortion.kcal + FISH_OIL.kcal, protein: dr.perPortion.protein, carbs: dr.perPortion.carbs, fat: +(dr.perPortion.fat + FISH_OIL.fat).toFixed(1) } : EMPTY_MACROS;
-    const D = { kcal: Math.round(Draw.kcal*ds), protein: Math.round(Draw.protein*ds), carbs: Math.round(Draw.carbs*ds), fat: +((Draw.fat*ds).toFixed(1)) };
-    const BFbase = bfSkipped ? EMPTY_MACROS : (bfr ? Object.assign({}, bfr.perPortion) : BREAKFAST);
+    const ls = (lScale || 1), ds = (dScale || 1), bs = (bfScale || 1), ps = (preScale || 1), dss = (desScale || 1);
+    // Bottom-up: compute per-portion macros from ingredient data, scaled by gl (profile) and meal scale
+    const Lbase = lr ? computePerPortion(lr, gl) : EMPTY_MACROS;
+    const L = { kcal: Math.round(Lbase.kcal*ls), protein: Math.round(Lbase.protein*ls), carbs: Math.round(Lbase.carbs*ls), fat: +((Lbase.fat*ls).toFixed(1)) };
+    const Dbase = dr ? computePerPortion(dr, gl) : EMPTY_MACROS;
+    const DwithOil = dr ? { kcal: Dbase.kcal + FISH_OIL.kcal, protein: Dbase.protein, carbs: Dbase.carbs, fat: +(Dbase.fat + FISH_OIL.fat).toFixed(1) } : EMPTY_MACROS;
+    const D = { kcal: Math.round(DwithOil.kcal*ds), protein: Math.round(DwithOil.protein*ds), carbs: Math.round(DwithOil.carbs*ds), fat: +((DwithOil.fat*ds).toFixed(1)) };
+    const BFbase = bfSkipped ? EMPTY_MACROS : (bfr ? computePerPortion(bfr, gl) : { kcal: Math.round(BREAKFAST.kcal*gl), protein: Math.round(BREAKFAST.protein*gl), carbs: Math.round(BREAKFAST.carbs*gl), fat: +((BREAKFAST.fat*gl).toFixed(1)) });
     const BF = bfSkipped ? EMPTY_MACROS : { kcal: Math.round(BFbase.kcal*bs), protein: Math.round(BFbase.protein*bs), carbs: Math.round(BFbase.carbs*bs), fat: +((BFbase.fat*bs).toFixed(1)) };
-    const DSbase = desr ? Object.assign({}, desr.perPortion) : EMPTY_MACROS;
+    const DSbase = desr ? computePerPortion(desr, gl) : EMPTY_MACROS;
     const DS = { kcal: Math.round(DSbase.kcal*dss), protein: Math.round(DSbase.protein*dss), carbs: Math.round(DSbase.carbs*dss), fat: +((DSbase.fat*dss).toFixed(1)) };
-    const PREbase = preSkipped ? EMPTY_MACROS : (prer ? Object.assign({}, prer.perPortion) : PRE);
+    const PREbase = preSkipped ? EMPTY_MACROS : (prer ? computePerPortion(prer, gl) : { kcal: Math.round(PRE.kcal*gl), protein: Math.round(PRE.protein*gl), carbs: Math.round(PRE.carbs*gl), fat: +((PRE.fat*gl).toFixed(1)) });
     const PRE_M = preSkipped ? EMPTY_MACROS : { kcal: Math.round(PREbase.kcal*ps), protein: Math.round(PREbase.protein*ps), carbs: Math.round(PREbase.carbs*ps), fat: +((PREbase.fat*ps).toFixed(1)) };
     const total = {
         kcal: BF.kcal + PRE_M.kcal + L.kcal + D.kcal + DS.kcal,
@@ -2457,7 +2994,7 @@ function MealCard({ meal, macros, slot }) {
                     padding: "6px 10px", marginBottom: 10, lineHeight: 1.5 } },
                 "\uD83D\uDCA1 ",
                 meal.note),
-            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83E\uDDFA BATCH INGREDIENTS \u2014 7 PORTIONS"),
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83E\uDDFA BATCH INGREDIENTS \u2014 " + ((portions || 7)) + " PORTIONS"),
             CAT_ORDER.map(cat => {
                 const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
                 if (!catItems.length)
@@ -3327,6 +3864,107 @@ function MacroCalculator({ C, onSave, initialProfile }) {
                     color: canNext() ? "#000" : C.muted, cursor: canNext() ? "pointer" : "default",
                     transition: "all 0.2s", WebkitTapHighlightColor: "transparent" } }, step === CALC_STEPS.length - 2 ? "Calculate →" : "Continue →")))));
 }
+
+// ─── MANUAL MACRO INPUT ──────────────────────────────────────────────────
+function ManualMacroInput({ C, onSave }) {
+    const [kcal, setKcal] = React.useState(2500);
+    const [protein, setProtein] = React.useState(205);
+    const [fat, setFat] = React.useState(55);
+    const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
+    const isValid = kcal > 0 && protein > 0 && fat > 0 && carbs >= 0;
+    const pPct = Math.round((protein * 4 / kcal) * 100);
+    const cPct = Math.round((carbs * 4 / kcal) * 100);
+    const fPct = Math.round((fat * 9 / kcal) * 100);
+    const inputStyle = {
+        width: "100%", padding: "10px 12px", borderRadius: 8,
+        border: "1.5px solid " + C.dim, background: C.card2, color: C.text,
+        fontSize: 16, fontFamily: "inherit", outline: "none",
+        WebkitAppearance: "none", marginTop: 6,
+    };
+    const sliderStyle = {
+        width: "100%", margin: "8px 0", accentColor: C.accent,
+        cursor: "pointer", height: 20,
+    };
+    const handleSave = () => {
+        if (!isValid) return;
+        const macros = { kcal, protein, carbs, fat };
+        const profile = {
+            firstName: "", lastName: "", dob: "", gender: "male",
+            height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+            job: "manual", steps: "manual", training: "manual", goal: "maintain",
+            result: { macros, bmr: 0, tdee: kcal, bmi: 0, actLabel: "Manual", age: 0, w: 0, h: 0 },
+            savedAt: new Date().toISOString(),
+            isManual: true,
+        };
+        localStorage.setItem("mp_profile", JSON.stringify(profile));
+        onSave(profile);
+    };
+    return React.createElement("div", null,
+        React.createElement("div", { style: { background: C.card, border: "1px solid " + C.dim, borderRadius: 14, padding: "18px 20px", marginBottom: 14 } },
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 16 } }, "SET YOUR TARGETS"),
+            // Calories
+            React.createElement("div", { style: { marginBottom: 16 } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 4 } },
+                    React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.text } }, "Daily Calories"),
+                    React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.accent } }, kcal + " kcal")),
+                React.createElement("input", {
+                    type: "range", min: 1000, max: 5000, step: 50, value: kcal,
+                    onChange: e => setKcal(Number(e.target.value)), style: sliderStyle }),
+                React.createElement("input", {
+                    type: "number", value: kcal, min: 1000, max: 5000,
+                    onChange: e => setKcal(Math.max(1000, Math.min(5000, Number(e.target.value) || 2500))),
+                    style: inputStyle })),
+            // Protein
+            React.createElement("div", { style: { marginBottom: 16 } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 4 } },
+                    React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.prot } }, "Protein"),
+                    React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.prot } }, protein + "g")),
+                React.createElement("input", {
+                    type: "range", min: 50, max: 400, step: 5, value: protein,
+                    onChange: e => setProtein(Number(e.target.value)), style: Object.assign({}, sliderStyle, { accentColor: C.prot }) }),
+                React.createElement("input", {
+                    type: "number", value: protein, min: 50, max: 400,
+                    onChange: e => setProtein(Math.max(50, Math.min(400, Number(e.target.value) || 205))),
+                    style: inputStyle })),
+            // Fat
+            React.createElement("div", { style: { marginBottom: 20 } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 4 } },
+                    React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.fat } }, "Fat"),
+                    React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.fat } }, fat + "g")),
+                React.createElement("input", {
+                    type: "range", min: 20, max: 200, step: 5, value: fat,
+                    onChange: e => setFat(Number(e.target.value)), style: Object.assign({}, sliderStyle, { accentColor: C.fat }) }),
+                React.createElement("input", {
+                    type: "number", value: fat, min: 20, max: 200,
+                    onChange: e => setFat(Math.max(20, Math.min(200, Number(e.target.value) || 55))),
+                    style: inputStyle })),
+            // Carbs (auto)
+            React.createElement("div", { style: { background: C.accentDim, border: "1px solid " + C.accentBorder, borderRadius: 10, padding: "12px 14px", marginBottom: 20 } },
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
+                    React.createElement("div", null,
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 2 } }, "Carbs (auto-calculated)"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.muted } }, "= (" + kcal + " - " + protein + "×4 - " + fat + "×9) ÷ 4")),
+                    React.createElement("span", { style: { fontSize: 22, fontWeight: 800, color: C.carb } }, carbs + "g")),
+                carbs < 0 && React.createElement("div", { style: { fontSize: 11, color: "#ef4444", marginTop: 6 } }, "⚠ Protein + fat calories exceed total — reduce one")),
+            // Macro split bar
+            React.createElement("div", { style: { marginBottom: 4 } },
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 6 } }, "Macro split"),
+                React.createElement("div", { style: { display: "flex", height: 12, borderRadius: 6, overflow: "hidden", gap: 2 } },
+                    React.createElement("div", { style: { flex: pPct, background: C.prot, borderRadius: "6px 0 0 6px" } }),
+                    React.createElement("div", { style: { flex: cPct, background: C.carb } }),
+                    React.createElement("div", { style: { flex: fPct, background: C.fat, borderRadius: "0 6px 6px 0" } })),
+                React.createElement("div", { style: { display: "flex", gap: 12, marginTop: 6, fontSize: 10, color: C.sub } },
+                    React.createElement("span", null, "🥩 " + pPct + "% protein"),
+                    React.createElement("span", null, "🌾 " + cPct + "% carbs"),
+                    React.createElement("span", null, "🫒 " + fPct + "% fat")))),
+        React.createElement("button", {
+            onClick: handleSave, disabled: !isValid || carbs < 0,
+            style: { width: "100%", background: (isValid && carbs >= 0) ? C.accent : C.dim, border: "none", borderRadius: 12,
+                padding: "14px", fontSize: 14, fontWeight: 800, color: "#000", cursor: (isValid && carbs >= 0) ? "pointer" : "default", marginBottom: 10 } },
+            "✓ Save My Macros to App"),
+        React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center", lineHeight: 1.5 } },
+            "Updates daily macro bars, calorie goals and portions across the whole app."));
+}
 // ─── ACCOUNT CARD ─────────────────────────────────────────────────────────
 function AccountCard({ C }) {
     const [name, setName] = useState(() => { try { return localStorage.getItem("mp_acc_name") || ""; } catch(e){ return ""; } });
@@ -3381,6 +4019,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
         }
     });
     const [recalcMode, setRecalcMode] = useState(false);
+    const [inputMode, setInputMode] = React.useState("calc"); // "calc" | "manual"
     const fullReset = () => {
         if (!confirm("Clear all your profile data including name and date of birth?"))
             return;
@@ -3435,18 +4074,24 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
     // First-time: no profile saved (premium user)
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
-            React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
+            React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
                 React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83E\uDDEE"),
-                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Your Macro Calculator"),
-                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto" } }, "Answer a few questions about your body, job and training to get your personalised daily calorie and macro targets.")),
-            React.createElement(MacroCalculator, { C: C, onSave: handleSave })));
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Your Macro Targets"),
+                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto 18px" } }, "Calculate from your body data, or set your own targets manually.")),
+            React.createElement("div", { style: { display: "flex", background: C.card2, borderRadius: 10, padding: 4, marginBottom: 20, border: "1px solid " + C.dim } },
+                React.createElement("button", { onClick: () => setInputMode("calc"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "calc" ? C.accent : "transparent", color: inputMode === "calc" ? "#000" : C.sub, transition: "all 0.2s" } }, "\uD83E\uDDEE Calculate"),
+                React.createElement("button", { onClick: () => setInputMode("manual"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "manual" ? C.accent : "transparent", color: inputMode === "manual" ? "#000" : C.sub, transition: "all 0.2s" } }, "\u270F\uFE0F Set Manually")),
+            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave })));
     // Recalc mode: show pre-filled calculator with identity preserved
     if (recalcMode)
         return (React.createElement("div", { className: "tab-anim" },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 } },
                 React.createElement("button", { onClick: () => setRecalcMode(false), style: { background: "none", border: "none", fontSize: 12, color: C.sub, cursor: "pointer", padding: 0 } }, "\u2190 Cancel"),
                 React.createElement("button", { onClick: fullReset, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: 0 } }, "\uD83D\uDDD1 Clear all data")),
-            React.createElement(MacroCalculator, { C: C, onSave: handleSave, initialProfile: profile })));
+            React.createElement("div", { style: { display: "flex", background: C.card2, borderRadius: 10, padding: 4, marginBottom: 20, border: "1px solid " + C.dim } },
+                React.createElement("button", { onClick: () => setInputMode("calc"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "calc" ? C.accent : "transparent", color: inputMode === "calc" ? "#000" : C.sub, transition: "all 0.2s" } }, "\uD83E\uDDEE Calculate"),
+                React.createElement("button", { onClick: () => setInputMode("manual"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "manual" ? C.accent : "transparent", color: inputMode === "manual" ? "#000" : C.sub, transition: "all 0.2s" } }, "\u270F\uFE0F Set Manually")),
+            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave, initialProfile: profile }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave })));
     const r = profile.result;
     const macros = (r === null || r === void 0 ? void 0 : r.macros) || {};
     const bmiInfo = bmiLabel((r === null || r === void 0 ? void 0 : r.bmi) || 0);
