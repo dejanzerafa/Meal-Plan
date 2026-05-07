@@ -4816,6 +4816,13 @@ function App() {
                             color: active ? C.accent : C.muted } }, tm.label.toUpperCase())));
             }),
             React.createElement("div", { style: { flex: 1 } }),
+            React.createElement("button", { onClick: () => setShowFeedback(true), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
+                    background: "none", border: "1px solid transparent", borderRadius: 12,
+                    cursor: "pointer", display: "flex", flexDirection: "column",
+                    alignItems: "center", gap: 4, transition: "all 0.15s",
+                    WebkitTapHighlightColor: "transparent" } },
+                React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "💬"),
+                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", color: C.muted } }, "FEEDBACK")),
             (() => {
                 const active = tab === "settings";
                 return (React.createElement("button", { onClick: () => setTab("settings"), style: { width: 52, paddingTop: 10, paddingBottom: 10,
@@ -4827,13 +4834,6 @@ function App() {
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: active ? C.accent : C.muted } }, "SETTINGS")));
             })()),
-            React.createElement("button", { onClick: () => setShowFeedback(true), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginTop: 6,
-                    background: "none", border: "1px solid transparent", borderRadius: 12,
-                    cursor: "pointer", display: "flex", flexDirection: "column",
-                    alignItems: "center", gap: 4, transition: "all 0.15s",
-                    WebkitTapHighlightColor: "transparent" } },
-                React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "💬"),
-                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", color: C.muted } }, "FEEDBACK")),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
