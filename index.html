@@ -31,6 +31,8 @@
       overscroll-behavior: none;
       -webkit-overscroll-behavior: none;
       font-feature-settings: "ss01", "ss02";
+      /* safe area for iPhone notch / Dynamic Island */
+      padding-top: env(safe-area-inset-top, 0px);
     }
     #root { height: 100%; }
     button { font-family: inherit; }
@@ -154,7 +156,7 @@
 </head>
 <body>
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
-  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) 36px 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
 
     <!-- Loader content -->
     <div style="position:relative;z-index:1;width:100%;max-width:320px;">
@@ -4668,7 +4670,7 @@ function FlameWordmark({ size }) {
 function OnboardingStory({ onNext }) {
     const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#0C0B0A",
         overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
-        padding: "48px 24px 56px", fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
+        paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px", paddingBottom: "56px", paddingLeft: "24px", fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
     const values = [
         { icon: "🥩", title: "Real Food", desc: "Whole ingredients. No powders. No substitutes." },
@@ -4752,7 +4754,7 @@ function OnboardingSignup({ onDone }) {
 
     const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#0C0B0A",
         overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", padding: "48px 24px 56px",
+        justifyContent: "center", paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px", paddingBottom: "56px", paddingLeft: "24px",
         fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
     const inputStyle = { width: "100%", padding: "14px 16px", background: "#161412",
