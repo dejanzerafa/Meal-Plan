@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   stripe_customer_id    text UNIQUE,
   first_name            text,
   last_name             text,
+  date_of_birth         date,                    -- for birthday emails + macro calculator
   marketing_opt_in      boolean DEFAULT true,
   welcome_sent          boolean DEFAULT false,
   created_at            timestamptz DEFAULT now(),
@@ -21,6 +22,27 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_stripe ON users(stripe_customer_id);
+CREATE INDEX IF NOT EXISTS idx_users_dob   ON users(date_of_birth);
+
+-- Add date_of_birth if table already exists (safe re-run)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS date_of_birth date;
+
+
+-- ── 6. BIRTHDAY CODES ────────────────────────────────────────────────
+-- Tracks the unique 10% discount code issued to each user per calendar year.
+-- Prevents double-issuing if the scheduler runs more than once on a birthday.
+CREATE TABLE IF NOT EXISTS birthday_codes (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id         uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  year            int  NOT NULL,
+  promo_code      text NOT NULL,          -- e.g. BDAY-A3F9X2-2026
+  stripe_promo_id text,                   -- Stripe promotional code ID (if created via API)
+  sent_at         timestamptz DEFAULT now(),
+  UNIQUE (user_id, year)
+);
+
+CREATE INDEX IF NOT EXISTS idx_bday_user ON birthday_codes(user_id);
+CREATE INDEX IF NOT EXISTS idx_bday_year ON birthday_codes(year);
 
 
 -- ── 2. SUBSCRIPTIONS ────────────────────────────────────────────────
