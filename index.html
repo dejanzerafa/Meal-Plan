@@ -3024,7 +3024,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
                             React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700, minWidth: 8 } }, "\u00B7"),
                             React.createElement("span", { style: { fontSize: 12, color: C.text } }, fmtItem(scaledItem))));
-                    }))));
+                    })));
             }))),
         open && !isRecipe && meal.items && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
             React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } }, meal.items.map((item, i) => (React.createElement("span", { key: i, style: { fontSize: 11, color: C.text, background: C.card2,
@@ -3440,6 +3440,77 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
                         color: "#f3ece0", cursor: "pointer" } }, "\uD83D\uDCB3 $1.99"),
                 React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
                         padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")))));
+}
+// ─── FEEDBACK MODAL ───────────────────────────────────────────────────────────
+// Submits to Formspree — replace FORM_ID with your Formspree endpoint ID
+const FORMSPREE_ID = "maqvbrkr";
+function FeedbackModal({ onClose }) {
+    const [cat, setCat] = React.useState("Feature");
+    const [msg, setMsg] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [status, setStatus] = React.useState("idle"); // idle | sending | ok | err
+    function submit() {
+        if (!msg.trim()) return;
+        setStatus("sending");
+        fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ category: cat, message: msg, email: email || "—" })
+        }).then(function(r){ setStatus(r.ok ? "ok" : "err"); }).catch(function(){ setStatus("err"); });
+    }
+    var cats = ["Bug", "Feature", "Recipe", "Content", "Other"];
+    var inp = { background: C.card2, border: "1px solid " + C.dim, borderRadius: 8,
+                padding: "10px 12px", fontSize: 13, color: C.text, width: "100%",
+                boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
+    return React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.82)",
+            zIndex: 700, display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0",
+                padding: "24px 20px 36px", maxWidth: 440, width: "100%",
+                boxShadow: "0 -24px 64px rgba(0,0,0,0.5)" } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between",
+                    alignItems: "center", marginBottom: 18 } },
+                React.createElement("div", { className: "display", style: { fontSize: 18, fontWeight: 700, color: C.text } }, "💬 Send Feedback"),
+                React.createElement("button", { onClick: onClose, style: { background: "none", border: "none",
+                        color: C.muted, fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "✕")),
+            status === "ok"
+                ? React.createElement("div", { style: { textAlign: "center", padding: "24px 0" } },
+                    React.createElement("div", { style: { fontSize: 40, marginBottom: 10 } }, "🙏"),
+                    React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 6 } }, "Got it — thank you!"),
+                    React.createElement("div", { style: { fontSize: 13, color: C.sub } }, "Your feedback helps make the app better."),
+                    React.createElement("button", { onClick: onClose, style: { marginTop: 20, background: C.accent, border: "none",
+                            borderRadius: 10, padding: "12px 28px", fontSize: 13, fontWeight: 700,
+                            color: "#000", cursor: "pointer" } }, "Done"))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub,
+                            letterSpacing: "0.07em", marginBottom: 6 } }, "CATEGORY"),
+                    React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 } },
+                        cats.map(function(c) {
+                            return React.createElement("button", { key: c, onClick: function(){ setCat(c); },
+                                style: { padding: "6px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600,
+                                    cursor: "pointer", border: "1px solid " + (cat === c ? C.accent : C.dim),
+                                    background: cat === c ? C.accentDim : C.card2,
+                                    color: cat === c ? C.accent : C.sub } }, c);
+                        })),
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub,
+                            letterSpacing: "0.07em", marginBottom: 6 } }, "MESSAGE"),
+                    React.createElement("textarea", { value: msg, onChange: function(e){ setMsg(e.target.value); },
+                        placeholder: "What's on your mind? Be as specific as you like.",
+                        rows: 4, style: Object.assign({}, inp, { resize: "none", lineHeight: 1.6,
+                            marginBottom: 12, display: "block" }) }),
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub,
+                            letterSpacing: "0.07em", marginBottom: 6 } }, "EMAIL (OPTIONAL)"),
+                    React.createElement("input", { type: "email", value: email,
+                        onChange: function(e){ setEmail(e.target.value); },
+                        placeholder: "So we can follow up if needed",
+                        style: Object.assign({}, inp, { marginBottom: 18 }) }),
+                    status === "err" && React.createElement("div", { style: { fontSize: 12, color: "#ef4444",
+                            marginBottom: 10, textAlign: "center" } }, "Something went wrong — please try again."),
+                    React.createElement("button", { onClick: submit, disabled: !msg.trim() || status === "sending",
+                        style: { width: "100%", background: msg.trim() ? C.accent : C.dim,
+                            border: "none", borderRadius: 12, padding: "14px",
+                            fontSize: 14, fontWeight: 800, color: msg.trim() ? "#000" : C.muted,
+                            cursor: msg.trim() ? "pointer" : "default", transition: "all 0.2s" } },
+                        status === "sending" ? "Sending…" : "Send Feedback"))));
 }
 function OnboardingModal({ onClose }) {
     const [step, setStep] = React.useState(0);
@@ -4504,6 +4575,7 @@ function App() {
     const [prepAlert, setPrepAlert] = useState(false);
     const [showMethod, setShowMethod] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
+    const [showFeedback, setShowFeedback] = useState(false);
 
     useEffect(function() {
         try {
@@ -4755,6 +4827,13 @@ function App() {
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: active ? C.accent : C.muted } }, "SETTINGS")));
             })()),
+            React.createElement("button", { onClick: () => setShowFeedback(true), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginTop: 6,
+                    background: "none", border: "1px solid transparent", borderRadius: 12,
+                    cursor: "pointer", display: "flex", flexDirection: "column",
+                    alignItems: "center", gap: 4, transition: "all 0.15s",
+                    WebkitTapHighlightColor: "transparent" } },
+                React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "💬"),
+                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", color: C.muted } }, "FEEDBACK")),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { padding: "16px 14px 10px", background: `linear-gradient(180deg,${C.card} 0%,transparent 100%)`,
                     borderBottom: `1px solid ${C.dim}`, flexShrink: 0 } },
@@ -5046,6 +5125,7 @@ function App() {
                 React.createElement("div", { style: { flex: 1 } }),
                 React.createElement("button", { onClick: () => setShowMethod(false), style: { background: C.accentDim, border: "1px solid "+C.accentBorder, borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: C.accent, cursor: "pointer" } }, "Done")),
             React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: C.bg }, title: "The Method" })),
+        showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
