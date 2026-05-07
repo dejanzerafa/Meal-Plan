@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz</title>
   <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -29,6 +29,7 @@
       font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior: none;
+      -webkit-overscroll-behavior: none;
       font-feature-settings: "ss01", "ss02";
     }
     #root { height: 100%; }
@@ -153,7 +154,7 @@
 </head>
 <body>
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
-  <div id="mp-loader" style="position:fixed;inset:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
 
     <!-- Loader content -->
     <div style="position:relative;z-index:1;width:100%;max-width:320px;">
@@ -3509,7 +3510,7 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
             React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, "███████ ████████"),
             React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } }, ["P", "C", "F"].map(l => (React.createElement("span", { key: l, style: { fontSize: 11, background: C.card2, border: `1px solid ${C.dim}`,
                     borderRadius: 6, padding: "3px 14px", color: C.muted } }, "\u2014"))))),
-        React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+        React.createElement("div", { style: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center", background: "rgba(26,22,18,0.78)",
                 borderRadius: 14, gap: 6, padding: "12px" } },
             React.createElement("span", { style: { fontSize: 24 } }, "\uD83D\uDD12"),
@@ -3548,7 +3549,7 @@ function FeedbackModal({ onClose }) {
     var inp = { background: C.card2, border: "1px solid " + C.dim, borderRadius: 8,
                 padding: "10px 12px", fontSize: 13, color: C.text, width: "100%",
                 boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
-    return React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.82)",
+    return React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(26,22,18,0.82)",
             zIndex: 700, display: "flex", alignItems: "flex-end", justifyContent: "center" } },
         React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0",
                 padding: "24px 20px 36px", maxWidth: 440, width: "100%",
@@ -3622,8 +3623,8 @@ function OnboardingModal({ onClose }) {
     ];
     var s = steps[step];
     var isLast = step === steps.length - 1;
-    return React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.82)", zIndex: 600, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" } },
-        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "28px 22px 36px", maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)" } },
+    return React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(26,22,18,0.82)", zIndex: 600, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" } },
+        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "28px 22px 0", paddingBottom: "max(36px, calc(env(safe-area-inset-bottom) + 16px))", maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)" } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 } },
                 React.createElement("div", { style: { display: "flex", gap: 6 } },
                     [0,1,2].map(function(i){ return React.createElement("div", { key: i, style: { width: i === step ? 20 : 6, height: 6, borderRadius: 3, background: i === step ? C.accent : C.dim, transition: "width 0.3s" } }); })),
@@ -3638,10 +3639,10 @@ function OnboardingModal({ onClose }) {
             }, isLast ? "Let's go →" : "Next →")));
 }
 function UpgradeModal({ onClose }) {
-    return (React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(26,22,18,0.88)", zIndex: 300,
+    return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(26,22,18,0.88)", zIndex: 300,
             display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0",
             overflow: "auto" } },
-        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "22px 18px 28px",
+        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "22px 18px 0", paddingBottom: "max(28px, calc(env(safe-area-inset-bottom) + 16px))",
                 maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)",
                 maxHeight: "95vh", overflowY: "auto" } },
             React.createElement("div", { style: { width: 40, height: 4, background: C.dim, borderRadius: 2, margin: "0 auto 18px" } }),
@@ -3719,7 +3720,7 @@ function DevModal({ onClose, onUnlock }) {
             setTimeout(() => setError(false), 1500);
         }
     };
-    return (React.createElement("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
+    return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
             display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" } },
         React.createElement("div", { style: { background: C.card, borderRadius: 16, padding: "24px 20px",
                 maxWidth: 280, width: "100%" } },
@@ -4665,8 +4666,8 @@ function FlameWordmark({ size }) {
 }
 
 function OnboardingStory({ onNext }) {
-    const baseStyle = { position: "fixed", inset: 0, zIndex: 10000, background: "#0C0B0A",
-        overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center",
+    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#0C0B0A",
+        overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
         padding: "48px 24px 56px", fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
     const values = [
@@ -4749,8 +4750,8 @@ function OnboardingSignup({ onDone }) {
         } catch(e) { setStatus("error"); }
     }
 
-    const baseStyle = { position: "fixed", inset: 0, zIndex: 10000, background: "#0C0B0A",
-        overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center",
+    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#0C0B0A",
+        overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "48px 24px 56px",
         fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
@@ -5055,7 +5056,7 @@ function App() {
             color: C.text, background: C.bg, overflow: "hidden" } },
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.dim}`, display: "flex", flexDirection: "column",
-                alignItems: "center", paddingTop: 16, paddingBottom: 24, zIndex: 100 } },
+                alignItems: "center", paddingTop: 16, paddingBottom: "max(24px, calc(env(safe-area-inset-bottom) + 8px))", zIndex: 100 } },
             React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                     gap: 1, marginBottom: 14, flexShrink: 0, cursor: "pointer",
@@ -5115,7 +5116,7 @@ function App() {
                     React.createElement("span", { style: { color: C.text } }, lr ? lr.name : "No lunch"),
                     "\u00A0\u00B7\u00A0 \uD83C\uDF19 ",
                     React.createElement("span", { style: { color: C.text } }, dr ? dr.name : "No dinner"))),
-            React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px 12px 24px",
+            React.createElement("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "12px 12px 24px",
                     WebkitOverflowScrolling: "touch" } },
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
                         background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)",
@@ -5432,7 +5433,7 @@ function App() {
                                 React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 18, fontWeight: 700, color: C.accent } }, n),
                                 React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.05em", marginTop: 2 } }, l))))
                 ))),
-        showMethod && React.createElement("div", { style: { position: "fixed", inset: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
+        showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
             React.createElement("div", { style: { padding: "10px 14px", background: C.card, borderBottom: "1px solid "+C.dim, display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
                 React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: C.sub, padding: "2px 8px 2px 0", lineHeight: 1, fontWeight: 700 } }, "\u2190"),
                 React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, "\uD83D\uDCD6 The Method"),
