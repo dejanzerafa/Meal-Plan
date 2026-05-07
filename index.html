@@ -4694,7 +4694,7 @@ function OnboardingStory({ onNext }) {
         React.createElement("div", { style: { background: "#161412", border: "1px solid #2a2520", borderRadius: 14,
             padding: "20px 22px", maxWidth: 420, width: "100%", marginBottom: 32 } },
             React.createElement("p", { style: { fontSize: 14, color: "#C49A6C", lineHeight: 1.8, fontStyle: "italic", margin: 0 } },
-                "\"I was spending 3,000 QAR a month on meal delivery — that's nearly $10,000 a year. The food was small, bland, and I had no idea what was in it. I wasn't seeing results. I wasn't enjoying my meals. So I built SoulGainz: 30+ real recipes, max 10 ingredients, all under $300 a fortnight. Real food. Made simple. Built for life.\""),
+                "\"I was spending around $820 a month on meal delivery — nearly $10,000 a year. The food was small, bland, and I had no idea what was in it. I wasn't seeing results. I wasn't enjoying my meals. So I built SoulGainz: 30+ real recipes, max 10 ingredients, all under $300 a fortnight. Real food. Made simple. Built for life.\""),
             React.createElement("div", { style: { marginTop: 14, fontSize: 12, color: "#8C8279", fontWeight: 600 } }, "— Dejan, Founder")),
 
         // Brand values grid
@@ -5335,27 +5335,35 @@ function App() {
                                 marginBottom: 14 } }, "\u2696\uFE0F LEGAL & COPYRIGHT"),
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 12,
                                 padding: "8px 12px", background: C.accentDim, borderRadius: 8,
-                                border: `1px solid ${C.accentBorder}` } }, "\u00A9 2025 All Rights Reserved."),
+                                border: `1px solid ${C.accentBorder}` } }, "\u00A9 2026 SoulGainz. All Rights Reserved."),
                         [
                             {
-                                title: "Intellectual Property",
-                                body: "This application — including all source code, design, visual elements, functionality, recipe data, nutritional information, and all other content — constitutes the proprietary product. All rights reserved in all jurisdictions worldwide."
+                                title: "Trademark",
+                                body: "\"SoulGainz\", the SoulGainz flame mark, and \"Feed Your Soul · Fuel Your Gainz\" are trademarks of SoulGainz (soulgainz.app). All brand assets — logos, wordmarks, colour systems, and visual identity — are protected under applicable trademark and intellectual property law. Unauthorised use of the SoulGainz name, mark, or any confusingly similar designation in connection with food, nutrition, fitness, wellness, or software is strictly prohibited worldwide."
                             },
                             {
-                                title: "Confidentiality",
-                                body: "This is a private, personal application. All personal health metrics, body composition data, nutritional targets, macro plans, and dietary information contained herein are strictly confidential and the exclusive property of the owner. This application is not intended for public distribution or access."
+                                title: "Intellectual Property",
+                                body: "All content within this application — including source code, design, user interface, recipes, nutritional data, meal plans, batch-cooking methodology, written content, and visual assets — is the exclusive proprietary property of SoulGainz. All rights reserved in all jurisdictions worldwide. No licence, express or implied, is granted to any party other than the authorised end user."
                             },
                             {
                                 title: "Prohibited Activities",
-                                body: "Unauthorised copying, reproduction, reverse engineering, decompilation, modification, distribution, sublicensing, sale, or any other exploitation of this application or any portion of its contents — in whole or in part — is strictly prohibited without the express prior written permission of the owner."
+                                body: "Copying, reproduction, redistribution, reverse engineering, decompilation, scraping, modification, sublicensing, or any commercial exploitation of this application or its content — in whole or in part — is strictly prohibited without the express prior written consent of SoulGainz. Violations may result in civil and criminal liability to the fullest extent permitted by law."
+                            },
+                            {
+                                title: "Limitation of Liability",
+                                body: "SoulGainz and its founders, contributors, and operators shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from the use of, or inability to use, this application or its content. Use of this application is entirely at the user's own risk. SoulGainz provides no warranty — express or implied — regarding the accuracy, completeness, or fitness for any particular purpose of the nutritional information, macro targets, or meal plans contained herein."
+                            },
+                            {
+                                title: "Health Disclaimer",
+                                body: "The recipes, nutritional information, macro targets, and meal plans in this application are for general informational purposes only and do not constitute professional medical, dietary, or nutritional advice. SoulGainz accepts no liability for any decisions made on the basis of information in this application. Always consult a qualified healthcare or nutrition professional before making significant changes to your diet, supplementation, or training regime."
                             },
                             {
                                 title: "Data & Privacy",
-                                body: "This application operates entirely client-side. No personal data, health information, or usage data is transmitted to or stored on any external server. All data is stored locally on this device via browser localStorage and is not shared with, sold to, or accessible by any third party under any circumstances."
+                                body: "This application processes user-provided profile data and email addresses solely to deliver the service and send product communications where consent is given. Nutritional tracking data is stored locally on your device via browser localStorage and is not shared with third parties. You may request removal of your data at any time by contacting admin@soulgainz.app."
                             },
                             {
-                                title: "Disclaimer",
-                                body: "The nutritional information, macro targets, meal plans, and recipe content in this application are prepared for personal use only and do not constitute professional medical, dietary, or nutritional advice. The owner accepts no liability for any decisions made based on the information contained herein. Consult a qualified healthcare professional before making significant changes to your diet or exercise routine."
+                                title: "Governing Law",
+                                body: "These terms are governed by and construed in accordance with applicable law. By using this application you agree that any disputes arising out of or in connection with SoulGainz shall be subject to the exclusive jurisdiction of the courts of the applicable territory. SoulGainz reserves the right to update these terms at any time without prior notice."
                             },
                         ].map(({ title, body }) => (React.createElement("div", { key: title, style: { marginBottom: 14 } },
                             React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.07em",
@@ -5363,9 +5371,9 @@ function App() {
                             React.createElement("div", { style: { fontSize: 11, color: C.text, lineHeight: 1.65 } }, body)))),
                         React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, marginTop: 16, paddingTop: 12,
                                 fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.6 } },
-                            "High Protein \u00B7 Real Food \u00B7 Batch Cooked \u00B7 2025",
-                            "\n",
-                            "dejan-mealplan.netlify.app"))),
+                            "\u00A9 2026 SoulGainz \u00B7 soulgainz.app",
+                            React.createElement("br", null),
+                            "Feed Your Soul \u00B7 Fuel Your Gainz"))),
                 tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile" },
                     React.createElement(AccountCard, { C: C }),
                     React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
