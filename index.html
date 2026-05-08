@@ -3743,11 +3743,11 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     if (!lr || !dr)
         return null;
     // Per-slot item lists (breakfast and pre-workout shown as own sections)
-    const bfSrv = parseInt((bfr && bfr.subtitle || "").match(/\d+/) || [p]);
+    const bfSrv = (bfr && bfr.portions) || parseInt((bfr && bfr.subtitle || "").match(/\d+/) || [p]) || p;
     const bfItems = (!bfSkipped && bfr && bfr.batchItems)
-        ? buildSlotItems(bfr.batchItems, (p / (bfSrv || p)) * gl) : [];
+        ? buildSlotItems(bfr.batchItems, (p / bfSrv) * gl) : [];
     const preItems = (!preSkipped && prer && prer.batchItems)
-        ? buildSlotItems(prer.batchItems, gl) : [];
+        ? buildSlotItems(prer.batchItems, (p / (prer.portions || 7)) * gl) : [];
     // Main batch = lunch + dinner + dessert only, grouped by category
     const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale);
     const scalePct = Math.round(gl * 100);
@@ -3807,30 +3807,18 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#f59e0b",
                     letterSpacing: "0.08em", marginBottom: 6,
                     borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "🌅 BREAKFAST"),
-            bfItems.map(item => {
-                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
-                const scaledItem = Object.assign({}, item, { qty: scaledQty });
-                return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
-            }))),
+            bfItems.map(item => React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(item) })))),
         // ── Pre-workout section ──────────────────────────────────────────────
         preItems.length > 0 && (React.createElement("div", { style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#22c55e",
                     letterSpacing: "0.08em", marginBottom: 6,
                     borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "⚡ PRE-WORKOUT"),
-            preItems.map(item => {
-                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
-                const scaledItem = Object.assign({}, item, { qty: scaledQty });
-                return React.createElement(Checkbox, { key: item.key, k: `pre_${item.key}`, label: fmtItem(scaledItem) });
-            }))),
+            preItems.map(item => React.createElement(Checkbox, { key: item.key, k: `pre_${item.key}`, label: fmtItem(item) })))),
         // ── Lunch / Dinner / Dessert — by category ───────────────────────────
         Object.entries(mainBatch).map(([cat, items]) => (React.createElement("div", { key: cat, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
                 CAT_ICON[cat], " ", cat.toUpperCase()),
-            items.map(item => {
-                const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale;
-                const scaledItem = Object.assign({}, item, { qty: scaledQty });
-                return React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(scaledItem) });
-            })))),
+            items.map(item => React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(item) }))))),
         // ── Supplements / fixed items (breakfast & pre-workout now dynamic above) ──
         Object.entries(FIXED)
             .filter(([section]) => !section.startsWith("🌅") && !section.startsWith("⚡"))
@@ -5818,7 +5806,8 @@ function App() {
     const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
     const profileName = profile ? (profile.firstName || "").trim() : "";
     const filteredRecipes = RECIPES.filter(r => {
-        if ((r.category || "main") !== recipeCat)
+        // When actively selecting for a slot, show ALL recipes — any recipe can go in any slot
+        if (!pendingSlot && (r.category || "main") !== recipeCat)
             return false;
         // Search filter — applies across all categories
         if (recipeQuery && recipeQuery.trim()) {
@@ -5829,10 +5818,13 @@ function App() {
             if (!matchesName && !matchesSubtitle && !matchesIngredients)
                 return false;
         }
-        if (recipeCat !== "main")
+        if (!pendingSlot && recipeCat !== "main")
             return true;
-        const f = FILTER_MAP[filter];
-        return f ? r.badge.includes(f) : true;
+        if (!pendingSlot) {
+            const f = FILTER_MAP[filter];
+            return f ? r.badge.includes(f) : true;
+        }
+        return true;
     }).sort((a, b) => {
         // Unlocked recipes first, then locked. Within each group: alphabetical by name.
         const aViewable = canView(a.id) ? 0 : 1;
