@@ -3789,7 +3789,7 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.green, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "QUARTERLY \u00B7 3 MONTHS"),
                         React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + new drops"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$8.33/mo effective \u00B7 Auto-renews every 3 months")),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$13.33/mo effective \u00B7 Auto-renews every 3 months")),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.green, lineHeight: 1 } }, "$39.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/3 months")))),
@@ -3818,7 +3818,7 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Macros only"))),
             React.createElement("button", { onClick: () => startCheckout("lifetime"), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                     padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
-                    marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $59.99 \u2192"),
+                    marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $149.99 \u2192"),
             React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "Secure payments via Stripe · Cancel anytime" : "🔒 Payments launching soon — beta in progress"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
                     fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
@@ -4412,7 +4412,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
             React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, borderRadius: 12,
                     padding: "12px", fontSize: 13, fontWeight: 600, color: C.sub, cursor: "pointer",
                     letterSpacing: "0.02em", marginBottom: 8 } }, "Or unlock everything (recipes + calculator) \u2192"),
-            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted } }, "Full app from $9.99/mo \u00B7 $59.99 lifetime")));
+            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted } }, "Full app from $14.99/mo \u00B7 $149.99 lifetime")));
     }
     // First-time: no profile saved (premium user)
     if (!profile)
