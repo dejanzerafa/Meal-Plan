@@ -4780,6 +4780,8 @@ function AccountCard({ C }) {
 // ─── NOTIFICATION TOGGLE ──────────────────────────────────────────────────
 function NotificationToggle({ C, userEmail }) {
     const [status, setStatus] = React.useState(() => {
+        // iOS Safari only supports push from an installed PWA (home screen app, iOS 16.4+)
+        if (IS_IOS && !IS_STANDALONE) return "ios-not-installed";
         if (typeof Notification === "undefined") return "unsupported";
         return localStorage.getItem("mp_push_enabled") === "1" ? "enabled" : "disabled";
     });
@@ -4848,6 +4850,19 @@ function NotificationToggle({ C, userEmail }) {
         setLoading(false);
     }
 
+    if (status === "ios-not-installed") {
+        return React.createElement("div", { style: { background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10, padding: "12px 14px" } },
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 6 } }, "📲 Install app to enable reminders"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6 } },
+                "iPhone requires SoulGainz to be installed on your Home Screen before notifications can be turned on."),
+            React.createElement("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 5 } },
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "1. "), "Tap the ", React.createElement("span", { style: { fontWeight: 700 } }, "Share"), " button (□↑) at the bottom of Safari"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "2. "), "Select ", React.createElement("span", { style: { fontWeight: 700 } }, "Add to Home Screen")),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "3. "), "Open SoulGainz from your Home Screen and return here")));
+    }
     if (status === "unsupported") {
         return React.createElement("div", { style: { fontSize: 11, color: C.muted } },
             "Push notifications not supported in this browser.");
@@ -5439,7 +5454,9 @@ function OnboardingSignup({ onDone }) {
 
     function finishOnboarding(destination) {
         if (window.startLoaderSequence) window.startLoaderSequence();
-        if (destination) window._sg_open_tab = destination;
+        // "macros" is a logical alias — the actual tab id is "profile"
+        const tabMap = { macros: "profile", recipes: "recipes" };
+        if (destination) window._sg_open_tab = tabMap[destination] || destination;
         onDone();
     }
 
@@ -5790,7 +5807,7 @@ function App() {
     // ── Sidebar width ────────────────────────────────────────────────────────
     const SW = 72;
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
-    if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(dest); } setOnboardStep("app"); } });
+    if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const tabMap = { macros: "profile", recipes: "recipes" }; const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(tabMap[dest] || dest); } setOnboardStep("app"); } });
 
     return (React.createElement("div", { style: { display: "flex", height: "100svh", width: "100%",
             paddingTop: "env(safe-area-inset-top, 0px)",
@@ -5863,7 +5880,7 @@ function App() {
                             color: active ? C.accent : C.muted } }, "SETTINGS")));
             })()),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
-            React.createElement("div", { style: { padding: "16px 14px 12px", background: `linear-gradient(180deg,${C.card} 0%,${C.card}E6 55%,transparent 100%)`,
+            tab !== "method" && React.createElement("div", { style: { padding: "16px 14px 12px", background: `linear-gradient(180deg,${C.card} 0%,${C.card}E6 55%,transparent 100%)`,
                     boxShadow: `0 4px 12px ${C.card}CC`, flexShrink: 0 } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
                 React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD \u00B7 MADE SIMPLE"),
