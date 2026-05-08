@@ -4,6 +4,12 @@
   publish = "."
   functions = "netlify/functions"
 
+# ── Secrets scanning ─────────────────────────────────────────────────────────
+# VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).
+# Tell Netlify not to block deploys because of it.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VAPID_PUBLIC_KEY"
+
 [functions]
   node_bundler = "esbuild"
 
