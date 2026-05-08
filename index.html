@@ -3640,6 +3640,93 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
                 React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
                         padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")))));
 }
+// ─── GETTING STARTED GUIDE MODAL ──────────────────────────────────────────────
+function GettingStartedModal({ C, onClose }) {
+    const steps = [
+        {
+            num: "01", icon: "👤", title: "Set Your Macros",
+            desc: "Head to the ME tab and tap 'Calculate My Macros'. Enter your details — the app will work out your daily protein, carb and fat targets. Free on first use.",
+            tip: "Do this first — your macros guide everything else."
+        },
+        {
+            num: "02", icon: "🍽️", title: "Browse Recipes",
+            desc: "Tap the RECIPES tab. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients, method, and macros. Lock icons mean the recipe requires a plan.",
+            tip: "Most recipes are free to view. Unlock all with a plan."
+        },
+        {
+            num: "03", icon: "☀️", title: "Assign Lunch & Dinner",
+            desc: "From the MEALS tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.",
+            tip: "Locked recipes can still be assigned — tap to preview them."
+        },
+        {
+            num: "04", icon: "🛒", title: "Generate Your Grocery List",
+            desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.",
+            tip: "Batch size scales every ingredient quantity automatically."
+        },
+        {
+            num: "05", icon: "📅", title: "Log Your Prep Day",
+            desc: "Open the CALENDAR tab and mark the day you're cooking. The app tracks when your next shop day falls and reminds you on Sundays.",
+            tip: "Cook once. The calendar keeps you on schedule."
+        },
+        {
+            num: "06", icon: "🔓", title: "Unlock More",
+            desc: "Browse more recipes and unlock the full library. Monthly access from $14.99/mo, or go lifetime for $149.99 — every recipe, every future drop, forever.",
+            tip: null
+        },
+    ];
+
+    return React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0,
+        background: "rgba(0,0,0,0.6)", zIndex: 600, display: "flex", alignItems: "flex-end",
+        justifyContent: "center" },
+        onClick: (e) => { if (e.target === e.currentTarget) onClose(); } },
+
+        React.createElement("div", { style: { width: "100%", maxWidth: 520, background: C.bg,
+            borderRadius: "20px 20px 0 0", maxHeight: "92vh", display: "flex", flexDirection: "column",
+            overflow: "hidden", paddingBottom: "env(safe-area-inset-bottom, 0px)" } },
+
+            // Header
+            React.createElement("div", { style: { padding: "20px 20px 16px", borderBottom: `1px solid ${C.dim}`,
+                flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between" } },
+                React.createElement("div", null,
+                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, fontFamily: "Georgia,serif" } }, "Getting Started"),
+                    React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, "Your 6-step setup guide")),
+                React.createElement("button", { onClick: onClose, style: { background: C.card2, border: `1px solid ${C.dim}`,
+                    borderRadius: 10, padding: "8px 14px", fontSize: 12, fontWeight: 700,
+                    color: C.sub, cursor: "pointer" } }, "Done")),
+
+            // Steps
+            React.createElement("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch",
+                padding: "16px 16px 24px", flex: 1 } },
+                steps.map((s) =>
+                    React.createElement("div", { key: s.num, style: { display: "flex", gap: 14,
+                        marginBottom: 20, padding: "14px 14px", background: C.card,
+                        border: `1px solid ${C.dim}`, borderRadius: 14 } },
+
+                        // Step number + icon
+                        React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 36 } },
+                            React.createElement("div", { style: { fontSize: 22, lineHeight: 1 } }, s.icon),
+                            React.createElement("div", { style: { fontSize: 9, fontWeight: 800, color: C.accent, letterSpacing: "0.05em" } }, s.num)),
+
+                        // Content
+                        React.createElement("div", { style: { flex: 1 } },
+                            React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, s.title),
+                            React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.6, marginBottom: s.tip ? 8 : 0 } }, s.desc),
+                            s.tip && React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, display: "flex", alignItems: "flex-start", gap: 4 } },
+                                React.createElement("span", null, "💡"),
+                                React.createElement("span", null, s.tip)))
+                    )
+                ),
+
+                // Footer note
+                React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted,
+                    marginTop: 4, padding: "12px 8px", background: C.card2, borderRadius: 10,
+                    border: `1px solid ${C.dim}` } },
+                    "✅ Your account is already registered — every visit is saved and you'll receive updates via email.")
+            )
+        )
+    );
+}
+
 // ─── FEEDBACK MODAL ───────────────────────────────────────────────────────────
 // Submits to Formspree — replace FORM_ID with your Formspree endpoint ID
 const FORMSPREE_ID = "maqvbrkr";
@@ -4848,52 +4935,79 @@ function FlameWordmark({ size, light }) {
 
 function OnboardingStory({ onNext }) {
     const values = [
-        { icon: "🥩", title: "Real Food", desc: "Whole ingredients. No powders." },
-        { icon: "🧠", title: "Made Simple", desc: "Max 10 ingredients. One cook session." },
-        { icon: "🔥", title: "Delicious", desc: "Food you look forward to eating." },
-        { icon: "💸", title: "Affordable", desc: "Under $300 a fortnight." },
+        { icon: "🥩", title: "Real Food", desc: "Whole ingredients. No powders. No shortcuts." },
+        { icon: "🧠", title: "Made Simple", desc: "Max 10 ingredients. One cook session a week." },
+        { icon: "🔥", title: "Delicious", desc: "Food you genuinely look forward to eating." },
+        { icon: "💸", title: "Affordable", desc: "Full week of meals under $300 a fortnight." },
     ];
 
     return React.createElement("div", { style: {
         position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000,
-        background: "#D9CABB", display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "space-between",
-        paddingTop: "max(44px, calc(env(safe-area-inset-top) + 16px))",
-        paddingRight: "20px",
-        paddingBottom: "max(24px, calc(env(safe-area-inset-bottom) + 16px))",
-        paddingLeft: "20px",
+        background: "#D9CABB",
         fontFamily: "'Instrument Sans',-apple-system,sans-serif",
-        boxSizing: "border-box" } },
+        display: "flex", flexDirection: "column" } },
 
-        // Logo
-        React.createElement("div", { style: { marginBottom: 0 } },
-            React.createElement(FlameWordmark, { size: 24 })),
+        // Scrollable content area
+        React.createElement("div", { style: {
+            flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch",
+            display: "flex", flexDirection: "column", alignItems: "center",
+            paddingTop: "max(44px, calc(env(safe-area-inset-top) + 16px))",
+            paddingRight: "20px", paddingBottom: "24px", paddingLeft: "20px",
+            boxSizing: "border-box" } },
 
-        // Hero headline + quote
-        React.createElement("div", { style: { textAlign: "center", width: "100%", maxWidth: 420 } },
-            React.createElement("div", { style: { fontSize: 9, color: "#B85C10", letterSpacing: "0.22em", fontWeight: 700, marginBottom: 10 } }, "OUR WHY"),
-            React.createElement("h1", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: "clamp(20px,5.5vw,30px)",
-                fontWeight: 700, color: "#1a1008", textAlign: "center", lineHeight: 1.2, marginBottom: 14, margin: "0 0 14px" } },
-                "Stop paying ", React.createElement("em", { style: { color: "#B85C10" } }, "nearly $10,000 a year"),
-                " for food you don't even like."),
-            React.createElement("div", { style: { background: "#EDE3D6", borderRadius: 12, padding: "14px 16px", textAlign: "left" } },
-                React.createElement("p", { style: { fontSize: 12, color: "#6B4C2A", lineHeight: 1.7, fontStyle: "italic", margin: "0 0 8px" } },
-                    "\"30+ real recipes, max 10 ingredients, all under $300 a fortnight. Real food. Made simple. Built for life.\""),
-                React.createElement("div", { style: { fontSize: 11, color: "#9C7A5A", fontWeight: 600 } }, "— Dejan, Founder"))),
+            // Logo
+            React.createElement("div", { style: { marginBottom: 20, width: "100%", maxWidth: 420, display: "flex", justifyContent: "center" } },
+                React.createElement(FlameWordmark, { size: 22 })),
 
-        // Values — compact 2×2 grid
-        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, width: "100%", maxWidth: 420 } },
-            values.map(v => React.createElement("div", { key: v.title, style: {
-                background: "#EDE3D6", borderRadius: 10, padding: "10px 12px" } },
-                React.createElement("div", { style: { fontSize: 16, marginBottom: 4 } }, v.icon),
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: "#1a1612", marginBottom: 2 } }, v.title),
-                React.createElement("div", { style: { fontSize: 10, color: "#7A6050", lineHeight: 1.4 } }, v.desc)))),
+            // OUR WHY + Headline
+            React.createElement("div", { style: { textAlign: "center", width: "100%", maxWidth: 420, marginBottom: 16 } },
+                React.createElement("div", { style: { fontSize: 9, color: "#B85C10", letterSpacing: "0.22em", fontWeight: 700, marginBottom: 10 } }, "OUR WHY"),
+                React.createElement("h1", { style: { fontFamily: "Georgia,'Times New Roman',serif",
+                    fontSize: "clamp(22px,5.8vw,32px)", fontWeight: 700, color: "#1a1008",
+                    textAlign: "center", lineHeight: 1.2, margin: 0 } },
+                    "Stop paying ", React.createElement("em", { style: { color: "#B85C10" } }, "nearly $10,000 a year"),
+                    " for food you don’t even like.")),
 
-        // CTA
-        React.createElement("button", { onClick: onNext, style: { width: "100%", maxWidth: 420,
-            background: "#E07B2A", color: "#fff", border: "none", borderRadius: 12,
-            padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit",
-            cursor: "pointer", letterSpacing: "0.02em" } }, "Next → Get Early Access")
+            // Stats row
+            React.createElement("div", { style: { display: "flex", width: "100%", maxWidth: 420, marginBottom: 16,
+                background: "#EDE3D6", borderRadius: 12, overflow: "hidden" } },
+                [["30+", "Recipes"], ["≤10", "Ingredients"], ["$300", "Per Fortnight"]].map(([num, label], i) =>
+                    React.createElement("div", { key: i, style: { flex: 1, textAlign: "center",
+                        borderRight: i < 2 ? "1px solid #C4A98A" : "none", padding: "12px 4px" } },
+                        React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: "#1a1008",
+                            fontFamily: "Georgia,serif", lineHeight: 1 } }, num),
+                        React.createElement("div", { style: { fontSize: 9, color: "#9C7A5A",
+                            letterSpacing: "0.1em", fontWeight: 700, marginTop: 4 } }, label)))),
+
+            // Quote
+            React.createElement("div", { style: { background: "#EDE3D6", borderRadius: 12, padding: "14px 16px",
+                textAlign: "left", width: "100%", maxWidth: 420, marginBottom: 16, boxSizing: "border-box" } },
+                React.createElement("p", { style: { fontSize: 13, color: "#6B4C2A", lineHeight: 1.7, fontStyle: "italic", margin: "0 0 8px" } },
+                    "“30+ real recipes, max 10 ingredients, all under $300 a fortnight. Real food. Made simple. Built for life.”"),
+                React.createElement("div", { style: { fontSize: 11, color: "#9C7A5A", fontWeight: 600 } }, "— Dejan, Founder")),
+
+            // Values 2×2 grid
+            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
+                width: "100%", maxWidth: 420, marginBottom: 16 } },
+                values.map(v => React.createElement("div", { key: v.title, style: {
+                    background: "#EDE3D6", borderRadius: 10, padding: "14px 12px" } },
+                    React.createElement("div", { style: { fontSize: 22, marginBottom: 8 } }, v.icon),
+                    React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#1a1612", marginBottom: 4 } }, v.title),
+                    React.createElement("div", { style: { fontSize: 11, color: "#7A6050", lineHeight: 1.5 } }, v.desc)))),
+
+            // Tagline
+            React.createElement("div", { style: { textAlign: "center", fontSize: 10, color: "#9C7A5A",
+                fontWeight: 700, letterSpacing: "0.14em" } }, "ONE COOK SESSION. ALL WEEK COVERED.")),
+
+        // Sticky CTA — no gap from safe area; background matches page so no border bleed
+        React.createElement("div", { style: {
+            flexShrink: 0, background: "#D9CABB",
+            paddingTop: 12, paddingLeft: 20, paddingRight: 20,
+            paddingBottom: "max(28px, calc(env(safe-area-inset-bottom) + 16px))" } },
+            React.createElement("button", { onClick: onNext, style: { width: "100%",
+                background: "#E07B2A", color: "#fff", border: "none", borderRadius: 12,
+                padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit",
+                cursor: "pointer", letterSpacing: "0.02em", display: "block" } }, "Next → Get Early Access"))
     );
 }
 
@@ -5017,6 +5131,7 @@ function App() {
     const [shopAlert, setShopAlert] = useState(false);
     const [prepAlert, setPrepAlert] = useState(false);
     const [showMethod, setShowMethod] = useState(false);
+    const [showGuide, setShowGuide] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
     const [showFeedback, setShowFeedback] = useState(false);
     // Onboarding: "story" | "signup" | "app"
@@ -5310,6 +5425,13 @@ function App() {
                             color: active ? C.accent : C.muted } }, tm.label.toUpperCase())));
             }),
             React.createElement("div", { style: { flex: 1 } }),
+            React.createElement("button", { onClick: () => setShowGuide(true), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
+                    background: "none", border: "1px solid transparent", borderRadius: 12,
+                    cursor: "pointer", display: "flex", flexDirection: "column",
+                    alignItems: "center", gap: 4, transition: "all 0.15s",
+                    WebkitTapHighlightColor: "transparent" } },
+                React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "ℹ️"),
+                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", color: C.muted } }, "GUIDE")),
             React.createElement("button", { onClick: () => setShowFeedback(true), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
                     background: "none", border: "1px solid transparent", borderRadius: 12,
                     cursor: "pointer", display: "flex", flexDirection: "column",
@@ -5678,13 +5800,18 @@ function App() {
             React.createElement("div", { style: { position: "absolute", bottom: 0, left: 0, right: 0, height: 52,
                     background: `linear-gradient(to bottom, transparent, ${C.bg})`,
                     pointerEvents: "none", zIndex: 10 } })),
-        showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
-            React.createElement("div", { style: { padding: "10px 14px", paddingTop: "max(10px, calc(env(safe-area-inset-top) + 6px))", background: "#f3ece0", display: "flex", alignItems: "center", position: "relative", flexShrink: 0 } },
-                React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: C.sub, padding: "2px 8px 2px 0", lineHeight: 1, fontWeight: 700, zIndex: 1 } }, "\u2190"),
-                React.createElement("div", { style: { position: "absolute", left: 0, right: 0, textAlign: "center", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: C.muted, pointerEvents: "none" } }, "VOL. 01"),
-                React.createElement("div", { style: { flex: 1 } }),
-                React.createElement("button", { onClick: () => setShowMethod(false), style: { background: C.accentDim, border: "1px solid "+C.accentBorder, borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: C.accent, cursor: "pointer", zIndex: 1 } }, "Done")),
-            React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: C.bg }, title: "The Method" })),
+        showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "#f3ece0", zIndex: 500, display: "flex", flexDirection: "column" } },
+            React.createElement("div", { style: { paddingTop: "max(14px, calc(env(safe-area-inset-top) + 10px))", paddingBottom: 12, paddingLeft: 14, paddingRight: 14, background: "#f3ece0", flexShrink: 0 } },
+                React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 } },
+                    React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#7a6d5e", padding: "2px 6px 2px 0", lineHeight: 1, fontWeight: 700 } }, "\u2190"),
+                    React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "rgba(184,92,16,0.1)", border: "1px solid rgba(184,92,16,0.25)", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: "#B85C10", cursor: "pointer" } }, "Done")),
+                React.createElement("div", { style: { textAlign: "center" } },
+                    React.createElement("div", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: 18, letterSpacing: "0.06em", lineHeight: 1 } },
+                        React.createElement("span", { style: { color: "#E07B2A" } }, "SOUL"),
+                        React.createElement("span", { style: { color: "#2D1E0F" } }, "GAINZ")),
+                    React.createElement("div", { style: { fontSize: 9, color: "#9C7A5A", letterSpacing: "0.2em", fontWeight: 700, marginTop: 4 } }, "VOL. 01 \u00b7 THE METHOD"))),
+            React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: "#f3ece0" }, title: "The Method" })),
+        showGuide && React.createElement(GettingStartedModal, { C, onClose: () => setShowGuide(false) }),
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
