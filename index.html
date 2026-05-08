@@ -4317,11 +4317,11 @@ function calcMacros(tdee, weight, goal, bmr, gender) {
         return { kcal: 0, protein: 0, carbs: 0, fat: 0, deficit: 0, deficitNote: "" };
     // Clinical minimum calories: 1500 kcal men / 1200 kcal women (established safe floor)
     const clinicalMin = gender === "female" ? 1200 : 1500;
-    // Target deficit: 300 kcal from TDEE. For very sedentary people where TDEE is low,
-    // we apply up to 300 kcal but never drop below the clinical minimum.
-    // This means sedentary users may eat slightly below BMR — which is valid when
-    // TDEE itself is close to BMR and a deficit is still required.
-    const idealTarget = tdee - 300;
+    // Target deficit: 500 kcal/day — the evidence-based standard for ~0.5 kg/week fat loss.
+    // (Source: NASM, ACSM, NIH consensus. 300 kcal yields only ~0.27 kg/week — too slow.
+    //  1000 kcal causes excessive muscle loss and poor adherence. 500 is the sweet spot.)
+    // Never drop below the clinical minimum regardless of deficit size.
+    const idealTarget = tdee - 500;
     let kcal, deficitNote = "";
     if (goal === "lose") {
         if (idealTarget >= clinicalMin) {
@@ -4518,7 +4518,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => (React.createElement(CalcSegBtn, { key: v, selected: form.training === v, onClick: () => set("training", v), label: v })))))));
         if (step === 3)
             return (React.createElement("div", { key: "s3" },
-                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "~300 kcal deficit \u00B7 High protein \u00B7 Preserve muscle" }),
+                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "~500 kcal deficit \u00B7 ~0.5 kg/week \u00B7 High protein to preserve muscle" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "maintain", onClick: () => set("goal", "maintain"), label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })));
         if (step === 4 && result) {
@@ -4584,7 +4584,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                         { icon: "\uD83E\uDED2", label: "Fat", val: macros.fat + "g/day", color: "#a855f7",
                           desc: "Essential for hormones, joints and vitamin absorption. Set at 25% of your daily calories \u2014 the healthy baseline." },
                         { icon: "\uD83D\uDD25", label: "Calorie Deficit", val: (macros.deficit > 0 ? "-" + macros.deficit : "0") + " kcal/day", color: C.accent,
-                          desc: "A " + macros.deficit + " kcal daily deficit creates a weekly shortfall of ~" + Math.round(macros.deficit * 7) + " kcal. Since 1 kg of body fat holds ~7,700 kcal, you\u2019re on track to lose roughly " + (Math.round(macros.deficit * 7 / 7700 * 10) / 10) + "\u2013" + (Math.round(macros.deficit * 7 / 7700 * 10) / 10 + 0.1) + " kg per week \u2014 a safe, sustainable rate." },
+                          desc: "A " + macros.deficit + " kcal daily deficit creates a weekly shortfall of ~" + Math.round(macros.deficit * 7) + " kcal. Since 1 kg of fat holds ~7,700 kcal, expect to lose roughly " + (Math.round(macros.deficit * 7 / 7700 * 10) / 10) + "\u2013" + (Math.round(macros.deficit * 7 / 7700 * 10) / 10 + 0.1) + " kg/week initially. Weight loss is non-linear \u2014 it slows after 8\u201312 weeks as your body adapts (metabolic adaptation). Staying consistent matters more than the number on the scale." },
                     ].map(item => React.createElement("div", { key: item.label, style: { marginBottom: 10, paddingBottom: 10,
                             borderBottom: `1px solid ${C.dim}`, lastChild: { border: "none" } } },
                         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
@@ -5548,7 +5548,6 @@ function App() {
     const [showBalance, setShowBalance] = useState(false);
     const [shopAlert, setShopAlert] = useState(false);
     const [prepAlert, setPrepAlert] = useState(false);
-    const [showMethod, setShowMethod] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => { try { return !localStorage.getItem("mp_onboarded"); } catch(e){ return false; } });
     const [showFeedback, setShowFeedback] = useState(false);
     // Onboarding: "story" | "signup" | "app"
@@ -5822,14 +5821,17 @@ function App() {
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
                             color: active ? C.accent : C.muted } }, "ME"));
             })(),
-            React.createElement("button", { onClick: () => setShowMethod(true), style: { textDecoration: "none", marginBottom: 10, background: "none", border: "none", padding: 0, cursor: "pointer", WebkitTapHighlightColor: "transparent" } },
-                React.createElement("div", { style: { width: 52, paddingTop: 10, paddingBottom: 10,
-                        background: C.accentDim, border: `1px solid ${C.accentBorder}`,
-                        borderRadius: 12, display: "flex", flexDirection: "column",
-                        alignItems: "center", gap: 4 } },
+            (() => {
+                const active = tab === "method";
+                return React.createElement("button", { onClick: () => setTab("method"), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 10,
+                        background: active ? C.accentDim : "none",
+                        border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
+                        borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
+                        alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
-                            color: C.accent } }, "METHOD"))),
+                        color: active ? C.accent : C.muted } }, "METHOD"));
+            })(),
             getTabMeta().map(tm => {
                 const active = tab === tm.id;
                 return (React.createElement("button", { key: tm.id, onClick: () => setTab(tm.id), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
@@ -5874,7 +5876,10 @@ function App() {
                     "\u00A0\u00B7\u00A0 \uD83C\uDF19 ",
                     React.createElement("span", { style: { color: C.text } }, dr ? dr.name : "No dinner"))),
             React.createElement("div", { style: { flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" } },
-            React.createElement("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "12px 12px 56px" } },
+            tab === "method"
+                ? React.createElement("iframe", { key: "method", src: "/method.html", title: "The Method",
+                    style: { flex: 1, border: "none", width: "100%", minHeight: 0, display: "block" } })
+                : React.createElement("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "12px 12px 56px" } },
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
                         background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)",
                         borderRadius: 12, padding: "10px 12px", marginBottom: 12 } },
@@ -6218,17 +6223,6 @@ function App() {
             React.createElement("div", { style: { position: "absolute", bottom: 0, left: 0, right: 0, height: 52,
                     background: `linear-gradient(to bottom, transparent, ${C.bg})`,
                     pointerEvents: "none", zIndex: 10 } })),
-        showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "#f3ece0", zIndex: 500, display: "flex", flexDirection: "column" } },
-            React.createElement("div", { style: { paddingTop: "max(14px, calc(env(safe-area-inset-top) + 10px))", paddingBottom: 12, paddingLeft: 14, paddingRight: 14, background: "#f3ece0", flexShrink: 0 } },
-                React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 } },
-                    React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#7a6d5e", padding: "2px 6px 2px 0", lineHeight: 1, fontWeight: 700 } }, "\u2190"),
-                    React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "rgba(184,92,16,0.1)", border: "1px solid rgba(184,92,16,0.25)", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, color: "#B85C10", cursor: "pointer" } }, "Done")),
-                React.createElement("div", { style: { textAlign: "center" } },
-                    React.createElement("div", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: 18, letterSpacing: "0.06em", lineHeight: 1 } },
-                        React.createElement("span", { style: { color: "#E07B2A" } }, "SOUL"),
-                        React.createElement("span", { style: { color: "#2D1E0F" } }, "GAINZ")),
-                    React.createElement("div", { style: { fontSize: 9, color: "#9C7A5A", letterSpacing: "0.2em", fontWeight: 700, marginTop: 4 } }, "VOL. 01 \u00b7 THE METHOD"))),
-            React.createElement("iframe", { src: "/method.html", style: { flex: 1, border: "none", background: "#f3ece0" }, title: "The Method" })),
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
