@@ -5949,14 +5949,8 @@ function App() {
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
-                            breakfastRecipe && React.createElement("button", { onClick: () => { setBreakfastRecipeState(null); localStorage.removeItem("mp_breakfast"); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove recipe"),
-                            !breakfastSkipped && !breakfastRecipe && React.createElement("button", { onClick: () => setBreakfastSkipped(true), style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Skip"))),
-                    breakfastSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Breakfast skipped"),
-                        React.createElement("div", { style: { display: "flex", gap: 8 } },
-                            React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
-                            React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
-                    : breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale })
+                            breakfastRecipe && React.createElement("button", { onClick: () => { setBreakfastRecipeState(null); localStorage.removeItem("mp_breakfast"); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove recipe"))),
+                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale })
                     : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale }),
                     preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
