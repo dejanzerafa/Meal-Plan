@@ -3680,6 +3680,8 @@ async function startCheckout(tier, recipeId) {
 }
 const DEV_CODE = "DEVACCESS"; // tap logo 5× to enter
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
+    // Extract the leading emoji from the recipe name to hint at protein/type
+    const hintEmoji = (r.name || "").match(/^\p{Emoji}/u)?.[0] || "\uD83C\uDF7D\uFE0F";
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10, position: "relative", minHeight: 140 } },
         React.createElement("div", { style: { padding: "12px 14px", filter: "blur(6px)", opacity: 0.5, pointerEvents: "none",
@@ -3696,7 +3698,7 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
         React.createElement("div", { style: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center", background: "rgba(26,22,18,0.78)",
                 borderRadius: 14, gap: 6, padding: "12px" } },
-            React.createElement("span", { style: { fontSize: 24 } }, "\uD83D\uDD12"),
+            React.createElement("span", { style: { fontSize: 32, lineHeight: 1 } }, hintEmoji),
             React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#f3ece0", marginBottom: 2 } }, "Locked Recipe"),
             React.createElement("div", { style: { fontSize: 10, color: "rgba(243,236,224,0.6)", marginBottom: 6 } }, "Unlock to reveal name & method"),
             React.createElement("div", { style: { display: "flex", gap: 6, width: "100%", maxWidth: 280 } },
