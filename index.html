@@ -5051,12 +5051,6 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
                 React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, (r === null || r === void 0 ? void 0 : r.tdee) || "—"),
                 React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day total"),
                 React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "TDEE"))),
-        React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
-                padding: "14px 16px", marginTop: 12 } },
-            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83D\uDD14 PREP DAY REMINDERS"),
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6, marginBottom: 12 } },
-                "Set your preferred times for shopping and prep day reminders."),
-            React.createElement(ReminderCard, { C: C, userEmail: profile.email || "" })),
         React.createElement("div", { style: { marginTop: 12, fontSize: 11, color: C.muted, textAlign: "center" } },
             "Saved ",
             new Date(profile.savedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))));
