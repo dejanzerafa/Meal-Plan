@@ -12,7 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
-  <meta name="theme-color" content="#c4521c">
+  <meta name="theme-color" content="#D4A83C">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="apple-touch-icon" id="apple-touch-icon">
   <link rel="manifest" id="pwa-manifest">
 
@@ -58,12 +59,9 @@
       const c = document.createElement('canvas');
       c.width = size; c.height = size;
       const ctx = c.getContext('2d');
-      const r = size * 0.22; // corner radius
+      const r = size * 0.22;
 
-      // ── Red-orange gradient background ────────────────────────────────────
-      const grad = ctx.createLinearGradient(0, 0, size, size);
-      grad.addColorStop(0, '#b83a14');
-      grad.addColorStop(1, '#E07B2A');
+      // ── Dark charcoal background ──────────────────────────────────────────
       ctx.beginPath();
       ctx.moveTo(r, 0);
       ctx.lineTo(size - r, 0);
@@ -75,18 +73,36 @@
       ctx.lineTo(0, r);
       ctx.quadraticCurveTo(0, 0, r, 0);
       ctx.closePath();
-      ctx.fillStyle = grad;
+      ctx.fillStyle = '#12100E';
       ctx.fill();
 
-      // ── Flame mark (white) ────────────────────────────────────────────────
-      // Flame native bbox: x -12..12 (24px wide), y -32..12 (44px tall)
-      const scale  = (size * 0.30) / 24;   // flame ~30% of icon width
-      const flameX = size * 0.50;
-      const flameY = size * 0.44;           // center point of flame
+      // ── Gold inner ring ───────────────────────────────────────────────────
+      const ring = size * 0.06;
+      const ri = r * 0.7;
+      ctx.beginPath();
+      ctx.moveTo(ring + ri, ring);
+      ctx.lineTo(size - ring - ri, ring);
+      ctx.quadraticCurveTo(size - ring, ring, size - ring, ring + ri);
+      ctx.lineTo(size - ring, size - ring - ri);
+      ctx.quadraticCurveTo(size - ring, size - ring, size - ring - ri, size - ring);
+      ctx.lineTo(ring + ri, size - ring);
+      ctx.quadraticCurveTo(ring, size - ring, ring, size - ring - ri);
+      ctx.lineTo(ring, ring + ri);
+      ctx.quadraticCurveTo(ring, ring, ring + ri, ring);
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(212,168,60,0.55)';
+      ctx.lineWidth = Math.max(1, size * 0.018);
+      ctx.stroke();
+
+      // ── Gold flame mark ───────────────────────────────────────────────────
+      const scale = (size * 0.28) / 24;
       ctx.save();
-      ctx.translate(flameX, flameY);
+      ctx.translate(size * 0.50, size * 0.42);
       ctx.scale(scale, scale);
-      ctx.fillStyle = 'rgba(255,255,255,0.96)';
+      const goldGrad = ctx.createLinearGradient(0, -32, 0, 12);
+      goldGrad.addColorStop(0, '#F5D070');
+      goldGrad.addColorStop(1, '#C48A1A');
+      ctx.fillStyle = goldGrad;
       const flame = new Path2D(
         'M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 ' +
         'C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 ' +
@@ -95,9 +111,9 @@
       ctx.fill(flame);
       ctx.restore();
 
-      // ── "SoulGainz" wordmark ──────────────────────────────────────────────
-      const fs = Math.round(size * 0.135);
-      ctx.fillStyle = '#fff';
+      // ── "SoulGainz" gold wordmark ─────────────────────────────────────────
+      const fs = Math.round(size * 0.13);
+      ctx.fillStyle = '#D4A83C';
       ctx.font = `700 ${fs}px Georgia, serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -109,18 +125,22 @@
     document.addEventListener('DOMContentLoaded', function() {
       const icon = buildIcon(180);
 
-      // Apple touch icon
-      document.getElementById('apple-touch-icon').href = icon;
+      // Apple touch icon — use real PNG file
+      document.getElementById('apple-touch-icon').href = '/apple-touch-icon.png';
 
-      // Web App Manifest (blob URL so icons array works)
+      // Web App Manifest
       const manifest = {
         name: "SoulGainz",
         short_name: "SoulGainz",
         start_url: ".",
         display: "standalone",
-        background_color: "#f3ece0",
-        theme_color: "#c4521c",
-        icons: [{ src: icon, sizes: "180x180", type: "image/png" }]
+        background_color: "#12100E",
+        theme_color: "#D4A83C",
+        icons: [
+          { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+          { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+          { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
+        ]
       };
       const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
       document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
