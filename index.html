@@ -3338,6 +3338,29 @@ function TotalBar({ total, targets, profileName }) {
                             background: ms.c, borderRadius: 3, transition: "width 0.4s" } }))));
         })));
 }
+// ─── ALLERGEN DETECTION ────────────────────────────────────────────────────
+const ALLERGEN_MAP = [
+    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","tortilla","bagel","soy sauce","wheat","oat","cornflake","breadcrumb","wrap","noodle","pita","couscous","bulgur","seitan","panko"] },
+    { name: "Dairy",          icon: "🧀", terms: ["cheese","milk","butter","cream","yogurt","yoghurt","whey","cheddar","parmesan","mozzarella","ricotta","feta","ghee","lactose","sour cream","half-and-half"] },
+    { name: "Eggs",           icon: "🥚", terms: ["egg","eggs"] },
+    { name: "Soy",            icon: "🫘", terms: ["soy","tofu","edamame","miso","tempeh","tamari"] },
+    { name: "Peanuts",        icon: "🥜", terms: ["peanut","peanut butter","groundnut"] },
+    { name: "Tree Nuts",      icon: "🌰", terms: ["almond","cashew","walnut","pecan","pistachio","hazelnut","macadamia","brazil nut","pine nut","nut butter"] },
+    { name: "Sesame",         icon: "🌿", terms: ["sesame","tahini"] },
+    { name: "Fish",           icon: "🐟", terms: ["salmon","tuna","cod","tilapia","fish sauce","anchov","sardine","mackerel","trout","mahi","snapper","bass","bream","haddock"] },
+    { name: "Shellfish",      icon: "🦐", terms: ["shrimp","prawn","crab","lobster","scallop","clam","oyster","mussel","squid","octopus"] },
+];
+
+function detectAllergens(recipe) {
+    if (!recipe || !recipe.batchItems) return [];
+    const allLabels = recipe.batchItems.map(i => (i.label || "").toLowerCase()).join(" ");
+    const found = [];
+    ALLERGEN_MAP.forEach(a => {
+        if (a.terms.some(t => allLabels.includes(t))) found.push(a);
+    });
+    return found;
+}
+
 // ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
 function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot }) {
     const [open, setOpen] = useState(false);
@@ -3475,7 +3498,22 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 React.createElement("textarea", { value: note, onChange: e => saveNote(e.target.value), placeholder: "Add your tweaks, adjustments, tips... e.g. add extra garlic, reduce sour cream", style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
                         color: C.text, fontSize: 12, padding: "10px 12px", resize: "none", minHeight: 100,
                         fontFamily: "inherit", lineHeight: 1.6, outline: "none" } }),
-                note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")))))));
+                note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")),
+            React.createElement("div", { style: { marginTop: 14, borderTop: `1px solid ${C.dim}`, paddingTop: 12 } },
+                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#b45309", letterSpacing: "0.08em", marginBottom: 8 } }, "\u26A0\uFE0F ALLERGY NOTICE"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.65, marginBottom: 10 } },
+                    "SoulGainz provides recipes, not food. We are not responsible for any allergic reactions. Always read ingredient labels carefully and adapt this recipe to suit your dietary needs and allergies."),
+                (function() {
+                    const allergens = detectAllergens(r);
+                    if (!allergens.length) return React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "No common allergens detected \u2014 always double-check ingredient labels.");
+                    return React.createElement("div", null,
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 6 } }, "This recipe may contain:"),
+                        React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 5 } },
+                            allergens.map(a => React.createElement("span", { key: a.name, style: { fontSize: 11, fontWeight: 600, color: "#b45309",
+                                background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.25)",
+                                borderRadius: 6, padding: "3px 8px" } },
+                                a.icon, " ", a.name))));
+                })())))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
