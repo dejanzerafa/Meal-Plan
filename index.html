@@ -5227,7 +5227,7 @@ function App() {
     // ── Sidebar width ────────────────────────────────────────────────────────
     const SW = 72;
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
-    if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => setOnboardStep("app") });
+    if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(dest); } setOnboardStep("app"); } });
 
     return (React.createElement("div", { style: { display: "flex", height: "100vh", maxWidth: 520, margin: "0 auto",
             paddingTop: "env(safe-area-inset-top, 0px)",
