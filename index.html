@@ -3837,6 +3837,16 @@ function DevModal({ onClose, onUnlock }) {
             setTimeout(() => setError(false), 1500);
         }
     };
+    const resetAll = () => {
+        if (!window.confirm("Reset to first-time user? All data will be cleared.")) return;
+        localStorage.clear();
+        window.location.reload();
+    };
+    const resetOnboarding = () => {
+        if (!window.confirm("Reset onboarding only? Meal/profile data kept.")) return;
+        ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k));
+        window.location.reload();
+    };
     return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
             display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" } },
         React.createElement("div", { style: { background: C.card, borderRadius: 16, padding: "24px 20px",
@@ -3848,11 +3858,17 @@ function DevModal({ onClose, onUnlock }) {
                     padding: "10px 12px", color: C.text, fontSize: 14, fontFamily: "inherit",
                     outline: "none", marginBottom: 10, boxSizing: "border-box" } }),
             error && React.createElement("div", { style: { fontSize: 11, color: "#ef4444", marginBottom: 8 } }, "Incorrect code"),
-            React.createElement("div", { style: { display: "flex", gap: 8 } },
+            React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 16 } },
                 React.createElement("button", { onClick: onClose, style: { flex: 1, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
                         padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "Cancel"),
                 React.createElement("button", { onClick: submit, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
-                        padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Unlock")))));
+                        padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Unlock")),
+            React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 14 } },
+                React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 10 } }, "\uD83E\uDDEA TESTING RESETS"),
+                React.createElement("button", { onClick: resetAll, style: { width: "100%", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8,
+                        padding: "9px", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", marginBottom: 8 } }, "\uD83C\uDD95 First-Time User \u2014 Clear Everything"),
+                React.createElement("button", { onClick: resetOnboarding, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
+                        padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
 const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
 
