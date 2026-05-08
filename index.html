@@ -4089,6 +4089,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     const saveProfile = () => {
         const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString() });
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
         onSave(profile);
     };
     const canNext = () => {
@@ -4250,6 +4251,7 @@ function ManualMacroInput({ C, onSave }) {
             isManual: true,
         };
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
         onSave(profile);
     };
     return React.createElement("div", null,
@@ -5139,10 +5141,17 @@ function App() {
             return true;
         return false;
     };
-    // canUseCalculator — free first time (no profile saved yet), paid to recalculate
+    // canUseCalculator — free ONCE per email address, paid to recalculate
     const canUseCalculator = () => {
         if (unlocks.calculator || unlocks.allRecipes) return true;
-        try { return !localStorage.getItem("mp_profile"); } catch(e) { return false; }
+        try {
+            const profileExists = !!localStorage.getItem("mp_profile");
+            if (profileExists) return false; // already used free calc, needs payment
+            const currentEmail = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim();
+            const usedEmail = (localStorage.getItem("mp_calc_used_email") || "").toLowerCase().trim();
+            // Free only if this email hasn't already used the calculator
+            return !usedEmail || usedEmail !== currentEmail;
+        } catch(e) { return false; }
     };
     // ── Sunday reminder banner ─────────────────────────────────────────────────
     const [sundayBanner, setSundayBanner] = useState(() => {
@@ -5670,7 +5679,7 @@ function App() {
                     background: `linear-gradient(to bottom, transparent, ${C.bg})`,
                     pointerEvents: "none", zIndex: 10 } })),
         showMethod && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: C.bg, zIndex: 500, display: "flex", flexDirection: "column" } },
-            React.createElement("div", { style: { padding: "10px 14px", paddingTop: "max(10px, calc(env(safe-area-inset-top) + 6px))", background: C.card, borderBottom: "1px solid "+C.dim, display: "flex", alignItems: "center", position: "relative", flexShrink: 0 } },
+            React.createElement("div", { style: { padding: "10px 14px", paddingTop: "max(10px, calc(env(safe-area-inset-top) + 6px))", background: "#f3ece0", display: "flex", alignItems: "center", position: "relative", flexShrink: 0 } },
                 React.createElement("button", { onClick: () => setShowMethod(false), style: { background: "none", border: "none", fontSize: 22, cursor: "pointer", color: C.sub, padding: "2px 8px 2px 0", lineHeight: 1, fontWeight: 700, zIndex: 1 } }, "\u2190"),
                 React.createElement("div", { style: { position: "absolute", left: 0, right: 0, textAlign: "center", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: C.muted, pointerEvents: "none" } }, "VOL. 01"),
                 React.createElement("div", { style: { flex: 1 } }),
