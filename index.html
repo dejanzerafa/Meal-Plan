@@ -24,6 +24,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
+      height: -webkit-fill-available;
       background: #1a1209;
       color: #1a1612;
       font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -32,7 +33,7 @@
       -webkit-overscroll-behavior: none;
       font-feature-settings: "ss01", "ss02";
     }
-    #root { height: 100%; }
+    #root { height: 100%; height: -webkit-fill-available; }
     button { font-family: inherit; }
     ::-webkit-scrollbar { width: 0; }
     .serif { font-family: "Fraunces", Georgia, serif; font-weight: 500; letter-spacing: -0.01em; }
@@ -5402,7 +5403,7 @@ function OnboardingStory({ onNext }) {
             React.createElement("div", { style: { background: "#EDE3D6", borderRadius: 12, padding: "14px 16px",
                 textAlign: "left", width: "100%", maxWidth: 420, marginBottom: 16, boxSizing: "border-box" } },
                 React.createElement("p", { style: { fontSize: 13, color: "#6B4C2A", lineHeight: 1.7, fontStyle: "italic", margin: "0 0 8px" } },
-                    "“30+ real recipes, max 10 ingredients, all under $300 a fortnight. Real food. Made simple. Built for life.”"),
+                    "“I got tired of spending a fortune on food that didn’t satisfy me. Every meal-prep app I tried forgot the most important thing — food should actually taste good. So I built this for myself: 30+ real recipes, max 10 ingredients, a full week of meals under $300 a fortnight. One cook session. No powders. No shortcuts. Just food worth eating.”"),
                 React.createElement("div", { style: { fontSize: 11, color: "#9C7A5A", fontWeight: 600 } }, "— Dejan, Founder")),
 
             // Values 2×2 grid
@@ -5416,17 +5417,14 @@ function OnboardingStory({ onNext }) {
 
             // Tagline
             React.createElement("div", { style: { textAlign: "center", fontSize: 10, color: "#9C7A5A",
-                fontWeight: 700, letterSpacing: "0.14em" } }, "ONE COOK SESSION. ALL WEEK COVERED.")),
+                fontWeight: 700, letterSpacing: "0.14em", marginBottom: 24 } }, "ONE COOK SESSION. ALL WEEK COVERED."),
 
-        // Sticky CTA — no gap from safe area; background matches page so no border bleed
-        React.createElement("div", { style: {
-            flexShrink: 0, background: "#D9CABB",
-            paddingTop: 12, paddingLeft: 20, paddingRight: 20,
-            paddingBottom: "max(28px, calc(env(safe-area-inset-bottom) + 16px))" } },
-            React.createElement("button", { onClick: onNext, style: { width: "100%",
+            // CTA — inline with content, no sticky gap
+            React.createElement("button", { onClick: onNext, style: { width: "100%", maxWidth: 420,
                 background: "#E07B2A", color: "#fff", border: "none", borderRadius: 12,
                 padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit",
-                cursor: "pointer", letterSpacing: "0.02em", display: "block" } }, "Next → Get Early Access"))
+                cursor: "pointer", letterSpacing: "0.02em", display: "block",
+                marginBottom: "max(28px, calc(env(safe-area-inset-bottom) + 16px))" } }, "Next → Get Early Access"))
     );
 }
 
@@ -5469,7 +5467,8 @@ function OnboardingSignup({ onDone }) {
 
     const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#1C1208",
         overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px", paddingBottom: "56px", paddingLeft: "24px",
+        justifyContent: "center", paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px",
+        paddingBottom: "max(56px, calc(env(safe-area-inset-bottom) + 32px))", paddingLeft: "24px",
         fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
     const inputStyle = { width: "100%", padding: "14px 16px", background: "#161412",
@@ -5795,7 +5794,7 @@ function App() {
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
     if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(dest); } setOnboardStep("app"); } });
 
-    return (React.createElement("div", { style: { display: "flex", height: "100vh", width: "100%",
+    return (React.createElement("div", { style: { display: "flex", height: "100svh", width: "100%",
             paddingTop: "env(safe-area-inset-top, 0px)",
             paddingBottom: "env(safe-area-inset-bottom, 0px)",
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",

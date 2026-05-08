@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v19
+// SoulGainz — Service Worker v20
 // Caches app shell only — CDN scripts handled natively by browser
 
-const CACHE_NAME = 'meal-plan-v41';
+const CACHE_NAME = 'meal-plan-v42';
 
 // App shell — cached immediately on install
 const PRECACHE = [
