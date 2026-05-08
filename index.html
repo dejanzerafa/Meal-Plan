@@ -4150,14 +4150,18 @@ function calcActivityMultiplier(job, steps, training) {
         return 1.725;
     return 1.9;
 }
-function calcMacros(tdee, weight, goal) {
+function calcMacros(tdee, weight, goal, bmr) {
     if (!tdee || !weight)
-        return { kcal: 0, protein: 0, carbs: 0, fat: 0 };
-    const kcal = Math.round(goal === "lose" ? Math.max(tdee - 300, 1200) : goal === "gain" ? tdee + 300 : tdee);
+        return { kcal: 0, protein: 0, carbs: 0, fat: 0, deficit: 0 };
+    // For fat loss: 300 kcal deficit from TDEE, but never below BMR (always between BMR & TDEE)
+    const DEFICIT = 300;
+    const floor = bmr ? Math.max(bmr, 1200) : 1200;
+    const kcal = Math.round(goal === "lose" ? Math.max(tdee - DEFICIT, floor) : goal === "gain" ? tdee + DEFICIT : tdee);
+    const deficit = goal === "lose" ? tdee - kcal : goal === "gain" ? -(kcal - tdee) : 0;
     const proteinG = Math.round(goal === "gain" ? weight * 2.4 : weight * 2.0);
     const fatG = Math.round((kcal * 0.25) / 9);
     const carbG = Math.max(0, Math.round((kcal - proteinG * 4 - fatG * 9) / 4));
-    return { kcal, protein: proteinG, carbs: carbG, fat: fatG };
+    return { kcal, protein: proteinG, carbs: carbG, fat: fatG, deficit };
 }
 // ── Stable helper components — defined OUTSIDE MacroCalculator ─────────────
 function CalcInputRow({ label, children }) {
@@ -4262,7 +4266,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         const mult = calcActivityMultiplier(form.job, form.steps, form.training);
         const tdee = Math.round(bmr * mult);
         const bmi = parseFloat(calcBMI(w, h).toFixed(1));
-        const macros = calcMacros(tdee, w, form.goal);
+        const macros = calcMacros(tdee, w, form.goal, bmr);
         const actLabel = mult <= 1.2 ? "Sedentary" : mult <= 1.375 ? "Lightly Active" : mult <= 1.55 ? "Moderately Active" : mult <= 1.725 ? "Very Active" : "Extra Active";
         return { bmr, tdee, bmi, macros, actLabel, age, w: Math.round(w * 10) / 10, h: Math.round(h) };
     };
@@ -4332,7 +4336,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => (React.createElement(CalcSegBtn, { key: v, selected: form.training === v, onClick: () => set("training", v), label: v })))))));
         if (step === 3)
             return (React.createElement("div", { key: "s3" },
-                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "Calorie deficit \u00B7 High protein \u00B7 Preserve muscle" }),
+                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "~300 kcal deficit \u00B7 High protein \u00B7 Preserve muscle" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "maintain", onClick: () => set("goal", "maintain"), label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })));
         if (step === 4 && result) {
@@ -4362,7 +4366,13 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                         React.createElement("div", { style: { fontSize: 10, background: goalColor, color: "#000", padding: "2px 9px",
                                 borderRadius: 10, fontWeight: 700 } }, goalLabel)),
                     React.createElement("div", { style: { fontSize: 40, fontWeight: 800, color: C.accent, lineHeight: 1 } }, macros.kcal),
-                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "calories per day")),
+                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "calories per day"),
+                    form.goal === "lose" && macros.deficit > 0 && React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 700, marginTop: 6,
+                            background: "rgba(180,83,9,0.12)", borderRadius: 8, padding: "4px 10px", display: "inline-block" } },
+                        "\u2212", macros.deficit, " kcal deficit \u00B7 between BMR & TDEE"),
+                    form.goal === "gain" && React.createElement("div", { style: { fontSize: 11, color: C.green, fontWeight: 700, marginTop: 6,
+                            background: "rgba(34,197,94,0.1)", borderRadius: 8, padding: "4px 10px", display: "inline-block" } },
+                        "+", Math.abs(macros.deficit), " kcal surplus")),
                 React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                         padding: "16px 18px", marginBottom: 12 } },
                     React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "DAILY MACROS"),
