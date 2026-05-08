@@ -5806,8 +5806,7 @@ function App() {
     const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
     const profileName = profile ? (profile.firstName || "").trim() : "";
     const filteredRecipes = RECIPES.filter(r => {
-        // When actively selecting for a slot, show ALL recipes — any recipe can go in any slot
-        if (!pendingSlot && (r.category || "main") !== recipeCat)
+        if ((r.category || "main") !== recipeCat)
             return false;
         // Search filter — applies across all categories
         if (recipeQuery && recipeQuery.trim()) {
@@ -5818,13 +5817,10 @@ function App() {
             if (!matchesName && !matchesSubtitle && !matchesIngredients)
                 return false;
         }
-        if (!pendingSlot && recipeCat !== "main")
+        if (recipeCat !== "main")
             return true;
-        if (!pendingSlot) {
-            const f = FILTER_MAP[filter];
-            return f ? r.badge.includes(f) : true;
-        }
-        return true;
+        const f = FILTER_MAP[filter];
+        return f ? r.badge.includes(f) : true;
     }).sort((a, b) => {
         // Unlocked recipes first, then locked. Within each group: alphabetical by name.
         const aViewable = canView(a.id) ? 0 : 1;
@@ -5969,30 +5965,20 @@ function App() {
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Breakfast skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
-                            React.createElement("button", { onClick: () => { setPendingSlot("breakfast"); setRecipeCat("breakfast"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Add Food \u2192"))))
+                            React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
                     : breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale })
                     : React.createElement("div", { style: { marginBottom: 10 } },
                         React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale }),
-                        React.createElement("button", { onClick: () => { setPendingSlot("breakfast"); setRecipeCat("breakfast"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83C\uDF05 Swap to a different breakfast recipe \u2192")),
-                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, marginBottom: 6 } },
-                        React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em" } }, "\u26A1 PRE-WORKOUT"),
-                        React.createElement("div", { style: { display: "flex", gap: 8 } },
-                            preRecipe && React.createElement("button", { onClick: () => { setPreRecipeState(null); localStorage.removeItem("mp_preworkout"); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove recipe"),
-                            !preSkipped && !preRecipe && React.createElement("button", { onClick: () => setPreSkipped(true), style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Skip"))),
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center", marginTop: 6, padding: "8px", background: C.card2, borderRadius: 10, border: "1px solid " + C.dim } }, "🌅 Assign a breakfast from the Recipes tab")),
                     preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
-                            React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("preworkout"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Assign Meal \u2192"))))
+                            React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
                     : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale })
                     : React.createElement("div", { style: { marginBottom: 10 } },
                         React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale }),
-                        React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("preworkout"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\u26A1 Swap to a different pre-workout meal \u2192")),
-                    React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\uD83C\uDF7D\uFE0F MAINS"),
-                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
-                        React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\u2600\uFE0F LUNCH"),
-                        lr && (React.createElement("button", { onClick: () => setLunch(null), style: { background: "none", border: "none", fontSize: 11, color: C.muted,
-                                cursor: "pointer", padding: "2px 0", letterSpacing: "0.04em" } }, "\u2715 Skip meal"))),
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, textAlign: "center", marginTop: 6, padding: "8px", background: C.card2, borderRadius: 10, border: "1px solid " + C.dim } }, "⚡ Assign a pre-workout from the Recipes tab")),
                     lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
@@ -6057,17 +6043,7 @@ function App() {
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
-                    pendingSlot && (React.createElement("div", { style: { background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.3)",
-                            borderRadius: 12, padding: "10px 14px", marginBottom: 12,
-                            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
-                        React.createElement("div", null,
-                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, pendingSlot === "lunch" ? "☀️ Selecting for Lunch" : pendingSlot === "dinner" ? "🌙 Selecting for Dinner" : pendingSlot === "dessert" ? "🍰 Selecting for Dessert" : pendingSlot === "preworkout" ? "⚡ Selecting for Pre-Workout" : "🌅 Selecting for Breakfast"),
-                            React.createElement("div", { style: { fontSize: 11, color: C.sub } },
-                                "Tap ",
-                                pendingSlot === "breakfast" ? "+ Add as Breakfast" : pendingSlot === "preworkout" ? "\u26A1 Set as Pre-Workout" : "+ Add as " + pendingSlot.charAt(0).toUpperCase() + pendingSlot.slice(1),
-                                " on any recipe below")),
-                        React.createElement("button", { onClick: () => { setPendingSlot(null); setTab("meals"); }, style: { background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
-                                padding: "5px 10px", fontSize: 11, color: C.sub, cursor: "pointer", whiteSpace: "nowrap" } }, "\u2715 Cancel"))),
+                    
                     React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["breakfast", "🌅 Breakfast"], ["main", "🍽️ Mains"], ["preworkout", "⚡ Pre-Workout"], ["dessert", "🍫 Treats"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                             border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
                             background: recipeCat === cat ? C.accentDim : C.card2,
@@ -6103,7 +6079,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
-                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, pendingSlot: pendingSlot, profileScale: profileScale })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
+                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, profileScale: profileScale })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
