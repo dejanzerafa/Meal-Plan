@@ -4798,112 +4798,128 @@ function AccountCard({ C }) {
             saving ? t("account_saving") : t("account_save")));
 }
 // ─── NOTIFICATION TOGGLE ──────────────────────────────────────────────────
-function NotificationToggle({ C, userEmail }) {
-    const [status, setStatus] = React.useState(() => {
-        // iOS Safari only supports push from an installed PWA (home screen app, iOS 16.4+)
+function ReminderCard({ C, userEmail }) {
+    const [permState, setPermState] = React.useState(() => {
         if (IS_IOS && !IS_STANDALONE) return "ios-not-installed";
         if (typeof Notification === "undefined") return "unsupported";
-        return localStorage.getItem("mp_push_enabled") === "1" ? "enabled" : "disabled";
+        if (Notification.permission === "granted") return "granted";
+        return "prompt";
     });
-    const [loading, setLoading] = React.useState(false);
+    const [shopTime, setShopTime] = React.useState(() => localStorage.getItem("mp_shop_time") || "09:00");
+    const [prepTime, setPrepTime] = React.useState(() => localStorage.getItem("mp_prep_time") || "08:00");
+    const [saved, setSaved] = React.useState(false);
+    const [enabling, setEnabling] = React.useState(false);
 
-    function urlBase64ToUint8Array(base64String) {
-        const padding = "=".repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-        const rawData = atob(base64);
-        return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    async function handleEnable() {
+        if (typeof Notification === "undefined") return;
+        setEnabling(true);
+        const perm = await Notification.requestPermission();
+        setPermState(perm === "granted" ? "granted" : "denied");
+        setEnabling(false);
     }
 
-    async function enable() {
-        if (!PUSH_SERVER_KEY) {
-            alert("Push notifications not configured yet — see setup instructions.");
-            return;
-        }
-        if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-            alert("Push notifications are not supported in this browser.");
-            return;
-        }
-        setLoading(true);
+    function saveAndReschedule() {
+        localStorage.setItem("mp_shop_time", shopTime);
+        localStorage.setItem("mp_prep_time", prepTime);
+        // Re-fire scheduling for any stored upcoming dates
         try {
-            const perm = await Notification.requestPermission();
-            if (perm !== "granted") { setLoading(false); return; }
-            const reg = await navigator.serviceWorker.ready;
-            const sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(PUSH_SERVER_KEY),
-            });
-            // Store subscription on server
-            if (userEmail) {
-                await fetch("/.netlify/functions/push-subscribe", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: userEmail, subscription: sub.toJSON(), action: "subscribe" }),
-                }).catch(() => {});
+            var shopISO = localStorage.getItem("mp_next_shop");
+            var prepISO = localStorage.getItem("mp_next_prep");
+            if (navigator.serviceWorker) {
+                navigator.serviceWorker.ready.then(function(reg) {
+                    var now = Date.now();
+                    if (shopISO) {
+                        var sd = new Date(shopISO);
+                        var parts = shopTime.split(":");
+                        sd.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
+                        var ms = sd.getTime() - now;
+                        if (ms > 0 && ms < 7 * 86400000) {
+                            setTimeout(function(){ reg.showNotification("\uD83D\uDED2 Shop day", { body: "Grocery run today \u2014 your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day", renotify: true }); }, ms);
+                        }
+                    }
+                    if (prepISO) {
+                        var pd = new Date(prepISO);
+                        var pparts = prepTime.split(":");
+                        pd.setHours(parseInt(pparts[0]), parseInt(pparts[1]), 0, 0);
+                        var pms = pd.getTime() - now;
+                        if (pms > 0 && pms < 7 * 86400000) {
+                            setTimeout(function(){ reg.showNotification("\uD83D\uDC68\u200D\uD83C\uDF73 Prep day!", { body: "Your meals run out today \u2014 time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day", renotify: true }); }, pms);
+                        }
+                    }
+                });
             }
-            localStorage.setItem("mp_push_enabled", "1");
-            setStatus("enabled");
-        } catch (e) {
-            console.error("Push subscribe error:", e);
-            alert("Could not enable notifications: " + e.message);
-        }
-        setLoading(false);
+        } catch(e) {}
+        setSaved(true);
+        setTimeout(function(){ setSaved(false); }, 2500);
     }
 
-    async function disable() {
-        setLoading(true);
-        try {
-            const reg = await navigator.serviceWorker.ready;
-            const sub = await reg.pushManager.getSubscription();
-            if (sub) await sub.unsubscribe();
-            if (userEmail) {
-                await fetch("/.netlify/functions/push-subscribe", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: userEmail, action: "unsubscribe" }),
-                }).catch(() => {});
-            }
-            localStorage.removeItem("mp_push_enabled");
-            setStatus("disabled");
-        } catch (e) {
-            console.error("Push unsubscribe error:", e);
-        }
-        setLoading(false);
+    // ── iOS not installed ────────────────────────────────────────────────────
+    if (permState === "ios-not-installed") {
+        return React.createElement("div", null,
+            React.createElement("div", { style: { background: C.card2, border: "1px solid " + C.dim, borderRadius: 12, padding: "14px 16px", marginBottom: 12 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 10 } }, "\uD83D\uDCF2 How to set it up on your phone"),
+                [
+                    "Open the link \u2192 tap Enable Notifications \u2192 allow",
+                    "Adjust times if needed \u2192 tap Save & Reschedule",
+                    "Add to Home Screen for the full app experience"
+                ].map(function(step, i) {
+                    return React.createElement("div", { key: i, style: { display: "flex", gap: 10, alignItems: "flex-start", marginBottom: i < 2 ? 8 : 0 } },
+                        React.createElement("div", { style: { width: 20, height: 20, borderRadius: 10, background: C.accent, color: "#000", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 } }, i + 1),
+                        React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.6 } }, step));
+                })));
     }
 
-    if (status === "ios-not-installed") {
-        return React.createElement("div", { style: { background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10, padding: "12px 14px" } },
-            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 6 } }, "📲 Install app to enable reminders"),
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6 } },
-                "iPhone requires SoulGainz to be installed on your Home Screen before notifications can be turned on."),
-            React.createElement("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 5 } },
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
-                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "1. "), "Tap the ", React.createElement("span", { style: { fontWeight: 700 } }, "Share"), " button (□↑) at the bottom of Safari"),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
-                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "2. "), "Select ", React.createElement("span", { style: { fontWeight: 700 } }, "Add to Home Screen")),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } },
-                    React.createElement("span", { style: { fontWeight: 700, color: C.text } }, "3. "), "Open SoulGainz from your Home Screen and return here")));
-    }
-    if (status === "unsupported") {
-        return React.createElement("div", { style: { fontSize: 11, color: C.muted } },
+    // ── Unsupported ──────────────────────────────────────────────────────────
+    if (permState === "unsupported") {
+        return React.createElement("div", { style: { fontSize: 11, color: C.muted, textAlign: "center", padding: "8px 0" } },
             "Push notifications not supported in this browser.");
     }
 
-    const enabled = status === "enabled";
-    return React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
-        React.createElement("div", { style: { fontSize: 12, color: enabled ? C.green : C.sub } },
-            enabled ? "\u2713 Reminders on" : "Tap to enable"),
+    // ── Denied ───────────────────────────────────────────────────────────────
+    if (permState === "denied") {
+        return React.createElement("div", { style: { fontSize: 11, color: C.muted, lineHeight: 1.6 } },
+            "Notifications blocked. Go to your browser/phone settings and allow notifications for this site, then reload.");
+    }
+
+    // ── Prompt (not yet asked) ────────────────────────────────────────────────
+    if (permState === "prompt") {
+        return React.createElement("div", null,
+            React.createElement("div", { style: { background: C.card2, border: "1px solid " + C.dim, borderRadius: 12, padding: "14px 16px", marginBottom: 12 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 10 } }, "\uD83D\uDCF2 How to set it up on your phone"),
+                [
+                    "Tap Enable Notifications below \u2192 allow when prompted",
+                    "Adjust times if needed \u2192 tap Save & Reschedule",
+                    "Add to Home Screen for the full app experience"
+                ].map(function(step, i) {
+                    return React.createElement("div", { key: i, style: { display: "flex", gap: 10, alignItems: "flex-start", marginBottom: i < 2 ? 8 : 0 } },
+                        React.createElement("div", { style: { width: 20, height: 20, borderRadius: 10, background: C.accent, color: "#000", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 } }, i + 1),
+                        React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.6 } }, step));
+                })),
+            React.createElement("button", {
+                onClick: handleEnable,
+                disabled: enabling,
+                style: { width: "100%", background: C.accent, border: "none", borderRadius: 10, padding: "12px", fontSize: 13, fontWeight: 800, color: "#000", cursor: enabling ? "default" : "pointer", opacity: enabling ? 0.7 : 1, letterSpacing: "0.02em" }
+            }, enabling ? "Requesting\u2026" : "\uD83D\uDD14 Enable Notifications"));
+    }
+
+    // ── Granted — show time pickers ──────────────────────────────────────────
+    return React.createElement("div", null,
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6, marginBottom: 12 } },
+            React.createElement("div", { style: { width: 8, height: 8, borderRadius: 4, background: C.green } }),
+            React.createElement("div", { style: { fontSize: 12, color: C.green, fontWeight: 700 } }, "Notifications enabled")),
+        React.createElement("div", { style: { display: "flex", gap: 10, marginBottom: 12 } },
+            React.createElement("div", { style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 12, padding: "12px" } },
+                React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.green, letterSpacing: "0.1em", marginBottom: 8 } }, "\uD83D\uDED2 SHOP DAY"),
+                React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6 } }, "Reminder time"),
+                React.createElement("input", { type: "time", value: shopTime, onChange: function(e){ setShopTime(e.target.value); }, style: { width: "100%", background: C.card, border: "1px solid " + C.dim, borderRadius: 8, padding: "8px", fontSize: 14, fontWeight: 700, color: C.text, boxSizing: "border-box", cursor: "pointer" } })),
+            React.createElement("div", { style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 12, padding: "12px" } },
+                React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.1em", marginBottom: 8 } }, "\uD83D\uDC68\u200D\uD83C\uDF73 PREP DAY"),
+                React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6 } }, "Reminder time"),
+                React.createElement("input", { type: "time", value: prepTime, onChange: function(e){ setPrepTime(e.target.value); }, style: { width: "100%", background: C.card, border: "1px solid " + C.dim, borderRadius: 8, padding: "8px", fontSize: 14, fontWeight: 700, color: C.text, boxSizing: "border-box", cursor: "pointer" } }))),
         React.createElement("button", {
-            onClick: enabled ? disable : enable,
-            disabled: loading,
-            style: {
-                background: enabled ? C.green : C.accent,
-                border: "none", borderRadius: 8,
-                padding: "8px 16px", fontSize: 12, fontWeight: 700,
-                color: "#000", cursor: loading ? "default" : "pointer",
-                opacity: loading ? 0.6 : 1,
-            }
-        }, loading ? "..." : enabled ? "Disable" : "Enable Reminders")
-    );
+            onClick: saveAndReschedule,
+            style: { width: "100%", background: saved ? C.green : C.accent, border: "none", borderRadius: 10, padding: "12px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer", transition: "background 0.2s", letterSpacing: "0.02em" }
+        }, saved ? "\u2713 Saved & scheduled!" : "\uD83D\uDD14 Save & Reschedule"));
 }
 
 function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
@@ -5039,8 +5055,8 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
                 padding: "14px 16px", marginTop: 12 } },
             React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83D\uDD14 PREP DAY REMINDERS"),
             React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6, marginBottom: 12 } },
-                "Get a push notification the day before your shop day and on your prep day. Works even when the app is closed."),
-            React.createElement(NotificationToggle, { C: C, userEmail: profile.email || "" })),
+                "Set your preferred times for shopping and prep day reminders."),
+            React.createElement(ReminderCard, { C: C, userEmail: profile.email || "" })),
         React.createElement("div", { style: { marginTop: 12, fontSize: 11, color: C.muted, textAlign: "center" } },
             "Saved ",
             new Date(profile.savedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))));
@@ -5094,28 +5110,29 @@ function CalendarTab({ lunch, dinner, userEmail }) {
     }
     function schedulePrepNotification(log, batchSize) {
         if (!("Notification" in window) || !navigator.serviceWorker) return;
-        Notification.requestPermission().then(function(perm) {
-            if (perm !== "granted") return;
-            var parts = log.date.split("-");
-            var prepStart = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-            var shopDay = new Date(prepStart);
-            shopDay.setDate(prepStart.getDate() + batchSize - 2);
-            var nextPrep = new Date(prepStart);
-            nextPrep.setDate(prepStart.getDate() + batchSize - 1);
-            var shopMs = shopDay.getTime() - Date.now();
-            var prepMs = nextPrep.getTime() - Date.now();
-            navigator.serviceWorker.ready.then(function(reg) {
-                // Store dates — setTimeout unreliable beyond ~1 day; app-open check in useEffect handles longer delays
-                try { if (shopDay) localStorage.setItem("mp_next_shop", shopDay.toISOString()); } catch(e2) {}
-                try { if (nextPrep) localStorage.setItem("mp_next_prep", nextPrep.toISOString()); } catch(e2) {}
-                if (shopMs > 0 && shopMs < 86400000) {
-                    setTimeout(function(){ reg.showNotification("🛒 Shop day", { body: "Grocery run today — your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day" }); }, shopMs);
-                }
-                if (prepMs > 0 && prepMs < 86400000) {
-                    setTimeout(function(){ reg.showNotification("👨‍🍳 Prep day!", { body: "Your meals run out today — time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day" }); }, prepMs);
-                }
-                try { localStorage.setItem("mp_notif_granted", "1"); } catch(e){}
-            });
+        if (Notification.permission !== "granted") return;
+        var parts = log.date.split("-");
+        var prepStart = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+        var shopDay = new Date(prepStart);
+        shopDay.setDate(prepStart.getDate() + batchSize - 2);
+        var nextPrep = new Date(prepStart);
+        nextPrep.setDate(prepStart.getDate() + batchSize - 1);
+        // Apply user-chosen times
+        var shopTimeParts = (localStorage.getItem("mp_shop_time") || "09:00").split(":");
+        var prepTimeParts = (localStorage.getItem("mp_prep_time") || "08:00").split(":");
+        shopDay.setHours(parseInt(shopTimeParts[0]), parseInt(shopTimeParts[1]), 0, 0);
+        nextPrep.setHours(parseInt(prepTimeParts[0]), parseInt(prepTimeParts[1]), 0, 0);
+        try { localStorage.setItem("mp_next_shop", shopDay.toISOString()); } catch(e2) {}
+        try { localStorage.setItem("mp_next_prep", nextPrep.toISOString()); } catch(e2) {}
+        var shopMs = shopDay.getTime() - Date.now();
+        var prepMs = nextPrep.getTime() - Date.now();
+        navigator.serviceWorker.ready.then(function(reg) {
+            if (shopMs > 0 && shopMs < 7 * 86400000) {
+                setTimeout(function(){ reg.showNotification("\uD83D\uDED2 Shop day", { body: "Grocery run today \u2014 your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day", renotify: true }); }, shopMs);
+            }
+            if (prepMs > 0 && prepMs < 7 * 86400000) {
+                setTimeout(function(){ reg.showNotification("\uD83D\uDC68\u200D\uD83C\uDF73 Prep day!", { body: "Your meals run out today \u2014 time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day", renotify: true }); }, prepMs);
+            }
         });
     }
     function removeBatch(startDate){
@@ -5296,7 +5313,7 @@ function CalendarTab({ lunch, dinner, userEmail }) {
                         React.createElement("div",{style:{fontSize:9,color:"#7c3aed",fontWeight:700,letterSpacing:"0.07em",marginBottom:4}},"\uD83D\uDC68\u200D\uD83C\uDF73 NEXT PREP"),
                         React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},prepLabel)));
             })(),
-            React.createElement(NotificationToggle,{C:C,userEmail:userEmail||""})));
+            React.createElement(ReminderCard,{C:C,userEmail:userEmail||""})));
 }
 // ─── MACRO BALANCER ───────────────────────────────────────────────────────
 function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
