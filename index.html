@@ -5047,7 +5047,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
 }
 
 // ─── CALENDAR TAB ─────────────────────────────────────────────────────────
-function CalendarTab({ lunch, dinner }) {
+function CalendarTab({ lunch, dinner, userEmail }) {
     var todayObj = new Date();
     const [calYear,  setCalYear]     = React.useState(todayObj.getFullYear());
     const [calMonth, setCalMonth]    = React.useState(todayObj.getMonth());
@@ -5275,7 +5275,28 @@ function CalendarTab({ lunch, dinner }) {
                 }
                 if(items.length===0) return React.createElement("div",{style:{fontSize:11,color:C.muted,textAlign:"center",padding:"16px 0"}},"No batches logged yet — tap a day above to log your first prep.");
                 return React.createElement("div",null,items);
-            })()));
+            })()),
+        React.createElement("div",{style:{background:C.card,border:"1px solid "+C.dim,borderRadius:14,padding:"14px 16px",marginTop:16}},
+            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:10}},"\uD83D\uDD14 REMINDERS"),
+            React.createElement("div",{style:{fontSize:11,color:C.sub,lineHeight:1.6,marginBottom:12}},
+                "Get notified the day before your grocery run and on your prep day. Works even when the app is closed."),
+            (function(){
+                var shopDate=null,prepDate=null;
+                try{ var s=localStorage.getItem("mp_next_shop"); if(s) shopDate=new Date(s); }catch(e){}
+                try{ var p=localStorage.getItem("mp_next_prep"); if(p) prepDate=new Date(p); }catch(e){}
+                var now=new Date();
+                var shopLabel=shopDate&&shopDate>now?shopDate.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}):null;
+                var prepLabel=prepDate&&prepDate>now?prepDate.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}):null;
+                if(!shopLabel&&!prepLabel) return null;
+                return React.createElement("div",{style:{display:"flex",gap:8,marginBottom:12}},
+                    shopLabel&&React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
+                        React.createElement("div",{style:{fontSize:9,color:C.green,fontWeight:700,letterSpacing:"0.07em",marginBottom:4}},"\uD83D\uDED2 NEXT SHOP"),
+                        React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},shopLabel)),
+                    prepLabel&&React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
+                        React.createElement("div",{style:{fontSize:9,color:"#7c3aed",fontWeight:700,letterSpacing:"0.07em",marginBottom:4}},"\uD83D\uDC68\u200D\uD83C\uDF73 NEXT PREP"),
+                        React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},prepLabel)));
+            })(),
+            React.createElement(NotificationToggle,{C:C,userEmail:userEmail||""})));
 }
 // ─── MACRO BALANCER ───────────────────────────────────────────────────────
 function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
@@ -6177,7 +6198,7 @@ function App() {
                 tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile" },
                     React.createElement(AccountCard, { C: C }),
                     React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
-                tab === "history" && React.createElement(CalendarTab, { lunch: lunch, dinner: dinner }),
+                tab === "history" && React.createElement(CalendarTab, { lunch: lunch, dinner: dinner, userEmail: profile ? (profile.email || "") : "" }),
                 tab === "story" && React.createElement("div", { className: "tab-anim", key: "story",
                     style: { paddingBottom: 32 } },
                     // Logo header
