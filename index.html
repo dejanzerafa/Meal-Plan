@@ -4830,20 +4830,22 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
 // Shown only on first visit: Story → Sign-up → Loader → App
 const FLAME_PATH = "M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z";
 
-function FlameWordmark({ size }) {
+function FlameWordmark({ size, light }) {
     const s = size || 22;
+    const gainzColor = light ? "#F2EDE6" : "#2D1E0F";
     return React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 0 } },
-        React.createElement("svg", { width: Math.round(s*0.7), height: Math.round(s), viewBox: "-12 -32 24 44", style: { marginBottom: Math.round(s*0.3) } },
-            React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" })),
-        React.createElement("div", { style: { lineHeight: 1 } },
-            React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: s, fontWeight: 700, color: "#E07B2A", letterSpacing: "0.09em" } }, "SOUL"),
-            React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: s, fontWeight: 700, color: "#F2EDE6", letterSpacing: "0.09em" } }, "GAINZ")),
-        React.createElement("div", { style: { fontSize: 7.5, color: "#8C8279", letterSpacing: "0.22em", fontWeight: 500, marginTop: 6, textAlign: "center" } }, "FEED YOUR SOUL · FUEL YOUR GAINZ")
+        React.createElement("div", { style: { display: "flex", flexDirection: "row", alignItems: "center", gap: Math.round(s * 0.3) } },
+            React.createElement("svg", { width: Math.round(s * 0.55), height: Math.round(s * 0.85), viewBox: "-12 -32 24 44" },
+                React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" })),
+            React.createElement("div", { style: { lineHeight: 1 } },
+                React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: s, fontWeight: 700, color: "#E07B2A", letterSpacing: "0.09em" } }, "SOUL"),
+                React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: s, fontWeight: 700, color: gainzColor, letterSpacing: "0.09em" } }, "GAINZ"))),
+        React.createElement("div", { style: { fontSize: 7.5, color: "#9C8A7A", letterSpacing: "0.22em", fontWeight: 500, marginTop: 5, textAlign: "center" } }, "FEED YOUR SOUL · FUEL YOUR GAINZ")
     );
 }
 
 function OnboardingStory({ onNext }) {
-    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#F0E9DE",
+    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#D9CABB",
         overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
         paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px", paddingBottom: "56px", paddingLeft: "24px", fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
 
@@ -4864,7 +4866,7 @@ function OnboardingStory({ onNext }) {
         // Hero headline
         React.createElement("div", { style: { fontSize: 9, color: "#B85C10", letterSpacing: "0.22em", fontWeight: 700, marginBottom: 14, textAlign: "center" } }, "OUR WHY"),
         React.createElement("h1", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: "clamp(22px,6vw,36px)",
-            fontWeight: 700, color: "#F2EDE6", textAlign: "center", lineHeight: 1.18, marginBottom: 20, maxWidth: 420 } },
+            fontWeight: 700, color: "#1a1008", textAlign: "center", lineHeight: 1.18, marginBottom: 20, maxWidth: 420 } },
             "Stop paying ", React.createElement("em", { style: { color: "#B85C10" } }, "nearly $10,000 a year"),
             " for food you don't even like."),
 
@@ -4929,7 +4931,7 @@ function OnboardingSignup({ onDone }) {
         } catch(e) { setStatus("error"); }
     }
 
-    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#0C0B0A",
+    const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#1C1208",
         overflowY: "auto", WebkitOverflowScrolling: "touch", display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", paddingTop: "max(48px, calc(env(safe-area-inset-top) + 24px))", paddingRight: "24px", paddingBottom: "56px", paddingLeft: "24px",
         fontFamily: "'Instrument Sans',-apple-system,sans-serif" };
@@ -4940,7 +4942,7 @@ function OnboardingSignup({ onDone }) {
 
     return React.createElement("div", { style: baseStyle },
         React.createElement("div", { style: { marginBottom: 36 } },
-            React.createElement(FlameWordmark, { size: 24 })),
+            React.createElement(FlameWordmark, { size: 24, light: true })),
 
         React.createElement("div", { style: { fontSize: 9, color: "#E07B2A", letterSpacing: "0.22em", fontWeight: 700, marginBottom: 12, textAlign: "center" } }, "EARLY ACCESS"),
         React.createElement("h2", { style: { fontFamily: "Georgia,'Times New Roman',serif", fontSize: "clamp(20px,5vw,30px)",
