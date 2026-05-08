@@ -5839,14 +5839,10 @@ function App() {
                 borderRight: `1px solid ${C.dim}40`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
                 boxShadow: `2px 0 12px ${C.card}80` } },
-            React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, background: C.accent,
-                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                    gap: 1, marginBottom: 14, flexShrink: 0, cursor: "pointer",
+            React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, overflow: "hidden",
+                    marginBottom: 14, flexShrink: 0, cursor: "pointer",
                     WebkitTapHighlightColor: "transparent" } },
-                React.createElement("svg", { width: 14, height: 20, viewBox: "-12 -32 24 44", xmlns: "http://www.w3.org/2000/svg" },
-                    React.createElement("path", { d: "M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z", fill: "#fff" })),
-                React.createElement("span", { style: { fontSize: 7, fontWeight: 800, color: "#fff", letterSpacing: "0.06em",
-                    fontFamily: "Georgia,'Times New Roman',serif", lineHeight: 1 } }, "S\u00B7G")),
+                React.createElement("img", { src: "/icon-192.png", alt: "SoulGainz", style: { width: 36, height: 36, display: "block" } })),
             (() => {
                 const active = tab === "profile";
                 return React.createElement("button", { onClick: () => setTab("profile"), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 10,
