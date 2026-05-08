@@ -298,6 +298,10 @@ const DARK_C = {
 // Default: PAPER (matches method.html). Mutable; reassigned per render.
 let C = Object.assign({}, LIGHT_C);
 const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
+// ── Push notification VAPID key ──────────────────────────────────────────────
+// Generate keys once: npx web-push generate-vapid-keys
+// Paste the PUBLIC key here and both keys into Netlify env vars.
+const VAPID_PUBLIC_KEY = ""; // ← paste your public key here after generating
 const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Aromatics", "Sauces", "Liquids"];
 const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧" };
@@ -2379,7 +2383,165 @@ const RECIPES = [
             "Top each container with crumbled feta or Parmesan. Refrigerate — eat within 3 days for best egg texture.",
         ],
         note: "Macros: ~480 kcal · 38P · 42C · 16F per portion (5 portions). One of the highest-protein vegetarian options in the library. Eggs and cottage cheese together make a complete, creamy high-protein combo. Contains eggs and dairy.",
+    },,
+
+    // ─── VEGETARIAN v5–v9 ────────────────────────────────────────────────────
+    {
+        id: "v5", category: "main",
+        name: "\uD83E\uDDC0 Paneer Tikka Masala Bowl", subtitle: "Paneer · basmati rice · tomato-cream masala · 7 portions",
+        badge: "\uD83C\uDF73 Stovetop", carb: "\uD83C\uDF5A Rice",
+        portions: 7, locked: true,
+        perPortion: { kcal: 530, protein: 30, carbs: 58, fat: 17 },
+        batchItems: [
+            { key: "v5_pan",   label: "Paneer (cubed)",               qty: 900, unit: "g",    cat: "Protein"    },
+            { key: "v5_rice",  label: "Basmati rice (dry)",           qty: 490, unit: "g",    cat: "Carbs"      },
+            { key: "v5_tom",   label: "Crushed tomatoes (400g can)",  qty: 2,   unit: "whole", cat: "Vegetables" },
+            { key: "v5_yog",   label: "0% Greek yogurt",              qty: 300, unit: "g",    cat: "Dairy"      },
+            { key: "v5_onion", label: "Large onion (diced)",          qty: 2,   unit: "whole", cat: "Vegetables" },
+            { key: "v5_gar",   label: "Garlic cloves (minced)",       qty: 6,   unit: "whole", cat: "Vegetables" },
+            { key: "v5_ging",  label: "Fresh ginger (grated)",        qty: 20,  unit: "g",    cat: "Sauces"     },
+            { key: "v5_gma",   label: "Garam masala",                 qty: 15,  unit: "g",    cat: "Sauces"     },
+            { key: "v5_pap",   label: "Smoked paprika",               qty: 10,  unit: "g",    cat: "Sauces"     },
+            { key: "v5_oil",   label: "Olive oil",                    qty: 20,  unit: "mL",   cat: "Sauces"     },
+            { key: "v5_spin",  label: "Baby spinach",                 qty: 200, unit: "g",    cat: "Vegetables" },
+        ],
+        steps: [
+            "Cook basmati rice: rinse 490g rice, simmer in 900mL salted water 12–14 min. Fluff and set aside.",
+            "Cube paneer into 2cm pieces. Pat dry with paper towel so it browns, not steams.",
+            "Heat 1 tbsp olive oil in a large pan over medium-high. Fry paneer until golden on all sides (~5 min). Remove and set aside.",
+            "In the same pan, sauté diced onion 5 min until soft. Add minced garlic and grated ginger — cook 2 min.",
+            "Add garam masala and smoked paprika. Stir 1 min to toast the spices.",
+            "Add crushed tomatoes. Simmer uncovered 10 min until sauce thickens.",
+            "Reduce heat to low. Stir in Greek yogurt gradually to avoid splitting. Season with salt.",
+            "Return paneer to the pan. Add spinach and stir until wilted (~2 min).",
+            "Portion rice into 7 containers. Top with paneer tikka masala sauce."
+        ],
+        note: "Paneer is a high-protein non-melting Indian cheese — it holds its shape when cooked. Greek yogurt replaces heavy cream to cut fat without losing creaminess. Contains dairy. Keeps 4 days refrigerated."
     },
+    {
+        id: "v6", category: "main",
+        name: "\uD83C\uDF73 Shakshuka Protein Bowls", subtitle: "Eggs · chickpeas · spiced tomato sauce · 5 portions",
+        badge: "\uD83C\uDF73 Stovetop", carb: "\uD83E\uDEB9 Chickpea",
+        portions: 5, locked: true,
+        perPortion: { kcal: 410, protein: 27, carbs: 38, fat: 15 },
+        batchItems: [
+            { key: "v6_eggs",  label: "Large eggs",                   qty: 10,  unit: "whole", cat: "Protein"    },
+            { key: "v6_chick", label: "Chickpeas in water (400g can)", qty: 2,  unit: "whole", cat: "Carbs"      },
+            { key: "v6_tom",   label: "Crushed tomatoes (400g can)",  qty: 2,   unit: "whole", cat: "Vegetables" },
+            { key: "v6_pepper",label: "Red bell pepper (diced)",      qty: 3,   unit: "whole", cat: "Vegetables" },
+            { key: "v6_onion", label: "Large onion (diced)",          qty: 2,   unit: "whole", cat: "Vegetables" },
+            { key: "v6_gar",   label: "Garlic cloves (minced)",       qty: 5,   unit: "whole", cat: "Vegetables" },
+            { key: "v6_feta",  label: "Reduced-fat feta (crumbled)",  qty: 150, unit: "g",    cat: "Dairy"      },
+            { key: "v6_cmin",  label: "Cumin (tsp)",                  qty: 2,   unit: "tsp",  cat: "Sauces"     },
+            { key: "v6_pap",   label: "Smoked paprika",               qty: 10,  unit: "g",    cat: "Sauces"     },
+            { key: "v6_chil",  label: "Chili flakes (tsp)",           qty: 1,   unit: "tsp",  cat: "Sauces"     },
+            { key: "v6_oil",   label: "Olive oil",                    qty: 15,  unit: "mL",   cat: "Sauces"     },
+            { key: "v6_spin",  label: "Fresh spinach",                qty: 150, unit: "g",    cat: "Vegetables" },
+        ],
+        steps: [
+            "Heat olive oil in a large, wide pan over medium heat. Sauté diced onion 5 min until softened.",
+            "Add diced red pepper and minced garlic. Cook 3 min. Add cumin, paprika, and chili flakes — stir 1 min.",
+            "Add crushed tomatoes and drained chickpeas. Stir well. Simmer 10–12 min until sauce thickens.",
+            "Add fresh spinach and stir until wilted. Season with salt and pepper.",
+            "Make 10 wells in the sauce using a spoon. Crack one egg into each well.",
+            "Cover pan and cook on low heat 6–8 min until whites are set but yolks still slightly runny. For meal prep, cook yolks through (8–10 min).",
+            "Remove from heat. Crumble feta over the top.",
+            "Portion 2 eggs + sauce into each of 5 containers. Serve with wholegrain pita or rice cakes."
+        ],
+        note: "A North African/Middle Eastern classic adapted for batch cooking. The chickpeas boost protein and fibre significantly. Contains eggs, dairy. Keeps 3 days refrigerated — eggs firm up on reheating."
+    },
+    {
+        id: "v7", category: "main",
+        name: "\uD83E\uDEB4 Black Bean & Sweet Potato Burrito Bowls", subtitle: "Black beans · sweet potato · rice · salsa · 7 portions",
+        badge: "\uD83D\uDD25 Oven", carb: "\uD83C\uDF5A Rice",
+        portions: 7, locked: true,
+        perPortion: { kcal: 490, protein: 22, carbs: 72, fat: 10 },
+        batchItems: [
+            { key: "v7_bean",  label: "Black beans (400g can)",       qty: 3,   unit: "whole", cat: "Carbs"      },
+            { key: "v7_swpot", label: "Sweet potato (cubed, raw)",    qty: 1000,unit: "g",    cat: "Carbs"      },
+            { key: "v7_rice",  label: "Jasmine rice (dry)",           qty: 490, unit: "g",    cat: "Carbs"      },
+            { key: "v7_corn",  label: "Canned corn (drained)",        qty: 400, unit: "g",    cat: "Vegetables" },
+            { key: "v7_tom",   label: "Cherry tomatoes (halved)",     qty: 400, unit: "g",    cat: "Vegetables" },
+            { key: "v7_onion", label: "Red onion (diced)",            qty: 2,   unit: "whole", cat: "Vegetables" },
+            { key: "v7_gar",   label: "Garlic cloves (minced)",       qty: 4,   unit: "whole", cat: "Vegetables" },
+            { key: "v7_chees", label: "Reduced-fat cheddar (shredded)", qty: 210, unit: "g",  cat: "Dairy"      },
+            { key: "v7_lime",  label: "Lime (juice)",                 qty: 2,   unit: "whole", cat: "Sauces"     },
+            { key: "v7_cumin", label: "Cumin (tsp)",                  qty: 2,   unit: "tsp",  cat: "Sauces"     },
+            { key: "v7_pap",   label: "Smoked paprika",               qty: 10,  unit: "g",    cat: "Sauces"     },
+            { key: "v7_oil",   label: "Olive oil",                    qty: 20,  unit: "mL",   cat: "Sauces"     },
+            { key: "v7_yog",   label: "0% Greek yogurt (for serving)", qty: 200, unit: "g",   cat: "Dairy"      },
+        ],
+        steps: [
+            "Preheat oven to 200°C. Cube sweet potato into 2cm pieces. Toss with olive oil, cumin, paprika, salt, and pepper.",
+            "Spread sweet potato on a lined baking tray. Roast 25–30 min, flipping halfway, until caramelised.",
+            "Cook jasmine rice: rinse, simmer in 900mL salted water 12–14 min. Fluff and cool.",
+            "Drain and rinse black beans and corn. Dice red onion and halve cherry tomatoes.",
+            "In a large bowl, combine black beans, corn, cherry tomatoes, red onion, minced garlic, lime juice, salt, and pepper. Mix well.",
+            "Assemble: divide rice into 7 containers. Top with roasted sweet potato, black bean salsa mix.",
+            "Top each bowl with 30g shredded cheddar. Add a dollop of Greek yogurt to each container when serving."
+        ],
+        note: "High carb, moderate protein — ideal for active days or carb-cycling. Pair with a protein shake to hit higher protein targets. Fully plant-based except for dairy toppings (swap yogurt and cheese for vegan alternatives if needed). Keeps 5 days refrigerated."
+    },
+    {
+        id: "v8", category: "main",
+        name: "\uD83E\uDD6C Spinach & White Bean Pasta", subtitle: "White beans · pasta · spinach · garlic-parmesan sauce · 5 portions",
+        badge: "\uD83C\uDF73 Stovetop", carb: "\uD83C\uDF5D Pasta",
+        portions: 5, locked: true,
+        perPortion: { kcal: 500, protein: 28, carbs: 68, fat: 11 },
+        batchItems: [
+            { key: "v8_bean",  label: "White beans / cannellini (400g can)", qty: 2, unit: "whole", cat: "Carbs" },
+            { key: "v8_pasta", label: "Protein pasta or wholegrain pasta (dry)", qty: 375, unit: "g", cat: "Carbs" },
+            { key: "v8_spin",  label: "Baby spinach",                qty: 300, unit: "g",    cat: "Vegetables" },
+            { key: "v8_cot",   label: "Cottage cheese (low fat)",    qty: 400, unit: "g",    cat: "Dairy"      },
+            { key: "v8_par",   label: "Parmesan (grated)",           qty: 80,  unit: "g",    cat: "Dairy"      },
+            { key: "v8_gar",   label: "Garlic cloves (minced)",      qty: 6,   unit: "whole", cat: "Vegetables" },
+            { key: "v8_lemon", label: "Lemon (juice + zest)",        qty: 1,   unit: "whole", cat: "Sauces"     },
+            { key: "v8_milk",  label: "Skimmed milk",                qty: 150, unit: "mL",   cat: "Dairy"      },
+            { key: "v8_oil",   label: "Olive oil",                   qty: 15,  unit: "mL",   cat: "Sauces"     },
+            { key: "v8_chil",  label: "Chili flakes (tsp)",          qty: 1,   unit: "tsp",  cat: "Sauces"     },
+        ],
+        steps: [
+            "Cook pasta al dente according to package. Reserve 200mL pasta water before draining.",
+            "Blend cottage cheese, grated parmesan, skimmed milk, lemon juice and zest, salt, and pepper until completely smooth. This is your cream sauce.",
+            "Heat olive oil in a large pan over medium. Add minced garlic and chili flakes — cook 1–2 min until fragrant.",
+            "Add drained white beans. Stir and cook 2–3 min until lightly golden.",
+            "Add baby spinach in handfuls, stirring until wilted (~2 min).",
+            "Add cooked pasta and cream sauce. Toss everything together. Use reserved pasta water to loosen if needed.",
+            "Taste and adjust seasoning. Simmer 1–2 min to meld flavours.",
+            "Portion into 5 containers. Add extra parmesan on top if desired. Reheat with a splash of water."
+        ],
+        note: "Cottage cheese blended into the sauce is virtually undetectable but adds ~15g protein per portion. White beans provide additional plant protein and fibre. Contains gluten (pasta) and dairy. Keeps 4 days refrigerated."
+    },
+    {
+        id: "v9", category: "main",
+        name: "\uD83C\uDF73 Egg & Veggie Protein Frittata", subtitle: "Eggs · cottage cheese · feta · roasted veg · 5 portions",
+        badge: "\uD83D\uDD25 Oven", carb: "\uD83E\uDD51 Low Carb",
+        portions: 5, locked: true,
+        perPortion: { kcal: 320, protein: 28, carbs: 12, fat: 18 },
+        batchItems: [
+            { key: "v9_eggs",  label: "Large eggs",                  qty: 10,  unit: "whole", cat: "Protein"    },
+            { key: "v9_cot",   label: "Cottage cheese (low fat)",    qty: 300, unit: "g",    cat: "Dairy"      },
+            { key: "v9_feta",  label: "Reduced-fat feta (crumbled)", qty: 150, unit: "g",    cat: "Dairy"      },
+            { key: "v9_broc",  label: "Broccoli florets",            qty: 300, unit: "g",    cat: "Vegetables" },
+            { key: "v9_caps",  label: "Red capsicum (diced)",        qty: 200, unit: "g",    cat: "Vegetables" },
+            { key: "v9_spin",  label: "Baby spinach",                qty: 150, unit: "g",    cat: "Vegetables" },
+            { key: "v9_tom",   label: "Cherry tomatoes (halved)",    qty: 200, unit: "g",    cat: "Vegetables" },
+            { key: "v9_gar",   label: "Garlic cloves (minced)",      qty: 3,   unit: "whole", cat: "Vegetables" },
+            { key: "v9_oil",   label: "Olive oil",                   qty: 10,  unit: "mL",   cat: "Sauces"     },
+        ],
+        steps: [
+            "Preheat oven to 180°C. Lightly grease a 30×20cm baking dish.",
+            "Dice capsicum. Steam or microwave broccoli 3 min until just tender. Halve cherry tomatoes.",
+            "Sauté minced garlic and capsicum in olive oil 2–3 min. Add spinach and stir until wilted. Set aside.",
+            "In a large bowl, whisk together 10 eggs and cottage cheese until smooth. Season generously with salt, pepper, and paprika.",
+            "Stir in sautéed vegetables, broccoli florets, and half the feta.",
+            "Pour mixture into the greased baking dish. Scatter remaining feta and cherry tomatoes on top.",
+            "Bake 30–35 min until centre is fully set and top is lightly golden. Test with a skewer — it should come out clean.",
+            "Cool 10 min before slicing into 5 equal portions. Store in airtight containers."
+        ],
+        note: "Frittatas are one of the most efficient high-protein vegetarian batch cooks — 2 eggs + cottage cheese per portion delivers ~28g protein with minimal carbs. Great for low-carb days. Contains eggs and dairy. Keeps 4 days refrigerated."
+    },
+
 ];
 // ─── FIXED 7-DAY SHOPPING ──────────────────────────────────────────────────
 const FIXED = {
@@ -4615,6 +4777,100 @@ function AccountCard({ C }) {
                 color: "#000", cursor: (saving || !name.trim() || !email.trim()) ? "default" : "pointer" } },
             saving ? t("account_saving") : t("account_save")));
 }
+// ─── NOTIFICATION TOGGLE ──────────────────────────────────────────────────
+function NotificationToggle({ C, userEmail }) {
+    const [status, setStatus] = React.useState(() => {
+        if (typeof Notification === "undefined") return "unsupported";
+        return localStorage.getItem("mp_push_enabled") === "1" ? "enabled" : "disabled";
+    });
+    const [loading, setLoading] = React.useState(false);
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const rawData = atob(base64);
+        return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    }
+
+    async function enable() {
+        if (!VAPID_PUBLIC_KEY) {
+            alert("Push notifications not configured yet. VAPID_PUBLIC_KEY is empty — see setup instructions.");
+            return;
+        }
+        if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+            alert("Push notifications are not supported in this browser.");
+            return;
+        }
+        setLoading(true);
+        try {
+            const perm = await Notification.requestPermission();
+            if (perm !== "granted") { setLoading(false); return; }
+            const reg = await navigator.serviceWorker.ready;
+            const sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+            // Store subscription on server
+            if (userEmail) {
+                await fetch("/.netlify/functions/push-subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: userEmail, subscription: sub.toJSON(), action: "subscribe" }),
+                }).catch(() => {});
+            }
+            localStorage.setItem("mp_push_enabled", "1");
+            setStatus("enabled");
+        } catch (e) {
+            console.error("Push subscribe error:", e);
+            alert("Could not enable notifications: " + e.message);
+        }
+        setLoading(false);
+    }
+
+    async function disable() {
+        setLoading(true);
+        try {
+            const reg = await navigator.serviceWorker.ready;
+            const sub = await reg.pushManager.getSubscription();
+            if (sub) await sub.unsubscribe();
+            if (userEmail) {
+                await fetch("/.netlify/functions/push-subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: userEmail, action: "unsubscribe" }),
+                }).catch(() => {});
+            }
+            localStorage.removeItem("mp_push_enabled");
+            setStatus("disabled");
+        } catch (e) {
+            console.error("Push unsubscribe error:", e);
+        }
+        setLoading(false);
+    }
+
+    if (status === "unsupported") {
+        return React.createElement("div", { style: { fontSize: 11, color: C.muted } },
+            "Push notifications not supported in this browser.");
+    }
+
+    const enabled = status === "enabled";
+    return React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
+        React.createElement("div", { style: { fontSize: 12, color: enabled ? C.green : C.sub } },
+            enabled ? "\u2713 Reminders on" : "Tap to enable"),
+        React.createElement("button", {
+            onClick: enabled ? disable : enable,
+            disabled: loading,
+            style: {
+                background: enabled ? C.green : C.accent,
+                border: "none", borderRadius: 8,
+                padding: "8px 16px", fontSize: 12, fontWeight: 700,
+                color: "#000", cursor: loading ? "default" : "pointer",
+                opacity: loading ? 0.6 : 1,
+            }
+        }, loading ? "..." : enabled ? "Disable" : "Enable Reminders")
+    );
+}
+
 function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
     const [profile, setProfile] = useState(() => {
         try {
@@ -4744,6 +5000,12 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc }) {
                 React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: C.text } }, (r === null || r === void 0 ? void 0 : r.tdee) || "—"),
                 React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 2 } }, "kcal/day total"),
                 React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 1 } }, "TDEE"))),
+        React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
+                padding: "14px 16px", marginTop: 12 } },
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } }, "\uD83D\uDD14 PREP DAY REMINDERS"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6, marginBottom: 12 } },
+                "Get a push notification the day before your shop day and on your prep day. Works even when the app is closed."),
+            React.createElement(NotificationToggle, { C: C, userEmail: profile.email || "" })),
         React.createElement("div", { style: { marginTop: 12, fontSize: 11, color: C.muted, textAlign: "center" } },
             "Saved ",
             new Date(profile.savedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))));

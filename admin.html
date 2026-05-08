@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoulGainz Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0C0B0A; color: #f3ece0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+    /* ── Login ── */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .login-card { background: #1a1612; border: 1px solid #2d2420; border-radius: 16px; padding: 40px 32px; width: 100%; max-width: 360px; text-align: center; }
+    .wordmark { font-family: Georgia, serif; font-size: 22px; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .wordmark span:first-child { color: #E07B2A; }
+    .wordmark span:last-child { color: #f3ece0; }
+    .sub { font-size: 10px; color: #6b5f54; letter-spacing: 0.14em; margin-bottom: 32px; }
+    .login-card h2 { font-size: 16px; color: #a09080; font-weight: 600; margin-bottom: 20px; }
+    .login-card input { width: 100%; background: #111; border: 1px solid #2d2420; border-radius: 10px; color: #f3ece0; font-size: 14px; padding: 12px 14px; margin-bottom: 12px; outline: none; }
+    .login-card input:focus { border-color: #E07B2A; }
+    .btn-primary { width: 100%; background: #E07B2A; border: none; border-radius: 10px; color: #000; font-size: 14px; font-weight: 700; padding: 13px; cursor: pointer; letter-spacing: 0.02em; }
+    .btn-primary:hover { background: #d06820; }
+    .error { font-size: 12px; color: #ef4444; margin-top: 10px; }
+
+    /* ── Dashboard ── */
+    #dashboard { display: none; }
+    .topbar { background: #1a1612; border-bottom: 1px solid #2d2420; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar .wordmark { margin-bottom: 0; font-size: 18px; }
+    .badge-admin { background: #E07B2A; color: #000; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.08em; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .btn-sm { background: #2d2420; border: 1px solid #3d3028; border-radius: 8px; color: #a09080; font-size: 11px; padding: 6px 12px; cursor: pointer; }
+    .btn-sm:hover { background: #3d3028; }
+    .btn-danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; }
+
+    .main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Stats bar ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: #1a1612; border: 1px solid #2d2420; border-radius: 12px; padding: 16px 18px; }
+    .stat-label { font-size: 10px; color: #6b5f54; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .stat-val { font-size: 28px; font-weight: 800; color: #f3ece0; }
+    .stat-sub { font-size: 10px; color: #6b5f54; margin-top: 3px; }
+
+    /* ── Controls ── */
+    .controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .search-input { flex: 1; min-width: 200px; background: #1a1612; border: 1px solid #2d2420; border-radius: 8px; color: #f3ece0; font-size: 13px; padding: 9px 14px; outline: none; }
+    .search-input:focus { border-color: #E07B2A; }
+    select.filter { background: #1a1612; border: 1px solid #2d2420; border-radius: 8px; color: #a09080; font-size: 12px; padding: 9px 12px; outline: none; cursor: pointer; }
+    .btn-refresh { background: #E07B2A; border: none; border-radius: 8px; color: #000; font-size: 12px; font-weight: 700; padding: 9px 16px; cursor: pointer; }
+
+    /* ── Table ── */
+    .table-wrap { background: #1a1612; border: 1px solid #2d2420; border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #111; }
+    th { padding: 11px 14px; text-align: left; font-size: 10px; color: #6b5f54; font-weight: 700; letter-spacing: 0.08em; border-bottom: 1px solid #2d2420; white-space: nowrap; cursor: pointer; user-select: none; }
+    th:hover { color: #a09080; }
+    td { padding: 11px 14px; font-size: 12px; color: #d4c8ba; border-bottom: 1px solid #1f1b17; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .pill-green { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+    .pill-orange { background: rgba(224,123,42,0.15); color: #E07B2A; border: 1px solid rgba(224,123,42,0.3); }
+    .pill-blue { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+    .pill-gray { background: rgba(255,255,255,0.06); color: #6b5f54; border: 1px solid #2d2420; }
+    .action-btns { display: flex; gap: 6px; }
+    .icon-btn { background: none; border: 1px solid #2d2420; border-radius: 6px; color: #6b5f54; font-size: 12px; padding: 4px 8px; cursor: pointer; }
+    .icon-btn:hover { border-color: #E07B2A; color: #E07B2A; }
+
+    /* ── Friend code panel ── */
+    .panel { background: #1a1612; border: 1px solid #2d2420; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .panel h3 { font-size: 13px; font-weight: 700; color: #a09080; letter-spacing: 0.07em; margin-bottom: 14px; }
+    .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .form-row input { flex: 1; min-width: 140px; background: #111; border: 1px solid #2d2420; border-radius: 8px; color: #f3ece0; font-size: 12px; padding: 9px 12px; outline: none; }
+    .form-row input:focus { border-color: #E07B2A; }
+    .code-result { margin-top: 12px; background: #111; border: 1px solid #2d2420; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #a09080; line-height: 1.7; }
+    .code-result .code { font-family: monospace; font-size: 15px; color: #E07B2A; font-weight: 700; }
+
+    /* ── Email blast panel ── */
+    .tab-btns { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { background: #1a1612; border: 1px solid #2d2420; border-radius: 8px; color: #6b5f54; font-size: 12px; font-weight: 600; padding: 8px 16px; cursor: pointer; }
+    .tab-btn.active { background: #E07B2A; border-color: #E07B2A; color: #000; }
+
+    .empty { text-align: center; padding: 48px; color: #4b3f36; font-size: 13px; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #2d2420; border-top-color: #E07B2A; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #E07B2A; color: #000; font-size: 13px; font-weight: 700; padding: 12px 20px; border-radius: 10px; z-index: 9999; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="wordmark"><span>SOUL</span><span>GAINZ</span></div>
+    <div class="sub">ADMIN DASHBOARD</div>
+    <h2>Enter admin password</h2>
+    <input type="password" id="pw-input" placeholder="Admin secret" onkeydown="if(event.key==='Enter')login()" />
+    <button class="btn-primary" onclick="login()">Sign In →</button>
+    <div class="error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ── Dashboard ── -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="wordmark"><span>SOUL</span><span>GAINZ</span></div>
+      <span class="badge-admin">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn-sm btn-danger" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- Tabs -->
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="showTab('users', this)">👥 Users</button>
+      <button class="tab-btn" onclick="showTab('friendcode', this)">🎁 Friend Codes</button>
+      <button class="tab-btn" onclick="showTab('emailblast', this)">📧 Email Blast</button>
+    </div>
+
+    <!-- ── USERS TAB ── -->
+    <div id="tab-users">
+      <div class="stats" id="stats-bar">
+        <div class="stat-card"><div class="stat-label">TOTAL USERS</div><div class="stat-val" id="stat-total">—</div><div class="stat-sub">registered</div></div>
+        <div class="stat-card"><div class="stat-label">SUBSCRIBED</div><div class="stat-val" id="stat-paid">—</div><div class="stat-sub">active plan</div></div>
+        <div class="stat-card"><div class="stat-label">FREE USERS</div><div class="stat-val" id="stat-free">—</div><div class="stat-sub">no active plan</div></div>
+        <div class="stat-card"><div class="stat-label">MARKETING OPT-IN</div><div class="stat-val" id="stat-optin">—</div><div class="stat-sub">can email</div></div>
+        <div class="stat-card"><div class="stat-label">JOINED THIS WEEK</div><div class="stat-val" id="stat-week">—</div><div class="stat-sub">last 7 days</div></div>
+      </div>
+
+      <div class="controls">
+        <input class="search-input" id="search" placeholder="🔍  Search name or email…" oninput="renderTable()" />
+        <select class="filter" id="filter-status" onchange="renderTable()">
+          <option value="">All users</option>
+          <option value="subscribed">Subscribed</option>
+          <option value="free">Free</option>
+          <option value="optin">Marketing opt-in</option>
+        </select>
+        <select class="filter" id="sort-col" onchange="renderTable()">
+          <option value="created_at_desc">Newest first</option>
+          <option value="created_at_asc">Oldest first</option>
+          <option value="email_asc">Email A–Z</option>
+          <option value="first_name_asc">Name A–Z</option>
+        </select>
+        <button class="btn-refresh" onclick="loadUsers()">↻ Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th onclick="sortBy('first_name')">NAME ↕</th>
+              <th onclick="sortBy('email')">EMAIL ↕</th>
+              <th onclick="sortBy('created_at')">JOINED ↕</th>
+              <th>STATUS</th>
+              <th>PLAN</th>
+              <th>OPT-IN</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="user-tbody"></tbody>
+        </table>
+        <div class="empty" id="empty-state" style="display:none">No users found</div>
+      </div>
+      <div style="font-size:11px;color:#4b3f36;margin-top:10px;text-align:right" id="table-count"></div>
+    </div>
+
+    <!-- ── FRIEND CODE TAB ── -->
+    <div id="tab-friendcode" style="display:none">
+      <div class="panel">
+        <h3>🎁 GENERATE FRIEND CODE</h3>
+        <p style="font-size:12px;color:#6b5f54;margin-bottom:14px;line-height:1.6">Creates a 100% off single-use Stripe promo code and optionally emails it to a friend. Requires STRIPE_FRIENDS_COUPON_ID in your Netlify env vars.</p>
+        <div class="form-row" style="margin-bottom:10px">
+          <input id="fc-name" placeholder="Friend's name" />
+          <input id="fc-email" placeholder="Friend's email (optional)" />
+          <input id="fc-note" placeholder="Personal note (optional)" />
+        </div>
+        <div class="form-row">
+          <input id="fc-days" placeholder="Expires in days (default 90)" type="number" />
+          <button class="btn-primary" style="flex:1;min-width:120px" onclick="generateFriendCode()">Generate Code →</button>
+        </div>
+        <div class="code-result" id="fc-result" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- ── EMAIL BLAST TAB ── -->
+    <div id="tab-emailblast" style="display:none">
+      <div class="panel">
+        <h3>📧 WELCOME BACK EMAIL BLAST</h3>
+        <p style="font-size:12px;color:#6b5f54;margin-bottom:14px;line-height:1.6">Sends a "Welcome Back" email to all users who opted in to marketing. Rate-limited to ~2/sec. Use dry run first to preview recipients.</p>
+        <div class="form-row" style="margin-bottom:10px">
+          <input id="blast-email" placeholder="Single email override (blank = all opt-in users)" />
+        </div>
+        <div class="form-row">
+          <button class="btn-sm" onclick="emailBlast(true)">🔍 Dry Run (preview)</button>
+          <button class="btn-primary" style="flex:1" onclick="if(confirm('Send to ALL opted-in users?'))emailBlast(false)">📤 Send to All →</button>
+        </div>
+        <div class="code-result" id="blast-result" style="display:none"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────────
+  let adminSecret = '';
+  let allUsers = [];
+  let currentSort = 'created_at_desc';
+
+  const SUPABASE_URL = 'https://krdodbagkixwkuzihsof.supabase.co';  // ← update if different
+  const FUNCTIONS_BASE = '/.netlify/functions';
+
+  // ── Auth ────────────────────────────────────────────────────────────────────
+  function login() {
+    const pw = document.getElementById('pw-input').value.trim();
+    if (!pw) return;
+    adminSecret = pw;
+    document.getElementById('login-error').textContent = '';
+    loadUsers().then(ok => {
+      if (ok) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+      } else {
+        adminSecret = '';
+        document.getElementById('login-error').textContent = 'Invalid password or unable to connect.';
+      }
+    });
+  }
+
+  function logout() {
+    adminSecret = '';
+    allUsers = [];
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+  }
+
+  // ── Load users from Supabase ─────────────────────────────────────────────
+  async function loadUsers() {
+    const tbody = document.getElementById('user-tbody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr>';
+
+    try {
+      // Use our own Netlify function to proxy Supabase (keeps service key server-side)
+      const res = await fetch(`${FUNCTIONS_BASE}/admin-list-users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: adminSecret }),
+      });
+
+      if (res.status === 401) return false;
+      if (!res.ok) throw new Error('Server error ' + res.status);
+
+      const data = await res.json();
+      allUsers = data.users || [];
+      updateStats();
+      renderTable();
+      return true;
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:#ef4444">Error: ${e.message}</td></tr>`;
+      return false;
+    }
+  }
+
+  // ── Stats ────────────────────────────────────────────────────────────────
+  function updateStats() {
+    const now = Date.now();
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    document.getElementById('stat-total').textContent = allUsers.length;
+    document.getElementById('stat-paid').textContent = allUsers.filter(u => u.subscription_status === 'active').length;
+    document.getElementById('stat-free').textContent = allUsers.filter(u => u.subscription_status !== 'active').length;
+    document.getElementById('stat-optin').textContent = allUsers.filter(u => u.marketing_opt_in).length;
+    document.getElementById('stat-week').textContent = allUsers.filter(u => now - new Date(u.created_at) < oneWeek).length;
+  }
+
+  // ── Table render ─────────────────────────────────────────────────────────
+  function renderTable() {
+    const q = (document.getElementById('search').value || '').toLowerCase();
+    const statusFilter = document.getElementById('filter-status').value;
+    const sortVal = document.getElementById('sort-col').value;
+
+    let users = allUsers.filter(u => {
+      const matchQ = !q || (u.email || '').toLowerCase().includes(q) || (u.first_name || '').toLowerCase().includes(q) || (u.last_name || '').toLowerCase().includes(q);
+      let matchStatus = true;
+      if (statusFilter === 'subscribed') matchStatus = u.subscription_status === 'active';
+      if (statusFilter === 'free') matchStatus = u.subscription_status !== 'active';
+      if (statusFilter === 'optin') matchStatus = !!u.marketing_opt_in;
+      return matchQ && matchStatus;
+    });
+
+    // Sort
+    const [col, dir] = sortVal.split('_asc').length > 1 ? [sortVal.replace('_asc',''), 'asc'] : [sortVal.replace('_desc',''), 'desc'];
+    users.sort((a, b) => {
+      let av = (a[col] || ''), bv = (b[col] || '');
+      if (col === 'created_at') { av = new Date(av); bv = new Date(bv); }
+      return dir === 'asc' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+
+    const tbody = document.getElementById('user-tbody');
+    if (!users.length) {
+      tbody.innerHTML = '';
+      document.getElementById('empty-state').style.display = 'block';
+    } else {
+      document.getElementById('empty-state').style.display = 'none';
+      tbody.innerHTML = users.map((u, i) => {
+        const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || '—';
+        const joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'2-digit' }) : '—';
+        const status = u.subscription_status === 'active'
+          ? '<span class="pill pill-green">Active</span>'
+          : u.subscription_status === 'lifetime'
+          ? '<span class="pill pill-orange">Lifetime</span>'
+          : '<span class="pill pill-gray">Free</span>';
+        const plan = u.plan_type ? `<span class="pill pill-blue">${u.plan_type}</span>` : '<span style="color:#3d3028">—</span>';
+        const optin = u.marketing_opt_in ? '✅' : '<span style="color:#3d3028">—</span>';
+        return `<tr>
+          <td style="color:#4b3f36">${i + 1}</td>
+          <td>${escHtml(name)}</td>
+          <td style="font-family:monospace;font-size:11px">${escHtml(u.email || '—')}</td>
+          <td style="color:#6b5f54">${joined}</td>
+          <td>${status}</td>
+          <td>${plan}</td>
+          <td style="text-align:center">${optin}</td>
+          <td><div class="action-btns">
+            <button class="icon-btn" title="Copy email" onclick="copyText('${escAttr(u.email || '')}')">📋</button>
+            <button class="icon-btn" title="Send welcome back email" onclick="sendWelcomeBack('${escAttr(u.email || '')}')">📧</button>
+          </div></td>
+        </tr>`;
+      }).join('');
+    }
+    document.getElementById('table-count').textContent = `Showing ${users.length} of ${allUsers.length} users`;
+  }
+
+  function sortBy(col) {
+    const sel = document.getElementById('sort-col');
+    const current = sel.value;
+    sel.value = current === col + '_asc' ? col + '_desc' : col + '_asc';
+    renderTable();
+  }
+
+  // ── Actions ──────────────────────────────────────────────────────────────
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => toast('Copied: ' + text));
+  }
+
+  async function sendWelcomeBack(email) {
+    if (!email || !confirm(`Send Welcome Back email to ${email}?`)) return;
+    const res = await fetch(`${FUNCTIONS_BASE}/resend-welcome-all`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: adminSecret, email }),
+    });
+    const data = await res.json();
+    toast(data.ok ? `✅ Email sent to ${email}` : `❌ Failed: ${data.error}`);
+  }
+
+  // ── Friend code ──────────────────────────────────────────────────────────
+  async function generateFriendCode() {
+    const name = document.getElementById('fc-name').value.trim();
+    const email = document.getElementById('fc-email').value.trim();
+    const note = document.getElementById('fc-note').value.trim();
+    const days = parseInt(document.getElementById('fc-days').value) || 90;
+    if (!name) { alert('Enter a name'); return; }
+
+    const resultEl = document.getElementById('fc-result');
+    resultEl.style.display = 'block';
+    resultEl.textContent = 'Generating…';
+
+    const res = await fetch(`${FUNCTIONS_BASE}/admin-friend-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: adminSecret, name, email: email || null, send_email: !!email, note: note || null, expires_days: days }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      resultEl.innerHTML = `
+        <div>Code: <span class="code">${data.promo_code}</span></div>
+        <div style="margin-top:6px;font-size:11px">Discount: ${data.discount} &nbsp;·&nbsp; Expires: ${data.expires}</div>
+        ${data.email_sent ? `<div style="color:#22c55e;margin-top:4px">✅ Email sent to ${data.email}</div>` : ''}
+      `;
+    } else {
+      resultEl.innerHTML = `<span style="color:#ef4444">Error: ${data.error}</span>`;
+    }
+  }
+
+  // ── Email blast ──────────────────────────────────────────────────────────
+  async function emailBlast(dryRun) {
+    const email = document.getElementById('blast-email').value.trim();
+    const resultEl = document.getElementById('blast-result');
+    resultEl.style.display = 'block';
+    resultEl.textContent = dryRun ? 'Running dry run…' : 'Sending emails…';
+
+    const res = await fetch(`${FUNCTIONS_BASE}/resend-welcome-all`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: adminSecret, dry_run: dryRun, email: email || null }),
+    });
+    const data = await res.json();
+    if (dryRun && data.dry_run) {
+      resultEl.innerHTML = `<strong>Dry run — ${data.count} recipients:</strong><br><span style="font-family:monospace;font-size:11px">${(data.emails || []).join('<br>')}</span>`;
+    } else if (data.ok) {
+      resultEl.innerHTML = `<span style="color:#22c55e">✅ Sent: ${data.sent} &nbsp;|&nbsp; Failed: ${data.failed}</span>`;
+    } else {
+      resultEl.innerHTML = `<span style="color:#ef4444">Error: ${data.error}</span>`;
+    }
+  }
+
+  // ── Export CSV ────────────────────────────────────────────────────────────
+  function exportCSV() {
+    const rows = [['Name','Email','Joined','Status','Plan','Marketing Opt-In']];
+    allUsers.forEach(u => {
+      rows.push([
+        [u.first_name, u.last_name].filter(Boolean).join(' '),
+        u.email || '',
+        u.created_at ? new Date(u.created_at).toISOString().slice(0,10) : '',
+        u.subscription_status || 'free',
+        u.plan_type || '',
+        u.marketing_opt_in ? 'yes' : 'no',
+      ]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `soulgainz-users-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ── Tabs ─────────────────────────────────────────────────────────────────
+  function showTab(name, btn) {
+    ['users','friendcode','emailblast'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (name === 'users' && !allUsers.length) loadUsers();
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escAttr(s) { return s.replace(/'/g,"\\'"); }
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+</script>
+
+</body>
+</html>

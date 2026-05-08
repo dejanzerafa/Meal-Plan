@@ -1,7 +1,7 @@
 // SoulGainz — Service Worker v18
 // Caches app shell only — CDN scripts handled natively by browser
 
-const CACHE_NAME = 'meal-plan-v36';
+const CACHE_NAME = 'meal-plan-v37';
 
 // App shell — cached immediately on install
 const PRECACHE = [
@@ -55,5 +55,33 @@ self.addEventListener('fetch', event => {
           cached || caches.match('/index.html')
         )
       )
+  );
+});
+
+// ── Push notifications ───────────────────────────────────────────────────────
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || 'SoulGainz';
+  const options = {
+    body: data.body || "Time to meal prep! 🍗",
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag || 'soulgainz-reminder',
+    renotify: true,
+    data: { url: data.url || '/' },
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const client of list) {
+        if (client.url === url && 'focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
   );
 });
