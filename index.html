@@ -300,8 +300,8 @@ let C = Object.assign({}, LIGHT_C);
 const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 // ── Push notification VAPID key ──────────────────────────────────────────────
 // Generate keys once: npx web-push generate-vapid-keys
-// Paste the PUBLIC key here and both keys into Netlify env vars.
-const VAPID_PUBLIC_KEY = "BMKlYKKnIpVRthufq_yxuWVOLhftk8jZWWBqYZyaGrq1_KE2PxxXeklIS41qP9FiUIpaTwKIrqgmyKnY5tt5rww";
+// Paste the VAPID public key here (safe to expose — public key only).
+const PUSH_SERVER_KEY = "BMKlYKKnIpVRthufq_yxuWVOLhftk8jZWWBqYZyaGrq1_KE2PxxXeklIS41qP9FiUIpaTwKIrqgmyKnY5tt5rww";
 const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Aromatics", "Sauces", "Liquids"];
 const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧" };
@@ -3541,6 +3541,16 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
     const toggleStep = i => setStepsDone(s => (Object.assign(Object.assign({}, s), { [i]: !s[i] })));
     const doneCount = Object.values(stepsDone).filter(Boolean).length;
+    const allergenEl = (function() {
+        const allergens = detectAllergens(r);
+        if (!allergens.length) return React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "No common allergens detected — always double-check ingredient labels.");
+        return React.createElement("div", null,
+            React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 6 } }, "This recipe may contain:"),
+            React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 5 } },
+                allergens.map(function(a) { return React.createElement("span", { key: a.name, style: { fontSize: 11, fontWeight: 600, color: "#b45309",
+                    background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.25)",
+                    borderRadius: 6, padding: "3px 8px" } }, a.icon, " ", a.name); })));
+    })();
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${active ? C.accentBorder : C.border}`,
             borderRadius: 14, overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
@@ -3665,17 +3675,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#b45309", letterSpacing: "0.08em", marginBottom: 8 } }, "\u26A0\uFE0F ALLERGY NOTICE"),
                 React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.65, marginBottom: 10 } },
                     "SoulGainz provides recipes, not food. We are not responsible for any allergic reactions. Always read ingredient labels carefully and adapt this recipe to suit your dietary needs and allergies."),
-                (function() {
-                    const allergens = detectAllergens(r);
-                    if (!allergens.length) return React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "No common allergens detected \u2014 always double-check ingredient labels.");
-                    return React.createElement("div", null,
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 6 } }, "This recipe may contain:"),
-                        React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 5 } },
-                            allergens.map(a => React.createElement("span", { key: a.name, style: { fontSize: 11, fontWeight: 600, color: "#b45309",
-                                background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.25)",
-                                borderRadius: 6, padding: "3px 8px" } },
-                                a.icon, " ", a.name))));
-                })()))))));
+                allergenEl)))))));
 }
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
@@ -4793,8 +4793,8 @@ function NotificationToggle({ C, userEmail }) {
     }
 
     async function enable() {
-        if (!VAPID_PUBLIC_KEY) {
-            alert("Push notifications not configured yet. VAPID_PUBLIC_KEY is empty — see setup instructions.");
+        if (!PUSH_SERVER_KEY) {
+            alert("Push notifications not configured yet — see setup instructions.");
             return;
         }
         if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
@@ -4808,7 +4808,7 @@ function NotificationToggle({ C, userEmail }) {
             const reg = await navigator.serviceWorker.ready;
             const sub = await reg.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+                applicationServerKey: urlBase64ToUint8Array(PUSH_SERVER_KEY),
             });
             // Store subscription on server
             if (userEmail) {
