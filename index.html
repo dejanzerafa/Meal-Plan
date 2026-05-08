@@ -1614,6 +1614,25 @@ const RECIPES = [
 
     // ─── PRE-WORKOUT MEALS ───────────────────────────────────────────────────
     {
+        category: "preworkout", id: "pw0",
+        name: "⚡ Carb Bridge",
+        subtitle: "Rice cakes · jam · banana",
+        badge: "⚡ No Cook", carb: "🍌 Banana",
+        perPortion: { kcal: 271, protein: 2, carbs: 66, fat: 1 },
+        batchItems: [
+            { key: "cb_ricecake", label: "Kallo rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
+            { key: "cb_jam", label: "Jam (any flavour)", qty: 196, unit: "g", cat: "Sauces" },
+            { key: "cb_banana", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
+        ],
+        steps: [
+            "No cooking needed — assemble fresh before each session.",
+            "Spread jam generously across 2 rice cakes.",
+            "Slice banana on top or eat alongside.",
+            "Consume 45–60 min before training. Skip on rest days.",
+        ],
+        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 66g carbs, minimal protein and fat for maximum absorption speed.",
+    },
+    {
         category: "preworkout", id: "pw1",
         name: "🥜 Rice Cake & Peanut Butter Stack",
         subtitle: "Rice cakes · peanut butter · banana · honey",
@@ -5952,11 +5971,11 @@ function App() {
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
-                            React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Assign Meal \u2192"))))
+                            React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("preworkout"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10, padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer" } }, "+ Assign Meal \u2192"))))
                     : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale })
                     : React.createElement("div", { style: { marginBottom: 10 } },
                         React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale }),
-                        React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\u26A1 Swap to a different pre-workout meal \u2192")),
+                        React.createElement("button", { onClick: () => { setPendingSlot("preworkout"); setRecipeCat("preworkout"); setRecipeQuery(""); setTab("recipes"); }, style: { width: "100%", marginTop: 6, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "10px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\u26A1 Swap to a different pre-workout meal \u2192")),
                     React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.1em", marginTop: 6, marginBottom: 6 } }, "\uD83C\uDF7D\uFE0F MAINS"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\u2600\uFE0F LUNCH"),
