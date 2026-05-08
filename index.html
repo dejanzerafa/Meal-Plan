@@ -6261,6 +6261,29 @@ function dismissLoader() {
     l.style.animation = 'loaderOut 0.7s ease forwards';
     setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 700);
 }
+// Global error catcher — shows errors on screen without needing DevTools
+function showOnScreenError(msg, src, line) {
+    dismissLoader();
+    var root = document.getElementById('root');
+    if (root) {
+        root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#f3ece0;">'
+            + '<div style="font-size:32px;margin-bottom:16px;">⚠️</div>'
+            + '<div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#1a1612;">App error</div>'
+            + '<div style="font-size:12px;color:#b84a1f;margin-bottom:8px;word-break:break-all;max-width:400px;">' + msg + '</div>'
+            + (src ? '<div style="font-size:11px;color:#888;margin-bottom:20px;">' + src + (line ? ' line ' + line : '') + '</div>' : '')
+            + '<button onclick="location.reload()" style="background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">Reload</button>'
+            + '<button onclick="(function(){Object.keys(localStorage).forEach(function(k){localStorage.removeItem(k)});location.reload();})()" style="background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;">Clear Cache &amp; Reload</button>'
+            + '</div>';
+    }
+}
+window.onerror = function(msg, src, line, col, err) {
+    showOnScreenError(String(msg), src, line);
+    return false;
+};
+window.onunhandledrejection = function(e) {
+    showOnScreenError('Unhandled promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+};
+
 // Mount React — wrapped so a crash still dismisses the loader
 try {
     if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
@@ -6271,16 +6294,7 @@ try {
     if (localStorage.getItem("sg_onboarded")) { setTimeout(dismissLoader, 2900); }
 } catch (err) {
     console.error('App mount error:', err);
-    // Show error inside root so user isn't stuck on loader
-    var root = document.getElementById('root');
-    if (root) {
-        root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#f3ece0;">'
-            + '<div style="font-size:32px;margin-bottom:16px;">⚠️</div>'
-            + '<div style="font-size:16px;font-weight:700;margin-bottom:8px;">App failed to load</div>'
-            + '<div style="font-size:13px;color:#888;margin-bottom:24px;">' + err.message + '</div>'
-            + '<button onclick="location.reload()" style="background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;">Try Again</button>'
-            + '</div>';
-    }
+    showOnScreenError(err.message);
     dismissLoader();
 }
   </script>
