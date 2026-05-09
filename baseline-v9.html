@@ -721,7 +721,7 @@ const RECIPES = [
     {
         category: "main", id: "m13", name: "🥩 Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
-        perPortion: { kcal: 743, protein: 54, carbs: 81, fat: 20 },
+        perPortion: { kcal: 728, protein: 53, carbs: 78, fat: 20 },
         note: "Steak replaced with lean 5% beef mince. Cheese blend: 196g FF CC + 37g light mozz + 12g parmesan. Sour cream reduced to 140g to keep fat at target. Drain beef thoroughly.",
         batchItems: [
             { key: "beef_mince_lean", label: "Lean beef mince (5%)", qty: 1300, unit: "g", cat: "Protein" },
@@ -3543,9 +3543,8 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     const lastCooked = getLastCooked(r.id);
     const neverUsed = !localStorage.getItem(`mp_last_${r.id}`);
     // For flexPortions recipes the full batch is always made; only the divisor changes.
-    // For standard recipes, scale ingredient display by selectedBatch / recipeParts so
-    // a recipe that makes 5 portions shows 100% of its batch items when batch=5 is chosen.
-    const scale = r.flexPortions ? 1 : (portions || 7) / getPortions(r, portions || 7);
+    // For standard recipes, scale ingredient display proportionally to global batch size.
+    const scale = r.flexPortions ? 1 : (portions || 7) / 7;
     // Compute display macros live so flexPortions recipes respond to the batch selector.
     const displayMacros = computePerPortion(r, 1, portions || 7);
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
@@ -5606,11 +5605,11 @@ function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
     const [preSkipped, setPreSkippedState] = useState(() => localStorage.getItem("mp_pre_skip") === "1");
-    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || "pw1");
+    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || null);
     const [pendingSlot, setPendingSlot] = useState(null); // null | "lunch" | "dinner" | "breakfast" | "dessert"
     const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "m01");
     const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "m04");
-    const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || "bf2");
+    const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || null);
     const [dessert, setDessertState] = useState(() => localStorage.getItem("mp_dessert") || null);
     const [lunchScale, setLunchScale] = useState(1);
     const [dinnerScale, setDinnerScale] = useState(1);
@@ -5655,7 +5654,7 @@ function App() {
         return "meals";
     });
     const [filter, setFilter] = useState("All");
-    const [recipeCat, setRecipeCat] = useState("breakfast");
+    const [recipeCat, setRecipeCat] = useState("main");
     const [recipeQuery, setRecipeQuery] = useState("");
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
@@ -5850,10 +5849,11 @@ function App() {
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
     }).sort((a, b) => {
-        // Unlocked recipes first, locked after. Both groups A-Z.
-        const aLocked = canView(a.id) ? 0 : 1;
-        const bLocked = canView(b.id) ? 0 : 1;
-        if (aLocked !== bLocked) return aLocked - bLocked;
+        // Unlocked recipes first, then locked. Within each group: alphabetical by name.
+        const aViewable = canView(a.id) ? 0 : 1;
+        const bViewable = canView(b.id) ? 0 : 1;
+        if (aViewable !== bViewable)
+            return aViewable - bViewable;
         return a.name.localeCompare(b.name);
     });
     const handleSetLunch = id => { setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); setTab("meals"); };
@@ -5873,10 +5873,10 @@ function App() {
                 borderRight: `1px solid ${C.dim}40`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
                 boxShadow: `2px 0 12px ${C.card}80` } },
-            React.createElement("div", { onClick: tapLogo, style: { marginBottom: 14, flexShrink: 0, cursor: "pointer",
-                    WebkitTapHighlightColor: "transparent", display: "flex", flexDirection: "column", alignItems: "center" } },
-                React.createElement("svg", { width: 22, height: 31, viewBox: "-12 -32 24 44" },
-                    React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" }))),
+            React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, overflow: "hidden",
+                    marginBottom: 14, flexShrink: 0, cursor: "pointer",
+                    WebkitTapHighlightColor: "transparent" } },
+                React.createElement("img", { src: "/icon-192.png", alt: "SoulGainz", style: { width: 36, height: 36, display: "block" } })),
             (() => {
                 const active = tab === "profile";
                 return React.createElement("button", { onClick: () => setTab("profile"), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 10,
@@ -5940,7 +5940,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD · MADE SIMPLE"),
                         React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 600 } },
                             (function(){ var d=new Date(); return d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"}); })())),
-                    React.createElement(FlameWordmark, { size: 18 }),
+                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, lineHeight: 1.2 } }, "SoulGainz"),
                     React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 3 } },
                         "☀️ ",
                         React.createElement("span", { style: { color: C.text } }, lr ? lr.name : "No lunch"),
