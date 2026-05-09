@@ -3302,7 +3302,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                 React.createElement(Macro, { label: "CARBS", value: macros.carbs, color: C.carb }),
                 React.createElement(Macro, { label: "FAT", value: macros.fat, color: C.fat })),
             isRecipe && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
-                    border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🧺 Fridge pull — batch ingredients")),
+                    border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🍱 Fridge pull — batch ingredients")),
             !isRecipe && meal.items && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide details" : "▼ View ingredients"))),
         open && isRecipe && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
