@@ -3,6 +3,8 @@
 // 2. Adds contact to Resend Audience
 // 3a. New user  -> sends "Welcome to SoulGainz" email + sets welcome_sent = true
 // 3b. Returning -> sends "Welcome Back!" email (always on re-save)
+// Pass skip_email: true in payload to upsert data without sending any email
+//   (used by Me tab profile updates — welcome was already sent at onboarding)
 //
 // Required env vars:
 //   SUPABASE_URL         - https://xxxx.supabase.co
@@ -24,7 +26,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { email, first_name, last_name, marketing_opt_in = true } = payload;
+  const { email, first_name, last_name, marketing_opt_in = true, skip_email = false } = payload;
 
   if (!email || !email.includes("@")) {
     return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
@@ -121,7 +123,8 @@ exports.handler = async (event) => {
     }
 
     // -- 3. Send email -----------------------------------------------------------
-    if (resendKey) {
+    // skip_email: true means this is a profile update (Me tab) — data saved, no email
+    if (resendKey && !skip_email) {
       const firstName = first_name || email.split("@")[0] || "there";
       const alreadySent = userData?.welcome_sent;
 

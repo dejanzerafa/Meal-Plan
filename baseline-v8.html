@@ -333,6 +333,7 @@ const BREAKFAST = {
     items: ["200g fat-free cottage cheese", "100g smoked turkey", "2 whole eggs",
         "2 sl. Baker Street white bread", "150g cherry tomatoes",
         "Double espresso + Baladna skimmed milk", "250mL Baladna skimmed milk", "1 scoop ON whey"],
+    supplements: ["Creatine 10g", "Vitamin D 4000 IU", "Fish oil ×2"],
 };
 const PRE = {
     type: "Pre-Workout", icon: "⚡", name: "Carb Bridge",
@@ -349,7 +350,7 @@ const IDB = [
             { n: "Whole egg (raw)", kcal: 147, p: 13, c: 0.7, f: 10 },
             { n: "Beef bacon", kcal: 170, p: 15, c: 0, f: 12 },
         ] },
-    { cat: "Dairy 🥛", items: [
+    { cat: "Dairy & Supplements 🥛", items: [
             { n: "Fat-free cottage cheese", kcal: 72, p: 12, c: 4, f: 0.5 },
             { n: "Fat-free cottage cheese (chive or natural)", kcal: 72, p: 12, c: 4, f: 0.5 },
             { n: "0% Greek yogurt", kcal: 57, p: 10, c: 3.6, f: 0.4 },
@@ -398,7 +399,7 @@ const IDB = [
         ] },
 ];
 // ─── RECIPE BANK ─────────────────────────────────────────────────────────
-// perPortion: includes ½ tbsp olive oil.
+// perPortion: includes ½ tbsp olive oil. Fish oil added by computeMeals for dinner only.
 // batchItems: same key across recipes → quantities merge in shopping list.
 // ONE carb source per recipe — no pasta + rice ever.
 const RECIPES = [
@@ -1710,7 +1711,7 @@ const RECIPES = [
         perPortion: { kcal: 116, protein: 12, carbs: 15, fat: 0.4 },
         batchItems: [
             { key: "pw_ew2", label: "Liquid egg whites", qty: 700, unit: "g", cat: "Protein" },
-            { key: "pw_bread", label: "Wholegrain bread (loaf)", qty: 14, unit: "whole", cat: "Carbs" },
+            { key: "pw_bread", label: "Wholegrain bread (loaf)", qty: 1, unit: "whole", cat: "Carbs" },
             { key: "pw_jam", label: "Strawberry jam (low-sugar)", qty: 140, unit: "g", cat: "Sauces" },
         ],
         steps: [
@@ -1751,7 +1752,7 @@ const RECIPES = [
         batchItems: [
             { key: "pw_chocmilk", label: "Low-fat chocolate milk (1L cartons)", qty: 2, unit: "whole", cat: "Dairy" },
             { key: "pw_banana4", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
-            { key: "pw_ricecake2", label: "Plain rice cakes (pack)", qty: 14, unit: "whole", cat: "Carbs" },
+            { key: "pw_ricecake2", label: "Plain rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
         ],
         steps: [
             "No prep required.",
@@ -1787,6 +1788,7 @@ const RECIPES = [
             "Halve 150g cherry tomatoes for freshness and acidity.",
             "Pull a double espresso and combine with 250mL skimmed milk.",
             "Blend 1 scoop whey with the espresso-milk for the protein hit.",
+            "Optional supplements: Creatine 10g · Vitamin D 4000 IU · Fish oil ×2.",
         ],
         note: "Macros: 798 kcal · 93P · 64C · 19F (1 portion). The default daily breakfast — designed to hit ~50% of daily protein in one meal. Assembled, not cooked: just toast, plate, drink. Can be prepped in 5 min before training.",
     },
@@ -2560,6 +2562,10 @@ const FIXED = {
     ],
     "⚡ Pre-Workout — 7 days": [
         "7 bananas", "14 Kallo rice cakes", "~560 g jam",
+    ],
+    "💊 Supplements — 7 days": [
+        "7 creatine sachets (10g each)", "28 vitamin D tablets",
+        "28 fish oil softgels", "7 zinc capsules", "7 magnesium servings",
     ],
     "🧂 Pantry": [
         "Olive oil (½ tbsp × 14 portions)", "Salt · black pepper · rosemary", "PAM cooking spray",
@@ -3387,7 +3393,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                 React.createElement(Macro, { label: "FAT", value: macros.fat, color: C.fat })),
             isRecipe && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🧺 Fridge pull — batch ingredients")),
-            !isRecipe && meal.items && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
+            !isRecipe && (meal.items || meal.supplements) && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide details" : "▼ View ingredients"))),
         open && isRecipe && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
             meal.note && React.createElement("div", { style: { fontSize: 11, color: C.sub, background: C.card2, borderRadius: 6,
@@ -3418,7 +3424,10 @@ function MealCard({ meal, macros, slot, profileScale }) {
         open && !isRecipe && meal.items && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
             React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } }, meal.items.map((item, i) => (React.createElement("span", { key: i, style: { fontSize: 11, color: C.text, background: C.card2,
                     border: `1px solid ${C.dim}`, borderRadius: 6, padding: "3px 8px" } }, item)))),
-            ))));
+            meal.supplements && React.createElement(React.Fragment, null,
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 600, color: C.sub, marginTop: 10, marginBottom: 6, letterSpacing: "0.06em" } }, "SUPPLEMENTS"),
+                React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } }, meal.supplements.map((s, i) => (React.createElement("span", { key: i, style: { fontSize: 11, color: C.green, background: C.greenDim,
+                        border: `1px solid ${C.greenBorder}`, borderRadius: 6, padding: "3px 8px" } }, s)))))))));
 }
 // ─── DAILY TOTAL BAR ───────────────────────────────────────────────────────
 // Kcal: ≤2500 green · 2501–2700 amber · >2700 red
@@ -3782,7 +3791,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
                 CAT_ICON[cat], " ", cat.toUpperCase()),
             items.map(item => React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(item) }))))),
-        // ── Fixed pantry / misc items ──
+        // ── Supplements / fixed items (breakfast & pre-workout now dynamic above) ──
         Object.entries(FIXED)
             .filter(([section]) => !section.startsWith("🌅") && !section.startsWith("⚡"))
             .map(([section, items]) => (React.createElement("div", { key: section, style: { marginBottom: 14 } },
@@ -3798,7 +3807,7 @@ function MacroRef() {
         React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 14, lineHeight: 1.5 } },
             "Proteins, grains, dairy ",
             '&',
-            " veg are per 100 g raw/dry. Oils and condiments are per serving. \u00BD tbsp olive oil added per meal portion."),
+            " veg are per 100 g raw/dry. Oils and condiments are per serving. \u00BD tbsp olive oil added per meal portion. Fish oil (+18 kcal \u00B7 +2g fat) added for dinner only."),
         IDB.map(sec => (React.createElement("div", { key: sec.cat, style: { marginBottom: 10 } },
             React.createElement("div", { onClick: () => tog(sec.cat), style: { display: "flex", justifyContent: "space-between",
                     background: C.card, border: `1px solid ${C.dim}`, borderRadius: 10, padding: "10px 14px",
@@ -4302,20 +4311,20 @@ function calcActivityMultiplier(job, steps, training) {
         return 1.725;
     return 1.9;
 }
-function calcMacros(tdee, weight, goal, bmr, gender, loseRate) {
+function calcMacros(tdee, weight, goal, bmr, gender) {
     if (!tdee || !weight)
         return { kcal: 0, protein: 0, carbs: 0, fat: 0, deficit: 0, deficitNote: "" };
     // Clinical minimum calories: 1500 kcal men / 1200 kcal women (established safe floor)
     const clinicalMin = gender === "female" ? 1200 : 1500;
-    // Deficit determined by user's chosen loss rate:
-    //   light (0.5 kg/wk) → 300 kcal  |  sustainable (1 kg/wk) → 500 kcal  |  aggressive (1.5 kg/wk) → 700 kcal
-    const deficitMap = { light: 300, sustainable: 500, aggressive: 700 };
-    const deficitAmount = deficitMap[loseRate] || 500;
-    const idealTarget = tdee - deficitAmount;
+    // Target deficit: 500 kcal/day — the evidence-based standard for ~0.5 kg/week fat loss.
+    // (Source: NASM, ACSM, NIH consensus. 300 kcal yields only ~0.27 kg/week — too slow.
+    //  1000 kcal causes excessive muscle loss and poor adherence. 500 is the sweet spot.)
+    // Never drop below the clinical minimum regardless of deficit size.
+    const idealTarget = tdee - 500;
     let kcal, deficitNote = "";
     if (goal === "lose") {
         if (idealTarget >= clinicalMin) {
-            kcal = Math.round(idealTarget);
+            kcal = Math.round(idealTarget); // full 300 kcal deficit
         } else {
             // TDEE is low (very sedentary / small person) — apply reduced deficit
             // down to the clinical minimum; explain this to the user
@@ -4386,35 +4395,23 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
             React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your first calculation was free. To update your targets as your body changes, unlock the calculator — included in any plan or as a standalone add-on."),
             React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, color: "#fff", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 10 } }, "Unlock Recalculation →"),
             React.createElement("button", { onClick: () => setShowRecalcGate(false), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, color: C.muted, borderRadius: 12, padding: "12px", fontSize: 12, cursor: "pointer" } }, "I already have a plan — continue")));
-    const [form, setForm] = useState(() => {
-        // Pull name from account — set at onboarding, no need to re-enter in the calculator
-        const storedFirst = (() => { try { return localStorage.getItem("mp_acc_first_name") || ""; } catch(e){ return ""; } })();
-        const storedLast  = (() => { try { return localStorage.getItem("mp_acc_last_name")  || ""; } catch(e){ return ""; } })();
-        // Fallback: parse from mp_acc_name if individual parts not stored yet
-        const storedFull  = (() => { try { return localStorage.getItem("mp_acc_name") || ""; } catch(e){ return ""; } })();
-        const parts = storedFull.trim().split(" ");
-        const firstName = storedFirst || (parts[0] || "");
-        const lastName  = storedLast  || (parts.slice(1).join(" ") || "");
-        return initialProfile ? {
-            firstName: initialProfile.firstName || firstName,
-            lastName:  initialProfile.lastName  || lastName,
-            dob: initialProfile.dob || "",
-            gender: initialProfile.gender || "male",
-            height: initialProfile.height || "",
-            weight: initialProfile.weight || "",
-            heightUnit: initialProfile.heightUnit || "cm",
-            weightUnit: initialProfile.weightUnit || "kg",
-            job: initialProfile.job || "desk",
-            steps: initialProfile.steps || "6-10k",
-            training: initialProfile.training || "3-4",
-            goal: initialProfile.goal || "lose",
-            loseRate: initialProfile.loseRate || "sustainable",
-        } : {
-            firstName, lastName, dob: "", gender: "male",
-            height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
-            job: "desk", steps: "6-10k", training: "3-4", goal: "lose",
-            loseRate: "sustainable",
-        };
+    const [form, setForm] = useState(() => initialProfile ? {
+        firstName: initialProfile.firstName || "",
+        lastName: initialProfile.lastName || "",
+        dob: initialProfile.dob || "",
+        gender: initialProfile.gender || "male",
+        height: initialProfile.height || "",
+        weight: initialProfile.weight || "",
+        heightUnit: initialProfile.heightUnit || "cm",
+        weightUnit: initialProfile.weightUnit || "kg",
+        job: initialProfile.job || "desk",
+        steps: initialProfile.steps || "6-10k",
+        training: initialProfile.training || "3-4",
+        goal: initialProfile.goal || "lose",
+    } : {
+        firstName: "", lastName: "", dob: "", gender: "male",
+        height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+        job: "desk", steps: "6-10k", training: "3-4", goal: "lose"
     });
     const [result, setResult] = useState(null);
     const set = (k, v) => setForm(f => (Object.assign(Object.assign({}, f), { [k]: v })));
@@ -4450,7 +4447,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         const mult = calcActivityMultiplier(form.job, form.steps, form.training);
         const tdee = Math.round(bmr * mult);
         const bmi = parseFloat(calcBMI(w, h).toFixed(1));
-        const macros = calcMacros(tdee, w, form.goal, bmr, form.gender, form.loseRate);
+        const macros = calcMacros(tdee, w, form.goal, bmr, form.gender);
         const actLabel = mult <= 1.2 ? "Sedentary" : mult <= 1.375 ? "Lightly Active" : mult <= 1.55 ? "Moderately Active" : mult <= 1.725 ? "Very Active" : "Extra Active";
         return { bmr, tdee, bmi, macros, actLabel, age, w: Math.round(w * 10) / 10, h: Math.round(h) };
     };
@@ -4475,7 +4472,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     };
     const canNext = () => {
         if (step === 0)
-            return calcAge(form.dob) !== null;
+            return form.firstName.trim().length > 0 && calcAge(form.dob) !== null;
         if (step === 1)
             return getWeightKg() > 0 && getHeightCm() > 0;
         return true;
@@ -4483,6 +4480,10 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     const renderStep = () => {
         if (step === 0)
             return (React.createElement("div", { key: "s0" },
+                React.createElement(CalcInputRow, { label: "First Name" },
+                    React.createElement(CalcTextInput, { value: form.firstName, onChange: e => set("firstName", e.target.value), placeholder: "e.g. Alex" })),
+                React.createElement(CalcInputRow, { label: "Last Name" },
+                    React.createElement(CalcTextInput, { value: form.lastName, onChange: e => set("lastName", e.target.value), placeholder: "e.g. Smith" })),
                 React.createElement(CalcInputRow, { label: "Date of Birth" },
                     React.createElement(CalcTextInput, { value: form.dob, onChange: e => set("dob", e.target.value), type: "date", placeholder: "" })),
                 React.createElement(CalcInputRow, { label: "Gender" },
@@ -4516,22 +4517,9 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { display: "flex", gap: 6 } }, ["0", "1-2", "3-4", "5-6", "7+"].map(v => (React.createElement(CalcSegBtn, { key: v, selected: form.training === v, onClick: () => set("training", v), label: v })))))));
         if (step === 3)
             return (React.createElement("div", { key: "s3" },
-                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "Calorie deficit \u00B7 High protein to preserve muscle" }),
+                React.createElement(CalcOptionBtn, { selected: form.goal === "lose", onClick: () => set("goal", "lose"), label: "\uD83D\uDD25 Lose Body Fat", sub: "~500 kcal deficit \u00B7 ~0.5 kg/week \u00B7 High protein to preserve muscle" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "maintain", onClick: () => set("goal", "maintain"), label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
-                React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" }),
-                form.goal === "lose" && React.createElement("div", { style: { marginTop: 16, padding: "14px", background: "rgba(184,74,31,0.06)", borderRadius: 12, border: "1px solid rgba(184,74,31,0.2)" } },
-                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: "#8896b3", letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 10 } }, "How fast do you want to lose weight?"),
-                    React.createElement("button", { onClick: () => set("loseRate", "light"), style: { width: "100%", background: form.loseRate === "light" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "light" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "light" ? "#b84a1f" : "#1a1612" } }, "\uD83D\uDC22 Light \u2014 0.5 kg / week"),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "300 kcal deficit \u00B7 Easiest to maintain \u00B7 Minimal muscle risk")),
-                    React.createElement("button", { onClick: () => set("loseRate", "sustainable"), style: { width: "100%", background: form.loseRate === "sustainable" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "sustainable" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
-                        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
-                            React.createElement("span", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "sustainable" ? "#b84a1f" : "#1a1612" } }, "\u2696\uFE0F Sustainable \u2014 1 kg / week"),
-                            React.createElement("span", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "#fff", background: "#b84a1f", borderRadius: 4, padding: "2px 6px" } }, "MOST POPULAR")),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "500 kcal deficit \u00B7 Evidence-based sweet spot \u00B7 Preserves muscle")),
-                    React.createElement("button", { onClick: () => set("loseRate", "aggressive"), style: { width: "100%", background: form.loseRate === "aggressive" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "aggressive" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 0, WebkitTapHighlightColor: "transparent" } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "aggressive" ? "#b84a1f" : "#1a1612" } }, "\uD83D\uDD25 Aggressive \u2014 1.5 kg / week"),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "700 kcal deficit \u00B7 Faster results \u00B7 Requires strict adherence")))));
+                React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" })));
         if (step === 4 && result) {
             const { bmr, tdee, bmi, macros, actLabel, age, w, h } = result;
             const bmiInfo = bmiLabel(bmi);
@@ -4562,7 +4550,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "calories per day"),
                     form.goal === "lose" && macros.deficit > 0 && React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 700, marginTop: 6,
                             background: "rgba(180,83,9,0.12)", borderRadius: 8, padding: "4px 10px", display: "inline-block" } },
-                        "\u2212", macros.deficit, " kcal deficit \u00B7 ", { light: "0.5 kg/week", sustainable: "1 kg/week", aggressive: "1.5 kg/week" }[form.loseRate] || "1 kg/week"),
+                        "\u2212", macros.deficit, " kcal deficit \u00B7 between BMR & TDEE"),
                     form.goal === "gain" && React.createElement("div", { style: { fontSize: 11, color: C.green, fontWeight: 700, marginTop: 6,
                             background: "rgba(34,197,94,0.1)", borderRadius: 8, padding: "4px 10px", display: "inline-block" } },
                         "+", Math.abs(macros.deficit), " kcal surplus")),
@@ -4742,8 +4730,7 @@ function ManualMacroInput({ C, onSave }) {
 function AccountCard({ C }) {
     const [name, setName] = useState(() => { try { return localStorage.getItem("mp_acc_name") || ""; } catch(e){ return ""; } });
     const [email, setEmail] = useState(() => { try { return localStorage.getItem("mp_acc_email") || ""; } catch(e){ return ""; } });
-    // Show as already saved if onboarding registered them (mp_acc_email set at signup)
-    const [saved, setSaved] = useState(() => { try { return !!localStorage.getItem("mp_acc_email"); } catch(e){ return false; } });
+    const [saved, setSaved] = useState(() => { try { return !!localStorage.getItem("mp_acc_name"); } catch(e){ return false; } });
     const [saving, setSaving] = useState(false);
     const [editing, setEditing] = useState(false);
     const inputStyle = { width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${C.dim}`,
@@ -4752,24 +4739,17 @@ function AccountCard({ C }) {
         if (!name.trim() || !email.trim()) return;
         setSaving(true);
         try {
-            const nameParts = name.trim().split(" ");
-            const firstName = (nameParts[0] || "").trim();
-            const lastName  = nameParts.slice(1).join(" ").trim() || "";
             localStorage.setItem("mp_acc_name", name.trim());
             localStorage.setItem("mp_acc_email", email.trim());
-            localStorage.setItem("mp_acc_first_name", firstName);
-            localStorage.setItem("mp_acc_last_name", lastName);
-            // skip_email: true — welcome was already sent at onboarding signup
-            // Only updates Supabase/Resend data, never re-sends any email
+            const nameParts = name.trim().split(" ");
             await fetch("/.netlify/functions/save-user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     email: email.trim().toLowerCase(),
-                    first_name: firstName,
-                    last_name: lastName,
+                    first_name: (nameParts[0] || "").trim(),
+                    last_name: nameParts.slice(1).join(" ").trim() || "",
                     marketing_opt_in: true,
-                    skip_email: true,
                 }),
             }).catch(() => {});
         } catch(e) {}
@@ -5526,9 +5506,6 @@ function OnboardingSignup({ onDone }) {
                 }),
             });
             localStorage.setItem("mp_acc_email", email.trim());
-            localStorage.setItem("mp_acc_first_name", name.trim());
-            localStorage.setItem("mp_acc_last_name", surname.trim());
-            localStorage.setItem("mp_acc_name", (name.trim() + " " + surname.trim()).trim());
             localStorage.setItem("sg_onboarded", "registered");
             localStorage.removeItem("sg_skip_ts");
             setStatus("done");
@@ -5978,6 +5955,7 @@ function App() {
                         "\uD83D\uDCCA All portions scaled to your " + effectiveTargets.kcal + " kcal target (" + Math.round(profileScale * 100) + "% of base recipe)"),
 
                     React.createElement(TotalBar, { total: total, targets: effectiveTargets, profileName: profileName }),
+                    React.createElement("div", { style: { fontSize: 10, color: C.sub, textAlign: "center", margin: "8px 0 12px", lineHeight: 1.6 } }, "\uD83C\uDF19 Dinner + fish oil (+18 kcal \u00B7 +2g fat) \u00B7 Before bed: Magnesium glycinate"),
                     React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, textAlign: "center", margin: "10px 0 14px", padding: "9px 14px", background: C.accentDim, borderRadius: 10, border: "1px solid " + C.accent } }, "\uD83C\uDF7D\uFE0F Assign meals from the Recipes tab — each recipe has a Set button"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST"),
