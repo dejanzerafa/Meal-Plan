@@ -734,13 +734,13 @@ const RECIPES = [
     {
         category: "breakfast", id: "bf4",
         name: "🥚 Eggs on Wholegrain Toast",
-        subtitle: "1 serving · ~10 min",
+        subtitle: "Fresh each morning · ~10 min",
         badge: "🍳 Stovetop", carb: "Wholegrain",
         perPortion: { kcal: 421, protein: 34, carbs: 34, fat: 15.4 },
         batchItems: [
-            { key: "bf4-eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
-            { key: "bf4-whites", label: "Egg whites", qty: 3, unit: "whole", cat: "Protein" },
-            { key: "bf4-toast", label: "Wholegrain bread slice", qty: 2, unit: "whole", cat: "Carbs" },
+            { key: "bf4-eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" },
+            { key: "bf4-whites", label: "Egg whites", qty: 21, unit: "whole", cat: "Protein" },
+            { key: "bf4-toast", label: "Wholegrain bread slice", qty: 14, unit: "whole", cat: "Carbs" },
         ],
         steps: [
             "Crack 2 whole eggs and 3 egg whites into a bowl and whisk.",
@@ -2681,7 +2681,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
         add(bfr.batchItems, (p / srv) * gl);
     }
     if (desr && desr.batchItems) add(desr.batchItems, gl);
-    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, gl);
+    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, p / (prer.portions || 7));
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
     Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
@@ -3625,7 +3625,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const bfItems = (!bfSkipped && bfr && bfr.batchItems)
         ? buildSlotItems(bfr.batchItems, (p / bfSrv) * gl) : [];
     const preItems = (!preSkipped && prer && prer.batchItems)
-        ? buildSlotItems(prer.batchItems, (p / (prer.portions || 7)) * gl) : [];
+        ? buildSlotItems(prer.batchItems, p / (prer.portions || 7)) : [];
     // Main batch = lunch + dinner + dessert only, grouped by category
     const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale);
     const scalePct = Math.round(gl * 100);
