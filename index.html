@@ -252,8 +252,8 @@ const BREAKFAST = {
 };
 const PRE = {
     type: "Pre-Workout", icon: "⚡", name: "Carb Bridge",
-    kcal: 271, protein: 2, carbs: 66, fat: 1, fixed: true,
-    items: ["2 Kallo rice cakes", "4 tbsp jam", "1 banana"],
+    kcal: 182, protein: 1, carbs: 43, fat: 1, fixed: true,
+    items: ["2 Kallo rice cakes", "4 tbsp jam"],
     note: "45–60 min before training. Skip on rest days.",
 };
 // ─── INGREDIENT DB ─────────────────────────────────────────────────────────
@@ -1542,21 +1542,19 @@ const RECIPES = [
     {
         category: "preworkout", id: "pw0",
         name: "⚡ Carb Bridge",
-        subtitle: "Rice cakes · jam · banana",
-        badge: "⚡ No Cook", carb: "🍌 Banana",
-        perPortion: { kcal: 271, protein: 2, carbs: 66, fat: 1 },
+        subtitle: "Rice cakes · jam",
+        badge: "⚡ No Cook", carb: "🍚 Rice Cakes",
+        perPortion: { kcal: 182, protein: 1, carbs: 43, fat: 1 },
         batchItems: [
             { key: "cb_ricecake", label: "Kallo rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
             { key: "cb_jam", label: "Jam (any flavour)", qty: 196, unit: "g", cat: "Sauces" },
-            { key: "cb_banana", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
         ],
         steps: [
             "No cooking needed — assemble fresh before each session.",
             "Spread jam generously across 2 rice cakes.",
-            "Slice banana on top or eat alongside.",
             "Consume 45–60 min before training. Skip on rest days.",
         ],
-        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 66g carbs, minimal protein and fat for maximum absorption speed.",
+        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 43g carbs, minimal protein and fat for maximum absorption speed.",
     },
     {
         category: "preworkout", id: "pw1",
@@ -2475,7 +2473,7 @@ const FIXED = {
         "7 scoops ON whey", "14 slices Baker Street white bread",
     ],
     "⚡ Pre-Workout — 7 days": [
-        "7 bananas", "14 Kallo rice cakes", "~560 g jam",
+        "14 Kallo rice cakes", "~560 g jam",
     ],
     "🧂 Pantry": [
         "Olive oil (½ tbsp × 14 portions)", "Salt · black pepper · rosemary", "PAM cooking spray",
