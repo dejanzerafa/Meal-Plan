@@ -248,7 +248,7 @@ const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 // Paste the VAPID public key here (safe to expose — public key only).
 const PUSH_SERVER_KEY = "BMKlYKKnIpVRthufq_yxuWVOLhftk8jZWWBqYZyaGrq1_KE2PxxXeklIS41qP9FiUIpaTwKIrqgmyKnY5tt5rww";
 const FISH_OIL = { kcal: 18, fat: 2 };
-const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Aromatics", "Sauces", "Liquids"];
+const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Fruits", "Aromatics", "Sauces", "Liquids", "Fats", "Fat"];
 const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧" };
 // ─── FIXED MEALS ───────────────────────────────────────────────────────────
 const BREAKFAST = {
@@ -2476,7 +2476,7 @@ const RECIPES = [
     {
         category: "main", id: "hol1",
         name: "🎄 Rosemary Turkey & Cranberry Sweet Potato Bowl",
-        badge: "🎄 CHRISTMAS · portions: 7",
+        badge: "🎄 CHRISTMAS",
         subtitle: "Batch roasted · ~50 min",
         perPortion: { kcal: 425, protein: 55, carbs: 32, fat: 8 },
         locked: true,
@@ -2507,7 +2507,7 @@ const RECIPES = [
     {
         category: "main", id: "hol2",
         name: "🦃 Slow-Cooker Turkey & Butternut Squash Feast",
-        badge: "🦃 THANKSGIVING · portions: 7",
+        badge: "🦃 THANKSGIVING",
         subtitle: "Crockpot · ~4 hr low",
         perPortion: { kcal: 385, protein: 55, carbs: 23, fat: 7 },
         locked: true,
@@ -2539,7 +2539,7 @@ const RECIPES = [
     {
         category: "main", id: "hol3",
         name: "🐣 Herb-Crusted Lamb & Quinoa with Feta",
-        badge: "🐣 EASTER · portions: 7",
+        badge: "🐣 EASTER",
         subtitle: "Batch roasted · ~55 min",
         perPortion: { kcal: 620, protein: 48, carbs: 46, fat: 27 },
         locked: true,
@@ -2571,7 +2571,7 @@ const RECIPES = [
     {
         category: "main", id: "hol4",
         name: "🎃 Black Bean & Pumpkin Chilli Chicken Bowl",
-        badge: "🎃 HALLOWEEN · portions: 7",
+        badge: "🎃 HALLOWEEN",
         subtitle: "Stovetop · ~40 min",
         perPortion: { kcal: 430, protein: 51, carbs: 40, fat: 7 },
         locked: true,
@@ -2603,7 +2603,7 @@ const RECIPES = [
     {
         category: "main", id: "hol5",
         name: "🌙 Spiced Lamb & Lentil Rice (Mujadara-Style)",
-        badge: "🌙 EID AL-FITR · portions: 7",
+        badge: "🌙 EID AL-FITR",
         subtitle: "Stovetop · ~50 min",
         perPortion: { kcal: 710, protein: 49, carbs: 79, fat: 21 },
         locked: true,
@@ -2635,7 +2635,7 @@ const RECIPES = [
     {
         category: "main", id: "hol6",
         name: "🇺🇸 BBQ Chicken & Corn Rice Bowl",
-        badge: "🇺🇸 4TH OF JULY · portions: 7",
+        badge: "🇺🇸 4TH OF JULY",
         subtitle: "Oven + stovetop · ~45 min",
         perPortion: { kcal: 695, protein: 63, carbs: 91, fat: 8 },
         locked: true,
@@ -2667,7 +2667,7 @@ const RECIPES = [
     {
         category: "main", id: "hol7",
         name: "❤️ Salmon & Asparagus with Lemon-Dill Quinoa",
-        badge: "❤️ VALENTINE'S DAY · portions: 7",
+        badge: "❤️ VALENTINE'S DAY",
         subtitle: "Batch roasted · ~40 min",
         perPortion: { kcal: 630, protein: 47, carbs: 42, fat: 29 },
         locked: true,
@@ -2699,7 +2699,7 @@ const RECIPES = [
     {
         category: "main", id: "hol8",
         name: "🌸 Honey-Glazed Chicken & Strawberry Spinach Quinoa",
-        badge: "🌸 MOTHER'S DAY · portions: 7",
+        badge: "🌸 MOTHER'S DAY",
         subtitle: "Oven + no-cook assembly · ~40 min",
         perPortion: { kcal: 585, protein: 58, carbs: 53, fat: 15 },
         locked: true,
@@ -2731,7 +2731,7 @@ const RECIPES = [
     {
         category: "main", id: "hol9",
         name: "🥩 Grilled Sirloin & Sweet Potato Mash Bowl",
-        badge: "🥩 FATHER'S DAY · portions: 7",
+        badge: "🥩 FATHER'S DAY",
         subtitle: "Stovetop + oven · ~55 min",
         perPortion: { kcal: 555, protein: 61, carbs: 39, fat: 18 },
         locked: true,
@@ -2762,7 +2762,7 @@ const RECIPES = [
     {
         category: "main", id: "hol10",
         name: "🎖️ All-American Beef & Rice Casserole",
-        badge: "🎖️ VETERANS DAY · portions: 7",
+        badge: "🎖️ VETERANS DAY",
         subtitle: "Oven casserole · ~55 min",
         perPortion: { kcal: 620, protein: 54, carbs: 65, fat: 14 },
         locked: true,
@@ -3871,9 +3871,27 @@ const ALLERGEN_MAP = [
     { name: "Shellfish",      icon: "🦐", terms: ["shrimp","prawn","crab","lobster","scallop","clam","oyster","mussel","squid","octopus"] },
 ];
 
+// Dietary suitability tags — computed from what the recipe does NOT contain
+function getDietaryTags(recipe) {
+    if (!recipe || !recipe.batchItems) return [];
+    const all = recipe.batchItems.map(i => (i.name || i.label || "").toLowerCase()).join(" ");
+    const tags = [];
+    const hasGluten = ["flour","bread","pasta","tortilla","bagel","soy sauce","wheat","oat","wrap","noodle","pita","couscous","bulgur","seitan","panko","rice cake"].some(t => all.includes(t));
+    const hasDairy  = ["cheese","milk","butter","cream","yogurt","yoghurt","whey","cheddar","parmesan","mozzarella","ricotta","feta","ghee","lactose","sour cream"].some(t => all.includes(t));
+    const hasEgg    = ["egg"].some(t => all.includes(t));
+    const hasNut    = ["peanut","almond","cashew","walnut","pecan","pistachio","hazelnut","macadamia","pine nut","nut butter"].some(t => all.includes(t));
+    const hasSoy    = ["soy","tofu","edamame","miso","tempeh","tamari"].some(t => all.includes(t));
+    if (!hasGluten) tags.push({ label: "Gluten-Free", color: "#b45309", bg: "rgba(180,83,9,0.10)", border: "rgba(180,83,9,0.25)" });
+    if (!hasDairy)  tags.push({ label: "Dairy-Free",  color: "#0891b2", bg: "rgba(8,145,178,0.10)", border: "rgba(8,145,178,0.25)" });
+    if (!hasEgg)    tags.push({ label: "Egg-Free",    color: "#d97706", bg: "rgba(217,119,6,0.10)", border: "rgba(217,119,6,0.25)" });
+    if (!hasNut)    tags.push({ label: "Nut-Free",    color: "#65a30d", bg: "rgba(101,163,13,0.10)", border: "rgba(101,163,13,0.25)" });
+    if (!hasSoy)    tags.push({ label: "Soy-Free",    color: "#7c3aed", bg: "rgba(124,58,237,0.10)", border: "rgba(124,58,237,0.25)" });
+    return tags;
+}
+
 function detectAllergens(recipe) {
     if (!recipe || !recipe.batchItems) return [];
-    const allLabels = recipe.batchItems.map(i => (i.label || "").toLowerCase()).join(" ");
+    const allLabels = recipe.batchItems.map(i => (i.name || i.label || "").toLowerCase()).join(" ");
     const found = [];
     ALLERGEN_MAP.forEach(a => {
         if (a.terms.some(t => allLabels.includes(t))) found.push(a);
@@ -3882,7 +3900,7 @@ function detectAllergens(recipe) {
 }
 
 // ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
-function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot }) {
+function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot, profileScale }) {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState("ingredients");
     const [stepsDone, setStepsDone] = useState({});
@@ -3898,7 +3916,8 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     // For flexPortions recipes the full batch is always made; only the divisor changes.
     // For standard recipes, scale ingredient display by selectedBatch / recipeParts so
     // a recipe that makes 5 portions shows 100% of its batch items when batch=5 is chosen.
-    const scale = r.flexPortions ? 1 : (portions || 7) / getPortions(r, portions || 7);
+    const ps = profileScale || 1;
+    const scale = r.flexPortions ? ps : ((portions || 7) / getPortions(r, portions || 7)) * ps;
     // Compute display macros live so flexPortions recipes respond to the batch selector.
     const displayMacros = computePerPortion(r, 1, portions || 7);
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
@@ -3973,7 +3992,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                     padding: "6px 10px", marginBottom: 10, lineHeight: 1.5 } },
                 "\uD83D\uDCA1 ",
                 r.note),
-            React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["ingredients", "🧺 Ingredients"], ["method", "👨‍🍳 Method"], ["notes", "📝 Notes"]].map(([v, lbl]) => (React.createElement("button", { key: v, onClick: () => setView(v), style: { flex: 1, padding: "6px 0", fontSize: 10, fontWeight: 700, borderRadius: 7, border: "none",
+            React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [["ingredients", "🍱 Ingredients"], ["method", "👨‍🍳 Method"], ["notes", "📝 Notes"]].map(([v, lbl]) => (React.createElement("button", { key: v, onClick: () => setView(v), style: { flex: 1, padding: "6px 0", fontSize: 10, fontWeight: 700, borderRadius: 7, border: "none",
                     cursor: "pointer", letterSpacing: "0.03em",
                     background: view === v ? C.accent : C.card2,
                     color: view === v ? "#000" : C.sub } }, lbl)))),
@@ -6170,6 +6189,7 @@ function App() {
     const [filter, setFilter] = useState("All");
     const [recipeCat, setRecipeCat] = useState("breakfast");
     const [recipeQuery, setRecipeQuery] = useState("");
+    const [dietaryFilter, setDietaryFilter] = useState(null);
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
     const setTheme = th => { setThemeState(th); localStorage.setItem("mp_theme", th); };
@@ -6366,6 +6386,8 @@ function App() {
             if (!matchesName && !matchesSubtitle && !matchesIngredients)
                 return false;
         }
+        if (dietaryFilter && !getDietaryTags(r).some(t => t.label === dietaryFilter))
+            return false;
         if (recipeCat !== "main")
             return true;
         const f = FILTER_MAP[filter];
@@ -6582,6 +6604,14 @@ function App() {
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
                                 background: "none", border: "none", color: C.muted, fontSize: 18, cursor: "pointer",
                                 padding: "0 6px", lineHeight: 1 } }, "\u2715"))),
+                    React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                        [["All", null], ["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", "#7c3aed"]].map(([lbl, col]) => {
+                            const active = dietaryFilter === (lbl === "All" ? null : lbl);
+                            return React.createElement("button", { key: lbl, onClick: () => setDietaryFilter(lbl === "All" ? null : (dietaryFilter === lbl ? null : lbl)),
+                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? (col || C.accent) : C.dim}`,
+                                    background: active ? (col ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.accentDim) : C.card2,
+                                    color: active ? (col || C.accent) : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                        })),
                     recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 10, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "5px 4px", fontSize: 10, fontWeight: 700,
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
                             background: filter === f ? C.accent : C.card2,
