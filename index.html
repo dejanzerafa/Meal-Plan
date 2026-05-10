@@ -2793,6 +2793,10 @@ const RECIPES = [
     },
 
 ];
+// Always keep RECIPES in alphabetical order at source level.
+// Emoji are stripped before comparison so "🥩 Marry Me Chicken" sorts as "M".
+const _stripEmoji = s => s.replace(/^[\p{Emoji}\s]+/u, '').trim();
+RECIPES.sort((a, b) => _stripEmoji(a.name).localeCompare(_stripEmoji(b.name)));
 // ─── FIXED 7-DAY SHOPPING ──────────────────────────────────────────────────
 const FIXED = {
     "🌅 Breakfast — 7 days": [
@@ -2890,6 +2894,18 @@ function fmtQty(qty, unit) {
     if (unit === "mL" || unit === "ml")
         return qty >= 1000 ? `${+(qty / 1000).toFixed(1)} L` : `${Math.round(qty)} mL`;
     return String(Math.round(qty));
+}
+// Returns a Unicode fraction string for fractional whole-unit quantities.
+// Used when 1 batch item (e.g. 1 onion, 1 lime) spans multiple portions.
+function fmtFraction(n) {
+    if (n <= 0)    return null;
+    if (n < 0.19)  return "⅛";
+    if (n < 0.29)  return "¼";
+    if (n < 0.46)  return "⅓";
+    if (n < 0.63)  return "½";
+    if (n < 0.80)  return "⅔";
+    if (n < 0.92)  return "¾";
+    return "1";
 }
 function fmtItem(item) {
     const q = fmtQty(item.qty, item.unit);
@@ -3761,16 +3777,20 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
                         cat.toUpperCase()),
                     catItems.map(item => {
                         const rawScaled = item.qty * portionScale;
-                        const roundedWhole = Math.round(rawScaled);
-                        // For whole-unit items that round to 0 (e.g. 1 onion for 7 portions),
-                        // show the batch qty with a "(batch)" label so the user knows to buy it.
-                        const isBatchOnly = item.unit === "whole" && roundedWhole === 0 && item.qty > 0;
-                        const scaledQty = isBatchOnly ? item.qty : (item.unit === "whole" ? roundedWhole : +rawScaled.toFixed(1));
-                        const scaledItem = Object.assign({}, item, { qty: scaledQty, label: isBatchOnly ? item.label + " (batch)" : item.label });
+                        const roundedWhole = item.unit === "whole" ? Math.round(rawScaled) : null;
+                        // Whole-unit items that fall below 1 per portion show as a Unicode fraction
+                        // (e.g. ¼ Onion, ⅛ Lime). Items stored as individual totals (14 rice cakes,
+                        // 14 bread slices) always resolve to ≥1 and go through the normal path.
+                        const isFractional = item.unit === "whole" && roundedWhole === 0;
+                        const frac = isFractional ? fmtFraction(rawScaled) : null;
+                        if (isFractional && !frac) return null;
+                        const displayText = isFractional
+                            ? `${frac} ${item.label}`
+                            : fmtItem(Object.assign({}, item, { qty: item.unit === "whole" ? roundedWhole : +rawScaled.toFixed(1) }));
                         return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
                             React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700, minWidth: 8 } }, "\u00B7"),
-                            React.createElement("span", { style: { fontSize: 12, color: C.text } }, fmtItem(scaledItem))));
+                            React.createElement("span", { style: { fontSize: 12, color: C.text } }, displayText)));
                     })));
             }))),
         open && !isRecipe && meal.items && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
@@ -6398,11 +6418,12 @@ function App() {
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
     }).sort((a, b) => {
-        // Unlocked recipes first, locked after. Both groups A-Z.
+        // Unlocked first, then locked. Both groups strictly A-Z.
+        // Emoji stripped from name before compare so "🥩 Marry Me Chicken" → "M".
         const aLocked = canView(a.id) ? 0 : 1;
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
-        return a.name.localeCompare(b.name);
+        return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
     });
     const handleSetLunch = id => { setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); setTab("meals"); };
     const handleSetDinner = id => { setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); setTab("meals"); };
