@@ -2472,6 +2472,326 @@ const RECIPES = [
         note: "Frittatas are one of the most efficient high-protein vegetarian batch cooks — 2 eggs + cottage cheese per portion delivers ~28g protein with minimal carbs. Great for low-carb days. Contains eggs and dairy. Keeps 4 days refrigerated."
     },
 
+    // ─── SOULFOOD SEASONAL HOLIDAY BUNDLE (hol1–hol10) ──────────────────────
+    {
+        category: "main", id: "hol1",
+        name: "🎄 Rosemary Turkey & Cranberry Sweet Potato Bowl",
+        badge: "🎄 CHRISTMAS · portions: 7",
+        subtitle: "Batch roasted · ~50 min",
+        perPortion: { kcal: 425, protein: 55, carbs: 32, fat: 8 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol1_turkey",   label: "Turkey breast (raw)",          qty: 1400, unit: "g",  cat: "Protein"    },
+            { key: "hol1_sp",       label: "Sweet potato (cubed, raw)",    qty: 700,  unit: "g",  cat: "Carbs"      },
+            { key: "hol1_broc",     label: "Broccoli florets",             qty: 700,  unit: "g",  cat: "Vegetables" },
+            { key: "hol1_yogurt",   label: "0% Greek yogurt",              qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol1_cran",     label: "Sugar-free cranberry sauce",   qty: 140,  unit: "g",  cat: "Sauces"     },
+            { key: "hol1_oil",      label: "Olive oil",                    qty: 35,   unit: "g",  cat: "Fats"       },
+            { key: "hol1_rosemary", label: "Fresh rosemary sprigs",        qty: 10,   unit: "g",  cat: "Aromatics"  },
+            { key: "hol1_garlic",   label: "Garlic cloves",                qty: 4,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Preheat oven to 200°C. Line two large baking trays with parchment.",
+            "Rub turkey breast with minced garlic, chopped rosemary, salt, black pepper, and a light drizzle of olive oil.",
+            "Cube sweet potato into 2cm pieces. Toss with remaining olive oil, salt, and paprika.",
+            "Roast turkey on one tray for 40–45 min until internal temperature reaches 74°C.",
+            "Roast sweet potato and broccoli on second tray for 25–30 min until golden and tender.",
+            "Rest turkey 5 min, then slice or shred. Weigh and divide equally across 7 containers.",
+            "Portion sweet potato and broccoli into each container. Add 20g cranberry sauce per portion.",
+            "Top each portion with 50g Greek yogurt as a protein-rich sauce. Seal and refrigerate.",
+        ],
+        note: "Turkey rests better than it reheats dry — slice just before packing. Sugar-free cranberry sauce keeps carbs in check while delivering that festive flavour. Reheat covered with a splash of water to retain moisture.",
+    },
+    {
+        category: "main", id: "hol2",
+        name: "🦃 Slow-Cooker Turkey & Butternut Squash Feast",
+        badge: "🦃 THANKSGIVING · portions: 7",
+        subtitle: "Crockpot · ~4 hr low",
+        perPortion: { kcal: 385, protein: 55, carbs: 23, fat: 7 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol2_turkey",  label: "Turkey breast (raw)",          qty: 1400, unit: "g",  cat: "Protein"    },
+            { key: "hol2_squash",  label: "Butternut squash (cubed)",     qty: 800,  unit: "g",  cat: "Carbs"      },
+            { key: "hol2_cc",      label: "Fat-free cottage cheese",      qty: 400,  unit: "g",  cat: "Dairy"      },
+            { key: "hol2_gbean",   label: "Green beans (trimmed)",        qty: 500,  unit: "g",  cat: "Vegetables" },
+            { key: "hol2_cran",    label: "Sugar-free cranberry sauce",   qty: 120,  unit: "g",  cat: "Sauces"     },
+            { key: "hol2_broth",   label: "Chicken broth (low-sodium)",   qty: 300,  unit: "mL", cat: "Liquids"    },
+            { key: "hol2_oil",     label: "Olive oil",                    qty: 30,   unit: "g",  cat: "Fats"       },
+            { key: "hol2_garlic",  label: "Garlic cloves",                qty: 4,    unit: "whole", cat: "Aromatics" },
+            { key: "hol2_thyme",   label: "Fresh thyme",                  qty: 8,    unit: "g",  cat: "Aromatics"  },
+        ],
+        steps: [
+            "Season turkey breast generously with salt, pepper, garlic powder, onion powder, and dried thyme.",
+            "Place turkey, squash cubes, garlic cloves, and broth into slow cooker. Cook LOW 4 hr or HIGH 2.5 hr.",
+            "Meanwhile, steam or blanch green beans until just tender, about 5 min. Season with salt and pepper.",
+            "Blend cottage cheese with a splash of broth until smooth — this is your 'gravy' sauce.",
+            "Once turkey is cooked, shred or slice. Weigh and divide across 7 containers.",
+            "Add butternut squash, green beans, and cottage cheese gravy sauce to each container.",
+            "Finish each portion with ~17g cranberry sauce. Drizzle olive oil over the top.",
+            "Seal containers. Reheat uncovered 2–3 min in microwave, adding 1 tbsp water if needed.",
+        ],
+        note: "The cottage cheese gravy trick gives you creamy Thanksgiving texture with less than half the fat of traditional gravy. Butternut squash gets sweeter when slow-cooked — don't rush it.",
+    },
+    {
+        category: "main", id: "hol3",
+        name: "🐣 Herb-Crusted Lamb & Quinoa with Feta",
+        badge: "🐣 EASTER · portions: 7",
+        subtitle: "Batch roasted · ~55 min",
+        perPortion: { kcal: 620, protein: 48, carbs: 46, fat: 27 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol3_lamb",    label: "Lamb leg boneless (raw)",     qty: 1050, unit: "g",  cat: "Protein"    },
+            { key: "hol3_quinoa",  label: "Quinoa (dry)",                qty: 420,  unit: "g",  cat: "Carbs"      },
+            { key: "hol3_asp",     label: "Asparagus spears",            qty: 700,  unit: "g",  cat: "Vegetables" },
+            { key: "hol3_yogurt",  label: "0% Greek yogurt",             qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol3_feta",    label: "Feta cheese (light)",         qty: 140,  unit: "g",  cat: "Dairy"      },
+            { key: "hol3_lemon",   label: "Lemon juice",                 qty: 100,  unit: "mL", cat: "Aromatics"  },
+            { key: "hol3_oil",     label: "Olive oil",                   qty: 35,   unit: "g",  cat: "Fats"       },
+            { key: "hol3_mint",    label: "Fresh mint leaves",           qty: 15,   unit: "g",  cat: "Aromatics"  },
+            { key: "hol3_garlic",  label: "Garlic cloves",               qty: 6,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Score lamb leg and push garlic slivers into the cuts. Rub with olive oil, rosemary, salt, pepper, and lemon zest.",
+            "Roast lamb at 190°C for 45–55 min (medium). Rest 10 min before slicing. Aim for 74°C internal for well-done.",
+            "Cook quinoa: rinse 420g dry quinoa, cook 1:2 with water ~15 min until fluffy. Season with salt.",
+            "Snap woody ends off asparagus. Roast on a tray with olive oil, salt at 200°C for 12–15 min.",
+            "Mix Greek yogurt with chopped mint, a squeeze of lemon, and a pinch of salt for the tzatziki-style sauce.",
+            "Slice lamb evenly. Weigh and divide across 7 containers with quinoa and asparagus.",
+            "Crumble 20g feta and add a dollop of mint yogurt sauce over each container.",
+            "Drizzle with remaining lemon juice before sealing. Best consumed within 4 days.",
+        ],
+        note: "Lamb is classically associated with Easter across Mediterranean, British, and Australian traditions. The feta and mint yogurt sauce elevates this into a genuinely special meal. Lamb leftovers are exceptional cold — don't be afraid to eat it straight from the fridge.",
+    },
+    {
+        category: "main", id: "hol4",
+        name: "🎃 Black Bean & Pumpkin Chilli Chicken Bowl",
+        badge: "🎃 HALLOWEEN · portions: 7",
+        subtitle: "Stovetop · ~40 min",
+        perPortion: { kcal: 430, protein: 51, carbs: 40, fat: 7 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol4_chicken",  label: "Chicken breast (raw)",           qty: 1260, unit: "g",  cat: "Protein"    },
+            { key: "hol4_pumpkin",  label: "Butternut pumpkin (cubed)",      qty: 700,  unit: "g",  cat: "Carbs"      },
+            { key: "hol4_beans",    label: "Black beans (canned, drained)",  qty: 560,  unit: "g",  cat: "Carbs"      },
+            { key: "hol4_tomatoes", label: "Diced tomatoes (canned)",        qty: 400,  unit: "g",  cat: "Vegetables" },
+            { key: "hol4_corn",     label: "Corn (canned, drained)",         qty: 280,  unit: "g",  cat: "Vegetables" },
+            { key: "hol4_broth",    label: "Chicken broth (low-sodium)",     qty: 280,  unit: "mL", cat: "Liquids"    },
+            { key: "hol4_oil",      label: "Olive oil",                      qty: 28,   unit: "g",  cat: "Fats"       },
+            { key: "hol4_chipotle", label: "Chipotle chilli powder",         qty: 8,    unit: "g",  cat: "Aromatics"  },
+            { key: "hol4_garlic",   label: "Garlic cloves",                  qty: 4,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Dice chicken breast into 2cm cubes. Season with chipotle chilli powder, cumin, smoked paprika, salt, and pepper.",
+            "Heat olive oil in a large pot over medium-high. Sear chicken in batches until golden. Remove and set aside.",
+            "In the same pot, sauté garlic 1 min. Add pumpkin cubes and cook 3 min.",
+            "Add diced tomatoes, broth, chipotle, and corn. Stir to combine. Bring to a simmer.",
+            "Return chicken to pot. Add drained black beans. Simmer uncovered 20 min until pumpkin is tender.",
+            "Taste and adjust seasoning — more chipotle for heat, a splash of lime juice for brightness.",
+            "Weigh total chilli, divide by 7, and portion into containers.",
+            "Serve with optional low-fat sour cream or plain Greek yogurt on top (not included in macros).",
+        ],
+        note: "Orange-themed pumpkin and black beans make this batch authentically Halloween-coloured and macro-excellent. Chipotle gives deep smoky heat without adding fat. The chilli thickens as it cools — great for meal prep.",
+    },
+    {
+        category: "main", id: "hol5",
+        name: "🌙 Spiced Lamb & Lentil Rice (Mujadara-Style)",
+        badge: "🌙 EID AL-FITR · portions: 7",
+        subtitle: "Stovetop · ~50 min",
+        perPortion: { kcal: 710, protein: 49, carbs: 79, fat: 21 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol5_lamb",    label: "Lean lamb mince (raw)",       qty: 1050, unit: "g",  cat: "Protein"    },
+            { key: "hol5_rice",    label: "Brown rice (dry)",             qty: 490,  unit: "g",  cat: "Carbs"      },
+            { key: "hol5_lentils", label: "Green lentils (cooked)",       qty: 560,  unit: "g",  cat: "Carbs"      },
+            { key: "hol5_onion",   label: "Onion (large)",                qty: 3,    unit: "whole", cat: "Aromatics" },
+            { key: "hol5_yogurt",  label: "0% Greek yogurt",              qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol5_paste",   label: "Tomato paste",                 qty: 60,   unit: "g",  cat: "Sauces"     },
+            { key: "hol5_oil",     label: "Olive oil",                    qty: 35,   unit: "g",  cat: "Fats"       },
+            { key: "hol5_garlic",  label: "Garlic cloves",                qty: 5,    unit: "whole", cat: "Aromatics" },
+            { key: "hol5_spices",  label: "Baharat spice blend",          qty: 12,   unit: "g",  cat: "Aromatics"  },
+        ],
+        steps: [
+            "Cook brown rice: rinse 490g dry rice, cook 1:2.5 with water for ~35 min. Season with salt.",
+            "Rinse canned/cooked lentils. If using dry lentils, boil 250g dry lentils ~20 min until tender.",
+            "Caramelise the onions: slice thin, cook in half the olive oil over low-medium heat for 25–30 min, stirring often until dark golden. This is the key flavour step.",
+            "Brown lamb mince in a separate pan with remaining oil. Add garlic and baharat (or a mix of allspice, cinnamon, cumin, coriander). Season generously.",
+            "Stir tomato paste into lamb mince. Add cooked lentils and a splash of water. Simmer 10 min.",
+            "Combine lamb-lentil mix with brown rice. Fold in half the caramelised onions.",
+            "Divide into 7 containers. Top each with remaining caramelised onions.",
+            "Serve with a dollop of plain Greek yogurt (50g per portion included in macros).",
+        ],
+        note: "Mujadara is one of the oldest dishes in the Arab world — rice, lentils, and caramelised onions. This protein-boosted version adds spiced lamb for Eid celebrations. The caramelised onions cannot be rushed — they are the soul of this dish.",
+    },
+    {
+        category: "main", id: "hol6",
+        name: "🇺🇸 BBQ Chicken & Corn Rice Bowl",
+        badge: "🇺🇸 4TH OF JULY · portions: 7",
+        subtitle: "Oven + stovetop · ~45 min",
+        perPortion: { kcal: 695, protein: 63, carbs: 91, fat: 8 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol6_chicken",  label: "Chicken breast (raw)",          qty: 1400, unit: "g",  cat: "Protein"    },
+            { key: "hol6_rice",     label: "Jasmine rice (dry)",            qty: 490,  unit: "g",  cat: "Carbs"      },
+            { key: "hol6_corn",     label: "Corn (canned, drained)",        qty: 560,  unit: "g",  cat: "Vegetables" },
+            { key: "hol6_beans",    label: "Black beans (canned, drained)", qty: 420,  unit: "g",  cat: "Carbs"      },
+            { key: "hol6_tomatoes", label: "Diced tomatoes (canned)",       qty: 280,  unit: "g",  cat: "Vegetables" },
+            { key: "hol6_yogurt",   label: "0% Greek yogurt (ranch base)",  qty: 280,  unit: "g",  cat: "Dairy"      },
+            { key: "hol6_bbq",      label: "Sugar-free BBQ sauce",          qty: 140,  unit: "g",  cat: "Sauces"     },
+            { key: "hol6_oil",      label: "Olive oil",                     qty: 28,   unit: "g",  cat: "Fats"       },
+            { key: "hol6_garlic",   label: "Garlic cloves",                 qty: 4,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Marinate chicken breasts in BBQ sauce and garlic powder for at least 30 min (overnight is better).",
+            "Preheat oven to 200°C. Bake marinated chicken on a lined tray for 25–28 min until cooked through.",
+            "Cook jasmine rice: rinse 490g dry rice with 980mL water in a pot or rice cooker. Season with salt.",
+            "Drain corn and black beans. Mix with diced tomatoes, cumin, smoked paprika, salt, and a squeeze of lime.",
+            "Make high-protein ranch: mix Greek yogurt with garlic powder, onion powder, dried dill, salt, and pepper.",
+            "Rest chicken 5 min, then slice. Weigh and divide equally across 7 containers.",
+            "Layer rice, corn-bean salsa, and sliced BBQ chicken in each container.",
+            "Add a dollop of Greek yogurt ranch on top. Drizzle with olive oil. Seal and refrigerate.",
+        ],
+        note: "BBQ chicken, corn, and black beans are as American as it gets on July 4th. Sugar-free BBQ sauce saves ~50 kcal per portion without losing any of the smoky-sweet flavour. This is the highest-carb recipe in the seasonal bundle — great on heavy training days.",
+    },
+    {
+        category: "main", id: "hol7",
+        name: "❤️ Salmon & Asparagus with Lemon-Dill Quinoa",
+        badge: "❤️ VALENTINE'S DAY · portions: 7",
+        subtitle: "Batch roasted · ~40 min",
+        perPortion: { kcal: 630, protein: 47, carbs: 42, fat: 29 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol7_salmon",   label: "Salmon fillets (skin-on)",   qty: 1120, unit: "g",  cat: "Protein"    },
+            { key: "hol7_quinoa",   label: "Quinoa (dry)",               qty: 385,  unit: "g",  cat: "Carbs"      },
+            { key: "hol7_asp",      label: "Asparagus spears",           qty: 700,  unit: "g",  cat: "Vegetables" },
+            { key: "hol7_yogurt",   label: "0% Greek yogurt (sauce)",    qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol7_capers",   label: "Capers",                     qty: 40,   unit: "g",  cat: "Aromatics"  },
+            { key: "hol7_lemon",    label: "Lemon juice",                qty: 100,  unit: "mL", cat: "Aromatics"  },
+            { key: "hol7_oil",      label: "Olive oil",                  qty: 35,   unit: "g",  cat: "Fats"       },
+            { key: "hol7_dill",     label: "Fresh dill",                 qty: 15,   unit: "g",  cat: "Aromatics"  },
+            { key: "hol7_garlic",   label: "Garlic cloves",              qty: 3,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Preheat oven to 200°C. Line a large baking tray with parchment.",
+            "Lay salmon fillets skin-side down on the tray. Season with salt, pepper, and lemon zest.",
+            "Toss asparagus with olive oil, minced garlic, salt, and pepper. Arrange around the salmon.",
+            "Roast for 15–18 min until salmon flakes easily and asparagus is lightly charred.",
+            "Cook quinoa: rinse 385g dry quinoa, cook 1:2 with water ~15 min. Fluff with fork. Fold in chopped dill and lemon juice.",
+            "Make lemon-dill yogurt sauce: mix Greek yogurt, lemon juice, dill, capers, salt, and pepper.",
+            "Portion quinoa across 7 containers. Add a salmon fillet (skin-off) and asparagus spears to each.",
+            "Spoon lemon-dill yogurt sauce over each portion. Refrigerate. Best consumed within 3 days.",
+        ],
+        note: "Salmon is the definitive Valentine's Day dinner protein — omega-3 rich, restaurant-quality, and impressive. This batch cook delivers that date-night feel all week. The lemon-dill yogurt sauce replaces hollandaise at a fraction of the calories.",
+    },
+    {
+        category: "main", id: "hol8",
+        name: "🌸 Honey-Glazed Chicken & Strawberry Spinach Quinoa",
+        badge: "🌸 MOTHER'S DAY · portions: 7",
+        subtitle: "Oven + no-cook assembly · ~40 min",
+        perPortion: { kcal: 585, protein: 58, carbs: 53, fat: 15 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol8_chicken",  label: "Chicken breast (raw)",       qty: 1260, unit: "g",  cat: "Protein"    },
+            { key: "hol8_quinoa",   label: "Quinoa (dry)",               qty: 420,  unit: "g",  cat: "Carbs"      },
+            { key: "hol8_spinach",  label: "Baby spinach",               qty: 280,  unit: "g",  cat: "Vegetables" },
+            { key: "hol8_straw",    label: "Strawberries (hulled, halved)", qty: 350, unit: "g", cat: "Vegetables" },
+            { key: "hol8_almonds",  label: "Sliced almonds",             qty: 70,   unit: "g",  cat: "Fats"       },
+            { key: "hol8_yogurt",   label: "0% Greek yogurt (dressing)", qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol8_honey",    label: "Honey",                      qty: 42,   unit: "g",  cat: "Sauces"     },
+            { key: "hol8_oil",      label: "Olive oil",                  qty: 28,   unit: "g",  cat: "Fats"       },
+            { key: "hol8_garlic",   label: "Garlic cloves",              qty: 3,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Whisk honey, garlic powder, a pinch of thyme, salt, and pepper into a marinade. Coat chicken breasts and marinate 30+ min.",
+            "Preheat oven to 200°C. Bake honey-glazed chicken 25–28 min until internal temp reaches 74°C.",
+            "Cook quinoa: rinse 420g dry quinoa, cook 1:2 with water ~15 min. Season with salt. Cool slightly.",
+            "Make the yogurt dressing: mix Greek yogurt with a drizzle of honey, lemon juice, salt, and pepper.",
+            "Combine cooled quinoa with baby spinach (it will wilt slightly) and halved strawberries.",
+            "Rest chicken 5 min, then slice diagonally. Weigh and divide evenly across 7 containers.",
+            "Layer quinoa-spinach-strawberry mix into containers. Add sliced honey chicken on top.",
+            "Scatter sliced almonds over each portion. Add yogurt dressing on the side. Refrigerate.",
+        ],
+        note: "The strawberry-spinach-quinoa base is vibrant, elegant, and genuinely special — perfect for a Mother's Day meal that feels like a treat but delivers 58g protein per serving. Keep almonds separate if prepping more than 2 days ahead to preserve their crunch.",
+    },
+    {
+        category: "main", id: "hol9",
+        name: "🥩 Grilled Sirloin & Sweet Potato Mash Bowl",
+        badge: "🥩 FATHER'S DAY · portions: 7",
+        subtitle: "Stovetop + oven · ~55 min",
+        perPortion: { kcal: 555, protein: 61, carbs: 39, fat: 18 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol9_steak",   label: "Sirloin steak (lean, raw)",   qty: 1400, unit: "g",  cat: "Protein"    },
+            { key: "hol9_sp",      label: "Sweet potato (raw)",          qty: 1050, unit: "g",  cat: "Carbs"      },
+            { key: "hol9_broc",    label: "Broccoli florets",            qty: 700,  unit: "g",  cat: "Vegetables" },
+            { key: "hol9_yogurt",  label: "0% Greek yogurt (sauce base)", qty: 280, unit: "g",  cat: "Dairy"      },
+            { key: "hol9_broth",   label: "Beef broth (low-sodium)",     qty: 280,  unit: "mL", cat: "Liquids"    },
+            { key: "hol9_oil",     label: "Olive oil",                   qty: 42,   unit: "g",  cat: "Fats"       },
+            { key: "hol9_garlic",  label: "Garlic cloves",               qty: 5,    unit: "whole", cat: "Aromatics" },
+            { key: "hol9_butter",  label: "Light butter (for mash)",     qty: 30,   unit: "g",  cat: "Fats"       },
+        ],
+        steps: [
+            "Preheat oven to 200°C. Pierce sweet potatoes and bake whole for 45–55 min until fully soft.",
+            "Season steaks generously with salt, pepper, garlic powder, and a touch of smoked paprika.",
+            "Heat a cast iron or heavy skillet over high heat until smoking. Sear steaks 3–4 min per side for medium-rare, or until desired doneness. Rest 5 min.",
+            "Roast broccoli florets tossed in olive oil, salt, and pepper at 200°C for 18–20 min alongside.",
+            "Scoop sweet potato flesh, mash with light butter, a splash of broth, garlic powder, salt, and pepper until smooth.",
+            "Make the yogurt-based steak sauce: mix Greek yogurt with Worcestershire sauce, Dijon mustard, garlic, salt.",
+            "Slice steaks thin against the grain. Weigh and divide across 7 containers.",
+            "Plate sweet potato mash, broccoli, and steak slices. Drizzle with yogurt steak sauce and pan juices.",
+        ],
+        note: "The Father's Day classic — steak, done right for the whole week. Sirloin is the leanest cut that still delivers serious flavour. Searing in batches is non-negotiable; do not crowd the pan or you'll steam the steak. The yogurt steak sauce replaces butter-heavy béarnaise at a fraction of the fat.",
+    },
+    {
+        category: "main", id: "hol10",
+        name: "🎖️ All-American Beef & Rice Casserole",
+        badge: "🎖️ VETERANS DAY · portions: 7",
+        subtitle: "Oven casserole · ~55 min",
+        perPortion: { kcal: 620, protein: 54, carbs: 65, fat: 14 },
+        locked: true,
+        seasonal: true,
+        portions: 7,
+        batchItems: [
+            { key: "hol10_beef",    label: "Lean beef mince 96% (raw)", qty: 1400, unit: "g",  cat: "Protein"    },
+            { key: "hol10_rice",    label: "Jasmine rice (dry)",         qty: 490,  unit: "g",  cat: "Carbs"      },
+            { key: "hol10_pepper",  label: "Mixed bell peppers (diced)", qty: 450,  unit: "g",  cat: "Vegetables" },
+            { key: "hol10_tomato",  label: "Diced tomatoes (canned)",    qty: 400,  unit: "g",  cat: "Vegetables" },
+            { key: "hol10_cc",      label: "Fat-free cottage cheese",    qty: 350,  unit: "g",  cat: "Dairy"      },
+            { key: "hol10_broth",   label: "Beef broth (low-sodium)",    qty: 280,  unit: "mL", cat: "Liquids"    },
+            { key: "hol10_oil",     label: "Olive oil",                  qty: 28,   unit: "g",  cat: "Fats"       },
+            { key: "hol10_garlic",  label: "Garlic cloves",              qty: 4,    unit: "whole", cat: "Aromatics" },
+            { key: "hol10_onion",   label: "Yellow onion (large)",       qty: 1,    unit: "whole", cat: "Aromatics" },
+        ],
+        steps: [
+            "Cook jasmine rice: rinse 490g dry rice with 980mL water. Cook in pot or rice cooker until fluffy. Season with salt.",
+            "Dice onion and bell peppers. Mince garlic cloves.",
+            "Brown beef mince in a large oven-safe skillet or pot with olive oil over medium-high heat. Season with salt, pepper, onion powder, garlic powder, and paprika. Drain any excess fat.",
+            "Add onion and bell peppers to the beef. Cook 5 min until softened. Add minced garlic and cook 1 min.",
+            "Stir in diced tomatoes and beef broth. Simmer uncovered 10 min until slightly reduced.",
+            "Remove from heat. Fold in cooked rice and blended cottage cheese (blend smooth first for creaminess).",
+            "Transfer to a large baking dish. Bake at 180°C for 20 min until top is lightly golden.",
+            "Rest 5 min. Weigh total casserole, divide by 7, and portion into containers.",
+        ],
+        note: "A hearty, no-fuss American casserole — ground beef, rice, and vegetables in one dish. Cottage cheese blended into the sauce adds 12g protein per 100g without any visible dairy texture. This recipe scales up easily if you need to feed a crowd on Veterans Day.",
+    },
+
 ];
 // ─── FIXED 7-DAY SHOPPING ──────────────────────────────────────────────────
 const FIXED = {
@@ -3163,6 +3483,114 @@ const INGREDIENT_MACROS = {
   "white_potato": {kcal:77,p:2.0,c:17.0,f:0.1},
   "worcestershire": {kcal:78,p:2.6,c:17.0,f:0.2},
   "zucchini": {kcal:17,p:1.2,c:3.5,f:0.3,unitG:200},
+
+  // ─── HOL1: Christmas Turkey Bowl ───────────────────────────────────────────
+  "hol1_turkey":   {kcal:110,p:23.0,c:0.0,f:1.2},
+  "hol1_sp":       {kcal:86, p:1.6, c:20.0,f:0.1},
+  "hol1_broc":     {kcal:34, p:2.8, c:7.0, f:0.4},
+  "hol1_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol1_cran":     {kcal:60, p:0.0, c:14.0,f:0.0},
+  "hol1_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol1_rosemary": {kcal:131,p:3.3, c:20.7,f:5.9},
+  "hol1_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL2: Thanksgiving Turkey & Squash ────────────────────────────────────
+  "hol2_turkey":   {kcal:110,p:23.0,c:0.0, f:1.2},
+  "hol2_squash":   {kcal:45, p:1.0, c:11.7,f:0.1},
+  "hol2_cc":       {kcal:72, p:12.0,c:4.0, f:0.5},
+  "hol2_gbean":    {kcal:31, p:1.8, c:7.0, f:0.2},
+  "hol2_cran":     {kcal:60, p:0.0, c:14.0,f:0.0},
+  "hol2_broth":    {kcal:4,  p:0.4, c:0.4, f:0.1},
+  "hol2_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol2_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+  "hol2_thyme":    {kcal:101,p:5.5, c:24.4,f:1.7},
+
+  // ─── HOL3: Easter Lamb & Quinoa ────────────────────────────────────────────
+  "hol3_lamb":     {kcal:167,p:20.0,c:0.0, f:9.0},
+  "hol3_quinoa":   {kcal:368,p:14.0,c:64.0,f:6.0},
+  "hol3_asp":      {kcal:20, p:2.2, c:3.9, f:0.1},
+  "hol3_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol3_feta":     {kcal:264,p:14.2,c:4.0, f:21.3},
+  "hol3_lemon":    {kcal:22, p:0.4, c:6.9, f:0.3},
+  "hol3_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol3_mint":     {kcal:70, p:3.7, c:14.9,f:0.9},
+  "hol3_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL4: Halloween Chilli Chicken ────────────────────────────────────────
+  "hol4_chicken":  {kcal:110,p:23.0,c:0.0, f:1.2},
+  "hol4_pumpkin":  {kcal:45, p:1.0, c:11.7,f:0.1},
+  "hol4_beans":    {kcal:127,p:8.6, c:22.8,f:0.5},
+  "hol4_tomatoes": {kcal:24, p:1.2, c:4.7, f:0.2},
+  "hol4_corn":     {kcal:86, p:3.2, c:18.7,f:1.2},
+  "hol4_broth":    {kcal:4,  p:0.4, c:0.4, f:0.1},
+  "hol4_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol4_chipotle": {kcal:327,p:14.2,c:58.1,f:8.7},
+  "hol4_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL5: Eid Lamb & Lentil Rice ──────────────────────────────────────────
+  "hol5_lamb":     {kcal:167,p:20.0,c:0.0, f:9.0},
+  "hol5_rice":     {kcal:370,p:8.0, c:77.0,f:3.0},
+  "hol5_lentils":  {kcal:116,p:9.0, c:20.0,f:0.4},
+  "hol5_onion":    {kcal:40, p:1.1, c:9.3, f:0.1,unitG:150},
+  "hol5_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol5_paste":    {kcal:82, p:4.3, c:18.9,f:0.5},
+  "hol5_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol5_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+  "hol5_spices":   {kcal:250,p:9.0, c:45.0,f:8.0},
+
+  // ─── HOL6: 4th July BBQ Chicken ────────────────────────────────────────────
+  "hol6_chicken":  {kcal:110,p:23.0,c:0.0, f:1.2},
+  "hol6_rice":     {kcal:360,p:7.0, c:80.0,f:0.5},
+  "hol6_corn":     {kcal:86, p:3.2, c:18.7,f:1.2},
+  "hol6_beans":    {kcal:127,p:8.6, c:22.8,f:0.5},
+  "hol6_tomatoes": {kcal:24, p:1.2, c:4.7, f:0.2},
+  "hol6_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol6_bbq":      {kcal:60, p:0.6, c:14.0,f:0.2},
+  "hol6_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol6_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL7: Valentine's Salmon & Quinoa ─────────────────────────────────────
+  "hol7_salmon":   {kcal:208,p:20.0,c:0.0, f:13.0},
+  "hol7_quinoa":   {kcal:368,p:14.0,c:64.0,f:6.0},
+  "hol7_asp":      {kcal:20, p:2.2, c:3.9, f:0.1},
+  "hol7_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol7_capers":   {kcal:23, p:2.4, c:5.0, f:0.9},
+  "hol7_lemon":    {kcal:22, p:0.4, c:6.9, f:0.3},
+  "hol7_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol7_dill":     {kcal:43, p:3.5, c:7.0, f:1.1},
+  "hol7_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL8: Mother's Day Honey Chicken ──────────────────────────────────────
+  "hol8_chicken":  {kcal:110,p:23.0,c:0.0, f:1.2},
+  "hol8_quinoa":   {kcal:368,p:14.0,c:64.0,f:6.0},
+  "hol8_spinach":  {kcal:23, p:2.9, c:3.6, f:0.4},
+  "hol8_straw":    {kcal:32, p:0.7, c:7.7, f:0.3},
+  "hol8_almonds":  {kcal:579,p:21.0,c:22.0,f:50.0},
+  "hol8_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol8_honey":    {kcal:304,p:0.3, c:82.0,f:0.0},
+  "hol8_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol8_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+
+  // ─── HOL9: Father's Day Sirloin ────────────────────────────────────────────
+  "hol9_steak":    {kcal:158,p:26.0,c:0.0, f:5.4},
+  "hol9_sp":       {kcal:86, p:1.6, c:20.0,f:0.1},
+  "hol9_broc":     {kcal:34, p:2.8, c:7.0, f:0.4},
+  "hol9_yogurt":   {kcal:57, p:10.0,c:3.6, f:0.4},
+  "hol9_broth":    {kcal:5,  p:0.5, c:0.5, f:0.2},
+  "hol9_oil":      {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol9_garlic":   {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+  "hol9_butter":   {kcal:362,p:0.5, c:0.7, f:38.0},
+
+  // ─── HOL10: Veterans Day Beef Casserole ────────────────────────────────────
+  "hol10_beef":    {kcal:130,p:21.0,c:0.0, f:4.5},
+  "hol10_rice":    {kcal:360,p:7.0, c:80.0,f:0.5},
+  "hol10_pepper":  {kcal:31, p:1.0, c:6.0, f:0.3},
+  "hol10_tomato":  {kcal:24, p:1.2, c:4.7, f:0.2},
+  "hol10_cc":      {kcal:72, p:12.0,c:4.0, f:0.5},
+  "hol10_broth":   {kcal:5,  p:0.5, c:0.5, f:0.2},
+  "hol10_oil":     {kcal:884,p:0.0, c:0.0, f:100.0},
+  "hol10_garlic":  {kcal:149,p:6.4, c:33.1,f:0.5,unitG:3},
+  "hol10_onion":   {kcal:40, p:1.1, c:9.3, f:0.1,unitG:150},
 };
 
 
@@ -3764,12 +4192,12 @@ const STRIPE_PRICES = {
     monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
     calculator: "price_1TU824GjmPEqu9q90xWZDozk",
     single: "price_1TU82XGjmPEqu9q9EhfIpkFW",
-    // SoulFood seasonal bundle — $7.99 one-time. UI hidden until launch.
+    // SoulFood seasonal bundle — $4.99 one-time. UI hidden until launch.
     seasonal: "price_1TVTP1GjmPEqu9q9J81es0wu",
 };
 // SoulFood seasonal recipe bundle — populate these IDs when the bundle launches.
 // Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
-const SOULFOOD_RECIPE_IDS = [];
+const SOULFOOD_RECIPE_IDS = ["hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10"];
 // ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
 async function startCheckout(tier, recipeId) {
     if (!STRIPE_ENABLED) {
@@ -3829,6 +4257,161 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
                 React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
                         padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")))));
 }
+// ─── SOULFOOD SEASONAL BUNDLE POPUP ───────────────────────────────────────────
+function SeasonalPopup({ show, onClose, onBuy }) {
+    if (!show) return null;
+
+    const teaserRecipes = [
+        { emoji: "🍂", label: "Autumn Harvest Bowl" },
+        { emoji: "🌿", label: "Green Goddess Stew" },
+        { emoji: "🫚", label: "Soul Spiced Chicken" },
+    ];
+
+    const included = [
+        "Slow-Cooked Autumn Harvest Bowl",
+        "Green Goddess High-Protein Stew",
+        "Soul Spiced Chicken & Roasted Veg",
+        "Warming Lentil & Beef Broth",
+        "Seasonal Dessert Drop",
+        "+ 2 bonus recipes revealed on unlock",
+    ];
+
+    return React.createElement("div", {
+        onClick: (e) => { if (e.target === e.currentTarget) onClose(); },
+        style: {
+            position: "fixed", top: 0, right: 0, bottom: 0, left: 0,
+            background: "rgba(0,0,0,0.72)", zIndex: 700,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "16px",
+        }
+    },
+        React.createElement("div", {
+            style: {
+                width: "100%", maxWidth: 400,
+                background: C.card, borderRadius: 20,
+                border: `1.5px solid ${C.border}`,
+                overflow: "hidden", position: "relative",
+                maxHeight: "92vh", display: "flex", flexDirection: "column",
+                boxShadow: "0 24px 64px rgba(0,0,0,0.45)",
+            }
+        },
+            // ── Close button ──────────────────────────────────────────────
+            React.createElement("button", {
+                onClick: onClose,
+                style: {
+                    position: "absolute", top: 14, right: 14,
+                    background: "rgba(26,22,18,0.18)",
+                    border: "none", borderRadius: "50%",
+                    width: 30, height: 30, display: "flex",
+                    alignItems: "center", justifyContent: "center",
+                    cursor: "pointer", zIndex: 2, color: C.text,
+                    fontSize: 16, lineHeight: 1,
+                }
+            }, "✕"),
+
+            // ── Scrollable body ───────────────────────────────────────────
+            React.createElement("div", { style: { overflowY: "auto", flex: 1, padding: "24px 20px 20px" } },
+
+                // Top eyebrow label
+                React.createElement("div", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.2em",
+                    color: C.accent, marginBottom: 6, textTransform: "uppercase" } },
+                    "Soulfood Bundle"),
+
+                // Title
+                React.createElement("div", { style: { fontFamily: "Georgia,'Times New Roman',serif",
+                    fontSize: 24, fontWeight: 700, color: C.text, lineHeight: 1.2, marginBottom: 4 } },
+                    "🌿 SoulFood Seasonal Bundle"),
+
+                // Subheading
+                React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 18, lineHeight: 1.5 } },
+                    "New flavours. This season only."),
+
+                // ── Teaser locked recipe cards ────────────────────────────
+                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 20 } },
+                    teaserRecipes.map((r, i) =>
+                        React.createElement("div", { key: i, style: {
+                            flex: 1, background: C.card2, border: `1px solid ${C.border}`,
+                            borderRadius: 12, padding: "12px 8px",
+                            display: "flex", flexDirection: "column",
+                            alignItems: "center", justifyContent: "center",
+                            minHeight: 80, position: "relative", overflow: "hidden",
+                        }},
+                            React.createElement("div", { style: { fontSize: 22, marginBottom: 4 } }, r.emoji),
+                            React.createElement("div", { style: {
+                                fontSize: 9, color: C.muted, textAlign: "center",
+                                filter: "blur(3px)", userSelect: "none", lineHeight: 1.3,
+                            }}, r.label),
+                            React.createElement("div", { style: {
+                                position: "absolute", top: 6, right: 6,
+                                fontSize: 10, color: C.dim,
+                            }}, "🔒")
+                        )
+                    )
+                ),
+
+                // ── What's inside heading ────────────────────────────────
+                React.createElement("div", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.18em",
+                    color: C.muted, textTransform: "uppercase", marginBottom: 10 } },
+                    "What's inside"),
+
+                // ── Recipe list ──────────────────────────────────────────
+                React.createElement("div", { style: { background: C.card2, border: `1px solid ${C.border}`,
+                    borderRadius: 12, padding: "12px 14px", marginBottom: 20 } },
+                    included.map((item, i) =>
+                        React.createElement("div", { key: i, style: {
+                            display: "flex", alignItems: "flex-start", gap: 8,
+                            fontSize: 12, color: i < included.length - 1 ? C.sub : C.muted,
+                            fontStyle: i === included.length - 1 ? "italic" : "normal",
+                            paddingBottom: i < included.length - 1 ? 8 : 0,
+                            marginBottom: i < included.length - 1 ? 8 : 0,
+                            borderBottom: i < included.length - 1 ? `1px solid ${C.border}` : "none",
+                            lineHeight: 1.4,
+                        }},
+                            React.createElement("span", { style: { color: C.accent, fontSize: 11, marginTop: 1, flexShrink: 0 } },
+                                i < included.length - 1 ? "●" : ""),
+                            React.createElement("span", null, item)
+                        )
+                    )
+                ),
+
+                // ── Price badge ──────────────────────────────────────────
+                React.createElement("div", { style: { textAlign: "center", marginBottom: 16 } },
+                    React.createElement("span", { style: { fontFamily: "Georgia,'Times New Roman',serif",
+                        fontSize: 26, fontWeight: 700, color: C.accent } },
+                        "$4.99"),
+                    React.createElement("span", { style: { fontSize: 12, color: C.muted, marginLeft: 8 } },
+                        "one-time · this season only")
+                ),
+
+                // ── CTA button ───────────────────────────────────────────
+                React.createElement("button", {
+                    onClick: onBuy,
+                    style: {
+                        width: "100%", background: C.accent, border: "none",
+                        borderRadius: 10, padding: "15px 20px",
+                        fontSize: 15, fontWeight: 800, color: "#fff",
+                        cursor: "pointer", marginBottom: 12, letterSpacing: "0.01em",
+                        boxShadow: `0 4px 16px ${C.accentBorder}`,
+                    }
+                }, "Unlock This Season →"),
+
+                // ── Secondary link ───────────────────────────────────────
+                React.createElement("div", { style: { textAlign: "center" } },
+                    React.createElement("button", {
+                        onClick: onClose,
+                        style: {
+                            background: "none", border: "none",
+                            fontSize: 12, color: C.muted,
+                            cursor: "pointer", padding: "4px 8px",
+                            textDecoration: "underline", textUnderlineOffset: "3px",
+                        }
+                    }, "Maybe later")
+                )
+            )
+        )
+    );
+}
+
 // ─── GETTING STARTED GUIDE MODAL ──────────────────────────────────────────────
 function GettingStartedModal({ C, onClose }) {
     const steps = [
@@ -5643,6 +6226,7 @@ function App() {
     // Derived: is anything unlocked at all? (used for nav/upsell visibility)
     const unlocked = unlocks.allRecipes || (unlocks.recipes && unlocks.recipes.length > 0) || unlocks.calculator;
     const [showUpgrade, setShowUpgrade] = useState(false);
+    const [showSeasonalPopup, setShowSeasonalPopup] = useState(false);
     const [showDevModal, setShowDevModal] = useState(false);
     const [logoTaps, setLogoTaps] = useState(0);
     const tapLogo = () => {
@@ -6190,6 +6774,7 @@ function App() {
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
+        React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); startCheckout("seasonal"); } }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
         (unlocks.tier === "dev") && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
                 borderRadius: 20, padding: "5px 10px", fontSize: 9, fontWeight: 700,
