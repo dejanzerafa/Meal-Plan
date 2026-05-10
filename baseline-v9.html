@@ -12,10 +12,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
-  <meta name="theme-color" content="#D4A83C">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-  <link rel="apple-touch-icon" id="apple-touch-icon">
-  <link rel="manifest" id="pwa-manifest">
+  <meta name="theme-color" content="#E07B2A">
+  <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="manifest" href="/manifest.json">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,96 +59,7 @@
   </style>
 
   <script>
-    // Generate home screen icon on canvas — red-orange gradient + flame + SoulGainz
-    function buildIcon(size) {
-      const c = document.createElement('canvas');
-      c.width = size; c.height = size;
-      const ctx = c.getContext('2d');
-      const r = size * 0.22;
-
-      // ── Dark charcoal background ──────────────────────────────────────────
-      ctx.beginPath();
-      ctx.moveTo(r, 0);
-      ctx.lineTo(size - r, 0);
-      ctx.quadraticCurveTo(size, 0, size, r);
-      ctx.lineTo(size, size - r);
-      ctx.quadraticCurveTo(size, size, size - r, size);
-      ctx.lineTo(r, size);
-      ctx.quadraticCurveTo(0, size, 0, size - r);
-      ctx.lineTo(0, r);
-      ctx.quadraticCurveTo(0, 0, r, 0);
-      ctx.closePath();
-      ctx.fillStyle = '#12100E';
-      ctx.fill();
-
-      // ── Gold inner ring ───────────────────────────────────────────────────
-      const ring = size * 0.06;
-      const ri = r * 0.7;
-      ctx.beginPath();
-      ctx.moveTo(ring + ri, ring);
-      ctx.lineTo(size - ring - ri, ring);
-      ctx.quadraticCurveTo(size - ring, ring, size - ring, ring + ri);
-      ctx.lineTo(size - ring, size - ring - ri);
-      ctx.quadraticCurveTo(size - ring, size - ring, size - ring - ri, size - ring);
-      ctx.lineTo(ring + ri, size - ring);
-      ctx.quadraticCurveTo(ring, size - ring, ring, size - ring - ri);
-      ctx.lineTo(ring, ring + ri);
-      ctx.quadraticCurveTo(ring, ring, ring + ri, ring);
-      ctx.closePath();
-      ctx.strokeStyle = 'rgba(212,168,60,0.55)';
-      ctx.lineWidth = Math.max(1, size * 0.018);
-      ctx.stroke();
-
-      // ── Gold flame mark ───────────────────────────────────────────────────
-      const scale = (size * 0.28) / 24;
-      ctx.save();
-      ctx.translate(size * 0.50, size * 0.42);
-      ctx.scale(scale, scale);
-      const goldGrad = ctx.createLinearGradient(0, -32, 0, 12);
-      goldGrad.addColorStop(0, '#F5D070');
-      goldGrad.addColorStop(1, '#C48A1A');
-      ctx.fillStyle = goldGrad;
-      const flame = new Path2D(
-        'M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 ' +
-        'C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 ' +
-        'C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z'
-      );
-      ctx.fill(flame);
-      ctx.restore();
-
-      // ── "SoulGainz" gold wordmark ─────────────────────────────────────────
-      const fs = Math.round(size * 0.13);
-      ctx.fillStyle = '#D4A83C';
-      ctx.font = `700 ${fs}px Georgia, serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('SoulGainz', size * 0.50, size * 0.82);
-
-      return c.toDataURL('image/png');
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
-      const icon = buildIcon(180);
-
-      // Apple touch icon — use real PNG file
-      document.getElementById('apple-touch-icon').href = '/apple-touch-icon.png';
-
-      // Web App Manifest
-      const manifest = {
-        name: "SoulGainz",
-        short_name: "SoulGainz",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#12100E",
-        theme_color: "#D4A83C",
-        icons: [
-          { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-          { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
-          { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
-        ]
-      };
-      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-      document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
 
       // ── Loader control: hide for first-time users (onboarding shows first) ──
       if (!localStorage.getItem("sg_onboarded")) {
@@ -336,8 +252,8 @@ const BREAKFAST = {
 };
 const PRE = {
     type: "Pre-Workout", icon: "⚡", name: "Carb Bridge",
-    kcal: 271, protein: 2, carbs: 66, fat: 1, fixed: true,
-    items: ["2 Kallo rice cakes", "4 tbsp jam", "1 banana"],
+    kcal: 182, protein: 1, carbs: 43, fat: 1, fixed: true,
+    items: ["2 Kallo rice cakes", "4 tbsp jam"],
     note: "45–60 min before training. Skip on rest days.",
 };
 // ─── INGREDIENT DB ─────────────────────────────────────────────────────────
@@ -721,7 +637,7 @@ const RECIPES = [
     {
         category: "main", id: "m13", name: "🥩 Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
-        perPortion: { kcal: 728, protein: 53, carbs: 78, fat: 20 },
+        perPortion: { kcal: 743, protein: 54, carbs: 81, fat: 20 },
         note: "Steak replaced with lean 5% beef mince. Cheese blend: 196g FF CC + 37g light mozz + 12g parmesan. Sour cream reduced to 140g to keep fat at target. Drain beef thoroughly.",
         batchItems: [
             { key: "beef_mince_lean", label: "Lean beef mince (5%)", qty: 1300, unit: "g", cat: "Protein" },
@@ -795,7 +711,7 @@ const RECIPES = [
     {
         category: "breakfast", id: "bf3",
         name: "🥚 Breakfast Bagel Sandwich",
-        subtitle: "3 sandwiches · ~15 min",
+        subtitle: "Fresh each morning · ~15 min",
         badge: "🍳 Stovetop", carb: "Bagel", portions: 3,
         perPortion: {kcal:653,protein:47,carbs:52,fat:27.7},
         batchItems: [
@@ -818,18 +734,18 @@ const RECIPES = [
     {
         category: "breakfast", id: "bf4",
         name: "🥚 Eggs on Wholegrain Toast",
-        subtitle: "1 serving · ~10 min",
-        badge: "🍳 Stovetop", carb: "Wholegrain",
-        perPortion: { kcal: 322, protein: 30, carbs: 18, fat: 13.8 },
+        subtitle: "Fresh each morning · ~10 min",
+        badge: "🍳 Stovetop", carb: "Wholegrain", portions: 7,
+        perPortion: { kcal: 421, protein: 34, carbs: 34, fat: 15.4 },
         batchItems: [
-            { key: "bf4-eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
-            { key: "bf4-whites", label: "Egg whites", qty: 3, unit: "whole", cat: "Protein" },
-            { key: "bf4-toast", label: "Wholegrain bread slice", qty: 1, unit: "whole", cat: "Carbs" },
+            { key: "bf4-eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" },
+            { key: "bf4-whites", label: "Egg whites", qty: 21, unit: "whole", cat: "Protein" },
+            { key: "bf4-toast", label: "Wholegrain bread slice", qty: 14, unit: "whole", cat: "Carbs" },
         ],
         steps: [
             "Crack 2 whole eggs and 3 egg whites into a bowl and whisk.",
             "Lightly spray a non-stick pan with oil and cook over medium heat.",
-            "Toast 1 slice wholegrain bread.",
+            "Toast 2 slices wholegrain bread.",
             "Serve eggs on toast. Optional: add smoked salmon for extra protein.",
         ],
         note: "No-cook version: cottage cheese and toast is faster on busy mornings. Swap eggs for 200g FF cottage cheese.",
@@ -1008,7 +924,7 @@ const RECIPES = [
         id: "m15",
 
     category: "main",        name: "🥩 Lean Beef & Potato Roast", subtitle: "Potato · Instant Pot",
-        badge: "⚡ Instant Pot", carb: "🥔 Potato",
+        badge: "⚡ Instant Pot", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:536,protein:64,carbs:32,fat:14.8},
         batchItems: [
             { key: "m15_beef", label: "Lean beef eye of round (raw)", qty: 2000, unit: "g", cat: "Protein" },
@@ -1031,7 +947,7 @@ const RECIPES = [
         id: "m16",
 
     category: "main",        name: "🍗 Honey Chipotle Chicken Burritos", subtitle: "Wrap + Rice · Crockpot",
-        badge: "🥘 Crockpot", carb: "🌮 Wrap",
+        badge: "🥘 Crockpot", carb: "🌮 Wrap", portions: 7,
         perPortion: {kcal:521,protein:69,carbs:47,fat:5.1},
         batchItems: [
             { key: "m16_chk", label: "Chicken breast (raw)", qty: 1200, unit: "g", cat: "Protein" },
@@ -1087,7 +1003,7 @@ const RECIPES = [
         category: "main", id: "m31",
         name: "🍗 Classic Chicken, Rice & Broccoli",
         subtitle: "Chicken breast · jasmine rice · broccoli · garlic-lemon",
-        badge: "🔥 Oven", carb: "🍚 Rice",
+        badge: "🔥 Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:582,protein:52,carbs:77,fat:7.5},
         locked: true,
         batchItems: [
@@ -1113,7 +1029,7 @@ const RECIPES = [
         category: "main", id: "m32",
         name: "🥩 Sirloin Steak & Sweet Potato Salad",
         subtitle: "Sirloin · sweet potato · cucumber · red onion · lemon dressing",
-        badge: "🍳 Stovetop", carb: "🍠 Sweet Potato",
+        badge: "🍳 Stovetop", carb: "🍠 Sweet Potato", portions: 7,
         perPortion: {kcal:592,protein:57,carbs:57,fat:15.5},
         locked: true,
         batchItems: [
@@ -1139,7 +1055,7 @@ const RECIPES = [
         category: "main", id: "m33",
         name: "🦃 Lean Turkey Mince Rice Bowl",
         subtitle: "99/1 turkey · jasmine rice · bell peppers · tomato base",
-        badge: "🍳 Stovetop", carb: "🍚 Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:643,protein:53,carbs:69,fat:16.2},
         locked: true,
         batchItems: [
@@ -1165,7 +1081,7 @@ const RECIPES = [
         category: "main", id: "m34",
         name: "🐟 Salmon & Quinoa with Asparagus",
         subtitle: "Salmon fillet · quinoa · asparagus · lemon-garlic",
-        badge: "🔥 Oven", carb: "🌾 Quinoa",
+        badge: "🔥 Oven", carb: "🌾 Quinoa", portions: 7,
         perPortion: {kcal:504,protein:39,carbs:25,fat:26.8},
         locked: true,
         batchItems: [
@@ -1191,7 +1107,7 @@ const RECIPES = [
         category: "main", id: "m35",
         name: "🦐 Garlic Shrimp Stir-Fry & Brown Rice",
         subtitle: "Shrimp · brown rice · snap peas · bell pepper · sesame-ginger",
-        badge: "🍳 Stovetop", carb: "🍚 Brown Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Brown Rice", portions: 7,
         perPortion: {kcal:578,protein:53,carbs:79,fat:4.2},
         locked: true,
         batchItems: [
@@ -1220,7 +1136,7 @@ const RECIPES = [
         category: "main", id: "m36",
         name: "🐟 Tuna & Chickpea Power Bowl",
         subtitle: "Canned tuna · chickpeas · cucumber · tomato · lemon-olive oil",
-        badge: "❄️ No Cook", carb: "🫘 Chickpea",
+        badge: "❄️ No Cook", carb: "🫘 Chickpea", portions: 7,
         perPortion: {kcal:445,protein:53,carbs:40,fat:8.2},
         locked: true,
         batchItems: [
@@ -1247,7 +1163,7 @@ const RECIPES = [
         category: "main", id: "m37",
         name: "🐟 Baked Cod & Roasted Baby Potatoes",
         subtitle: "Cod fillet · baby potatoes · zucchini · cherry tomatoes · herbs",
-        badge: "🔥 Oven", carb: "🥔 Potato",
+        badge: "🔥 Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:396,protein:42,carbs:43,fat:6.2},
         locked: true,
         batchItems: [
@@ -1273,7 +1189,7 @@ const RECIPES = [
         category: "main", id: "m38",
         name: "🍗 Chicken & Cauliflower Rice Bowl",
         subtitle: "Chicken breast · cauliflower rice · spinach · tomato · garlic",
-        badge: "🍳 Stovetop", carb: "🥦 Low-Carb",
+        badge: "🍳 Stovetop", carb: "🥦 Low-Carb", portions: 7,
         perPortion: {kcal:358,protein:54,carbs:21,fat:7.5},
         locked: true,
         batchItems: [
@@ -1299,7 +1215,7 @@ const RECIPES = [
         category: "main", id: "m39",
         name: "🦃 Ground Turkey Taco Bowl",
         subtitle: "Turkey mince · jasmine rice · black beans · salsa · cumin",
-        badge: "🍳 Stovetop", carb: "🍚 Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:718,protein:59,carbs:83,fat:16.5},
         locked: true,
         batchItems: [
@@ -1326,7 +1242,7 @@ const RECIPES = [
         category: "main", id: "m40",
         name: "🍗 Baked Chicken Thighs & Potato",
         subtitle: "Skinless chicken thighs · baby potatoes · green beans · garlic-herb",
-        badge: "🔥 Oven", carb: "🥔 Potato",
+        badge: "🔥 Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:506,protein:65,carbs:43,fat:7.7},
         locked: true,
         batchItems: [
@@ -1351,7 +1267,7 @@ const RECIPES = [
         category: "main", id: "m41",
         name: "🐷 Pork Tenderloin & Jasmine Rice",
         subtitle: "Pork tenderloin · jasmine rice · green beans · Dijon-herb crust",
-        badge: "🔥 Oven", carb: "🍚 Rice",
+        badge: "🔥 Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:620,protein:61,carbs:70,fat:11.1},
         locked: true,
         batchItems: [
@@ -1377,7 +1293,7 @@ const RECIPES = [
         category: "main", id: "m42",
         name: "🐟 White Fish & Mango Salsa Rice",
         subtitle: "Tilapia · jasmine rice · mango salsa · cucumber · lime",
-        badge: "🔥 Oven", carb: "🍚 Rice",
+        badge: "🔥 Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:546,protein:47,carbs:79,fat:4.9},
         locked: true,
         batchItems: [
@@ -1404,7 +1320,7 @@ const RECIPES = [
         category: "main", id: "m43",
         name: "🥚 Egg White Frittata & Roasted Potatoes",
         subtitle: "Liquid egg whites · whole eggs · baby potatoes · spinach · pepper",
-        badge: "🔥 Oven", carb: "🥔 Potato",
+        badge: "🔥 Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:305,protein:33,carbs:26,fat:7.4},
         locked: true,
         batchItems: [
@@ -1432,7 +1348,7 @@ const RECIPES = [
         category: "main", id: "m44",
         name: "🥩 Lean Beef & Broccoli Rice Bowl",
         subtitle: "93/7 ground beef · broccoli · jasmine rice · soy-ginger sauce",
-        badge: "🍳 Stovetop", carb: "🍚 Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:596,protein:52,carbs:68,fat:11.8},
         locked: true,
         batchItems: [
@@ -1459,7 +1375,7 @@ const RECIPES = [
         category: "main", id: "m45",
         name: "🍗 Chicken & Red Lentil Soup",
         subtitle: "Chicken breast · red lentils · carrots · celery · turmeric-cumin broth",
-        badge: "⚡ Instant Pot", carb: "🫘 Lentil",
+        badge: "⚡ Instant Pot", carb: "🫘 Lentil", portions: 7,
         perPortion: {kcal:553,protein:57,carbs:72,fat:3.1},
         locked: true,
         batchItems: [
@@ -1487,7 +1403,7 @@ const RECIPES = [
         category: "main", id: "m46",
         name: "🍗 Greek Chicken & Orzo Bowl",
         subtitle: "Chicken breast · orzo · cucumber · tomato · olives · lemon-herb",
-        badge: "🔥 Oven", carb: "🍝 Orzo",
+        badge: "🔥 Oven", carb: "🍝 Orzo", portions: 7,
         perPortion: {kcal:563,protein:59,carbs:59,fat:9.3},
         locked: true,
         batchItems: [
@@ -1515,7 +1431,7 @@ const RECIPES = [
         category: "main", id: "m47",
         name: "🍗 Teriyaki Chicken & Edamame Rice",
         subtitle: "Chicken breast · jasmine rice · edamame · broccoli · teriyaki glaze",
-        badge: "🍳 Stovetop", carb: "🍚 Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:607,protein:57,carbs:80,fat:6.1},
         locked: true,
         batchItems: [
@@ -1544,7 +1460,7 @@ const RECIPES = [
         category: "main", id: "m48",
         name: "🐟 Seared Tuna Steak & Quinoa Tabbouleh",
         subtitle: "Yellowfin tuna steak · quinoa · parsley · cucumber · lemon",
-        badge: "🍳 Stovetop", carb: "🌾 Quinoa",
+        badge: "🍳 Stovetop", carb: "🌾 Quinoa", portions: 7,
         perPortion: {kcal:562,protein:64,carbs:54,fat:9.8},
         locked: true,
         batchItems: [
@@ -1571,7 +1487,7 @@ const RECIPES = [
         category: "main", id: "m49",
         name: "🦐 Prawn & Avocado Rice Bowl",
         subtitle: "King prawns · jasmine rice · avocado · mango · lime-chilli dressing",
-        badge: "🍳 Stovetop", carb: "🍚 Rice",
+        badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:633,protein:50,carbs:82,fat:12.4},
         locked: true,
         batchItems: [
@@ -1598,7 +1514,7 @@ const RECIPES = [
         category: "main", id: "m50",
         name: "🍗 Slow-Cooked Pulled Chicken & Rice",
         subtitle: "Chicken breast · jasmine rice · sweet potato · BBQ spice rub · broth",
-        badge: "🥘 Crockpot", carb: "🍚 Rice",
+        badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:585,protein:54,carbs:81,fat:3.1},
         locked: true,
         batchItems: [
@@ -1626,21 +1542,19 @@ const RECIPES = [
     {
         category: "preworkout", id: "pw0",
         name: "⚡ Carb Bridge",
-        subtitle: "Rice cakes · jam · banana",
-        badge: "⚡ No Cook", carb: "🍌 Banana",
-        perPortion: { kcal: 271, protein: 2, carbs: 66, fat: 1 },
+        subtitle: "Rice cakes · jam",
+        badge: "⚡ No Cook", carb: "🍚 Rice Cakes",
+        perPortion: { kcal: 182, protein: 1, carbs: 43, fat: 1 },
         batchItems: [
             { key: "cb_ricecake", label: "Kallo rice cakes (pack)", qty: 1, unit: "whole", cat: "Carbs" },
             { key: "cb_jam", label: "Jam (any flavour)", qty: 196, unit: "g", cat: "Sauces" },
-            { key: "cb_banana", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
         ],
         steps: [
             "No cooking needed — assemble fresh before each session.",
             "Spread jam generously across 2 rice cakes.",
-            "Slice banana on top or eat alongside.",
             "Consume 45–60 min before training. Skip on rest days.",
         ],
-        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 66g carbs, minimal protein and fat for maximum absorption speed.",
+        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 43g carbs, minimal protein and fat for maximum absorption speed.",
     },
     {
         category: "preworkout", id: "pw1",
@@ -1672,7 +1586,7 @@ const RECIPES = [
             { key: "pw_banana2", label: "Bananas (ripe, frozen)", qty: 7, unit: "whole", cat: "Fruits" },
             { key: "pw_oats", label: "Rolled oats", qty: 125, unit: "g", cat: "Carbs" },
             { key: "pw_protein", label: "Whey or plant protein powder (vanilla)", qty: 7, unit: "whole", cat: "Protein" },
-            { key: "pw_almond", label: "Unsweetened almond milk (1L carton)", qty: 2, unit: "whole", cat: "Liquids" },
+            { key: "pw_almond", label: "Unsweetened almond milk", qty: 1750, unit: "mL", cat: "Liquids" },
         ],
         steps: [
             "Freeze bananas in advance — peel and bag them whole.",
@@ -1730,7 +1644,7 @@ const RECIPES = [
         batchItems: [
             { key: "pw_oats2", label: "Rolled oats", qty: 350, unit: "g", cat: "Carbs" },
             { key: "pw_protein2", label: "Whey or plant protein powder (vanilla)", qty: 7, unit: "whole", cat: "Protein" },
-            { key: "pw_almond2", label: "Unsweetened almond milk (1L carton)", qty: 2, unit: "whole", cat: "Liquids" },
+            { key: "pw_almond2", label: "Unsweetened almond milk", qty: 1400, unit: "mL", cat: "Liquids" },
             { key: "pw_chia", label: "Chia seeds", qty: 70, unit: "g", cat: "Fats" },
             { key: "pw_banana3", label: "Bananas or berries for topping", qty: 7, unit: "whole", cat: "Fruits" },
         ],
@@ -1842,7 +1756,7 @@ const RECIPES = [
         name: "Protein Brownie Cookies", subtitle: "4 cookies · Oven",
         portions: 7,
         badge: "💨 Air Fryer", carb: "🍫 Chocolate",
-        perPortion: { kcal: 145, protein: 12, carbs: 18, fat: 3 },
+        perPortion: { kcal: 146, protein: 14, carbs: 20, fat: 4.1 },
         batchItems: [
             { key: "d1_yog", label: "Plain nonfat Greek yogurt", qty: 340, unit: "g", cat: "Dairy" },
             { key: "d1_pump", label: "Pure pumpkin purée", qty: 122, unit: "g", cat: "Vegetables" },
@@ -2051,7 +1965,7 @@ const RECIPES = [
         name: "Matcha Banana Protein Bread", subtitle: "10 slices · Oven · 40 min",
         portions: 10,
         badge: "🌬️ Oven", carb: "🍌 Banana",
-        perPortion: { kcal: 153, protein: 15, carbs: 16, fat: 3 },
+        perPortion: { kcal: 152, protein: 14, carbs: 18, fat: 3 },
         batchItems: [
             { key: "d4_ban", label: "Ripe bananas", qty: 2, unit: "whole", cat: "Carbs" },
             { key: "d4_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" },
@@ -2559,7 +2473,7 @@ const FIXED = {
         "7 scoops ON whey", "14 slices Baker Street white bread",
     ],
     "⚡ Pre-Workout — 7 days": [
-        "7 bananas", "14 Kallo rice cakes", "~560 g jam",
+        "14 Kallo rice cakes", "~560 g jam",
     ],
     "🧂 Pantry": [
         "Olive oil (½ tbsp × 14 portions)", "Salt · black pepper · rosemary", "PAM cooking spray",
@@ -2767,7 +2681,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
         add(bfr.batchItems, (p / srv) * gl);
     }
     if (desr && desr.batchItems) add(desr.batchItems, gl);
-    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, gl);
+    if (!preSkipped && prer && prer.batchItems) add(prer.batchItems, p / (prer.portions || 7));
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
     Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
@@ -2779,7 +2693,7 @@ const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
 const INGREDIENT_MACROS = {
   "alfredo_sauce": {kcal:150,p:3.0,c:5.0,f:12.0},
   "b0_bread": {kcal:265,p:9.5,c:46.0,f:4.3,unitG:40},
-  "b0_coffee": {kcal:2,p:0.1,c:0.3,f:0.0},
+  "b0_coffee": {kcal:2,p:0.1,c:0.3,f:0.0,unitG:60},
   "b0_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
   "b0_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
   "b0_milk": {kcal:35,p:3.5,c:5.0,f:0.1},
@@ -2856,16 +2770,16 @@ const INGREDIENT_MACROS = {
   "corn_canned": {kcal:86,p:3.2,c:18.7,f:1.2},
   "cottage_cheese_ff": {kcal:72,p:12.0,c:4.0,f:0.5},
   "cream_cheese_ff": {kcal:105,p:14.0,c:8.0,f:0.5},
-  "d1_bak": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "d1_bak": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:4},
   "d1_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
   "d1_coc": {kcal:400,p:20.0,c:60.0,f:15.0},
   "d1_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
   "d1_flr": {kcal:361,p:10.0,c:75.0,f:1.0},
-  "d1_mil": {kcal:15,p:0.6,c:1.5,f:0.7},
+  "d1_mil": {kcal:15,p:0.6,c:1.5,f:0.7,unitG:30},
   "d1_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
   "d1_pump": {kcal:82,p:2.7,c:20.0,f:0.3},
-  "d1_sug": {kcal:20,p:0.0,c:5.0,f:0.0},
-  "d1_van": {kcal:288,p:0.1,c:12.5,f:0.1},
+  "d1_sug": {kcal:20,p:0.0,c:5.0,f:0.0,unitG:30},
+  "d1_van": {kcal:288,p:0.1,c:12.5,f:0.1,unitG:5},
   "d1_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
   "d2_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
   "d2_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
@@ -2881,7 +2795,7 @@ const INGREDIENT_MACROS = {
   "d4_ber": {kcal:57,p:0.8,c:14.0,f:0.3},
   "d4_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
   "d4_eggs": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
-  "d4_match": {kcal:324,p:30.0,c:38.0,f:5.0},
+  "d4_match": {kcal:324,p:30.0,c:38.0,f:5.0,unitG:6},
   "d4_oat": {kcal:404,p:15.0,c:66.0,f:9.0},
   "d4_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
   "d4_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
@@ -3121,7 +3035,7 @@ const INGREDIENT_MACROS = {
   "m42_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
   "m42_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
   "m42_fish": {kcal:100,p:20.0,c:0.0,f:2.0},
-  "m42_jalapeno": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m42_jalapeno": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:14},
   "m42_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
   "m42_mango": {kcal:60,p:0.8,c:15.0,f:0.4,unitG:300},
   "m42_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
@@ -3180,7 +3094,7 @@ const INGREDIENT_MACROS = {
   "m48_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
   "m48_tuna": {kcal:116,p:26.0,c:0.0,f:0.6},
   "m49_avo": {kcal:160,p:2.0,c:9.0,f:15.0,unitG:150},
-  "m49_chilli": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m49_chilli": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:15},
   "m49_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
   "m49_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
   "m49_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
@@ -3360,13 +3274,17 @@ function Bar({ v, t, color }) {
                 background: over ? "#ef4444" : color, borderRadius: 3, transition: "width 0.4s" } })));
 }
 // ─── MEAL CARD ──────────────────────────────────────────────────────────────
-function MealCard({ meal, macros, slot, profileScale }) {
+function MealCard({ meal, macros, slot, profileScale, portions }) {
     const [open, setOpen] = useState(false);
     const isRecipe = !meal.fixed;
     const gl = profileScale || 1;
     const borderColor = slot === "lunch" ? C.accentBorder : C.blueBorder;
     const slotBg = slot === "lunch" ? C.accentDim : C.blueDim;
-    const portionCount = getPortions(meal);
+    // Dashboard always shows 1 portion — what the user eats TODAY.
+    // recipePortions is how many portions the batchItems are written for.
+    // Dividing by it gives the per-portion quantity, then × profileScale.
+    const recipePortions = getPortions(meal, portions || 7);
+    const portionScale = gl / recipePortions;
     return (React.createElement("div", { style: { background: C.card, border: `1px solid ${borderColor}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
@@ -3386,7 +3304,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                 React.createElement(Macro, { label: "CARBS", value: macros.carbs, color: C.carb }),
                 React.createElement(Macro, { label: "FAT", value: macros.fat, color: C.fat })),
             isRecipe && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
-                    border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🧺 Fridge pull — batch ingredients")),
+                    border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🍱 Fridge pull — batch ingredients")),
             !isRecipe && meal.items && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide details" : "▼ View ingredients"))),
         open && isRecipe && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
@@ -3395,8 +3313,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                 "\uD83D\uDCA1 ",
                 meal.note),
             React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } },
-                "\uD83E\uDDFA BATCH INGREDIENTS \u2014 " + portionCount + (portionCount === 1 ? " PORTION" : " PORTIONS") +
-                (Math.abs(gl - 1) > 0.05 ? " \u00B7 " + Math.round(gl * 100) + "% scale" : "")),
+                "\uD83C\uDF7D\uFE0F TODAY'S PORTION" + (Math.abs(gl - 1) > 0.05 ? " \u00B7 " + Math.round(gl * 100) + "% scale" : "")),
             CAT_ORDER.map(cat => {
                 const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
                 if (!catItems.length)
@@ -3407,7 +3324,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                         " ",
                         cat.toUpperCase()),
                     catItems.map(item => {
-                        const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * gl) : +(item.qty * gl).toFixed(1);
+                        const scaledQty = item.unit === "whole" ? Math.round(item.qty * portionScale) : +(item.qty * portionScale).toFixed(1);
                         const scaledItem = Object.assign({}, item, { qty: scaledQty });
                         return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
@@ -3543,8 +3460,9 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     const lastCooked = getLastCooked(r.id);
     const neverUsed = !localStorage.getItem(`mp_last_${r.id}`);
     // For flexPortions recipes the full batch is always made; only the divisor changes.
-    // For standard recipes, scale ingredient display proportionally to global batch size.
-    const scale = r.flexPortions ? 1 : (portions || 7) / 7;
+    // For standard recipes, scale ingredient display by selectedBatch / recipeParts so
+    // a recipe that makes 5 portions shows 100% of its batch items when batch=5 is chosen.
+    const scale = r.flexPortions ? 1 : (portions || 7) / getPortions(r, portions || 7);
     // Compute display macros live so flexPortions recipes respond to the batch selector.
     const displayMacros = computePerPortion(r, 1, portions || 7);
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
@@ -3710,7 +3628,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const bfItems = (!bfSkipped && bfr && bfr.batchItems)
         ? buildSlotItems(bfr.batchItems, (p / bfSrv) * gl) : [];
     const preItems = (!preSkipped && prer && prer.batchItems)
-        ? buildSlotItems(prer.batchItems, (p / (prer.portions || 7)) * gl) : [];
+        ? buildSlotItems(prer.batchItems, p / (prer.portions || 7)) : [];
     // Main batch = lunch + dinner + dessert only, grouped by category
     const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale);
     const scalePct = Math.round(gl * 100);
@@ -5605,11 +5523,11 @@ function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
     const [preSkipped, setPreSkippedState] = useState(() => localStorage.getItem("mp_pre_skip") === "1");
-    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || null);
+    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || "pw1");
     const [pendingSlot, setPendingSlot] = useState(null); // null | "lunch" | "dinner" | "breakfast" | "dessert"
     const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "m01");
     const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "m04");
-    const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || null);
+    const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || "bf2");
     const [dessert, setDessertState] = useState(() => localStorage.getItem("mp_dessert") || null);
     const [lunchScale, setLunchScale] = useState(1);
     const [dinnerScale, setDinnerScale] = useState(1);
@@ -5654,7 +5572,7 @@ function App() {
         return "meals";
     });
     const [filter, setFilter] = useState("All");
-    const [recipeCat, setRecipeCat] = useState("main");
+    const [recipeCat, setRecipeCat] = useState("breakfast");
     const [recipeQuery, setRecipeQuery] = useState("");
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
@@ -5849,11 +5767,10 @@ function App() {
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
     }).sort((a, b) => {
-        // Unlocked recipes first, then locked. Within each group: alphabetical by name.
-        const aViewable = canView(a.id) ? 0 : 1;
-        const bViewable = canView(b.id) ? 0 : 1;
-        if (aViewable !== bViewable)
-            return aViewable - bViewable;
+        // Unlocked recipes first, locked after. Both groups A-Z.
+        const aLocked = canView(a.id) ? 0 : 1;
+        const bLocked = canView(b.id) ? 0 : 1;
+        if (aLocked !== bLocked) return aLocked - bLocked;
         return a.name.localeCompare(b.name);
     });
     const handleSetLunch = id => { setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); setTab("meals"); };
@@ -5873,10 +5790,10 @@ function App() {
                 borderRight: `1px solid ${C.dim}40`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
                 boxShadow: `2px 0 12px ${C.card}80` } },
-            React.createElement("div", { onClick: tapLogo, style: { width: 36, height: 36, borderRadius: 10, overflow: "hidden",
-                    marginBottom: 14, flexShrink: 0, cursor: "pointer",
-                    WebkitTapHighlightColor: "transparent" } },
-                React.createElement("img", { src: "/icon-192.png", alt: "SoulGainz", style: { width: 36, height: 36, display: "block" } })),
+            React.createElement("div", { onClick: tapLogo, style: { marginBottom: 14, flexShrink: 0, cursor: "pointer",
+                    WebkitTapHighlightColor: "transparent", display: "flex", flexDirection: "column", alignItems: "center" } },
+                React.createElement("svg", { width: 22, height: 31, viewBox: "-12 -32 24 44" },
+                    React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" }))),
             (() => {
                 const active = tab === "profile";
                 return React.createElement("button", { onClick: () => setTab("profile"), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 10,
@@ -5940,7 +5857,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD · MADE SIMPLE"),
                         React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 600 } },
                             (function(){ var d=new Date(); return d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"}); })())),
-                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, lineHeight: 1.2 } }, "SoulGainz"),
+                    React.createElement(FlameWordmark, { size: 18 }),
                     React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 3 } },
                         "☀️ ",
                         React.createElement("span", { style: { color: C.text } }, lr ? lr.name : "No lunch"),
@@ -5980,19 +5897,17 @@ function App() {
                     React.createElement(TotalBar, { total: total, targets: effectiveTargets, profileName: profileName }),
                     React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, textAlign: "center", margin: "10px 0 14px", padding: "9px 14px", background: C.accentDim, borderRadius: 10, border: "1px solid " + C.accent } }, "\uD83C\uDF7D\uFE0F Assign meals from the Recipes tab — each recipe has a Set button"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
-                        React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST"),
-                        React.createElement("div", { style: { display: "flex", gap: 8 } },
-                            breakfastRecipe && React.createElement("button", { onClick: () => { setBreakfastRecipeState(null); localStorage.removeItem("mp_breakfast"); }, style: { background: "none", border: "none", fontSize: 11, color: C.muted, cursor: "pointer", padding: "2px 0" } }, "\u2715 Remove recipe"))),
-                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale })
-                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale }),
+                        React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST")),
+                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale, portions: portions })
+                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale, portions: portions }),
                     preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
-                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale })
-                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale }),
-                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions })
+                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions }),
+                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
@@ -6013,7 +5928,7 @@ function App() {
                             React.createElement("button", { onClick: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10,
                                     padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
-                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
@@ -6035,7 +5950,7 @@ function App() {
                                     padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
                     dessert && desr
-                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale })
+                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions })
                         : React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                                 React.createElement("div", null,
@@ -6067,6 +5982,9 @@ function App() {
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
                             background: filter === f ? C.accent : C.card2,
                             color: filter === f ? "#000" : C.sub } }, f))))),
+                    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 10 } },
+                        React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.06em", whiteSpace: "nowrap" } }, "BATCH SIZE:"),
+                        React.createElement("div", { style: { display: "flex", gap: 4, flex: 1 } }, [3, 5, 7].map(n => (React.createElement("button", { key: n, onClick: () => setPortions(n), style: { flex: 1, padding: "5px 0", fontSize: 11, fontWeight: 700, borderRadius: 8, border: `1px solid ${portions === n ? C.accent : C.dim}`, background: portions === n ? C.accentDim : C.card2, color: portions === n ? C.accent : C.sub, cursor: "pointer" } }, n + " days"))))),
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 10 } },
                         filteredRecipes.length,
                         " recipe",
