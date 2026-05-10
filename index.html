@@ -2693,7 +2693,7 @@ const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
 const INGREDIENT_MACROS = {
   "alfredo_sauce": {kcal:150,p:3.0,c:5.0,f:12.0},
   "b0_bread": {kcal:265,p:9.5,c:46.0,f:4.3,unitG:40},
-  "b0_coffee": {kcal:2,p:0.1,c:0.3,f:0.0},
+  "b0_coffee": {kcal:2,p:0.1,c:0.3,f:0.0,unitG:60},
   "b0_cott": {kcal:72,p:12.0,c:4.0,f:0.5},
   "b0_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
   "b0_milk": {kcal:35,p:3.5,c:5.0,f:0.1},
@@ -2770,7 +2770,7 @@ const INGREDIENT_MACROS = {
   "corn_canned": {kcal:86,p:3.2,c:18.7,f:1.2},
   "cottage_cheese_ff": {kcal:72,p:12.0,c:4.0,f:0.5},
   "cream_cheese_ff": {kcal:105,p:14.0,c:8.0,f:0.5},
-  "d1_bak": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "d1_bak": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:4},
   "d1_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
   "d1_coc": {kcal:400,p:20.0,c:60.0,f:15.0},
   "d1_egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
@@ -2778,7 +2778,7 @@ const INGREDIENT_MACROS = {
   "d1_mil": {kcal:15,p:0.6,c:1.5,f:0.7,unitG:30},
   "d1_prot": {kcal:390,p:78.0,c:8.0,f:5.0,unitG:30},
   "d1_pump": {kcal:82,p:2.7,c:20.0,f:0.3},
-  "d1_sug": {kcal:20,p:0.0,c:5.0,f:0.0},
+  "d1_sug": {kcal:20,p:0.0,c:5.0,f:0.0,unitG:30},
   "d1_van": {kcal:288,p:0.1,c:12.5,f:0.1,unitG:5},
   "d1_yog": {kcal:57,p:10.0,c:3.6,f:0.4},
   "d2_cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
@@ -3035,7 +3035,7 @@ const INGREDIENT_MACROS = {
   "m42_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
   "m42_cuc": {kcal:15,p:0.7,c:3.6,f:0.1,unitG:200},
   "m42_fish": {kcal:100,p:20.0,c:0.0,f:2.0},
-  "m42_jalapeno": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m42_jalapeno": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:14},
   "m42_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
   "m42_mango": {kcal:60,p:0.8,c:15.0,f:0.4,unitG:300},
   "m42_onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
@@ -3094,7 +3094,7 @@ const INGREDIENT_MACROS = {
   "m48_tom": {kcal:18,p:0.9,c:3.9,f:0.2},
   "m48_tuna": {kcal:116,p:26.0,c:0.0,f:0.6},
   "m49_avo": {kcal:160,p:2.0,c:9.0,f:15.0,unitG:150},
-  "m49_chilli": {kcal:0,p:0.0,c:0.0,f:0.0},
+  "m49_chilli": {kcal:0,p:0.0,c:0.0,f:0.0,unitG:15},
   "m49_cil": {kcal:23,p:2.1,c:3.7,f:0.5},
   "m49_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
   "m49_lime": {kcal:30,p:0.7,c:11.0,f:0.2,unitG:50},
@@ -3274,13 +3274,18 @@ function Bar({ v, t, color }) {
                 background: over ? "#ef4444" : color, borderRadius: 3, transition: "width 0.4s" } })));
 }
 // ─── MEAL CARD ──────────────────────────────────────────────────────────────
-function MealCard({ meal, macros, slot, profileScale }) {
+function MealCard({ meal, macros, slot, profileScale, portions }) {
     const [open, setOpen] = useState(false);
     const isRecipe = !meal.fixed;
     const gl = profileScale || 1;
     const borderColor = slot === "lunch" ? C.accentBorder : C.blueBorder;
     const slotBg = slot === "lunch" ? C.accentDim : C.blueDim;
-    const portionCount = getPortions(meal);
+    const recipePortions = getPortions(meal);
+    const selectedPortions = portions || 7;
+    // For flexPortions recipes the full batch is always prepared; only scale by profileScale.
+    // For standard recipes scale by (selectedBatch / recipePortions) × profileScale.
+    const batchScale = meal.flexPortions ? gl : (selectedPortions / recipePortions) * gl;
+    const portionCount = selectedPortions;
     return (React.createElement("div", { style: { background: C.card, border: `1px solid ${borderColor}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
@@ -3321,7 +3326,7 @@ function MealCard({ meal, macros, slot, profileScale }) {
                         " ",
                         cat.toUpperCase()),
                     catItems.map(item => {
-                        const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * gl) : +(item.qty * gl).toFixed(1);
+                        const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * batchScale) : +(item.qty * batchScale).toFixed(1);
                         const scaledItem = Object.assign({}, item, { qty: scaledQty });
                         return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
@@ -5895,16 +5900,16 @@ function App() {
                     React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, textAlign: "center", margin: "10px 0 14px", padding: "9px 14px", background: C.accentDim, borderRadius: 10, border: "1px solid " + C.accent } }, "\uD83C\uDF7D\uFE0F Assign meals from the Recipes tab — each recipe has a Set button"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST")),
-                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale })
-                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale }),
+                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale, portions: portions })
+                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale, portions: portions }),
                     preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
-                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale })
-                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale }),
-                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions })
+                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions }),
+                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
@@ -5925,7 +5930,7 @@ function App() {
                             React.createElement("button", { onClick: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10,
                                     padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
-                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
@@ -5947,7 +5952,7 @@ function App() {
                                     padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
                     dessert && desr
-                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale })
+                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions })
                         : React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                                 React.createElement("div", null,
