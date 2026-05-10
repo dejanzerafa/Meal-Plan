@@ -3280,12 +3280,11 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
     const gl = profileScale || 1;
     const borderColor = slot === "lunch" ? C.accentBorder : C.blueBorder;
     const slotBg = slot === "lunch" ? C.accentDim : C.blueDim;
-    const recipePortions = getPortions(meal);
-    const selectedPortions = portions || 7;
-    // For flexPortions recipes the full batch is always prepared; only scale by profileScale.
-    // For standard recipes scale by (selectedBatch / recipePortions) × profileScale.
-    const batchScale = meal.flexPortions ? gl : (selectedPortions / recipePortions) * gl;
-    const portionCount = selectedPortions;
+    // Dashboard always shows 1 portion — what the user eats TODAY.
+    // recipePortions is how many portions the batchItems are written for.
+    // Dividing by it gives the per-portion quantity, then × profileScale.
+    const recipePortions = getPortions(meal, portions || 7);
+    const portionScale = gl / recipePortions;
     return (React.createElement("div", { style: { background: C.card, border: `1px solid ${borderColor}`, borderRadius: 14,
             overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
@@ -3314,8 +3313,7 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
                 "\uD83D\uDCA1 ",
                 meal.note),
             React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 10 } },
-                "\uD83E\uDDFA BATCH INGREDIENTS \u2014 " + portionCount + (portionCount === 1 ? " PORTION" : " PORTIONS") +
-                (Math.abs(gl - 1) > 0.05 ? " \u00B7 " + Math.round(gl * 100) + "% scale" : "")),
+                "\uD83C\uDF7D\uFE0F TODAY'S PORTION" + (Math.abs(gl - 1) > 0.05 ? " \u00B7 " + Math.round(gl * 100) + "% scale" : "")),
             CAT_ORDER.map(cat => {
                 const catItems = (meal.batchItems || []).filter(i => i.cat === cat);
                 if (!catItems.length)
@@ -3326,7 +3324,7 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
                         " ",
                         cat.toUpperCase()),
                     catItems.map(item => {
-                        const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * batchScale) : +(item.qty * batchScale).toFixed(1);
+                        const scaledQty = item.unit === "whole" ? Math.ceil(item.qty * portionScale) : +(item.qty * portionScale).toFixed(1);
                         const scaledItem = Object.assign({}, item, { qty: scaledQty });
                         return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
