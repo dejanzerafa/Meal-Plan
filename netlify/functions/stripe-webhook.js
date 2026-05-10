@@ -80,7 +80,7 @@ exports.handler = async (event) => {
             status: "active",
             current_period_start: new Date().toISOString(),
             current_period_end:
-              tier === "lifetime"
+              tier === "lifetime" || tier === "seasonal"
                 ? null
                 : tier === "quarterly"
                 ? new Date(Date.now() + 90 * 86400 * 1000).toISOString()
@@ -170,6 +170,7 @@ function getEmailSubject(tier) {
     monthly: "Welcome to Meal Prep — your subscription is live 🥩",
     calculator: "Your macro calculator is unlocked 📊",
     single: "Your recipe is unlocked 🍽️",
+    seasonal: "Your SoulFood bundle is unlocked 🌿",
   };
   return subjects[tier] || "Thanks for your purchase";
 }
@@ -202,6 +203,11 @@ function getEmailBody(tier, recipeId, amount) {
       label: "Single Recipe",
       description: `Recipe unlocked and ready to cook.`,
       badge: "RECIPE",
+    },
+    seasonal: {
+      label: "SoulFood Seasonal Bundle",
+      description: "Your seasonal recipe bundle is unlocked — open the app and they're ready to cook.",
+      badge: "SOULFOOD",
     },
   };
 

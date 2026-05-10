@@ -3764,7 +3764,12 @@ const STRIPE_PRICES = {
     monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
     calculator: "price_1TU824GjmPEqu9q90xWZDozk",
     single: "price_1TU82XGjmPEqu9q9EhfIpkFW",
+    // SoulFood seasonal bundle — $7.99 one-time. UI hidden until launch.
+    seasonal: "price_1TVTP1GjmPEqu9q9J81es0wu",
 };
+// SoulFood seasonal recipe bundle — populate these IDs when the bundle launches.
+// Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
+const SOULFOOD_RECIPE_IDS = [];
 // ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
 async function startCheckout(tier, recipeId) {
     if (!STRIPE_ENABLED) {
@@ -5666,6 +5671,9 @@ function App() {
         if (unlocks.allRecipes)
             return true;
         if (unlocks.recipes && unlocks.recipes.includes(id))
+            return true;
+        // SoulFood seasonal bundle — unlocks specific recipe IDs for tier "seasonal"
+        if (unlocks.tier === "seasonal" && SOULFOOD_RECIPE_IDS.includes(id))
             return true;
         return false;
     };

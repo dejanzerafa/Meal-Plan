@@ -45,6 +45,10 @@ exports.handler = async (event) => {
       unlocks.calculator = true;
       unlocks.allRecipes = true;
       unlocks.tier = tier;
+    } else if (tier === "seasonal") {
+      // SoulFood seasonal bundle — unlocks specific recipes defined in SOULFOOD_RECIPE_IDS.
+      // allRecipes stays false; the app checks tier === "seasonal" against its own ID list.
+      unlocks.tier = "seasonal";
     }
 
     return {
