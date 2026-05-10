@@ -29,11 +29,12 @@ exports.handler = async (event) => {
 
     const tier = session.metadata?.tier || "unknown";
     const recipeId = session.metadata?.recipeId || null;
+    const paidPriceId = session.metadata?.priceId || null;
     const email = session.customer_details?.email || null;
     const customerId = session.customer || null;
 
     // Determine unlock state based on tier
-    let unlocks = { calculator: false, allRecipes: false, recipes: [], tier: null };
+    let unlocks = { calculator: false, allRecipes: false, recipes: [], tier: null, seasonalPriceId: null };
 
     if (tier === "calculator") {
       unlocks.calculator = true;
@@ -46,9 +47,13 @@ exports.handler = async (event) => {
       unlocks.allRecipes = true;
       unlocks.tier = tier;
     } else if (tier === "seasonal") {
-      // SoulFood seasonal bundle — unlocks specific recipes defined in SOULFOOD_RECIPE_IDS.
-      // allRecipes stays false; the app checks tier === "seasonal" against its own ID list.
+      // SoulFood seasonal bundle — one-time per drop.
+      // seasonalPriceId is stored so the app can check whether the user's purchase
+      // matches the CURRENTLY active seasonal price. When a new season launches and
+      // STRIPE_PRICES.seasonal is updated, old buyers' seasonalPriceId won't match
+      // and access is automatically revoked — they must purchase the new drop.
       unlocks.tier = "seasonal";
+      unlocks.seasonalPriceId = paidPriceId;
     }
 
     return {

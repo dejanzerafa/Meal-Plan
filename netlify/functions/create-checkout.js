@@ -52,6 +52,7 @@ exports.handler = async (event) => {
       metadata: {
         tier,
         recipeId: recipeId || "",
+        priceId: priceId || "",   // stored so seasonal drop can be identified on success
       },
       // Capture customer email (Stripe will prompt for it on checkout)
       customer_creation: mode === "payment" ? "always" : undefined,

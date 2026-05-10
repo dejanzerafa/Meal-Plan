@@ -5672,8 +5672,12 @@ function App() {
             return true;
         if (unlocks.recipes && unlocks.recipes.includes(id))
             return true;
-        // SoulFood seasonal bundle — unlocks specific recipe IDs for tier "seasonal"
-        if (unlocks.tier === "seasonal" && SOULFOOD_RECIPE_IDS.includes(id))
+        // SoulFood seasonal bundle — one-time per drop.
+        // Access requires matching the CURRENT season's price ID.
+        // When STRIPE_PRICES.seasonal is updated for a new drop, old buyers lose access automatically.
+        if (unlocks.tier === "seasonal" &&
+            unlocks.seasonalPriceId === STRIPE_PRICES.seasonal &&
+            SOULFOOD_RECIPE_IDS.includes(id))
             return true;
         return false;
     };
