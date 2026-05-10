@@ -249,7 +249,7 @@ const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 const PUSH_SERVER_KEY = "BMKlYKKnIpVRthufq_yxuWVOLhftk8jZWWBqYZyaGrq1_KE2PxxXeklIS41qP9FiUIpaTwKIrqgmyKnY5tt5rww";
 const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Fruits", "Aromatics", "Sauces", "Liquids", "Fats", "Fat"];
-const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧" };
+const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Fruits: "🍓", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧", Fats: "🫒", Fat: "🫒" };
 // ─── FIXED MEALS ───────────────────────────────────────────────────────────
 const BREAKFAST = {
     type: "Breakfast", icon: "🌅", name: "High-Protein Breakfast",
@@ -1571,7 +1571,7 @@ const RECIPES = [
         badge: "⚡ No Cook", carb: "🍌 Banana",
         perPortion: { kcal: 290, protein: 8, carbs: 48, fat: 9 },
         batchItems: [
-            { key: "pw_ricecake", label: "Plain rice cakes (pack)", qty: 14, unit: "whole", cat: "Carbs" },
+            { key: "pw_ricecake", label: "Plain rice cakes", qty: 14, unit: "whole", cat: "Carbs" },
             { key: "pw_pb", label: "Natural peanut butter", qty: 112, unit: "g", cat: "Fats" },
             { key: "pw_banana", label: "Bananas (ripe)", qty: 7, unit: "whole", cat: "Fruits" },
             { key: "pw_honey", label: "Honey", qty: 42, unit: "g", cat: "Sauces" },
@@ -1611,7 +1611,7 @@ const RECIPES = [
         badge: "⚡ No Cook", carb: "🫐 Berry",
         perPortion: { kcal: 265, protein: 10, carbs: 42, fat: 6.8 },
         batchItems: [
-            { key: "pw_yogurt", label: "Fat-free Greek yogurt (1kg tub)", qty: 2, unit: "whole", cat: "Dairy" },
+            { key: "pw_yogurt", label: "Fat-free Greek yogurt", qty: 1400, unit: "g", cat: "Dairy" },
             { key: "pw_berries", label: "Mixed frozen berries", qty: 700, unit: "g", cat: "Fruits" },
             { key: "pw_granola", label: "Low-sugar granola", qty: 245, unit: "g", cat: "Carbs" },
             { key: "pw_honey2", label: "Honey", qty: 42, unit: "g", cat: "Sauces" },
@@ -1671,9 +1671,9 @@ const RECIPES = [
         badge: "⚡ No Cook", carb: "🍌 Banana",
         perPortion: { kcal: 158, protein: 4, carbs: 36, fat: 1.1 },
         batchItems: [
-            { key: "pw_chocmilk", label: "Low-fat chocolate milk (1L cartons)", qty: 2, unit: "whole", cat: "Dairy" },
+            { key: "pw_chocmilk", label: "Low-fat chocolate milk", qty: 1750, unit: "mL", cat: "Dairy" },
             { key: "pw_banana4", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" },
-            { key: "pw_ricecake2", label: "Plain rice cakes (pack)", qty: 14, unit: "whole", cat: "Carbs" },
+            { key: "pw_ricecake2", label: "Plain rice cakes", qty: 14, unit: "whole", cat: "Carbs" },
         ],
         steps: [
             "No prep required.",
@@ -3760,8 +3760,13 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
                         " ",
                         cat.toUpperCase()),
                     catItems.map(item => {
-                        const scaledQty = item.unit === "whole" ? Math.round(item.qty * portionScale) : +(item.qty * portionScale).toFixed(1);
-                        const scaledItem = Object.assign({}, item, { qty: scaledQty });
+                        const rawScaled = item.qty * portionScale;
+                        const roundedWhole = Math.round(rawScaled);
+                        // For whole-unit items that round to 0 (e.g. 1 onion for 7 portions),
+                        // show the batch qty with a "(batch)" label so the user knows to buy it.
+                        const isBatchOnly = item.unit === "whole" && roundedWhole === 0 && item.qty > 0;
+                        const scaledQty = isBatchOnly ? item.qty : (item.unit === "whole" ? roundedWhole : +rawScaled.toFixed(1));
+                        const scaledItem = Object.assign({}, item, { qty: scaledQty, label: isBatchOnly ? item.label + " (batch)" : item.label });
                         return (React.createElement("div", { key: item.key, style: { display: "flex", alignItems: "center", gap: 8,
                                 padding: "5px 8px", background: C.card2, borderRadius: 6, marginBottom: 3 } },
                             React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700, minWidth: 8 } }, "\u00B7"),
