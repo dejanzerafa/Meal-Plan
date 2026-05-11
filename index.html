@@ -6072,26 +6072,34 @@ function OnboardingSignup({ onDone }) {
     async function handleSignup() {
         if (!email.trim() || !email.includes("@")) return;
         setStatus("loading");
+        // Always save locally first — user gets into the app regardless of backend status
+        localStorage.setItem("mp_acc_email", email.trim().toLowerCase());
+        localStorage.setItem("mp_acc_first_name", name.trim());
+        localStorage.setItem("mp_acc_last_name", surname.trim());
+        localStorage.setItem("mp_acc_name", (name.trim() + " " + surname.trim()).trim());
+        localStorage.setItem("sg_onboarded", "registered");
+        localStorage.removeItem("sg_skip_ts");
+        // Fire-and-forget backend save — never block onboarding on network issues
         try {
-            await fetch("/.netlify/functions/save-user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: email.trim().toLowerCase(),
-                    first_name: name.trim(),
-                    last_name: surname.trim(),
-                    marketing_opt_in: true,
+            const res = await Promise.race([
+                fetch("/.netlify/functions/save-user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: email.trim().toLowerCase(),
+                        first_name: name.trim(),
+                        last_name: surname.trim(),
+                        marketing_opt_in: true,
+                    }),
                 }),
-            });
-            localStorage.setItem("mp_acc_email", email.trim());
-            localStorage.setItem("mp_acc_first_name", name.trim());
-            localStorage.setItem("mp_acc_last_name", surname.trim());
-            localStorage.setItem("mp_acc_name", (name.trim() + " " + surname.trim()).trim());
-            localStorage.setItem("sg_onboarded", "registered");
-            localStorage.removeItem("sg_skip_ts");
-            setStatus("done");
-            setTimeout(() => setNextStep(true), 1400);
-        } catch(e) { setStatus("error"); }
+                new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
+            ]);
+            if (!res.ok) console.warn("save-user returned", res.status);
+        } catch(e) {
+            console.warn("save-user failed (non-blocking):", e.message);
+        }
+        setStatus("done");
+        setTimeout(() => setNextStep(true), 1400);
     }
 
     const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#1C1208",
