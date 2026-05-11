@@ -3062,8 +3062,8 @@ function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, di
     );
 
     // Build breakfast and pre-workout items — macro-driven
-    const bfItems  = (!bfSkipped && bfr)  ? buildDynamicSlotItems(bfr,  et, bfScale  || 0.20, p) : [];
-    const preItems = (!preSkipped && prer) ? buildDynamicSlotItems(prer, et, preScale || 0.10, p) : [];
+    const bfItems  = (!bfSkipped && bfr)  ? buildDynamicSlotItems(bfr,  et, 0.20 * (bfScale  || 1), p) : [];
+    const preItems = (!preSkipped && prer) ? buildDynamicSlotItems(prer, et, 0.10 * (preScale || 1), p) : [];
 
     let t = `SOULGAINZ MEAL PLAN — ${p} DAYS\n`;
     if (et.kcal) t += `Target: ${et.kcal} kcal · ${et.protein}g protein · ${et.carbs}g carbs · ${et.fat}g fat\n`;
@@ -3238,12 +3238,19 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
         }
     };
 
+    // Base slot fractions × MacroBalancer scale (scale=1 → no adjustment)
+    const lFrac  = 0.35 * (ls  || 1);
+    const dFrac  = 0.35 * (ds  || 1);
+    const bfFrac = 0.20 * ((bfScale  || 1));
+    const dsFrac = 0.05 * ((desScale || 1));
+    const prFrac = 0.10 * ((preScale || 1));
+
     // Lunch + Dinner (same-recipe case: double up quantities)
     if (lr && dr && lr.id === dr.id) {
         const hasDyn = et.kcal && lr.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
         if (hasDyn) {
-            const lMacros = slotMacrosFromTargets(et, ls);
-            const dMacros = slotMacrosFromTargets(et, ds);
+            const lMacros = slotMacrosFromTargets(et, lFrac);
+            const dMacros = slotMacrosFromTargets(et, dFrac);
             const lQ = computeIngredientQtys(lr, lMacros, p);
             const dQ = computeIngredientQtys(dr, dMacros, p);
             lr.batchItems.forEach(i => {
@@ -3264,13 +3271,13 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             });
         }
     } else {
-        addDynamic(lr, ls);
-        addDynamic(dr, ds);
+        addDynamic(lr, lFrac);
+        addDynamic(dr, dFrac);
     }
 
-    if (!bfSkipped && bfr) addDynamic(bfr, bfScale || 0.20);
-    if (desr) addDynamic(desr, desScale || 0.05);
-    if (!preSkipped && prer) addDynamic(prer, preScale || 0.10);
+    if (!bfSkipped && bfr) addDynamic(bfr, bfFrac);
+    if (desr) addDynamic(desr, dsFrac);
+    if (!preSkipped && prer) addDynamic(prer, prFrac);
 
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
@@ -4387,13 +4394,14 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     const scale = r.flexPortions ? ps : ((portions || 7) / getPortions(r, portions || 7)) * ps;
     const p = portions || 7;
 
-    // Determine which slot fraction applies to this recipe
-    const slotFraction = isL ? (lunchScale || 0.35)
-        : isD   ? (dinnerScale || 0.35)
-        : isBF  ? (bfScale     || 0.20)
-        : isPRE ? (preScale    || 0.10)
-        : isDS  ? (desScale    || 0.05)
-        : 0.35; // default for browse mode
+    // Slot fraction = base allocation × MacroBalancer scale (scale defaults to 1 = no change).
+    // Base allocations: lunch 35%, dinner 35%, breakfast 20%, pre-workout 10%, dessert 5%.
+    const slotFraction = isL  ? 0.35 * (lunchScale  || 1)
+        : isD   ? 0.35 * (dinnerScale || 1)
+        : isBF  ? 0.20 * (bfScale     || 1)
+        : isPRE ? 0.10 * (preScale    || 1)
+        : isDS  ? 0.05 * (desScale    || 1)
+        : 0.35; // default for browse mode (no slot selected)
 
     // Compute slot macro targets — drives ingredient quantities
     const et = effectiveTargets || {};
@@ -4626,12 +4634,12 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const et = effectiveTargets || {};
     if (!lr || !dr)
         return null;
-    // Per-slot item lists — breakfast and pre-workout use macro-driven quantities
-    // following the 4-step framework (protein → fat → carbs as residual).
+    // Per-slot item lists — macro-driven, 4-step framework.
+    // Slot fraction = base allocation × MacroBalancer scale (default scale=1).
     const bfItems  = (!bfSkipped && bfr)
-        ? buildDynamicSlotItems(bfr,  et, bfScale  || 0.20, p) : [];
+        ? buildDynamicSlotItems(bfr,  et, 0.20 * (bfScale  || 1), p) : [];
     const preItems = (!preSkipped && prer)
-        ? buildDynamicSlotItems(prer, et, preScale || 0.10, p) : [];
+        ? buildDynamicSlotItems(prer, et, 0.10 * (preScale || 1), p) : [];
     // Main batch = lunch + dinner + dessert only, grouped by category
     const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale, effectiveTargets, null, null, desScale);
     const scalePct = Math.round(gl * 100);
