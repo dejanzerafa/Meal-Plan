@@ -1054,6 +1054,7 @@ const RECIPES = [
         category: "main", id: "m29",
         name: "🥩 Ranch Beef Bowl",
         subtitle: "Lean beef · potatoes · ranch sauce",
+        portions: 3,
         badge: "🍳 Stovetop", carb: "Rice",
         perPortion: {kcal:444,protein:52,carbs:34,fat:9.3},
         batchItems: [
@@ -1079,6 +1080,7 @@ const RECIPES = [
         category: "main", id: "m30",
         name: "🥩 Lean Taco Salad",
         subtitle: "Lean beef · rice · fresh salad · lime",
+        portions: 3,
         badge: "🍳 Stovetop", carb: "Rice",
         perPortion: {kcal:577,protein:55,carbs:66,fat:9.3},
         batchItems: [
@@ -1102,15 +1104,15 @@ const RECIPES = [
         note: "Qatar: canned black beans and corn at any Lulu/Carrefour. Fresh tomatoes and onion make great pico de gallo — just dice and mix with lime juice and coriander.",
     },
     {
-        category: "main", id: "m4",
+        category: "main", id: "m04",
         name: "🥩 Hibachi Steak Bowl",
         subtitle: "Stovetop · ~30 min",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
         perPortion: {kcal:640,protein:47,carbs:55,fat:24.5},
         batchItems: [
-            { key: "m4-steak", label: "Top sirloin steak (raw)", qty: 990, unit: "g", cat: "Protein" },
+            { key: "m04-steak", label: "Top sirloin steak (raw)", qty: 990, unit: "g", cat: "Protein" },
             { key: "m4-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" },
-            { key: "m4-rice", label: "Jasmine rice (uncooked)", qty: 350, unit: "g", cat: "Carbs" },
+            { key: "m04-rice", label: "Jasmine rice (uncooked)", qty: 350, unit: "g", cat: "Carbs" },
             { key: "m4-peas", label: "Frozen peas", qty: 350, unit: "g", cat: "Vegetables" },
             { key: "m4-carrots", label: "Frozen carrots", qty: 350, unit: "g", cat: "Vegetables" },
             { key: "m4-onion", label: "Yellow onion (diced)", qty: 157, unit: "g", cat: "Aromatics" },
@@ -1163,7 +1165,7 @@ const RECIPES = [
             { key: "m16_cott", label: "Fat-free cottage cheese", qty: 160, unit: "g", cat: "Dairy" },
             { key: "m16_rice", label: "Jasmine rice (uncooked)", qty: 130, unit: "g", cat: "Carbs" },
             { key: "m16_tort", label: "High-fiber tortilla wraps (110 cal)", qty: 7, unit: "whole", cat: "Carbs" },
-            { key: "m16_chip", label: "Chipotle peppers in adobo", qty: 1, unit: "whole", cat: "Sauces" },
+            { key: "m16_chip", label: "Chipotle peppers in adobo", qty: 200, unit: "g", cat: "Sauces" },
             { key: "m16_honey", label: "Raw honey", qty: 42, unit: "g", cat: "Sauces" },
             { key: "m16_tom", label: "Tomato sauce", qty: 170, unit: "g", cat: "Sauces" },
             { key: "m16_milk", label: "Fat-free milk", qty: 80, unit: "mL", cat: "Liquids" },
@@ -1178,7 +1180,7 @@ const RECIPES = [
             "Lay out tortilla wraps. Divide chicken mixture, cooked rice and mozzarella evenly among each.",
             "Fold ends in, roll tightly. Toast each burrito on a nonstick skillet over medium-high heat until golden brown on both sides.",
         ],
-        note: "Macros: 455 kcal · 65P · 52C · 4F per burrito. Exceptionally high protein to fat ratio. Freeze extras — reheat in air fryer at 180°C for 8 min.",
+        note: "Macros: 521 kcal · 69P · 47C · 5F per burrito. Exceptionally high protein to fat ratio. Freeze extras — reheat in air fryer at 180°C for 8 min.",
     },
     {
         id: "m17", category: "breakfast",
@@ -1866,7 +1868,7 @@ const RECIPES = [
     },
     {
         category: "preworkout", id: "pw6",
-        name: "Chocolate Milk & Banana",
+        name: "🥛 Chocolate Milk & Banana",
         subtitle: "Low-fat chocolate milk · banana · rice cakes",
         badge: "⚡ No Cook", carb: "🍌 Banana",
         perPortion: { kcal: 158, protein: 4, carbs: 36, fat: 1.1 },
@@ -1887,7 +1889,7 @@ const RECIPES = [
     // ─── BREAKFAST ──────────────────────────────────────────────────────────
     {
         id: "b0", category: "breakfast",
-        name: "High-Protein Breakfast", subtitle: "Assembled · 5 min",
+        name: "🥚 High-Protein Breakfast", subtitle: "Assembled · 5 min",
         portions: 1,
         badge: "🍳 NC", carb: "🥛 Cottage Cheese",
         perPortion: {kcal:863,protein:99,carbs:69,fat:20.2},
@@ -1910,11 +1912,12 @@ const RECIPES = [
             "Pull a double espresso and combine with skimmed milk.",
             "Blend 1 scoop whey with the espresso-milk for the protein hit.",
         ],
-        note: "Macros: 798 kcal · 93P · 64C · 19F (1 portion). The default daily breakfast — designed to hit ~50% of daily protein in one meal. Assembled, not cooked: just toast, plate, drink. Can be prepped in 5 min before training.",
+        note: "Macros: 863 kcal · 99P · 69C · 20F (1 portion). The default daily breakfast — designed to hit ~50% of daily protein in one meal. Assembled, not cooked: just toast, plate, drink. Can be prepped in 5 min before training.",
     },
     {
         id: "b1", category: "breakfast",
-        name: "Egg, Beef & Cheese Breakfast Bowl", subtitle: "Stovetop · batch cook",
+        name: "🥚 Egg, Beef & Cheese Breakfast Bowl", subtitle: "Stovetop · batch cook",
+        portions: 7,
         badge: "🍳 Stovetop", carb: "🌾 Rice",
         perPortion: {kcal:578,protein:56,carbs:42,fat:18.7},
         batchItems: [
@@ -1933,11 +1936,11 @@ const RECIPES = [
             "Top each container with cheddar and mozzarella cheese.",
             "Optional: pack a small portion of sugar-free syrup on the side for a sweet-savoury combo.",
         ],
-        note: "Macros: 512 kcal · 48P · 45C · 15F per bowl. Keeps refrigerated for 5 days. Reheat covered in microwave 90 sec.",
+        note: "Macros: 578 kcal · 56P · 42C · 19F per bowl. Keeps refrigerated for 5 days. Reheat covered in microwave 90 sec.",
     },
         {
         id: "b3", category: "breakfast",
-        name: "Turkey Sausage Breakfast Bagel", subtitle: "Stovetop · batch cook",
+        name: "🥯 Turkey Sausage Breakfast Bagel", subtitle: "Stovetop · batch cook",
         portions: 4,
         badge: "🍳 Stovetop", carb: "🥯 Bagel",
         perPortion: {kcal:651,protein:47,carbs:52,fat:27.5},
@@ -1956,13 +1959,13 @@ const RECIPES = [
             "Assemble each sandwich: bottom bagel half → 1 slice cheese → 1 turkey patty → 1 egg → top bagel half.",
             "Serve immediately or wrap individually for meal prep. Reheat in microwave 60 sec.",
         ],
-        note: "Macros: 601 kcal · 51P · 34C · 29F per sandwich. Makes 4 sandwiches. Note higher fat from eggs + butter. Great post-workout breakfast.",
+        note: "Macros: 651 kcal · 47P · 52C · 28F per sandwich. Makes 4 sandwiches. Note higher fat from eggs + butter. Great post-workout breakfast.",
     },
     // ─── DESSERTS ────────────────────────────────────────────────────────────
     {
         id: "d1", category: "dessert",
-        name: "Protein Brownie Cookies", subtitle: "Oven · batch bake",
-        portions: 7,
+        name: "🍪 Protein Brownie Cookies", subtitle: "Oven · batch bake",
+        portions: 4,
         badge: "💨 Air Fryer", carb: "🍫 Chocolate",
         perPortion: { kcal: 146, protein: 14, carbs: 20, fat: 4.1 },
         batchItems: [
@@ -1987,11 +1990,12 @@ const RECIPES = [
             "Make the frosting: mix together Greek yogurt + Jello vanilla sugar-free pudding mix + Cool Whip until combined.",
             "Frost cooled cookies and top with crushed chocolate sandwich cookies if desired.",
         ],
-        note: "Macros: 145 kcal · 12P · 18C · 3F per cookie. Makes 4 cookies. Store in the fridge for up to 5 days. These taste best chilled overnight.",
+        note: "Macros: 146 kcal · 14P · 20C · 4F per cookie. Makes 4 cookies. Store in the fridge for up to 5 days. These taste best chilled overnight.",
     },
     {
         id: "d2", category: "dessert",
-        name: "Protein Brownie", subtitle: "Oven or Microwave",
+        name: "🍫 Protein Brownie", subtitle: "Oven or Microwave",
+        portions: 1,
         badge: "💨 Air Fryer", carb: "🍫 Chocolate",
         perPortion: {kcal:280,protein:39,carbs:17,fat:10.3},
         batchItems: [
@@ -2009,11 +2013,12 @@ const RECIPES = [
             "Allow to cool slightly before eating — the texture becomes firmer and creamier as it cools.",
             "Optional: top with Greek yogurt mixed with a small amount of chocolate protein powder as frosting.",
         ],
-        note: "Macros: 297 kcal · 37P · 17C · 9F per brownie. Single serving. Can substitute oat flour (15g) for protein powder for a different texture. Top with berries or nut butter for variety.",
+        note: "Macros: 280 kcal · 39P · 17C · 10F per brownie. Single serving. Can substitute oat flour (15g) for protein powder for a different texture. Top with berries or nut butter for variety.",
     },
     {
         id: "m18", category: "main",
-        name: "Chicken with Mustard & Coffee Sauce", subtitle: "Mushroom cream · Stovetop",
+        name: "🍗 Chicken with Mustard & Coffee Sauce", subtitle: "Mushroom cream · Stovetop",
+        portions: 4,
         badge: "🍳 Stovetop", carb: "🍄 Low Carb",
         perPortion: { kcal: 208, protein: 39, carbs: 7, fat: 3 },
         batchItems: [
@@ -2037,7 +2042,7 @@ const RECIPES = [
     },
     {
         id: "m19", category: "main", portions: 1,
-        name: "Salmon & Avocado Burrito", subtitle: "Crispy wrap · Air fryer",
+        name: "🥑 Salmon & Avocado Burrito", subtitle: "Crispy wrap · Air fryer",
         badge: "💨 Air Fryer", carb: "🌮 Wrap",
         perPortion: {kcal:623,protein:48,carbs:46,fat:28.3},
         batchItems: [
@@ -2057,11 +2062,11 @@ const RECIPES = [
             "Place the mixture in the centre of the wrap. Fold sides in, roll tightly.",
             "Air fry at 180°C for 10 min flipping halfway until wrap is golden and crispy. Serve immediately.",
         ],
-        note: "Macros: 504 kcal · 38P · 32C · 27F (1 portion). Make fresh, not batch-cook. Optional: scatter sunflower seeds for extra crunch. Use canned salmon to save time.",
+        note: "Macros: 623 kcal · 48P · 46C · 28F (1 portion). Make fresh, not batch-cook. Optional: scatter sunflower seeds for extra crunch. Use canned salmon to save time.",
     },
     {
         id: "m20", category: "main",
-        name: "Juicy Garlic Lemon Chicken", subtitle: "Yogurt-marinated · Air fryer · 35 min",
+        name: "🍋 Juicy Garlic Lemon Chicken", subtitle: "Yogurt-marinated · Air fryer · 35 min",
         portions: 3,
         badge: "💨 Air Fryer", carb: "🍋 Low Carb",
         perPortion: {kcal:278,protein:55,carbs:6,fat:2.8},
@@ -2078,11 +2083,11 @@ const RECIPES = [
             "Ensure internal temp reaches 75°C (165°F). Rest 5 min before slicing.",
             "Serve sliced. Pairs with rice, roasted potatoes, or salad.",
         ],
-        note: "Macros: 197 kcal · 39P · 2C · 4F per 200g portion. Scale to 900g chicken for 4–5 portions. Outstanding protein-to-calorie ratio — ideal cut day or post-workout meal. Yogurt keeps it incredibly juicy.",
+        note: "Macros: 278 kcal · 55P · 6C · 3F per portion (≈200g breast). Scale to 900g chicken for 4–5 portions. Outstanding protein-to-calorie ratio — ideal cut day or post-workout meal. Yogurt keeps it incredibly juicy.",
     },
     {
         id: "m21", category: "main",
-        name: "Crispy Chicken Nuggets", subtitle: "Cornflake crusted · Air fryer · 25 min",
+        name: "🍗 Crispy Chicken Nuggets", subtitle: "Cornflake crusted · Air fryer · 25 min",
         flexPortions: true,
         badge: "💨 Air Fryer", carb: "🌽 Cornflake",
         perPortion: {kcal:106,protein:12,carbs:5,fat:3.7},
@@ -2104,7 +2109,7 @@ const RECIPES = [
     },
     {
         id: "b4", category: "breakfast",
-        name: "Protein Smoothie Bowl", subtitle: "No cook · 5 min",
+        name: "🫐 Protein Smoothie Bowl", subtitle: "No cook · 5 min",
         badge: "🍳 NC", carb: "🫐 Berries",
         perPortion: {kcal:296,protein:45,carbs:24,fat:2.9},
         batchItems: [
@@ -2123,7 +2128,7 @@ const RECIPES = [
     },
     {
         id: "b5", category: "breakfast",
-        name: "Carrot Protein Pancakes", subtitle: "Stovetop · 10 min",
+        name: "🥕 Carrot Protein Pancakes", subtitle: "Stovetop · 10 min",
         badge: "🍳 Stovetop", carb: "🥕 Carrot", portions: 1,
         perPortion: {kcal:453,protein:52,carbs:38,fat:11},
         batchItems: [
@@ -2145,7 +2150,7 @@ const RECIPES = [
     },
     {
         id: "d3", category: "dessert",
-        name: "High-Protein Chocolate Cake", subtitle: "Oven · 45 min",
+        name: "🍫 High-Protein Chocolate Cake", subtitle: "Oven · 45 min",
         portions: 10,
         badge: "🌬️ Oven", carb: "🍫 Chocolate",
         perPortion: {kcal:93,protein:12,carbs:9,fat:1.8},
@@ -2166,11 +2171,11 @@ const RECIPES = [
             "Make the topping: mix Greek yogurt + protein powder + cocoa powder until creamy. Spread over the cooled cake.",
             "Slice into 10 equal portions. Store in the fridge.",
         ],
-        note: "Macros: 118 kcal · 15P · 9C · 3F per slice (10 slices). Gets better on day 2. Keeps 5 days refrigerated. Optional: top with crushed peanuts.",
+        note: "Macros: 93 kcal · 12P · 9C · 2F per slice (10 slices). Gets better on day 2. Keeps 5 days refrigerated. Optional: top with crushed peanuts.",
     },
     {
         id: "d4", category: "dessert",
-        name: "Matcha Banana Protein Bread", subtitle: "Oven · 40 min",
+        name: "🍵 Matcha Banana Protein Bread", subtitle: "Oven · 40 min",
         portions: 10,
         badge: "🌬️ Oven", carb: "🍌 Banana",
         perPortion: { kcal: 152, protein: 14, carbs: 18, fat: 3 },
@@ -2198,7 +2203,8 @@ const RECIPES = [
     // ─── NEW MAINS m22–m27 ────────────────────────────────────────────────────
     {
         id: "m22", category: "main",
-        name: "Hot Honey Beef & Sweet Potato Bowls", subtitle: "Sheet pan · 40 min",
+        name: "🍯 Hot Honey Beef & Sweet Potato Bowls", subtitle: "Sheet pan · 40 min",
+        portions: 4,
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato",
         perPortion: {kcal:583,protein:54,carbs:56,fat:15.7},
         batchItems: [
@@ -2217,11 +2223,12 @@ const RECIPES = [
             "Add garlic powder, onion powder, smoked paprika, salt, pepper, minced garlic, tomato paste, chili flakes, and honey. Stir and cook until slightly caramelised.",
             "Divide roasted veg and beef into containers. Drizzle any remaining pan juices over the top.",
         ],
-        note: "Macros: 650 kcal · 50P · 45C · 30F (4 portions). Higher fat due to beef — ideal on training days. Freezer-friendly. Reheat in the microwave 2–3 min or air fryer 5 min.",
+        note: "Macros: 583 kcal · 54P · 56C · 16F (4 portions). Higher fat due to beef — ideal on training days. Freezer-friendly. Reheat in the microwave 2–3 min or air fryer 5 min.",
     },
     {
         id: "m23", category: "main",
-        name: "Pepperoni Pizza Pasta", subtitle: "Stovetop · 30 min",
+        name: "🍕 Pepperoni Pizza Pasta", subtitle: "Stovetop · 30 min",
+        portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         perPortion: {kcal:462,protein:38,carbs:34,fat:18.8},
         batchItems: [
@@ -2241,12 +2248,13 @@ const RECIPES = [
             "Stir over low heat until the cream cheese melts and everything is creamy and well combined.",
             "Portion into containers. Keeps 5 days refrigerated or 3 months frozen.",
         ],
-        note: "Macros: 490 kcal · 44P · 40C · 18F (10 portions). Note: original calorie count may read low — verify in MyFitnessPal with your exact brands. Sub regular pasta if high-protein pasta not available in Doha.",
+        note: "Macros: 462 kcal · 38P · 34C · 19F (10 portions). Note: original calorie count may read low — verify in MyFitnessPal with your exact brands. Sub regular pasta if high-protein pasta not available in Doha.",
     },
     {
         id: "m24", category: "main",
-        name: "Slow Cooker Honey Cashew Chicken", subtitle: "Slow cooker · 6 hr",
-        badge: "🥘 Crockpot", carb: "🍚 Rice",
+        name: "🍯 Slow Cooker Honey Cashew Chicken", subtitle: "Slow cooker · 6 hr",
+        portions: 5,
+        badge: "🥘 Crockpot", carb: "🥜 Cashew",
         perPortion: { kcal: 310, protein: 44, carbs: 17, fat: 8 },
         batchItems: [
             { key: "m24_chk", label: "Chicken breast (raw)", qty: 900, unit: "g", cat: "Protein" },
@@ -2274,9 +2282,9 @@ const RECIPES = [
     },
     {
         id: "m25", category: "main",
-        name: "High-Protein KFC Mac & Cheese", subtitle: "Air fryer · 45 min",
-        badge: "💨 Air Fryer", carb: "🧀 Mac & Cheese",
-        perPortion: {kcal:724,protein:72,carbs:89,fat:6.6},
+        name: "🍗 High-Protein KFC Mac & Cheese", subtitle: "Air fryer · 45 min",
+        badge: "💨 Air Fryer", carb: "🧀 Mac & Cheese", portions: 4,
+        perPortion: {kcal:589,protein:59,carbs:67,fat:8},
         batchItems: [
             { key: "m25_chk", label: "Diced chicken breast", qty: 700, unit: "g", cat: "Protein" },
             { key: "m25_flour", label: "Plain flour", qty: 100, unit: "g", cat: "Carbs" },
@@ -2295,11 +2303,12 @@ const RECIPES = [
             "Stir drained macaroni into the cheese sauce.",
             "Portion into containers — store chicken separately from mac for best crispiness. Reheat chicken in air fryer 2–3 min, mac in microwave with a splash of milk.",
         ],
-        note: "Macros: 589 kcal · 59P · 67C · 8F (4 portions). Verify calorie count with your exact brands. Store chicken and mac separately for best texture. Nutritional yeast optional — adds cheesy depth.",
+        note: "Macros: 589 kcal · 59P · 67C · 8F (4 portions). Verify with your exact brands — evaporated milk and cheese vary significantly. Store chicken and mac separately for best texture.",
     },
     {
         id: "m26", category: "main",
-        name: "Creamy Steak Pasta", subtitle: "Stovetop · 75 min",
+        name: "🥩 Creamy Steak Pasta", subtitle: "Stovetop · 75 min",
+        portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         perPortion: {kcal:733,protein:52,carbs:76,fat:23.2},
         batchItems: [
@@ -2324,11 +2333,12 @@ const RECIPES = [
             "Add drained pasta, diced steak, and parmesan. Mix well. Fold in Gruyère.",
             "Cover and cook on low heat 10–15 min until sauce thickens. Portion into containers.",
         ],
-        note: "Macros: 690 kcal · 51P · 74C · 20F (10 portions). A higher calorie batch — ideal for muscle-gain phases or active training weeks. Freezer-friendly. Gruyère optional; sub with extra parmesan.",
+        note: "Macros: 733 kcal · 52P · 76C · 23F (10 portions). A higher calorie batch — ideal for muscle-gain phases or active training weeks. Freezer-friendly. Gruyère optional; sub with extra parmesan.",
     },
     {
         id: "m27", category: "main",
-        name: "Sweet Potato Veggie Egg Bake", subtitle: "Oven · 75 min",
+        name: "🥚 Sweet Potato Veggie Egg Bake", subtitle: "Oven · 75 min",
+        portions: 4,
         badge: "🌬️ Oven", carb: "🍠 Sweet Potato",
         perPortion: {kcal:213,protein:13,carbs:25,fat:7.5},
         batchItems: [
@@ -2347,12 +2357,12 @@ const RECIPES = [
             "Crack 4 eggs over the vegetables. Sprinkle with Parmesan and season with salt and pepper.",
             "Bake 30 min until eggs are set and the top is golden. Slice into portions.",
         ],
-        note: "Macros: ~200 kcal · 10P · 26C · 6F per portion (4 portions, estimated). A lighter vegetarian option — great as a secondary meal or rest-day dinner. Low protein — pair with a protein shake if needed.",
+        note: "Macros: 213 kcal · 13P · 25C · 8F per portion (4 portions). A lighter vegetarian option — great as a secondary meal or rest-day dinner. Low protein — pair with a protein shake if needed.",
     },
     // ─── NEW BREAKFAST b6 ────────────────────────────────────────────────────
     {
         id: "b6", category: "breakfast",
-        name: "High-Protein Breakfast Oats", subtitle: "No cook · 4 min",
+        name: "🌾 High-Protein Breakfast Oats", subtitle: "No cook · 4 min",
         badge: "🍳 NC", carb: "🌾 Oats",
         perPortion: {kcal:622,protein:54,carbs:74,fat:14.1},
         batchItems: [
@@ -2375,7 +2385,8 @@ const RECIPES = [
     // ─── NEW DESSERT d5 ──────────────────────────────────────────────────────
     {
         id: "d5", category: "dessert",
-        name: "Chocolate Mousse Chia Pudding", subtitle: "5 min prep · overnight chill",
+        name: "🍫 Chocolate Mousse Chia Pudding", subtitle: "5 min prep · overnight chill",
+        portions: 1,
         badge: "🌬️ Fridge", carb: "🍫 Chocolate",
         perPortion: {kcal:495,protein:30,carbs:42,fat:26.7},
         batchItems: [
@@ -2395,13 +2406,13 @@ const RECIPES = [
             "Spoon caramel over the set mousse, then drizzle melted chocolate over the top. It will set into a thin shell.",
             "Refrigerate until ready to eat. Best after overnight.",
         ],
-        note: "Macros: 570 kcal · 31P · 45C · 28F (1 portion, no protein powder). With 1 scoop chocolate whey: ~690 kcal · 56P. Higher calorie — treat as a post-workout dessert. Freezer-stable for up to 1 month without the chocolate drizzle.",
+        note: "Macros: 495 kcal · 30P · 42C · 27F (1 portion). With 1 scoop chocolate whey: ~690 kcal · 56P. Higher calorie — treat as a post-workout dessert. Freezer-stable for up to 1 month without the chocolate drizzle.",
     },
     // ─── VEGETARIAN v1 ───────────────────────────────────────────────────────
     {
         id: "v1", category: "main",
-        name: "Lentil & Spinach Dahl", subtitle: "Red lentils · coconut milk · spinach · ginger-turmeric",
-        badge: "⚡ Instant Pot", carb: "🫘 Lentil",
+        name: "🍛 Lentil & Spinach Dahl", subtitle: "Red lentils · coconut milk · spinach · ginger-turmeric",
+        badge: "⚡ Instant Pot", carb: "🫘 Lentil", portions: 7,
         perPortion: { kcal: 390, protein: 22, carbs: 48, fat: 9 },
         batchItems: [
             { key: "v1_lent",   label: "Red lentils (dry)",            qty: 700, unit: "g",    cat: "Carbs"      },
@@ -2426,13 +2437,13 @@ const RECIPES = [
             "Stir in frozen spinach. Cook 5 min more until wilted. Season generously with salt and black pepper.",
             "Portion into containers. Dahl thickens as it cools — stir in a splash of water when reheating.",
         ],
-        note: "Macros: ~390 kcal · 22P · 48C · 9F per portion (7 portions). Fully plant-based. Red lentils are a complete high-protein carb source. Add a dollop of Greek yogurt to each portion to boost protein by ~6g.",
+        note: "Macros: 390 kcal · 22P · 48C · 9F per portion (7 portions). Fully plant-based. Red lentils are a complete high-protein carb source. Add a dollop of Greek yogurt to each portion to boost protein by ~6g.",
     },
     // ─── VEGETARIAN v2 ───────────────────────────────────────────────────────
     {
         id: "v2", category: "main",
-        name: "Tofu & Edamame Teriyaki Bowl", subtitle: "Firm tofu · edamame · broccoli · teriyaki sauce · jasmine rice",
-        badge: "🍳 Stove", carb: "🍚 Rice",
+        name: "🥢 Tofu & Edamame Teriyaki Bowl", subtitle: "Firm tofu · edamame · broccoli · teriyaki sauce · jasmine rice",
+        badge: "🍳 Stove", carb: "🍚 Rice", portions: 5,
         perPortion: { kcal: 520, protein: 34, carbs: 56, fat: 14 },
         batchItems: [
             { key: "v2_tofu",   label: "Extra-firm tofu (pressed)",    qty: 800, unit: "g",    cat: "Protein"     },
@@ -2454,13 +2465,13 @@ const RECIPES = [
             "Return tofu to the pan. Pour teriyaki sauce and soy sauce over everything. Toss to coat and cook 2 min until sauce thickens.",
             "Portion rice into containers, top with tofu/veggie mix, and sprinkle sesame seeds.",
         ],
-        note: "Macros: ~520 kcal · 34P · 56C · 14F per portion (5 portions). High protein for a fully plant-based meal. Press the tofu well — moisture is the enemy of browning. Contains soy and sesame allergens.",
+        note: "Macros: 520 kcal · 34P · 56C · 14F per portion (5 portions). High protein for a fully plant-based meal. Press the tofu well — moisture is the enemy of browning. Contains soy and sesame allergens.",
     },
     // ─── VEGETARIAN v3 ───────────────────────────────────────────────────────
     {
         id: "v3", category: "main",
-        name: "Chickpea & Roasted Veggie Couscous", subtitle: "Chickpeas · roasted capsicum · zucchini · couscous · harissa",
-        badge: "🌬️ Oven", carb: "🌾 Couscous",
+        name: "🌿 Chickpea & Roasted Veggie Couscous", subtitle: "Chickpeas · roasted capsicum · zucchini · couscous · harissa",
+        badge: "🌬️ Oven", carb: "🌾 Couscous", portions: 6,
         perPortion: { kcal: 445, protein: 19, carbs: 62, fat: 10 },
         batchItems: [
             { key: "v3_chick",  label: "Chickpeas in water (400g can)", qty: 3, unit: "whole", cat: "Carbs"      },
@@ -2484,12 +2495,12 @@ const RECIPES = [
             "Mix roasted chickpeas and vegetables through the couscous.",
             "Portion into containers. Add fresh cucumber when serving for crunch.",
         ],
-        note: "Macros: ~445 kcal · 19P · 62C · 10F per portion (6 portions). Boost protein: stir in 100g of feta per container (+6g protein). Contains gluten (couscous). Harissa level is mild at 40g — double it if you want heat.",
+        note: "Macros: 445 kcal · 19P · 62C · 10F per portion (6 portions). Boost protein: stir in 100g of feta per container (+6g protein). Contains gluten (couscous). Harissa level is mild at 40g — double it if you want heat.",
     },
     // ─── VEGETARIAN v4 ───────────────────────────────────────────────────────
     {
-        id: "v4", category: "main",
-        name: "Greek Yogurt Egg & Veggie Protein Bowl", subtitle: "Scrambled eggs · cottage cheese · roasted veggies · quinoa",
+        id: "v4", category: "main", portions: 5,
+        name: "🥗 Greek Yogurt Egg & Veggie Protein Bowl", subtitle: "Scrambled eggs · cottage cheese · roasted veggies · quinoa",
         badge: "🌬️ Oven", carb: "🌾 Quinoa",
         perPortion: { kcal: 480, protein: 38, carbs: 42, fat: 16 },
         batchItems: [
@@ -2512,8 +2523,8 @@ const RECIPES = [
             "Divide quinoa into containers. Layer roasted veg, then egg-cottage cheese mixture, then wilted greens.",
             "Top each container with crumbled feta or Parmesan. Refrigerate — eat within 3 days for best egg texture.",
         ],
-        note: "Macros: ~480 kcal · 38P · 42C · 16F per portion (5 portions). One of the highest-protein vegetarian options in the library. Eggs and cottage cheese together make a complete, creamy high-protein combo. Contains eggs and dairy.",
-    },,
+        note: "Macros: 480 kcal · 38P · 42C · 16F per portion (5 portions). One of the highest-protein vegetarian options in the library. Eggs and cottage cheese together make a complete, creamy high-protein combo. Contains eggs and dairy.",
+    },
 
     // ─── VEGETARIAN v5–v9 ────────────────────────────────────────────────────
     {
@@ -3560,8 +3571,8 @@ const INGREDIENT_MACROS = {
   "m4-mayo": {kcal:300,p:1.0,c:8.0,f:29.0},
   "m4-onion": {kcal:40,p:1.1,c:9.3,f:0.1,unitG:150},
   "m4-peas": {kcal:81,p:5.4,c:14.0,f:0.4},
-  "m4-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
-  "m4-steak": {kcal:217,p:26.0,c:0.0,f:12.0},
+  "m04-rice": {kcal:360,p:7.0,c:80.0,f:0.5},
+  "m04-steak": {kcal:217,p:26.0,c:0.0,f:12.0},
   "m40_garl": {kcal:149,p:6.4,c:33.0,f:0.5,unitG:4},
   "m40_gb": {kcal:34,p:2.8,c:7.0,f:0.4},
   "m40_herbs": {kcal:0,p:0.0,c:0.0,f:0.0},
