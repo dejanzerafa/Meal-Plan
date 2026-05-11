@@ -3044,41 +3044,57 @@ function getHistory() {
         return [];
     }
 }
-function generateShoppingText(lr, dr, portions) {
-    if (!lr || !dr)
-        return "";
-    const p = portions || 7;
-    const lPortions = lr.portions || 7;
-    const dPortions = dr.portions || 7;
-    // Build merged map with normKey + roundIngQty (same logic as mergeAllItems)
-    const map = {};
-    const add = (arr, scale) => arr && arr.forEach(i => {
-        const rawQty = i.qty * scale;
-        const qty = roundIngQty(rawQty, i.unit);
-        const nk = normKey(i.key, i.label);
-        if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
-        else map[nk] = Object.assign({}, i, { key: nk, qty });
-    });
-    if (lr.id === dr.id) {
-        add(lr.batchItems, (p / lPortions) * 2);
-    } else {
-        add(lr.batchItems, p / lPortions);
-        add(dr.batchItems, p / dPortions);
+// generateShoppingText — builds WhatsApp-share text from macro-driven quantities.
+// Follows the 4-step framework throughout: protein → fat → carbs as residual.
+// All slot quantities come from computeIngredientQtys (same as recipe cards and shopping list).
+function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale) {
+    if (!lr || !dr) return "";
+    const p  = portions || 7;
+    const et = effectiveTargets || {};
+
+    // Build the main merged batch (lunch + dinner + dessert) — macro-driven
+    const mainBatch = mergeAllItems(
+        lr, dr, null, desr, null, p,
+        true, true,
+        lunchScale || 1, dinnerScale || 1,
+        1, et,
+        null, null, desScale || 0.05
+    );
+
+    // Build breakfast and pre-workout items — macro-driven
+    const bfItems  = (!bfSkipped && bfr)  ? buildDynamicSlotItems(bfr,  et, bfScale  || 0.20, p) : [];
+    const preItems = (!preSkipped && prer) ? buildDynamicSlotItems(prer, et, preScale || 0.10, p) : [];
+
+    let t = `SOULGAINZ MEAL PLAN — ${p} DAYS\n`;
+    if (et.kcal) t += `Target: ${et.kcal} kcal · ${et.protein}g protein · ${et.carbs}g carbs · ${et.fat}g fat\n`;
+    t += `☀️ Lunch: ${lr.name}\n🌙 Dinner: ${dr.name}`;
+    if (!bfSkipped && bfr) t += `\n🌅 Breakfast: ${bfr.name}`;
+    if (!preSkipped && prer) t += `\n⚡ Pre-workout: ${prer.name}`;
+    if (desr) t += `\n🍮 Dessert: ${desr.name}`;
+    t += "\n\n";
+
+    // Breakfast section
+    if (bfItems.length) {
+        t += "🌅 BREAKFAST\n";
+        bfItems.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
+        t += "\n";
     }
-    // Group by category
-    const grouped = {};
-    CAT_ORDER.forEach(c => { grouped[c] = []; });
-    Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
-    let t = `MEAL PLAN — ${p} DAYS\n`;
-    t += `Lunch: ${lr.name}\nDinner: ${dr.name}\n\n`;
-    Object.entries(grouped).forEach(([cat, items]) => {
+
+    // Pre-workout section
+    if (preItems.length) {
+        t += "⚡ PRE-WORKOUT\n";
+        preItems.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
+        t += "\n";
+    }
+
+    // Main batch — lunch/dinner/dessert grouped by category
+    Object.entries(mainBatch).forEach(([cat, items]) => {
         if (!items.length) return;
         t += `${CAT_ICON[cat] || "•"} ${cat.toUpperCase()}\n`;
-        items.forEach(item => {
-            t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`;
-        });
+        items.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
         t += "\n";
     });
+
     return t;
 }
 function fmtQty(qty, unit) {
@@ -3858,71 +3874,145 @@ function getPortions(recipe, globalPortions) {
 
 // ── Dynamic Ingredient Quantity Engine ──────────────────────────────────────
 // Computes how many grams of each batchItem are needed to hit slotMacros.
-// slotMacros = { protein, carbs, fat, kcal } — per-PORTION targets for this slot.
-// Returns map of { key → totalBatchGrams } for every item in the recipe.
+// slotMacros = { protein, carbs, fat, kcal } — per-PORTION targets for this slot,
+//   already derived from the user's daily macro targets (calcMacros result × slot fraction).
+//
+// ══════════════════════════════════════════════════════════════════
+//  THE FOUR-STEP MACRO FRAMEWORK — the bible. Never disregarded.
+// ══════════════════════════════════════════════════════════════════
+//
+//  01 ► CALORIE TARGET (external input — already in slotMacros)
+//       Set by goal: fat loss, recomposition, or muscle gain.
+//       Calibrated to bodyweight, training load, lifestyle.
+//       → governs the direction of change
+//
+//  02 ► PROTEIN — sized first, non-negotiable
+//       Anchored to bodyweight and training demand.
+//       Preserves lean tissue in a deficit, builds it in a surplus.
+//       → protects muscle, drives satiety
+//
+//  03 ► FAT — sized second, lean-food preference
+//       Set high enough for hormones, low enough to leave room for carbs.
+//       We ALWAYS prefer lean, fat-free sources — so fat from protein
+//       ingredients (e.g. chicken, beef) is counted FIRST, and dedicated
+//       fat ingredients only fill what's genuinely missing.
+//       → adherence, hormones, flavour — kept on the lower end
+//
+//  04 ► CARBS — fill whatever kcal remains after protein + fat are locked in
+//       NEVER set first. The residual lever. Scales up or down freely
+//       without touching protein or hormonal health.
+//       → fuel, performance, recovery
+//
+//  VEG — always included (baseQty × batch size)
+//       Not a macro step — a nutritional constant. Every main recipe
+//       includes vegetables for micronutrients and dietary balance.
+//       Their macro contribution is accounted for before any macro step.
+//
+// Each step carries ALL of an ingredient's macros (p + c + f) forward
+// into the running `used` budget so every subsequent step sees the true
+// remaining room.  This prevents double-counting and keeps totals clean.
+// ══════════════════════════════════════════════════════════════════
 function computeIngredientQtys(recipe, slotMacros, portions) {
-    const p = portions || 7;
-    const sm = slotMacros || {};
+    var p  = portions || 7;
+    var sm = slotMacros || {};
 
-    // Step 1 — fixed & veg items: compute their per-portion macro contributions
-    var fixedMacros = { p: 0, c: 0, f: 0 };
+    function findIng(ingId) {
+        return ingId ? ING_FLAT.find(function(i) { return i.id === ingId; }) : null;
+    }
+
+    // Running per-portion macro budget consumed so far
+    var used = { p: 0, c: 0, f: 0 };
+    var qtys = {};
+
+    // ── VEG + FIXED: always included, batch-scaled, macros tracked ────────────
+    // These are nutritional constants (vegetables, aromatics, condiments).
+    // Their macro contribution is subtracted from targets before any macro step.
     recipe.batchItems.forEach(function(item) {
         var role = item.role || 'fixed';
         if (role !== 'veg' && role !== 'fixed') return;
-        var ing = item.ingId ? ING_FLAT.find(function(i) { return i.id === item.ingId; }) : null;
-        var bq = (item.baseQty || 0); // per portion
+        var bq  = item.baseQty || 0;
+        var qty = item.unit === 'whole' ? Math.ceil(bq * p) : Math.round(bq * p);
+        qtys[item.key] = qty;
+        var ing = findIng(item.ingId);
         if (ing && item.unit === 'g' && bq > 0) {
-            fixedMacros.p += (ing.p / 100) * bq;
-            fixedMacros.c += (ing.c / 100) * bq;
-            fixedMacros.f += (ing.f / 100) * bq;
+            used.p += (ing.p / 100) * bq;
+            used.c += (ing.c / 100) * bq;
+            used.f += (ing.f / 100) * bq;
         }
     });
 
-    // Step 2 — remaining macros for dynamic ingredients (after fixed contributions)
-    var remaining = {
-        p: Math.max(0, (sm.protein || 0) - fixedMacros.p),
-        c: Math.max(0, (sm.carbs   || 0) - fixedMacros.c),
-        f: Math.max(0, (sm.fat     || 0) - fixedMacros.f),
-    };
+    var targetP = sm.protein || 0;
+    var targetF = sm.fat     || 0;
+    var targetC = sm.carbs   || 0;
 
-    // Step 3 — compute qty for each item
-    var qtys = {};
-    recipe.batchItems.forEach(function(item) {
-        var role = item.role || 'fixed';
-        var ing  = item.ingId ? ING_FLAT.find(function(i) { return i.id === item.ingId; }) : null;
+    // ── STEP 02 — PROTEIN: sized to hit protein target ────────────────────────
+    // ALL macros an ingredient brings (including its fat) flow into `used`.
+    // Lean protein sources bring little fat → more room for fat step below.
+    // Fatty sources bring more fat → fat ingredient sizes shrink automatically.
+    var remainP = Math.max(0, targetP - used.p);
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
+    .forEach(function(item) {
+        var ing   = findIng(item.ingId);
         var share = item.share != null ? item.share : 1.0;
-
-        if (role === 'veg') {
-            // Scale with batch size only
-            var bq = item.baseQty || 0;
-            qtys[item.key] = item.unit === 'whole'
-                ? Math.ceil(bq * p)
-                : Math.round(bq * p);
-
-        } else if (role === 'fixed') {
-            var bq = item.baseQty || 0;
-            qtys[item.key] = item.unit === 'whole'
-                ? Math.ceil(bq * p)
-                : Math.round(bq * p);
-
-        } else if (ing && item.unit === 'g') {
-            // Dynamic: solve for grams per portion from macro target
-            var macroPerG;
-            if (role === 'protein') macroPerG = ing.p / 100;
-            else if (role === 'carbs') macroPerG = ing.c / 100;
-            else if (role === 'fat')  macroPerG = ing.f / 100;
-            else macroPerG = 0;
-
-            var macroKey = role === 'protein' ? 'p' : role === 'carbs' ? 'c' : 'f';
-            var perPortion = macroPerG > 0
-                ? (remaining[macroKey] * share) / macroPerG
-                : (item.qty || 0) / p; // fallback to stored qty
-            qtys[item.key] = Math.round(perPortion * p);
-
+        var perPortion;
+        if (ing && item.unit === 'g' && ing.p > 0) {
+            perPortion = (remainP * share) / (ing.p / 100);
         } else {
-            // whole unit dynamic items — fallback to stored qty × scale
-            qtys[item.key] = item.qty || 0;
+            perPortion = (item.qty || 0) / p; // fallback to stored qty
         }
+        qtys[item.key] = Math.round(perPortion * p);
+        if (ing && item.unit === 'g') {
+            used.p += (ing.p / 100) * perPortion;
+            used.c += (ing.c / 100) * perPortion;
+            used.f += (ing.f / 100) * perPortion; // ← fat from protein source counts here
+        }
+    });
+
+    // ── STEP 03 — FAT: fill remaining fat budget (after protein sources) ──────
+    // Lean-food preference means protein sources already ate into the fat budget.
+    // Dedicated fat ingredients (olive oil, nuts, avocado) only fill the gap.
+    // Fat is kept on the lower end of the healthy scale — not eliminated, managed.
+    var remainF = Math.max(0, targetF - used.f);
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
+    .forEach(function(item) {
+        var ing   = findIng(item.ingId);
+        var share = item.share != null ? item.share : 1.0;
+        var perPortion;
+        if (ing && item.unit === 'g' && ing.f > 0) {
+            perPortion = (remainF * share) / (ing.f / 100);
+        } else {
+            perPortion = (item.qty || 0) / p;
+        }
+        qtys[item.key] = Math.round(perPortion * p);
+        if (ing && item.unit === 'g') {
+            used.p += (ing.p / 100) * perPortion;
+            used.c += (ing.c / 100) * perPortion;
+            used.f += (ing.f / 100) * perPortion;
+        }
+    });
+
+    // ── STEP 04 — CARBS: fill whatever calorie room remains ───────────────────
+    // Carbs are NEVER set first. They are the residual lever — the last to be
+    // sized, filling whatever macro room is left after protein + fat are locked.
+    // This is the fuel and performance dial. It scales freely.
+    var remainC = Math.max(0, targetC - used.c);
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
+    .forEach(function(item) {
+        var ing   = findIng(item.ingId);
+        var share = item.share != null ? item.share : 1.0;
+        var perPortion;
+        if (ing && item.unit === 'g' && ing.c > 0) {
+            perPortion = (remainC * share) / (ing.c / 100);
+        } else {
+            perPortion = (item.qty || 0) / p;
+        }
+        qtys[item.key] = Math.round(perPortion * p);
+        // (No need to update `used` — carbs are the final step)
+    });
+
+    // ── PASSTHROUGH — any item not yet resolved keeps stored qty ──────────────
+    recipe.batchItems.forEach(function(item) {
+        if (qtys[item.key] == null) { qtys[item.key] = item.qty || 0; }
     });
 
     return qtys;
@@ -4485,21 +4575,63 @@ function buildSlotItems(batchItems, totalScale) {
     });
     return arr;
 }
+
+// buildDynamicSlotItems — macro-aware replacement for buildSlotItems.
+// Follows the 4-step framework: protein first → fat second → carbs residual.
+// Falls back to legacy proportional scaling when no effectiveTargets are set.
+function buildDynamicSlotItems(recipe, effectiveTargets, slotFraction, portions) {
+    if (!recipe || !recipe.batchItems || !recipe.batchItems.length) return [];
+    var p  = portions || 7;
+    var et = effectiveTargets || {};
+    var map = {};
+
+    var hasDynamic = et.kcal && recipe.batchItems.some(function(i) {
+        return i.role && i.role !== 'fixed';
+    });
+
+    if (hasDynamic) {
+        var slotMacros = slotMacrosFromTargets(et, slotFraction);
+        var qtys = computeIngredientQtys(recipe, slotMacros, p);
+        recipe.batchItems.forEach(function(i) {
+            var qty = qtys[i.key] != null ? qtys[i.key] : (i.qty || 0);
+            var nk  = normKey(i.key, i.label);
+            if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
+            else         map[nk] = Object.assign({}, i, { key: nk, qty: qty });
+        });
+    } else {
+        var rPortions = recipe.flexPortions ? p : (recipe.portions || 7);
+        var scale = p / rPortions;
+        recipe.batchItems.forEach(function(i) {
+            var qty = i.unit === 'whole' ? Math.ceil(i.qty * scale) : +(i.qty * scale).toFixed(1);
+            var nk  = normKey(i.key, i.label);
+            if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
+            else         map[nk] = Object.assign({}, i, { key: nk, qty: qty });
+        });
+    }
+
+    var arr = Object.values(map);
+    arr.sort(function(a, b) {
+        var ai = CAT_ORDER.indexOf(a.cat), bi = CAT_ORDER.indexOf(b.cat);
+        return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
+    });
+    return arr;
+}
+
 function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr, desr, prer, preSkipped, bfSkipped, lunchScale, dinnerScale, profileScale, effectiveTargets, bfScale, preScale, desScale }) {
     const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${(bfr||{}).id||'_'}_${(prer||{}).id||'_'}_${(desr||{}).id||'_'}_${portions||7}`;
     const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
-    const p = portions || 7;
-    const scale = p / 7;
+    const p  = portions || 7;
     const gl = profileScale || 1;
+    const et = effectiveTargets || {};
     if (!lr || !dr)
         return null;
-    // Per-slot item lists (breakfast and pre-workout shown as own sections)
-    const bfSrv = (bfr && bfr.portions) || parseInt((bfr && bfr.subtitle || "").match(/\d+/) || [p]) || p;
-    const bfItems = (!bfSkipped && bfr && bfr.batchItems)
-        ? buildSlotItems(bfr.batchItems, (p / bfSrv) * gl) : [];
-    const preItems = (!preSkipped && prer && prer.batchItems)
-        ? buildSlotItems(prer.batchItems, p / (prer.portions || 7)) : [];
+    // Per-slot item lists — breakfast and pre-workout use macro-driven quantities
+    // following the 4-step framework (protein → fat → carbs as residual).
+    const bfItems  = (!bfSkipped && bfr)
+        ? buildDynamicSlotItems(bfr,  et, bfScale  || 0.20, p) : [];
+    const preItems = (!preSkipped && prer)
+        ? buildDynamicSlotItems(prer, et, preScale || 0.10, p) : [];
     // Main batch = lunch + dinner + dessert only, grouped by category
     const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale, effectiveTargets, null, null, desScale);
     const scalePct = Math.round(gl * 100);
@@ -4523,7 +4655,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                     color: p === n ? C.accent : C.sub, cursor: "pointer" } },
                 n,
                 " days")))),
-        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
+        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p, et, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
                 gap: 8, marginBottom: 14 } },
             React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
@@ -5342,27 +5474,30 @@ function calcActivityMultiplier(job, steps, training) {
         return 1.725;
     return 1.9;
 }
+// ── Four-step macro framework ────────────────────────────────────────────────
+// Order is non-negotiable:
+//   01 kcal   → set by goal (deficit / maintenance / surplus)
+//   02 protein → anchored to bodyweight — preserves muscle, drives satiety
+//   03 fat     → anchored to bodyweight — supports hormones and food enjoyment
+//   04 carbs   → whatever kcal remain — fuel for training and recovery
+//
+// Carbs are NEVER set first. They fill the room after the load-bearing walls.
 function calcMacros(tdee, weight, goal, bmr, gender, loseRate) {
     if (!tdee || !weight)
-        return { kcal: 0, protein: 0, carbs: 0, fat: 0, deficit: 0, deficitNote: "" };
-    // Clinical minimum calories: 1500 kcal men / 1200 kcal women (established safe floor)
+        return { kcal: 0, protein: 0, carbs: 0, fat: 0, deficit: 0, deficitNote: "", proteinPerKg: 0, fatPerKg: 0 };
+
+    // ── STEP 01: Set calorie target ──────────────────────────────────────────
     const clinicalMin = gender === "female" ? 1200 : 1500;
-    // Deficit determined by user's chosen loss rate:
-    //   light (0.5 kg/wk) → 300 kcal  |  sustainable (1 kg/wk) → 500 kcal  |  aggressive (1.5 kg/wk) → 700 kcal
-    const deficitMap = { light: 300, sustainable: 500, aggressive: 700 };
-    const deficitAmount = deficitMap[loseRate] || 500;
-    const idealTarget = tdee - deficitAmount;
+    const deficitMap  = { light: 300, sustainable: 500, aggressive: 700 };
+    const deficitAmt  = deficitMap[loseRate] || 500;
     let kcal, deficitNote = "";
     if (goal === "lose") {
-        if (idealTarget >= clinicalMin) {
-            kcal = Math.round(idealTarget);
+        const ideal = tdee - deficitAmt;
+        if (ideal >= clinicalMin) {
+            kcal = Math.round(ideal);
         } else {
-            // TDEE is low (very sedentary / small person) — apply reduced deficit
-            // down to the clinical minimum; explain this to the user
             kcal = clinicalMin;
-            deficitNote = idealTarget < clinicalMin
-                ? `Deficit reduced to ${tdee - clinicalMin} kcal to stay above the safe minimum of ${clinicalMin} kcal. Adding light activity would allow a larger deficit.`
-                : "";
+            deficitNote = `Deficit reduced to ${tdee - clinicalMin} kcal to stay above the safe minimum of ${clinicalMin} kcal. Adding light activity would allow a larger deficit.`;
         }
     } else if (goal === "gain") {
         kcal = Math.round(tdee + 300);
@@ -5370,10 +5505,26 @@ function calcMacros(tdee, weight, goal, bmr, gender, loseRate) {
         kcal = Math.round(tdee);
     }
     const deficit = goal === "lose" ? tdee - kcal : goal === "gain" ? -(kcal - tdee) : 0;
-    const proteinG = Math.round(goal === "gain" ? weight * 2.4 : weight * 2.0);
-    const fatG = Math.round((kcal * 0.25) / 9);
+
+    // ── STEP 02: Set protein — anchored to bodyweight ────────────────────────
+    // Lose / recomp: 2.0 g/kg  — preserves lean tissue in a deficit
+    // Gain:          2.4 g/kg  — maximises muscle protein synthesis in a surplus
+    const proteinPerKg = goal === "gain" ? 2.4 : 2.0;
+    const proteinG = Math.round(weight * proteinPerKg);
+
+    // ── STEP 03: Set fat — anchored to bodyweight ────────────────────────────
+    // Lose:   0.8 g/kg — above hormone minimum, leaves maximum room for carbs
+    // Recomp: 1.0 g/kg — balanced support for hormones and food enjoyment
+    // Gain:   1.2 g/kg — more flexibility in a calorie surplus
+    const fatPerKg = goal === "lose" ? 0.8 : goal === "gain" ? 1.2 : 1.0;
+    const fatG = Math.round(weight * fatPerKg);
+
+    // ── STEP 04: Carbs fill the remaining calories ───────────────────────────
+    // This is the lever for training, recovery, and energy.
+    // It automatically adjusts as protein and fat are dialled in.
     const carbG = Math.max(0, Math.round((kcal - proteinG * 4 - fatG * 9) / 4));
-    return { kcal, protein: proteinG, carbs: carbG, fat: fatG, deficit, deficitNote };
+
+    return { kcal, protein: proteinG, carbs: carbG, fat: fatG, deficit, deficitNote, proteinPerKg, fatPerKg };
 }
 // ── Stable helper components — defined OUTSIDE MacroCalculator ─────────────
 function CalcInputRow({ label, children }) {
@@ -5626,18 +5777,34 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { fontSize: 9, color: l === "BMI" ? c : C.sub, marginTop: 2 } }, sub))))),
                 React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                         padding: "14px 16px", marginBottom: 14 } },
-                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 12 } }, "WHAT DOES THIS MEAN?"),
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 12 } }, "HOW YOUR MACROS WERE BUILT"),
+                    React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 } },
+                        [
+                            { step: "01", label: "Calories", detail: (form.goal === "lose" ? "Deficit from TDEE" : form.goal === "gain" ? "Surplus on TDEE" : "Matched to TDEE"), val: macros.kcal + " kcal", color: C.accent },
+                            { step: "02", label: "Protein \u2014 set first", detail: macros.proteinPerKg + "g \xD7 " + form.weight + "kg bodyweight", val: macros.protein + "g", color: C.prot },
+                            { step: "03", label: "Fat \u2014 set second", detail: macros.fatPerKg + "g \xD7 " + form.weight + "kg bodyweight", val: macros.fat + "g", color: "#a855f7" },
+                            { step: "04", label: "Carbs \u2014 fill the rest", detail: "Whatever calories remain after protein & fat", val: macros.carbs + "g", color: C.carb },
+                        ].map(function(s) { return React.createElement("div", { key: s.step, style: { display: "flex", alignItems: "center", gap: 10, background: C.card2, borderRadius: 10, padding: "8px 12px" } },
+                            React.createElement("div", { style: { fontSize: 9, fontWeight: 800, color: s.color, minWidth: 20, textAlign: "center", letterSpacing: "0.05em" } }, s.step),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.text } }, s.label),
+                                React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 1 } }, s.detail)),
+                            React.createElement("div", { style: { fontSize: 12, fontWeight: 800, color: s.color } }, s.val)); })
+                    ),
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 12, marginTop: 4 } }, "WHAT DOES THIS MEAN?"),
                     [
                         { icon: "\uD83E\uDD69", label: "Protein", val: macros.protein + "g/day", color: C.prot,
-                          desc: "Builds and preserves muscle. Keeps you full. At " + macros.protein + "g you\u2019re getting ~2g per kg of bodyweight \u2014 the evidence-backed target for body recomposition." },
-                        { icon: "\uD83C\uDF5A", label: "Carbohydrates", val: macros.carbs + "g/day", color: C.carb,
-                          desc: "Your primary energy source. Fuels training and brain function. Lower here because you\u2019re in a deficit \u2014 not eliminated, just managed." },
+                          desc: "Builds and preserves muscle. Protein is always set first \u2014 non-negotiable. At " + macros.proteinPerKg + "g per kg bodyweight (" + macros.protein + "g total) you\u2019re hitting the evidence-backed target for " + (form.goal === "gain" ? "muscle growth." : "muscle preservation during fat loss.") },
                         { icon: "\uD83E\uDED2", label: "Fat", val: macros.fat + "g/day", color: "#a855f7",
-                          desc: "Essential for hormones, joints and vitamin absorption. Set at 25% of your daily calories \u2014 the healthy baseline." },
-                        { icon: "\uD83D\uDD25", label: "Calorie Deficit", val: (macros.deficit > 0 ? "-" + macros.deficit : "0") + " kcal/day", color: C.accent,
-                          desc: "A " + macros.deficit + " kcal daily deficit creates a weekly shortfall of ~" + Math.round(macros.deficit * 7) + " kcal. Since 1 kg of fat holds ~7,700 kcal, expect to lose roughly " + (Math.round(macros.deficit * 7 / 7700 * 10) / 10) + "\u2013" + (Math.round(macros.deficit * 7 / 7700 * 10) / 10 + 0.1) + " kg/week initially. Weight loss is non-linear \u2014 it slows after 8\u201312 weeks as your body adapts (metabolic adaptation). Staying consistent matters more than the number on the scale." },
-                    ].map(item => React.createElement("div", { key: item.label, style: { marginBottom: 10, paddingBottom: 10,
-                            borderBottom: `1px solid ${C.dim}`, lastChild: { border: "none" } } },
+                          desc: "Essential for hormones, joints and vitamin absorption. Set at " + macros.fatPerKg + "g per kg bodyweight \u2014 anchored to your body, not a percentage of calories. This supports healthy testosterone and oestrogen levels while " + (form.goal === "lose" ? "in a deficit." : form.goal === "gain" ? "in a surplus." : "maintaining.") },
+                        { icon: "\uD83C\uDF5A", label: "Carbohydrates", val: macros.carbs + "g/day", color: C.carb,
+                          desc: "Your energy lever. Carbs are never set first \u2014 they fill whatever calories remain after protein and fat are locked in. This makes them the most flexible macro: easy to adjust without touching your protein or hormonal health." },
+                        form.goal !== "maintain" ? { icon: form.goal === "lose" ? "\uD83D\uDD25" : "\u26A1", label: form.goal === "lose" ? "Calorie Deficit" : "Calorie Surplus", val: (macros.deficit > 0 ? (form.goal === "lose" ? "-" : "+") : "") + Math.abs(macros.deficit) + " kcal/day", color: C.accent,
+                          desc: form.goal === "lose"
+                            ? "A " + macros.deficit + " kcal daily deficit creates a weekly shortfall of ~" + Math.round(macros.deficit * 7) + " kcal. Since 1 kg of fat holds ~7,700 kcal, expect to lose roughly " + (Math.round(macros.deficit * 7 / 7700 * 10) / 10) + "\u2013" + (Math.round(macros.deficit * 7 / 7700 * 10) / 10 + 0.1) + " kg/week initially. Weight loss is non-linear \u2014 it slows after 8\u201312 weeks as your body adapts. Consistency beats perfection every time."
+                            : "A 300 kcal daily surplus gives your body the raw material for muscle growth without excessive fat gain. Expect slow, steady progress \u2014 most people gain 0.2\u20130.4 kg/week when training hard." } : null,
+                    ].filter(Boolean).map(item => React.createElement("div", { key: item.label, style: { marginBottom: 10, paddingBottom: 10,
+                            borderBottom: `1px solid ${C.dim}` } },
                         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
                             React.createElement("span", { style: { fontSize: 16 } }, item.icon),
                             React.createElement("span", { style: { fontSize: 12, fontWeight: 700, color: item.color } }, item.label),
