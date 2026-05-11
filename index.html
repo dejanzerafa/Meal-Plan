@@ -159,7 +159,7 @@ let _lang = (function(){ try { return localStorage.getItem("mp_lang") || "en"; }
 const TRANSLATIONS = {
   en: {
     tab_meals:"Meals", tab_shop:"Shop", tab_recipes:"Recipes",
-    tab_macros:"Macros", tab_history:"Calendar", tab_me:"Me",
+    tab_macros:"Foods", tab_history:"Calendar", tab_me:"Me",
     account_title:"My Account", account_name:"Full Name", account_email:"Email Address",
     account_save:"Save Profile", account_saving:"Saving…", account_saved:"Profile Saved",
     account_edit:"Edit", account_greeting:"Hello", account_subtitle:"Your profile is saved.",
@@ -167,7 +167,7 @@ const TRANSLATIONS = {
   },
   fr: {
     tab_meals:"Repas", tab_shop:"Courses", tab_recipes:"Recettes",
-    tab_macros:"Macros", tab_history:"Calendrier", tab_me:"Moi",
+    tab_macros:"Foods", tab_history:"Calendrier", tab_me:"Moi",
     account_title:"Mon Compte", account_name:"Nom Complet", account_email:"Adresse e-mail",
     account_save:"Enregistrer", account_saving:"Enregistrement…", account_saved:"Profil Enregistré",
     account_edit:"Modifier", account_greeting:"Bonjour", account_subtitle:"Votre profil est sauvegardé.",
@@ -175,7 +175,7 @@ const TRANSLATIONS = {
   },
   es: {
     tab_meals:"Comidas", tab_shop:"Compras", tab_recipes:"Recetas",
-    tab_macros:"Macros", tab_history:"Calendario", tab_me:"Yo",
+    tab_macros:"Foods", tab_history:"Calendario", tab_me:"Yo",
     account_title:"Mi Cuenta", account_name:"Nombre Completo", account_email:"Correo Electrónico",
     account_save:"Guardar Perfil", account_saving:"Guardando…", account_saved:"Perfil Guardado",
     account_edit:"Editar", account_greeting:"Hola", account_subtitle:"Tu perfil está guardado.",
@@ -183,7 +183,7 @@ const TRANSLATIONS = {
   },
   it: {
     tab_meals:"Pasti", tab_shop:"Spesa", tab_recipes:"Ricette",
-    tab_macros:"Macro", tab_history:"Calendario", tab_me:"Io",
+    tab_macros:"Foods", tab_history:"Calendario", tab_me:"Io",
     account_title:"Il Mio Account", account_name:"Nome Completo", account_email:"Indirizzo Email",
     account_save:"Salva Profilo", account_saving:"Salvataggio…", account_saved:"Profilo Salvato",
     account_edit:"Modifica", account_greeting:"Ciao", account_subtitle:"Il tuo profilo è salvato.",
@@ -265,61 +265,261 @@ const PRE = {
     note: "45–60 min before training. Skip on rest days.",
 };
 // ─── INGREDIENT DB ─────────────────────────────────────────────────────────
-const IDB = [
-    { cat: "Protein 🥩", items: [
-            { n: "Chicken breast (raw)", kcal: 110, p: 23, c: 0, f: 1.2 },
-            { n: "Lean beef mince (5%)", kcal: 137, p: 21, c: 0, f: 5 },
-            { n: "Smoked turkey (sliced)", kcal: 99, p: 18, c: 2.5, f: 1.7 },
-            { n: "Whole egg (raw)", kcal: 147, p: 13, c: 0.7, f: 10 },
-            { n: "Beef bacon", kcal: 170, p: 15, c: 0, f: 12 },
-        ] },
-    { cat: "Dairy 🥛", items: [
-            { n: "Fat-free cottage cheese", kcal: 72, p: 12, c: 4, f: 0.5 },
-            { n: "Fat-free cottage cheese (chive or natural)", kcal: 72, p: 12, c: 4, f: 0.5 },
-            { n: "0% Greek yogurt", kcal: 57, p: 10, c: 3.6, f: 0.4 },
-            { n: "Light sour cream", kcal: 100, p: 1.5, c: 4, f: 8 },
-            { n: "Baladna skimmed milk", kcal: 35, p: 3.5, c: 5, f: 0.1 },
-            { n: "Fat-free mozzarella", kcal: 160, p: 36, c: 4, f: 0 },
-            { n: "Fat-free cheddar", kcal: 155, p: 35, c: 3, f: 0 },
-            { n: "Parmesan (grated)", kcal: 431, p: 38, c: 4, f: 29 },
-            { n: "Fat-free cream cheese", kcal: 105, p: 14, c: 8, f: 0.5 },
-            { n: "ON Whey Protein", kcal: 390, p: 78, c: 8, f: 5 },
-        ] },
-    { cat: "Grains & Starches 🌾", items: [
-            { n: "White rice / jasmine (dry)", kcal: 360, p: 7, c: 80, f: 0.5 },
-            { n: "Regular pasta (dry)", kcal: 360, p: 13, c: 73, f: 1.3 },
-            { n: "Protein pasta (dry)", kcal: 355, p: 28, c: 47, f: 4 },
-            { n: "White potato (raw)", kcal: 77, p: 2, c: 17, f: 0.1 },
-            { n: "Sweet potato (raw)", kcal: 86, p: 1.6, c: 20, f: 0.1 },
-            { n: "Baker Street white bread", kcal: 265, p: 9.5, c: 46, f: 4.3 },
-            { n: "Kallo rice cakes", kcal: 385, p: 7, c: 83, f: 1.8 },
-        ] },
-    { cat: "Vegetables 🥦", items: [
-            { n: "Broccoli (raw)", kcal: 34, p: 2.8, c: 7, f: 0.4 },
-            { n: "Red bell pepper", kcal: 31, p: 1, c: 6, f: 0.3 },
-            { n: "Green bell pepper", kcal: 20, p: 0.9, c: 4.6, f: 0.2 },
-            { n: "Orange bell pepper", kcal: 31, p: 1, c: 6, f: 0.3 },
-            { n: "Zucchini (raw)", kcal: 17, p: 1.2, c: 3.5, f: 0.3 },
-            { n: "Mushrooms (raw)", kcal: 22, p: 3.1, c: 3.3, f: 0.3 },
-            { n: "Frozen peas", kcal: 81, p: 5.4, c: 14, f: 0.4 },
-            { n: "Carrots (raw)", kcal: 41, p: 0.9, c: 9.6, f: 0.2 },
-            { n: "Spinach (raw)", kcal: 23, p: 2.9, c: 3.6, f: 0.4 },
-            { n: "Cherry tomatoes", kcal: 18, p: 0.9, c: 3.9, f: 0.2 },
-            { n: "Sun-dried tomatoes (no oil)", kcal: 258, p: 14, c: 55, f: 3 },
-        ] },
-    { cat: "Fruit 🍌", items: [
-            { n: "Banana (ripe)", kcal: 89, p: 1.1, c: 23, f: 0.3 },
-        ] },
-    { cat: "Condiments & Fats 🫒", items: [
-            { n: "Olive oil — 1 tbsp (14 g)", kcal: 124, p: 0, c: 0, f: 14 },
-            { n: "Olive oil — ½ tbsp / meal", kcal: 62, p: 0, c: 0, f: 7 },
-            { n: "Jam — 1 tbsp (20 g)", kcal: 50, p: 0.1, c: 12.4, f: 0 },
-            { n: "Sugar-free ketchup", kcal: 25, p: 0.5, c: 5, f: 0 },
-            { n: "Yellow mustard", kcal: 66, p: 4, c: 6, f: 4 },
-            { n: "Dijon mustard", kcal: 60, p: 3.7, c: 5.3, f: 3.6 },
-            { n: "Sweet relish", kcal: 105, p: 0.3, c: 25, f: 0.5 },
-            { n: "Raw honey", kcal: 304, p: 0.3, c: 82, f: 0 },
-        ] },
+// ─── INGREDIENT DATABASE (flat, 140+ items, macros per 100 g) ────────────────
+const ING_CATS = ["All","Protein & Meat","Fish & Seafood","Dairy & Eggs","Grains & Carbs","Legumes","Vegetables","Fruits","Fats & Nuts","Condiments & Sauces","Herbs & Spices","Baking & Sweeteners","Supplements"];
+const ING_FLAT = [
+  // PROTEIN & MEAT
+  {id:1,  name:"Chicken Breast (skinless)",          cat:"Protein & Meat",      kcal:165, p:31.0, c:0.0,  f:3.6},
+  {id:2,  name:"Chicken Thigh (boneless, skinless)", cat:"Protein & Meat",      kcal:177, p:24.0, c:0.0,  f:8.2},
+  {id:3,  name:"Ground Chicken (lean)",              cat:"Protein & Meat",      kcal:148, p:27.0, c:0.0,  f:4.0},
+  {id:4,  name:"Turkey Breast (skinless)",           cat:"Protein & Meat",      kcal:135, p:29.0, c:0.0,  f:1.0},
+  {id:5,  name:"Ground Turkey (93% lean)",           cat:"Protein & Meat",      kcal:163, p:22.0, c:0.0,  f:8.0},
+  {id:6,  name:"Beef Mince (5% fat)",                cat:"Protein & Meat",      kcal:121, p:21.0, c:0.0,  f:4.0},
+  {id:7,  name:"Beef Mince (10% fat)",               cat:"Protein & Meat",      kcal:176, p:20.0, c:0.0,  f:10.0},
+  {id:8,  name:"Beef Mince (20% fat)",               cat:"Protein & Meat",      kcal:254, p:17.0, c:0.0,  f:20.0},
+  {id:9,  name:"Sirloin Steak",                      cat:"Protein & Meat",      kcal:207, p:26.0, c:0.0,  f:11.0},
+  {id:10, name:"Ribeye Steak",                       cat:"Protein & Meat",      kcal:289, p:24.0, c:0.0,  f:20.0},
+  {id:11, name:"Lean Beef (tenderloin)",             cat:"Protein & Meat",      kcal:179, p:29.0, c:0.0,  f:6.0},
+  {id:12, name:"Pork Tenderloin",                    cat:"Protein & Meat",      kcal:143, p:26.0, c:0.0,  f:3.5},
+  {id:13, name:"Pork Loin Chop",                     cat:"Protein & Meat",      kcal:172, p:26.0, c:0.0,  f:7.0},
+  {id:14, name:"Lamb Mince",                         cat:"Protein & Meat",      kcal:282, p:16.0, c:0.0,  f:24.0},
+  {id:15, name:"Bacon (streaky, raw)",               cat:"Protein & Meat",      kcal:458, p:12.0, c:1.4,  f:45.0},
+  {id:16, name:"Turkey Bacon",                       cat:"Protein & Meat",      kcal:218, p:28.0, c:4.0,  f:11.0},
+  {id:17, name:"Chicken Sausage",                    cat:"Protein & Meat",      kcal:181, p:19.0, c:4.0,  f:10.0},
+  {id:18, name:"Deli Turkey (sliced)",               cat:"Protein & Meat",      kcal:89,  p:17.0, c:2.0,  f:1.0},
+  {id:19, name:"Turkey / Chicken Ham (sliced)",      cat:"Protein & Meat",      kcal:105, p:16.0, c:2.5,  f:3.5},
+  // FISH & SEAFOOD
+  {id:20, name:"Salmon (Atlantic)",                  cat:"Fish & Seafood",      kcal:208, p:20.0, c:0.0,  f:13.0},
+  {id:21, name:"Tuna (canned in water)",             cat:"Fish & Seafood",      kcal:116, p:26.0, c:0.0,  f:0.8},
+  {id:22, name:"Tuna Steak (fresh)",                 cat:"Fish & Seafood",      kcal:144, p:23.0, c:0.0,  f:5.0},
+  {id:23, name:"Cod",                                cat:"Fish & Seafood",      kcal:82,  p:18.0, c:0.0,  f:0.7},
+  {id:24, name:"Tilapia",                            cat:"Fish & Seafood",      kcal:96,  p:20.0, c:0.0,  f:1.7},
+  {id:25, name:"Shrimp / Prawns",                    cat:"Fish & Seafood",      kcal:99,  p:24.0, c:0.2,  f:0.3},
+  {id:26, name:"Mackerel",                           cat:"Fish & Seafood",      kcal:205, p:19.0, c:0.0,  f:14.0},
+  {id:27, name:"Sardines (canned in water)",         cat:"Fish & Seafood",      kcal:208, p:25.0, c:0.0,  f:11.0},
+  {id:28, name:"Sea Bass",                           cat:"Fish & Seafood",      kcal:97,  p:18.0, c:0.0,  f:2.0},
+  {id:29, name:"Squid / Calamari",                   cat:"Fish & Seafood",      kcal:92,  p:16.0, c:3.1,  f:1.4},
+  {id:30, name:"Hake Fillet",                        cat:"Fish & Seafood",      kcal:82,  p:18.5, c:0.0,  f:0.7},
+  {id:31, name:"Smoked Salmon",                      cat:"Fish & Seafood",      kcal:117, p:18.3, c:0.0,  f:4.3},
+  {id:32, name:"Trout (rainbow)",                    cat:"Fish & Seafood",      kcal:141, p:20.0, c:0.0,  f:6.2},
+  {id:33, name:"Crab (cooked)",                      cat:"Fish & Seafood",      kcal:97,  p:19.4, c:0.0,  f:1.6},
+  {id:34, name:"Mussels (cooked)",                   cat:"Fish & Seafood",      kcal:86,  p:12.0, c:3.7,  f:2.2},
+  // DAIRY & EGGS
+  {id:40, name:"Eggs (whole, large)",                cat:"Dairy & Eggs",        kcal:155, p:13.0, c:1.1,  f:11.0},
+  {id:41, name:"Egg Whites",                         cat:"Dairy & Eggs",        kcal:52,  p:11.0, c:0.7,  f:0.2},
+  {id:42, name:"Fat-Free Cottage Cheese",            cat:"Dairy & Eggs",        kcal:72,  p:12.4, c:4.3,  f:0.3},
+  {id:43, name:"Low-Fat Cottage Cheese (2%)",        cat:"Dairy & Eggs",        kcal:90,  p:12.0, c:4.0,  f:2.5},
+  {id:44, name:"Light Mozzarella",                   cat:"Dairy & Eggs",        kcal:180, p:20.0, c:1.0,  f:11.0},
+  {id:45, name:"Mozzarella (full fat)",              cat:"Dairy & Eggs",        kcal:280, p:18.0, c:2.2,  f:22.0},
+  {id:46, name:"Parmesan",                           cat:"Dairy & Eggs",        kcal:431, p:38.0, c:3.2,  f:29.0},
+  {id:47, name:"Greek Yogurt (0% fat)",              cat:"Dairy & Eggs",        kcal:59,  p:10.0, c:3.6,  f:0.4},
+  {id:48, name:"Greek Yogurt (2% fat)",              cat:"Dairy & Eggs",        kcal:73,  p:9.0,  c:3.9,  f:1.9},
+  {id:49, name:"Milk (whole, 3.5%)",                 cat:"Dairy & Eggs",        kcal:61,  p:3.2,  c:4.8,  f:3.3},
+  {id:50, name:"Milk (skim / 0%)",                   cat:"Dairy & Eggs",        kcal:34,  p:3.4,  c:4.9,  f:0.2},
+  {id:51, name:"Cheddar Cheese",                     cat:"Dairy & Eggs",        kcal:403, p:25.0, c:1.3,  f:33.0},
+  {id:52, name:"Ricotta (part-skim)",                cat:"Dairy & Eggs",        kcal:138, p:10.0, c:6.0,  f:8.0},
+  {id:53, name:"Feta Cheese",                        cat:"Dairy & Eggs",        kcal:264, p:14.0, c:4.1,  f:21.0},
+  {id:54, name:"Cream Cheese (light)",               cat:"Dairy & Eggs",        kcal:231, p:9.0,  c:5.0,  f:20.0},
+  {id:55, name:"Skyr (0% fat)",                      cat:"Dairy & Eggs",        kcal:56,  p:10.5, c:4.0,  f:0.2},
+  {id:56, name:"Kefir (low fat)",                    cat:"Dairy & Eggs",        kcal:43,  p:3.8,  c:4.7,  f:0.9},
+  {id:57, name:"Sour Cream (light)",                 cat:"Dairy & Eggs",        kcal:100, p:1.5,  c:4.0,  f:8.0},
+  {id:58, name:"Almond Milk (unsweetened)",          cat:"Dairy & Eggs",        kcal:15,  p:0.6,  c:1.5,  f:0.7},
+  {id:59, name:"Quark (0% fat)",                     cat:"Dairy & Eggs",        kcal:58,  p:10.5, c:3.5,  f:0.2},
+  // GRAINS & CARBS
+  {id:60, name:"White Rice (dry)",                   cat:"Grains & Carbs",      kcal:365, p:7.1,  c:80.0, f:0.7},
+  {id:61, name:"White Rice (cooked)",                cat:"Grains & Carbs",      kcal:130, p:2.7,  c:28.2, f:0.3},
+  {id:62, name:"Brown Rice (dry)",                   cat:"Grains & Carbs",      kcal:370, p:8.0,  c:77.0, f:2.9},
+  {id:63, name:"Brown Rice (cooked)",                cat:"Grains & Carbs",      kcal:123, p:2.7,  c:25.6, f:1.0},
+  {id:64, name:"Oats (rolled, dry)",                 cat:"Grains & Carbs",      kcal:389, p:17.0, c:66.0, f:7.0},
+  {id:65, name:"Pasta (dry, white)",                 cat:"Grains & Carbs",      kcal:371, p:13.0, c:74.0, f:1.5},
+  {id:66, name:"Pasta (cooked)",                     cat:"Grains & Carbs",      kcal:158, p:5.8,  c:31.0, f:0.9},
+  {id:67, name:"Pasta (dry, whole wheat)",           cat:"Grains & Carbs",      kcal:348, p:14.0, c:68.0, f:2.5},
+  {id:68, name:"Sweet Potato",                       cat:"Grains & Carbs",      kcal:86,  p:1.6,  c:20.0, f:0.1},
+  {id:69, name:"White Potato",                       cat:"Grains & Carbs",      kcal:77,  p:2.0,  c:17.0, f:0.1},
+  {id:70, name:"Bread (white sliced)",               cat:"Grains & Carbs",      kcal:265, p:9.0,  c:49.0, f:3.2},
+  {id:71, name:"Bread (whole wheat)",                cat:"Grains & Carbs",      kcal:247, p:13.0, c:41.0, f:3.4},
+  {id:72, name:"Tortilla (flour, 25cm)",             cat:"Grains & Carbs",      kcal:312, p:8.0,  c:52.0, f:7.8},
+  {id:73, name:"Tortilla (corn)",                    cat:"Grains & Carbs",      kcal:234, p:5.7,  c:47.0, f:3.5},
+  {id:74, name:"Quinoa (dry)",                       cat:"Grains & Carbs",      kcal:368, p:14.0, c:64.0, f:6.0},
+  {id:75, name:"Quinoa (cooked)",                    cat:"Grains & Carbs",      kcal:120, p:4.4,  c:22.0, f:1.9},
+  {id:76, name:"Couscous (dry)",                     cat:"Grains & Carbs",      kcal:376, p:12.8, c:77.0, f:0.6},
+  {id:77, name:"Couscous (cooked)",                  cat:"Grains & Carbs",      kcal:112, p:3.8,  c:23.2, f:0.2},
+  {id:78, name:"Corn / Sweetcorn",                   cat:"Grains & Carbs",      kcal:86,  p:3.2,  c:19.0, f:1.2},
+  {id:79, name:"Breadcrumbs (panko)",                cat:"Grains & Carbs",      kcal:395, p:12.0, c:77.0, f:3.0},
+  {id:80, name:"Oat Flour",                          cat:"Grains & Carbs",      kcal:404, p:15.0, c:66.0, f:9.0},
+  {id:81, name:"Almond Flour",                       cat:"Grains & Carbs",      kcal:576, p:21.4, c:19.6, f:52.5},
+  {id:82, name:"Coconut Flour",                      cat:"Grains & Carbs",      kcal:400, p:20.0, c:60.0, f:15.0},
+  {id:83, name:"Tapioca Starch / Flour",             cat:"Grains & Carbs",      kcal:358, p:0.2,  c:88.7, f:0.0},
+  {id:84, name:"Rice Cakes (plain)",                 cat:"Grains & Carbs",      kcal:385, p:7.0,  c:83.0, f:1.8},
+  {id:85, name:"Rice Paper (sheets)",                cat:"Grains & Carbs",      kcal:344, p:0.0,  c:84.0, f:0.0},
+  {id:86, name:"Orzo Pasta (dry)",                   cat:"Grains & Carbs",      kcal:360, p:12.0, c:72.0, f:1.5},
+  {id:87, name:"Buckwheat (dry)",                    cat:"Grains & Carbs",      kcal:343, p:13.3, c:71.5, f:3.4},
+  {id:88, name:"Whole Wheat Wrap (medium)",          cat:"Grains & Carbs",      kcal:280, p:9.0,  c:49.0, f:5.0},
+  // LEGUMES
+  {id:90, name:"Chickpeas (cooked)",                 cat:"Legumes",             kcal:164, p:8.9,  c:27.0, f:2.6},
+  {id:91, name:"Chickpeas (canned, drained)",        cat:"Legumes",             kcal:140, p:7.5,  c:22.0, f:2.0},
+  {id:92, name:"Lentils (red, dry)",                 cat:"Legumes",             kcal:352, p:25.0, c:60.0, f:1.0},
+  {id:93, name:"Lentils (cooked)",                   cat:"Legumes",             kcal:116, p:9.0,  c:20.0, f:0.4},
+  {id:94, name:"Black Beans (cooked)",               cat:"Legumes",             kcal:132, p:8.9,  c:24.0, f:0.5},
+  {id:95, name:"Kidney Beans (cooked)",              cat:"Legumes",             kcal:127, p:8.7,  c:22.8, f:0.5},
+  {id:96, name:"Edamame (shelled)",                  cat:"Legumes",             kcal:121, p:11.0, c:8.9,  f:5.2},
+  {id:97, name:"Tofu (firm)",                        cat:"Legumes",             kcal:76,  p:8.1,  c:1.9,  f:4.8},
+  {id:98, name:"Tofu (silken)",                      cat:"Legumes",             kcal:55,  p:4.8,  c:3.1,  f:2.7},
+  {id:99, name:"Butter Beans (cooked)",              cat:"Legumes",             kcal:115, p:7.7,  c:21.0, f:0.4},
+  // VEGETABLES
+  {id:100,name:"Broccoli",                           cat:"Vegetables",          kcal:34,  p:2.8,  c:6.6,  f:0.4},
+  {id:101,name:"Spinach (fresh)",                    cat:"Vegetables",          kcal:23,  p:2.9,  c:3.6,  f:0.4},
+  {id:102,name:"Kale",                               cat:"Vegetables",          kcal:49,  p:4.3,  c:8.8,  f:0.9},
+  {id:103,name:"Zucchini / Courgette",               cat:"Vegetables",          kcal:17,  p:1.2,  c:3.1,  f:0.3},
+  {id:104,name:"Bell Pepper (red)",                  cat:"Vegetables",          kcal:31,  p:1.0,  c:6.0,  f:0.3},
+  {id:105,name:"Bell Pepper (green)",                cat:"Vegetables",          kcal:20,  p:0.9,  c:4.6,  f:0.2},
+  {id:106,name:"Onion",                              cat:"Vegetables",          kcal:40,  p:1.1,  c:9.3,  f:0.1},
+  {id:107,name:"Red Onion",                          cat:"Vegetables",          kcal:40,  p:1.1,  c:9.3,  f:0.1},
+  {id:108,name:"Garlic",                             cat:"Vegetables",          kcal:149, p:6.4,  c:33.0, f:0.5},
+  {id:109,name:"Tomato",                             cat:"Vegetables",          kcal:18,  p:0.9,  c:3.9,  f:0.2},
+  {id:110,name:"Cherry Tomatoes",                    cat:"Vegetables",          kcal:18,  p:0.9,  c:3.9,  f:0.2},
+  {id:111,name:"Cucumber",                           cat:"Vegetables",          kcal:15,  p:0.7,  c:3.6,  f:0.1},
+  {id:112,name:"Lettuce (romaine)",                  cat:"Vegetables",          kcal:17,  p:1.2,  c:3.3,  f:0.3},
+  {id:113,name:"Mushrooms (white button)",           cat:"Vegetables",          kcal:22,  p:3.1,  c:3.3,  f:0.3},
+  {id:114,name:"Asparagus",                          cat:"Vegetables",          kcal:20,  p:2.2,  c:3.9,  f:0.1},
+  {id:115,name:"Green Beans",                        cat:"Vegetables",          kcal:31,  p:1.8,  c:7.0,  f:0.1},
+  {id:116,name:"Cauliflower",                        cat:"Vegetables",          kcal:25,  p:1.9,  c:5.0,  f:0.3},
+  {id:117,name:"Carrot",                             cat:"Vegetables",          kcal:41,  p:0.9,  c:9.6,  f:0.2},
+  {id:118,name:"Celery",                             cat:"Vegetables",          kcal:16,  p:0.7,  c:3.0,  f:0.2},
+  {id:119,name:"Eggplant / Aubergine",               cat:"Vegetables",          kcal:25,  p:1.0,  c:5.9,  f:0.2},
+  {id:120,name:"Peas (frozen)",                      cat:"Vegetables",          kcal:81,  p:5.4,  c:14.0, f:0.4},
+  {id:121,name:"Baby Spinach",                       cat:"Vegetables",          kcal:23,  p:2.9,  c:3.6,  f:0.4},
+  {id:122,name:"Arugula / Rocket",                   cat:"Vegetables",          kcal:25,  p:2.6,  c:3.7,  f:0.7},
+  {id:123,name:"Leek",                               cat:"Vegetables",          kcal:61,  p:1.5,  c:14.0, f:0.3},
+  {id:124,name:"Beetroot",                           cat:"Vegetables",          kcal:43,  p:1.6,  c:9.6,  f:0.2},
+  {id:125,name:"Cabbage (white)",                    cat:"Vegetables",          kcal:25,  p:1.3,  c:5.8,  f:0.1},
+  {id:126,name:"Corn on the Cob",                    cat:"Vegetables",          kcal:86,  p:3.2,  c:19.0, f:1.2},
+  {id:127,name:"Jalapeño",                           cat:"Vegetables",          kcal:29,  p:0.9,  c:6.5,  f:0.4},
+  {id:128,name:"Butternut Squash",                   cat:"Vegetables",          kcal:45,  p:1.0,  c:11.7, f:0.1},
+  {id:129,name:"Pumpkin",                            cat:"Vegetables",          kcal:26,  p:1.0,  c:6.5,  f:0.1},
+  {id:130,name:"Olives (green/black)",               cat:"Vegetables",          kcal:145, p:1.0,  c:3.8,  f:15.0},
+  {id:131,name:"Watercress",                         cat:"Vegetables",          kcal:11,  p:2.3,  c:1.3,  f:0.1},
+  {id:132,name:"Spring Onion / Scallion",            cat:"Vegetables",          kcal:32,  p:1.8,  c:7.3,  f:0.2},
+  {id:133,name:"Sun-Dried Tomatoes",                 cat:"Vegetables",          kcal:258, p:14.0, c:55.0, f:3.0},
+  {id:134,name:"Bell Pepper (yellow)",               cat:"Vegetables",          kcal:27,  p:1.0,  c:6.3,  f:0.2},
+  {id:135,name:"Snap Peas",                          cat:"Vegetables",          kcal:34,  p:2.8,  c:7.0,  f:0.4},
+  {id:136,name:"Brussels Sprouts",                   cat:"Vegetables",          kcal:43,  p:3.4,  c:9.0,  f:0.3},
+  {id:137,name:"Pumpkin Purée (canned)",             cat:"Vegetables",          kcal:34,  p:1.2,  c:8.1,  f:0.1},
+  // FRUITS
+  {id:140,name:"Banana",                             cat:"Fruits",              kcal:89,  p:1.1,  c:23.0, f:0.3},
+  {id:141,name:"Apple",                              cat:"Fruits",              kcal:52,  p:0.3,  c:14.0, f:0.2},
+  {id:142,name:"Strawberries",                       cat:"Fruits",              kcal:32,  p:0.7,  c:7.7,  f:0.3},
+  {id:143,name:"Blueberries",                        cat:"Fruits",              kcal:57,  p:0.7,  c:14.0, f:0.3},
+  {id:144,name:"Raspberries",                        cat:"Fruits",              kcal:52,  p:1.2,  c:12.0, f:0.7},
+  {id:145,name:"Orange",                             cat:"Fruits",              kcal:47,  p:0.9,  c:12.0, f:0.1},
+  {id:146,name:"Mango",                              cat:"Fruits",              kcal:60,  p:0.8,  c:15.0, f:0.4},
+  {id:147,name:"Pineapple",                          cat:"Fruits",              kcal:50,  p:0.5,  c:13.0, f:0.1},
+  {id:148,name:"Watermelon",                         cat:"Fruits",              kcal:30,  p:0.6,  c:7.6,  f:0.2},
+  {id:149,name:"Avocado",                            cat:"Fruits",              kcal:160, p:2.0,  c:9.0,  f:15.0},
+  {id:150,name:"Lemon (juice)",                      cat:"Fruits",              kcal:22,  p:0.4,  c:6.9,  f:0.2},
+  {id:151,name:"Lime (juice)",                       cat:"Fruits",              kcal:25,  p:0.4,  c:8.4,  f:0.1},
+  {id:152,name:"Pear",                               cat:"Fruits",              kcal:57,  p:0.4,  c:15.2, f:0.1},
+  {id:153,name:"Mixed Berries (frozen)",             cat:"Fruits",              kcal:49,  p:0.7,  c:12.0, f:0.4},
+  {id:154,name:"Dates (medjool)",                    cat:"Fruits",              kcal:277, p:1.8,  c:75.0, f:0.2},
+  {id:155,name:"Kiwi",                               cat:"Fruits",              kcal:61,  p:1.1,  c:15.0, f:0.5},
+  {id:156,name:"Cherry",                             cat:"Fruits",              kcal:63,  p:1.1,  c:16.0, f:0.2},
+  {id:157,name:"Pomegranate Seeds",                  cat:"Fruits",              kcal:83,  p:1.7,  c:18.7, f:1.2},
+  {id:158,name:"Cranberries (fresh)",                cat:"Fruits",              kcal:46,  p:0.4,  c:12.2, f:0.1},
+  {id:159,name:"Peach",                              cat:"Fruits",              kcal:39,  p:0.9,  c:10.0, f:0.3},
+  // FATS & NUTS
+  {id:160,name:"Olive Oil (extra virgin)",           cat:"Fats & Nuts",         kcal:884, p:0.0,  c:0.0,  f:100.0},
+  {id:161,name:"Coconut Oil",                        cat:"Fats & Nuts",         kcal:892, p:0.0,  c:0.0,  f:100.0},
+  {id:162,name:"Butter (unsalted)",                  cat:"Fats & Nuts",         kcal:717, p:0.9,  c:0.1,  f:81.0},
+  {id:163,name:"Almonds",                            cat:"Fats & Nuts",         kcal:579, p:21.0, c:22.0, f:50.0},
+  {id:164,name:"Walnuts",                            cat:"Fats & Nuts",         kcal:654, p:15.0, c:14.0, f:65.0},
+  {id:165,name:"Cashews",                            cat:"Fats & Nuts",         kcal:553, p:18.0, c:30.0, f:44.0},
+  {id:166,name:"Peanut Butter (natural)",            cat:"Fats & Nuts",         kcal:588, p:25.0, c:20.0, f:50.0},
+  {id:167,name:"Almond Butter",                      cat:"Fats & Nuts",         kcal:614, p:21.0, c:19.0, f:56.0},
+  {id:168,name:"Flaxseeds / Linseeds",               cat:"Fats & Nuts",         kcal:534, p:18.0, c:29.0, f:42.0},
+  {id:169,name:"Chia Seeds",                         cat:"Fats & Nuts",         kcal:486, p:17.0, c:42.0, f:31.0},
+  {id:170,name:"Sunflower Seeds",                    cat:"Fats & Nuts",         kcal:584, p:21.0, c:20.0, f:51.0},
+  {id:171,name:"Sesame Oil",                         cat:"Fats & Nuts",         kcal:884, p:0.0,  c:0.0,  f:100.0},
+  {id:172,name:"Cooking Spray (light)",              cat:"Fats & Nuts",         kcal:47,  p:0.0,  c:0.0,  f:4.7},
+  {id:173,name:"Peanuts",                            cat:"Fats & Nuts",         kcal:567, p:25.8, c:16.1, f:49.2},
+  {id:174,name:"Hazelnuts",                          cat:"Fats & Nuts",         kcal:628, p:14.9, c:17.0, f:60.7},
+  {id:175,name:"Pistachios",                         cat:"Fats & Nuts",         kcal:562, p:20.2, c:27.0, f:45.3},
+  {id:176,name:"Sesame Seeds",                       cat:"Fats & Nuts",         kcal:573, p:17.7, c:23.5, f:49.7},
+  {id:177,name:"Pumpkin Seeds",                      cat:"Fats & Nuts",         kcal:559, p:30.2, c:10.7, f:49.1},
+  {id:178,name:"Coconut Flakes (unsweetened)",       cat:"Fats & Nuts",         kcal:604, p:5.6,  c:26.0, f:55.0},
+  {id:179,name:"Peanut Butter Powder (PBfit)",       cat:"Fats & Nuts",         kcal:375, p:35.0, c:30.0, f:13.0},
+  // CONDIMENTS & SAUCES
+  {id:180,name:"Soy Sauce (low sodium)",             cat:"Condiments & Sauces", kcal:53,  p:8.1,  c:4.9,  f:0.1},
+  {id:181,name:"Hot Sauce (Tabasco style)",          cat:"Condiments & Sauces", kcal:12,  p:0.4,  c:1.6,  f:0.4},
+  {id:182,name:"Ketchup",                            cat:"Condiments & Sauces", kcal:101, p:1.4,  c:26.0, f:0.1},
+  {id:183,name:"Yellow Mustard",                     cat:"Condiments & Sauces", kcal:60,  p:4.0,  c:5.8,  f:3.6},
+  {id:184,name:"Dijon Mustard",                      cat:"Condiments & Sauces", kcal:66,  p:3.8,  c:5.1,  f:4.0},
+  {id:185,name:"Worcestershire Sauce",               cat:"Condiments & Sauces", kcal:78,  p:0.0,  c:19.0, f:0.0},
+  {id:186,name:"Tomato Paste",                       cat:"Condiments & Sauces", kcal:82,  p:4.3,  c:18.9, f:0.5},
+  {id:187,name:"Passata (tomato sauce)",             cat:"Condiments & Sauces", kcal:27,  p:1.3,  c:6.3,  f:0.2},
+  {id:188,name:"Sriracha",                           cat:"Condiments & Sauces", kcal:93,  p:1.5,  c:19.0, f:1.1},
+  {id:189,name:"Coconut Aminos",                     cat:"Condiments & Sauces", kcal:33,  p:0.0,  c:8.5,  f:0.0},
+  {id:190,name:"Apple Cider Vinegar",                cat:"Condiments & Sauces", kcal:22,  p:0.0,  c:0.9,  f:0.0},
+  {id:191,name:"Balsamic Vinegar",                   cat:"Condiments & Sauces", kcal:88,  p:0.5,  c:17.0, f:0.0},
+  {id:192,name:"Oyster Sauce",                       cat:"Condiments & Sauces", kcal:91,  p:3.5,  c:18.0, f:0.3},
+  {id:193,name:"Fish Sauce",                         cat:"Condiments & Sauces", kcal:35,  p:5.0,  c:3.6,  f:0.0},
+  {id:194,name:"Hoisin Sauce",                       cat:"Condiments & Sauces", kcal:220, p:4.0,  c:42.0, f:4.5},
+  {id:195,name:"Honey",                              cat:"Condiments & Sauces", kcal:304, p:0.3,  c:82.0, f:0.0},
+  {id:196,name:"Maple Syrup",                        cat:"Condiments & Sauces", kcal:260, p:0.0,  c:67.0, f:0.1},
+  {id:197,name:"BBQ Sauce",                          cat:"Condiments & Sauces", kcal:172, p:1.2,  c:38.0, f:0.6},
+  {id:198,name:"Teriyaki Sauce",                     cat:"Condiments & Sauces", kcal:89,  p:2.5,  c:19.0, f:0.1},
+  {id:199,name:"Buffalo Sauce",                      cat:"Condiments & Sauces", kcal:24,  p:1.7,  c:2.6,  f:0.9},
+  {id:200,name:"Chipotle Peppers in Adobo",          cat:"Condiments & Sauces", kcal:120, p:3.0,  c:20.0, f:3.0},
+  {id:201,name:"Rice Vinegar",                       cat:"Condiments & Sauces", kcal:18,  p:0.0,  c:0.7,  f:0.0},
+  {id:202,name:"White Vinegar",                      cat:"Condiments & Sauces", kcal:18,  p:0.0,  c:0.7,  f:0.0},
+  {id:203,name:"Pickles / Gherkins",                 cat:"Condiments & Sauces", kcal:11,  p:0.3,  c:2.3,  f:0.2},
+  {id:204,name:"Ranch Dressing (fat-free)",          cat:"Condiments & Sauces", kcal:88,  p:1.5,  c:18.0, f:0.9},
+  {id:205,name:"Pico de Gallo",                      cat:"Condiments & Sauces", kcal:36,  p:1.5,  c:7.0,  f:0.5},
+  {id:206,name:"Enchilada Sauce (mild)",             cat:"Condiments & Sauces", kcal:33,  p:1.5,  c:6.5,  f:0.4},
+  {id:207,name:"Chicken Bone Broth",                 cat:"Condiments & Sauces", kcal:10,  p:2.3,  c:0.0,  f:0.0},
+  {id:208,name:"Beef Bone Broth",                    cat:"Condiments & Sauces", kcal:14,  p:3.2,  c:0.0,  f:0.0},
+  {id:209,name:"Sugar-Free Ketchup",                 cat:"Condiments & Sauces", kcal:25,  p:0.5,  c:5.0,  f:0.0},
+  // HERBS & SPICES
+  {id:220,name:"Cinnamon (ground)",                  cat:"Herbs & Spices",      kcal:247, p:4.0,  c:81.0, f:1.2},
+  {id:221,name:"Paprika (ground)",                   cat:"Herbs & Spices",      kcal:282, p:14.1, c:54.0, f:13.0},
+  {id:222,name:"Cumin (ground)",                     cat:"Herbs & Spices",      kcal:375, p:17.8, c:44.0, f:22.0},
+  {id:223,name:"Oregano (dried)",                    cat:"Herbs & Spices",      kcal:265, p:9.0,  c:69.0, f:4.3},
+  {id:224,name:"Garlic Powder",                      cat:"Herbs & Spices",      kcal:331, p:16.6, c:73.0, f:0.7},
+  {id:225,name:"Onion Powder",                       cat:"Herbs & Spices",      kcal:341, p:10.4, c:79.1, f:1.0},
+  {id:226,name:"Black Pepper (ground)",              cat:"Herbs & Spices",      kcal:251, p:10.4, c:64.0, f:3.3},
+  {id:227,name:"Chili Flakes / Red Pepper Flakes",   cat:"Herbs & Spices",      kcal:282, p:12.3, c:50.0, f:14.3},
+  {id:228,name:"Ginger (fresh root)",                cat:"Herbs & Spices",      kcal:80,  p:1.8,  c:18.0, f:0.8},
+  {id:229,name:"Parsley (fresh)",                    cat:"Herbs & Spices",      kcal:36,  p:3.0,  c:6.3,  f:0.8},
+  {id:230,name:"Coriander / Cilantro (fresh)",       cat:"Herbs & Spices",      kcal:23,  p:2.1,  c:3.7,  f:0.5},
+  {id:231,name:"Basil (fresh)",                      cat:"Herbs & Spices",      kcal:23,  p:3.2,  c:2.7,  f:0.6},
+  {id:232,name:"Mint (fresh)",                       cat:"Herbs & Spices",      kcal:70,  p:3.8,  c:14.9, f:0.9},
+  {id:233,name:"Dill (fresh)",                       cat:"Herbs & Spices",      kcal:43,  p:3.5,  c:7.0,  f:1.1},
+  {id:234,name:"Rosemary (fresh/dried)",             cat:"Herbs & Spices",      kcal:131, p:3.3,  c:20.7, f:5.9},
+  {id:235,name:"Thyme (fresh/dried)",                cat:"Herbs & Spices",      kcal:101, p:5.6,  c:24.4, f:1.7},
+  {id:236,name:"Chives (fresh)",                     cat:"Herbs & Spices",      kcal:30,  p:3.3,  c:4.4,  f:0.7},
+  {id:237,name:"Curry Powder",                       cat:"Herbs & Spices",      kcal:325, p:12.7, c:58.0, f:14.0},
+  {id:238,name:"Smoked Paprika",                     cat:"Herbs & Spices",      kcal:282, p:14.1, c:54.0, f:13.0},
+  {id:239,name:"Turmeric (ground)",                  cat:"Herbs & Spices",      kcal:354, p:7.8,  c:65.0, f:9.9},
+  {id:240,name:"Matcha Powder",                      cat:"Herbs & Spices",      kcal:324, p:30.0, c:38.0, f:5.0},
+  {id:241,name:"Ginger (ground)",                    cat:"Herbs & Spices",      kcal:335, p:8.9,  c:72.0, f:4.2},
+  // BAKING & SWEETENERS
+  {id:250,name:"Baking Powder",                      cat:"Baking & Sweeteners", kcal:53,  p:0.0,  c:27.7, f:0.0},
+  {id:251,name:"Baking Soda",                        cat:"Baking & Sweeteners", kcal:0,   p:0.0,  c:0.0,  f:0.0},
+  {id:252,name:"Vanilla Extract",                    cat:"Baking & Sweeteners", kcal:288, p:0.1,  c:12.5, f:0.1},
+  {id:253,name:"Stevia (powder)",                    cat:"Baking & Sweeteners", kcal:0,   p:0.0,  c:0.0,  f:0.0},
+  {id:254,name:"Cocoa Powder (unsweetened)",         cat:"Baking & Sweeteners", kcal:228, p:20.0, c:54.0, f:14.0},
+  {id:255,name:"Dark Chocolate (85%)",               cat:"Baking & Sweeteners", kcal:598, p:7.8,  c:46.0, f:43.0},
+  {id:256,name:"Dark Choc Chips (sugar-free)",       cat:"Baking & Sweeteners", kcal:547, p:5.0,  c:60.0, f:33.0},
+  {id:257,name:"Protein Pancake Mix",                cat:"Baking & Sweeteners", kcal:370, p:30.0, c:43.0, f:8.0},
+  {id:258,name:"Xylitol",                            cat:"Baking & Sweeteners", kcal:240, p:0.0,  c:100.0,f:0.0},
+  {id:259,name:"Coconut Sugar",                      cat:"Baking & Sweeteners", kcal:375, p:0.0,  c:100.0,f:0.0},
+  {id:260,name:"Brown Sugar Substitute (zero-cal)",  cat:"Baking & Sweeteners", kcal:0,   p:0.0,  c:0.0,  f:0.0},
+  // SUPPLEMENTS
+  {id:210,name:"Whey Protein Powder",                cat:"Supplements",         kcal:400, p:80.0, c:8.0,  f:4.0},
+  {id:211,name:"Casein Protein Powder",              cat:"Supplements",         kcal:380, p:78.0, c:5.0,  f:4.5},
+  {id:212,name:"Plant Protein Powder",               cat:"Supplements",         kcal:370, p:70.0, c:12.0, f:5.0},
+  {id:213,name:"Collagen Powder",                    cat:"Supplements",         kcal:360, p:90.0, c:0.0,  f:0.0},
+  {id:214,name:"Creatine Monohydrate",               cat:"Supplements",         kcal:0,   p:0.0,  c:0.0,  f:0.0},
+  {id:215,name:"BCAA Powder (unflavored)",           cat:"Supplements",         kcal:46,  p:10.0, c:0.5,  f:0.7},
 ];
 // ─── RECIPE BANK ─────────────────────────────────────────────────────────
 // perPortion: includes ½ tbsp olive oil.
@@ -4188,38 +4388,129 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                     marginBottom: 6, marginTop: 4 } }, section.toUpperCase()),
             items.map((item, i) => React.createElement(Checkbox, { key: i, k: `f_${section}_${i}`, label: item })))))));
 }
-// ─── MACRO REF ─────────────────────────────────────────────────────────────
-function MacroRef() {
-    const [open, setOpen] = useState({});
-    const tog = k => setOpen(o => (Object.assign(Object.assign({}, o), { [k]: !o[k] })));
-    return (React.createElement("div", null,
-        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 14, lineHeight: 1.5 } },
-            "Proteins, grains, dairy ",
-            '&',
-            " veg are per 100 g raw/dry. Oils and condiments are per serving. \u00BD tbsp olive oil added per meal portion."),
-        IDB.map(sec => (React.createElement("div", { key: sec.cat, style: { marginBottom: 10 } },
-            React.createElement("div", { onClick: () => tog(sec.cat), style: { display: "flex", justifyContent: "space-between",
-                    background: C.card, border: `1px solid ${C.dim}`, borderRadius: 10, padding: "10px 14px",
-                    cursor: "pointer" } },
-                React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.text } }, sec.cat),
-                React.createElement("span", { style: { color: C.sub } }, open[sec.cat] ? "▲" : "▼")),
-            open[sec.cat] && (React.createElement("div", { style: { background: C.card2, border: `1px solid ${C.dim}`, borderTop: "none",
-                    borderRadius: "0 0 10px 10px", padding: "8px 14px" } },
-                React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr auto auto auto auto",
-                        gap: "4px 10px", fontSize: 10, color: C.sub, marginBottom: 6, paddingBottom: 4,
-                        borderBottom: `1px solid ${C.dim}` } },
-                    React.createElement("span", null, "Item"),
-                    React.createElement("span", null, "kcal"),
-                    React.createElement("span", { style: { color: C.prot } }, "P"),
-                    React.createElement("span", { style: { color: C.carb } }, "C"),
-                    React.createElement("span", { style: { color: C.fat } }, "F")),
-                sec.items.map(it => (React.createElement("div", { key: it.n, style: { display: "grid", gridTemplateColumns: "1fr auto auto auto auto",
-                        gap: "4px 10px", fontSize: 11, padding: "4px 0", borderBottom: `1px solid ${C.dim}` } },
-                    React.createElement("span", { style: { color: C.text } }, it.n),
-                    React.createElement("span", { style: { color: C.sub } }, it.kcal),
-                    React.createElement("span", { style: { color: C.prot } }, it.p),
-                    React.createElement("span", { style: { color: C.carb } }, it.c),
-                    React.createElement("span", { style: { color: C.fat } }, it.f)))))))))));
+// ─── INGREDIENT BROWSER (Foods tab) ──────────────────────────────────────────
+function IngredientBrowser() {
+    const [search, setSearch] = useState("");
+    const [cat, setCat] = useState("All");
+    const [selId, setSelId] = useState(null);
+    const [grams, setGrams] = useState(100);
+
+    const filtered = React.useMemo(() => {
+        const q = search.toLowerCase();
+        return ING_FLAT.filter(i => (cat === "All" || i.cat === cat) && i.name.toLowerCase().includes(q));
+    }, [search, cat]);
+
+    const selIng = selId !== null ? ING_FLAT.find(i => i.id === selId) : null;
+    const ratio = grams / 100;
+
+    function MacroPill(props) {
+        return React.createElement("div", { style: { flex: 1, background: C.card2, borderRadius: 10, padding: "10px 4px", textAlign: "center" } },
+            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: props.color } }, props.val),
+            React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2, letterSpacing: "0.08em" } }, props.label));
+    }
+
+    return React.createElement("div", null,
+        React.createElement("div", { style: { fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 } },
+            ING_FLAT.length + " ingredients · all macros per 100 g · tap any row to calculate"),
+
+        React.createElement("input", {
+            placeholder: "Search ingredients…",
+            value: search,
+            onChange: function(e) { setSearch(e.target.value); },
+            style: { width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 10,
+                border: "1px solid " + C.dim, background: C.card2, color: C.text, fontSize: 13,
+                fontFamily: "inherit", outline: "none", marginBottom: 10 }
+        }),
+
+        React.createElement("div", { style: { display: "flex", gap: 6, overflowX: "auto", paddingBottom: 8,
+            marginBottom: 12, scrollbarWidth: "none" } },
+            ING_CATS.map(function(c) {
+                return React.createElement("button", {
+                    key: c,
+                    onClick: function() { setCat(c); setSelId(null); },
+                    style: { flexShrink: 0, padding: "5px 12px", borderRadius: 20,
+                        border: "1px solid " + (cat === c ? C.accentBorder : C.dim),
+                        background: cat === c ? C.accentDim : C.card2,
+                        color: cat === c ? C.accent : C.sub,
+                        fontSize: 11, fontWeight: cat === c ? 700 : 400, cursor: "pointer", whiteSpace: "nowrap" }
+                }, c === "All" ? "All (" + ING_FLAT.length + ")" : c);
+            })
+        ),
+
+        selIng ? React.createElement("div", {
+            style: { background: C.card, border: "1px solid " + C.accentBorder, borderRadius: 12,
+                padding: "12px 14px", marginBottom: 12 }
+        },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" } },
+                React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.accent, letterSpacing: "0.1em" } }, "CALCULATOR"),
+                React.createElement("span", { style: { flex: 1, fontSize: 13, color: C.text, fontWeight: 600,
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 } }, selIng.name),
+                React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6 } },
+                    React.createElement("input", {
+                        type: "number", value: grams, min: 1,
+                        onChange: function(e) { setGrams(Math.max(1, parseInt(e.target.value) || 100)); },
+                        style: { width: 60, padding: "6px 8px", borderRadius: 8, border: "1px solid " + C.dim,
+                            background: C.card2, color: C.text, fontSize: 13, fontFamily: "inherit",
+                            outline: "none", textAlign: "center" }
+                    }),
+                    React.createElement("span", { style: { fontSize: 12, color: C.muted } }, "g")),
+                React.createElement("button", {
+                    onClick: function() { setSelId(null); },
+                    style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 20, lineHeight: 1, padding: 0 }
+                }, "×")),
+            React.createElement("div", { style: { display: "flex", gap: 8 } },
+                React.createElement(MacroPill, { label: "KCAL",    val: Math.round(selIng.kcal * ratio),       color: C.accent }),
+                React.createElement(MacroPill, { label: "PROTEIN", val: (selIng.p * ratio).toFixed(1) + "g",  color: C.prot }),
+                React.createElement(MacroPill, { label: "CARBS",   val: (selIng.c * ratio).toFixed(1) + "g",  color: C.carb }),
+                React.createElement(MacroPill, { label: "FAT",     val: (selIng.f * ratio).toFixed(1) + "g",  color: C.fat })
+            )
+        ) : null,
+
+        React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: "0.1em" } },
+            "SHOWING " + filtered.length + " / " + ING_FLAT.length),
+
+        React.createElement("div", { style: { borderRadius: 10, border: "1px solid " + C.dim, overflow: "hidden" } },
+            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 44px 36px 36px 36px",
+                gap: "0 8px", fontSize: 9, color: C.muted, padding: "8px 12px",
+                background: C.card2, borderBottom: "1px solid " + C.dim,
+                letterSpacing: "0.1em", fontWeight: 700 } },
+                React.createElement("span", null, "INGREDIENT"),
+                React.createElement("span", { style: { textAlign: "right" } }, "KCAL"),
+                React.createElement("span", { style: { textAlign: "right", color: C.prot } }, "P"),
+                React.createElement("span", { style: { textAlign: "right", color: C.carb } }, "C"),
+                React.createElement("span", { style: { textAlign: "right", color: C.fat } }, "F")),
+            filtered.length === 0
+                ? React.createElement("div", { style: { padding: 24, textAlign: "center", color: C.muted, fontSize: 12 } }, "No ingredients found")
+                : filtered.map(function(ing, idx) {
+                    var isSel = selId === ing.id;
+                    return React.createElement("div", {
+                        key: ing.id,
+                        onClick: function() { setSelId(isSel ? null : ing.id); setGrams(100); },
+                        style: { display: "grid", gridTemplateColumns: "1fr 44px 36px 36px 36px",
+                            gap: "0 8px", fontSize: 12, padding: "9px 12px",
+                            borderBottom: idx < filtered.length - 1 ? "1px solid " + C.dim : "none",
+                            background: isSel ? C.accentDim : idx % 2 === 0 ? C.card : C.card2,
+                            cursor: "pointer",
+                            borderLeft: isSel ? "3px solid " + C.accent : "3px solid transparent" }
+                    },
+                        React.createElement("span", { style: { color: isSel ? C.accent : C.text, fontWeight: isSel ? 700 : 400,
+                            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, ing.name),
+                        React.createElement("span", { style: { color: C.sub, textAlign: "right", fontVariantNumeric: "tabular-nums" } }, ing.kcal),
+                        React.createElement("span", { style: { color: C.prot, textAlign: "right", fontVariantNumeric: "tabular-nums" } }, ing.p),
+                        React.createElement("span", { style: { color: C.carb, textAlign: "right", fontVariantNumeric: "tabular-nums" } }, ing.c),
+                        React.createElement("span", { style: { color: C.fat,  textAlign: "right", fontVariantNumeric: "tabular-nums" } }, ing.f)
+                    );
+                })
+        ),
+
+        React.createElement("div", { style: { display: "flex", gap: 14, marginTop: 12, flexWrap: "wrap" } },
+            [["PROTEIN", C.prot], ["CARBS", C.carb], ["FAT", C.fat]].map(function(pair) {
+                return React.createElement("span", { key: pair[0], style: { display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: C.muted } },
+                    React.createElement("span", { style: { width: 6, height: 6, borderRadius: "50%", background: pair[1], display: "inline-block" } }),
+                    pair[0] + " (g / 100g)");
+            })
+        )
+    );
 }
 // ─── APP ───────────────────────────────────────────────────────────────────
 const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
@@ -4816,7 +5107,7 @@ function getTabMeta() { return [
     { id: "recipes",  label: t("tab_recipes"), icon: "🍳" },
     { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
     { id: "history",  label: t("tab_history"), icon: "📅" },
-    { id: "macros",   label: t("tab_macros"),  icon: "📊" },
+    { id: "macros",   label: t("tab_macros"),  icon: "🥦" },
     { id: "info",     label: "GUIDE",          icon: "📖"  },
 ]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
@@ -6690,7 +6981,7 @@ function App() {
                             React.createElement("br", null),
                             "Quarterly seasonal specials available separately.")))),
                 tab === "macros" && React.createElement("div", { className: "tab-anim", key: "mac" },
-                    React.createElement(MacroRef, null)),
+                    React.createElement(IngredientBrowser, null)),
                 tab === "info" && React.createElement("div", { className: "tab-anim", key: "info" },
                 React.createElement("div", { style: { padding: "4px 0 20px" } },
                     React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.14em", color: C.sub, fontWeight: 700, marginBottom: 4 } }, "GETTING STARTED"),
