@@ -4052,14 +4052,25 @@ function computePerPortionFromQtys(recipe, qtys, portions) {
     var result = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
     recipe.batchItems.forEach(function(item) {
         var qty = qtys[item.key];
-        if (!qty || item.unit !== 'g') return;
+        if (!qty) return;
         var ing = item.ingId ? ING_FLAT.find(function(i) { return i.id === item.ingId; }) : null;
         if (!ing) return;
-        var perPortion = qty / p;
-        result.kcal    += (ing.kcal / 100) * perPortion;
-        result.protein += (ing.p    / 100) * perPortion;
-        result.carbs   += (ing.c    / 100) * perPortion;
-        result.fat     += (ing.f    / 100) * perPortion;
+        // Compute per-portion grams based on unit type
+        var grams;
+        if (item.unit === 'g') {
+            grams = qty / p;
+        } else if (item.unit === 'mL' || item.unit === 'ml') {
+            grams = qty / p; // treat mL as g (water-like density)
+        } else if (item.unit === 'whole') {
+            grams = (qty / p) * (ing.unitG || 0);
+        } else {
+            return;
+        }
+        if (!grams) return;
+        result.kcal    += (ing.kcal / 100) * grams;
+        result.protein += (ing.p    / 100) * grams;
+        result.carbs   += (ing.c    / 100) * grams;
+        result.fat     += (ing.f    / 100) * grams;
     });
     return {
         kcal:    Math.round(result.kcal),
@@ -4435,7 +4446,10 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
         : null;
 
     // Display macros — bottom-up from ingredient quantities when dynamic, else legacy
-    const displayMacros = dynQtys
+    // Pre-workout recipes use hardcoded perPortion (fixed single-serve portions, not macro-scaled)
+    const displayMacros = r.category === 'preworkout'
+        ? computePerPortion(r, 1, p)
+        : dynQtys
         ? computePerPortionFromQtys(r, dynQtys, p)
         : computePerPortion(r, 1, p);
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
@@ -4544,9 +4558,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                                     React.createElement("span", { style: { fontSize: 10, color: roleColor, fontWeight: 700, minWidth: 6 } }, "\u25CF"),
                                     React.createElement("span", { style: { fontSize: 12, color: C.text, flex: 1 } }, item.label),
                                     React.createElement("span", { style: { fontSize: 12, color: C.accent, fontWeight: 700 } },
-                                        fmtQty(scaledQty, item.unit),
-                                        " ",
-                                        item.unit !== "whole" ? item.unit : "")),
+                                        fmtQty(scaledQty, item.unit))),
                                 ingM && React.createElement("div", { style: { fontSize: 10, color: C.muted, marginLeft: 14, marginTop: 2 } },
                                     ingM.kcal, " kcal \u00B7 ",
                                     React.createElement("span", { style: { color: C.prot } }, ingM.p, "P"),
@@ -7302,7 +7314,36 @@ function App() {
                         "☀️ ",
                         React.createElement("span", { style: { color: C.text } }, lr ? lr.name : "No lunch"),
                         " ·  🌙 ",
-                        React.createElement("span", { style: { color: C.text } }, dr ? dr.name : "No dinner"))),
+                        React.createElement("span", { style: { color: C.text } }, dr ? dr.name : "No dinner")),
+                tab === "recipes" && React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, marginTop: 8, paddingTop: 8, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12 } },
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } }, [["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
+                                border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
+                                background: recipeCat === cat ? C.accentDim : C.card2,
+                                color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
+                    React.createElement("div", { style: { position: "relative", marginBottom: 8 } },
+                        React.createElement("input", { type: "text", value: recipeQuery, onChange: e => setRecipeQuery(e.target.value), placeholder: "\ud83d\udd0d Search recipes...", autoComplete: "off", style: {
+                                width: "100%", background: C.card2, border: `1px solid ${C.dim}`,
+                                borderRadius: 10, color: C.text, fontSize: 13, padding: "10px 36px 10px 14px",
+                                fontFamily: "inherit", outline: "none", WebkitAppearance: "none", boxSizing: "border-box"
+                            } }),
+                        recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+                                background: "none", border: "none", color: C.muted, fontSize: 18, cursor: "pointer",
+                                padding: "0 6px", lineHeight: 1 } }, "\u2715"))),
+                    React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                        [["All", null], ["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", "#7c3aed"]].map(([lbl, col]) => {
+                            const active = dietaryFilter === (lbl === "All" ? null : lbl);
+                            return React.createElement("button", { key: lbl, onClick: () => setDietaryFilter(lbl === "All" ? null : (dietaryFilter === lbl ? null : lbl)),
+                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? (col || C.accent) : C.dim}`,
+                                    background: active ? (col ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.accentDim) : C.card2,
+                                    color: active ? (col || C.accent) : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                        })),
+                    recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "5px 4px", fontSize: 10, fontWeight: 700,
+                            borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
+                            background: filter === f ? C.accent : C.card2,
+                            color: filter === f ? "#000" : C.sub } }, f))))),
+                    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+                        React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.06em", whiteSpace: "nowrap" } }, "BATCH SIZE:"),
+                        React.createElement("div", { style: { display: "flex", gap: 4, flex: 1 } }, [3, 5, 7].map(n => (React.createElement("button", { key: n, onClick: () => setPortions(n), style: { flex: 1, padding: "5px 0", fontSize: 11, fontWeight: 700, borderRadius: 8, border: `1px solid ${portions === n ? C.accent : C.dim}`, background: portions === n ? C.accentDim : C.card2, color: portions === n ? C.accent : C.sub, cursor: "pointer" } }, n + " days")))))),
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
                         background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)",
                         borderRadius: 12, padding: "10px 12px", marginBottom: 12 } },
@@ -7405,14 +7446,7 @@ function App() {
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
 
-                    React.createElement("div", { style: {
-                            position: "sticky", top: 0, zIndex: 20,
-                            background: C.bg,
-                            marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12,
-                            paddingTop: 4, paddingBottom: 8,
-                            borderBottom: `1px solid ${C.dim}`,
-                            marginBottom: 10,
-                        } },
+                    React.createElement("div", { style: { display: "none" } },
                         React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } }, [["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                                 border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
                                 background: recipeCat === cat ? C.accentDim : C.card2,
