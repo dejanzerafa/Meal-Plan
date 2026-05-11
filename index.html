@@ -7275,7 +7275,7 @@ function App() {
                 ? React.createElement("iframe", { key: "method", src: "/method.html", title: "The Method",
                     style: { flex: 1, border: "none", width: "100%", minHeight: 0, display: "block" } })
                 : React.createElement("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "16px 12px 0px" } },
-                React.createElement("div", { style: { marginBottom: 16, paddingBottom: 14, borderBottom: `1px solid ${C.dim}` } },
+                React.createElement("div", { style: { position: "sticky", top: 0, zIndex: 20, background: C.bg, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12, paddingBottom: 14, borderBottom: `1px solid ${C.dim}`, marginBottom: 16 } },
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 } },
                         React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD · MADE SIMPLE"),
                         React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 600 } },
@@ -7396,7 +7396,7 @@ function App() {
                             borderBottom: `1px solid ${C.dim}`,
                             marginBottom: 10,
                         } },
-                        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } }, [["breakfast", "\u0001f305 Breakfast"], ["main", "\u0001f37d\ufe0f Mains"], ["preworkout", "\u26a1 Pre-Workout"], ["dessert", "\u0001f36b Treats"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
+                        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } }, [["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                                 border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
                                 background: recipeCat === cat ? C.accentDim : C.card2,
                                 color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
