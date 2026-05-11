@@ -3990,20 +3990,35 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
 
     // ── STEP 03 — FAT: fill remaining fat budget (after protein sources) ──────
     // Lean-food preference: fat from protein sources already counted in `used`.
+    // IMPORTANT: fat ingredients (cooking oil, avocado) always keep a minimum
+    // functional quantity even when the fat target is already met by protein
+    // sources — you always need oil to cook. Minimum = baseQty or original
+    // recipe proportional amount, whichever is set.
     var remainF = Math.max(0, targetF - used.f);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
         var share = item.share != null ? item.share : 1.0;
+        // Minimum per-portion: baseQty → original qty/portions → 5g fallback
+        var minPP = (item.baseQty != null && item.baseQty > 0)
+            ? item.baseQty
+            : (item.qty || 0) / recipePortions || 5;
         var perPortion;
-        if (ing && item.unit === 'g' && ing.f > 0) {
-            perPortion = (remainF * share) / (ing.f / 100);
-        } else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) {
-            var fPerUnit = (ing.f / 100) * ing.unitG;
-            perPortion = fPerUnit > 0 ? (remainF * share) / fPerUnit : (item.qty || 0) / recipePortions;
+        if (remainF > 0) {
+            if (ing && item.unit === 'g' && ing.f > 0) {
+                perPortion = (remainF * share) / (ing.f / 100);
+            } else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) {
+                var fPerUnit = (ing.f / 100) * ing.unitG;
+                perPortion = fPerUnit > 0 ? (remainF * share) / fPerUnit : minPP;
+            } else {
+                perPortion = minPP;
+            }
         } else {
-            perPortion = (item.qty || 0) / recipePortions;
+            // Fat target already met by protein sources — keep minimum for cooking
+            perPortion = minPP;
         }
+        // Never drop below functional minimum (oil is needed to cook)
+        perPortion = Math.max(perPortion, minPP);
         var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
         qtys[item.key] = batchQty;
         if (ing) {
