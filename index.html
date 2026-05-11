@@ -3958,8 +3958,8 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
 
     // ── STEP 02 — PROTEIN: sized to hit protein target ────────────────────────
     // ALL macros an ingredient brings (including its fat) flow into `used`.
-    // Lean protein sources bring little fat → more room for fat step below.
-    // Fatty sources bring more fat → fat ingredient sizes shrink automatically.
+    // Whole-unit items (eggs, cans) use unitG from ING_FLAT for macro math.
+    // Fallback always uses recipePortions (NOT p) so scaling is correct.
     var remainP = Math.max(0, targetP - used.p);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
     .forEach(function(item) {
@@ -3967,22 +3967,29 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
         var share = item.share != null ? item.share : 1.0;
         var perPortion;
         if (ing && item.unit === 'g' && ing.p > 0) {
+            // Gram-weighted: solve directly from protein density
             perPortion = (remainP * share) / (ing.p / 100);
+        } else if (ing && item.unit === 'whole' && ing.unitG && ing.p > 0) {
+            // Whole-unit (eggs, cans): use per-unit protein to count units
+            var pPerUnit = (ing.p / 100) * ing.unitG;
+            perPortion = pPerUnit > 0 ? (remainP * share) / pPerUnit : (item.qty || 0) / recipePortions;
         } else {
-            perPortion = (item.qty || 0) / p; // fallback to stored qty
+            // No macro data — scale from original recipe proportionally
+            perPortion = (item.qty || 0) / recipePortions;
         }
-        qtys[item.key] = Math.round(perPortion * p);
-        if (ing && item.unit === 'g') {
-            used.p += (ing.p / 100) * perPortion;
-            used.c += (ing.c / 100) * perPortion;
-            used.f += (ing.f / 100) * perPortion; // ← fat from protein source counts here
+        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
+        qtys[item.key] = batchQty;
+        // Carry forward ALL macros this ingredient contributes per portion
+        if (ing) {
+            var gPerPortion = item.unit === 'whole' ? perPortion * (ing.unitG || 0) : perPortion;
+            used.p += (ing.p / 100) * gPerPortion;
+            used.c += (ing.c / 100) * gPerPortion;
+            used.f += (ing.f / 100) * gPerPortion;
         }
     });
 
     // ── STEP 03 — FAT: fill remaining fat budget (after protein sources) ──────
-    // Lean-food preference means protein sources already ate into the fat budget.
-    // Dedicated fat ingredients (olive oil, nuts, avocado) only fill the gap.
-    // Fat is kept on the lower end of the healthy scale — not eliminated, managed.
+    // Lean-food preference: fat from protein sources already counted in `used`.
     var remainF = Math.max(0, targetF - used.f);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
     .forEach(function(item) {
@@ -3991,21 +3998,24 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
         var perPortion;
         if (ing && item.unit === 'g' && ing.f > 0) {
             perPortion = (remainF * share) / (ing.f / 100);
+        } else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) {
+            var fPerUnit = (ing.f / 100) * ing.unitG;
+            perPortion = fPerUnit > 0 ? (remainF * share) / fPerUnit : (item.qty || 0) / recipePortions;
         } else {
-            perPortion = (item.qty || 0) / p;
+            perPortion = (item.qty || 0) / recipePortions;
         }
-        qtys[item.key] = Math.round(perPortion * p);
-        if (ing && item.unit === 'g') {
-            used.p += (ing.p / 100) * perPortion;
-            used.c += (ing.c / 100) * perPortion;
-            used.f += (ing.f / 100) * perPortion;
+        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
+        qtys[item.key] = batchQty;
+        if (ing) {
+            var gPerPortion = item.unit === 'whole' ? perPortion * (ing.unitG || 0) : perPortion;
+            used.p += (ing.p / 100) * gPerPortion;
+            used.c += (ing.c / 100) * gPerPortion;
+            used.f += (ing.f / 100) * gPerPortion;
         }
     });
 
     // ── STEP 04 — CARBS: fill whatever calorie room remains ───────────────────
-    // Carbs are NEVER set first. They are the residual lever — the last to be
-    // sized, filling whatever macro room is left after protein + fat are locked.
-    // This is the fuel and performance dial. It scales freely.
+    // Never set first — always the residual lever. Scales freely.
     var remainC = Math.max(0, targetC - used.c);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
     .forEach(function(item) {
@@ -4014,10 +4024,14 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
         var perPortion;
         if (ing && item.unit === 'g' && ing.c > 0) {
             perPortion = (remainC * share) / (ing.c / 100);
+        } else if (ing && item.unit === 'whole' && ing.unitG && ing.c > 0) {
+            var cPerUnit = (ing.c / 100) * ing.unitG;
+            perPortion = cPerUnit > 0 ? (remainC * share) / cPerUnit : (item.qty || 0) / recipePortions;
         } else {
-            perPortion = (item.qty || 0) / p;
+            perPortion = (item.qty || 0) / recipePortions;
         }
-        qtys[item.key] = Math.round(perPortion * p);
+        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
+        qtys[item.key] = batchQty;
         // (No need to update `used` — carbs are the final step)
     });
 
@@ -4512,9 +4526,10 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                             " ",
                             cat.toUpperCase()),
                         catItems.map(item => {
-                            // Use dynamic qty from engine if available, else fall back to legacy scale
-                            const scaledQty = dynQtys && dynQtys[item.key] != null
-                                ? dynQtys[item.key]
+                            // Use dynamic qty from engine; fall back to legacy scale if null OR zero
+                            const _dynQ = dynQtys ? dynQtys[item.key] : null;
+                            const scaledQty = (_dynQ != null && _dynQ > 0)
+                                ? _dynQ
                                 : (item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale);
                             const ingM = getIngMacros(item, scaledQty);
                             const roleColor = item.role === 'protein' ? C.prot
