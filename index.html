@@ -374,6 +374,16 @@ const ING_FLAT = [
   {id:280, name:"Fat-Free Cheddar (shredded)", cat:"Dairy & Eggs", kcal:163, p:36, c:3, f:0.5},
   {id:281, name:"Fat-Free Mozzarella (shredded)", cat:"Dairy & Eggs", kcal:163, p:36, c:3, f:0.5},
   {id:282, name:"Fat-Free Cream Cheese", cat:"Dairy & Eggs", kcal:105, p:14, c:8, f:0.5},
+  {id:283, name:"Beef bacon", cat:"Meat & Fish", kcal:230, p:14, c:1, f:18, unitG:28},
+  {id:284, name:"Fat-free evaporated milk", cat:"Dairy & Eggs", kcal:78, p:7.7, c:11, f:0.2},
+  {id:285, name:"Turkey pepperoni", cat:"Meat & Fish", kcal:236, p:30, c:0, f:14},
+  {id:286, name:"Light butter", cat:"Dairy & Eggs", kcal:499, p:0.9, c:0.5, f:56, unitG:14},
+  {id:287, name:"Ground turkey (99% lean / 1% fat)", cat:"Meat & Fish", kcal:116, p:24, c:0, f:1},
+  {id:288, name:"Low-fat chocolate milk", cat:"Dairy & Eggs", kcal:70, p:3.5, c:10, f:1.5},
+  {id:289, name:"Ground beef (93% lean / 7% fat)", cat:"Meat & Fish", kcal:172, p:24, c:0, f:8},
+  {id:290, name:"Alfredo sauce (jarred)", cat:"Sauces & Condiments", kcal:130, p:3, c:5, f:11},
+  {id:291, name:"Gruyère cheese", cat:"Dairy & Eggs", kcal:413, p:30, c:0.4, f:32},
+  {id:292, name:"Flank steak (raw)", cat:"Meat & Fish", kcal:165, p:21, c:0, f:8},
   {id:53, name:"Feta Cheese", cat:"Dairy & Eggs", kcal:264, p:14, c:4.1, f:21},
   {id:193, name:"Fish Sauce", cat:"Condiments & Sauces", kcal:35, p:5, c:3.6, f:0},
   {id:168, name:"Flaxseeds / Linseeds", cat:"Fats & Nuts", kcal:534, p:18, c:29, f:42},
@@ -762,7 +772,7 @@ const RECIPES = [
         note: "Fat-free ranch confirmed available in Doha. Cheese blend: 256g FF CC + 48g light mozz + 16g parmesan replaces fat-free mozzarella and cheddar. Chicken increased to 1.25kg for protein.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1250, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
-            { key: "bacon_bits", label: "Beef bacon (cooked and crumbled)", qty: 86, unit: "g", cat: "Protein" , ingId: 15 , role: "protein", share: 0.023},
+            { key: "bacon_bits", label: "Beef bacon (cooked and crumbled)", qty: 86, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.023},
             { key: "pasta_regular", label: "Pasta (rigatoni or any)", qty: 700, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 256, unit: "g", cat: "Dairy" , ingId: 42 , role: "protein", share: 0.056},
             { key: "mozz_light", label: "Président Light mozzarella (shredded)", qty: 48, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.025},
@@ -873,7 +883,7 @@ const RECIPES = [
             { key: "mozz_light", label: "Président Light mozzarella", qty: 34, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.025},
             { key: "parmesan", label: "Parmesan", qty: 11, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 0.043},
             { key: "garlic", label: "Minced garlic", qty: 28, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
-            { key: "alfredo_sauce", label: "Alfredo sauce — Prego (1 jar)", qty: 624, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 89.14},
+            { key: "alfredo_sauce", label: "Alfredo sauce — Prego (1 jar)", qty: 624, unit: "g", cat: "Sauces" , ingId: 290 , role: "fixed", baseQty: 89.14},
             { key: "italian_sauce", label: "Italian tomato sauce — Prego (1 jar)", qty: 680, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 97.14},
         
             { key: "cooking_oil", label: "Cooking oil", qty: 29, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
@@ -891,7 +901,7 @@ const RECIPES = [
         note: "Cheese blend: 490g FF CC + 22g light mozz + parmesan replaces all fat-free mozzarella and cheddar. Beef bacon replaces pork bacon. Most involved recipe but excellent flavour.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1035, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
-            { key: "bacon_beef", label: "Beef bacon", qty: 220, unit: "g", cat: "Protein" , ingId: 15 , role: "protein", share: 0.061},
+            { key: "bacon_beef", label: "Beef bacon", qty: 220, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.061},
             { key: "pasta_regular", label: "Pasta (macaroni/shells)", qty: 640, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 490, unit: "g", cat: "Dairy" , ingId: 42 , role: "protein", share: 0.056},
             { key: "mozz_light", label: "Président Light mozzarella", qty: 22, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.025},
@@ -1027,15 +1037,15 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         perPortion: {kcal:733,protein:52,carbs:76,fat:23.2},
         batchItems: [
-            { key: "m26_steak", label: "Flank steak", qty: 900, unit: "g", cat: "Protein" , ingId: 9 , role: "protein", share: 0.696},
+            { key: "m26_steak", label: "Flank steak", qty: 900, unit: "g", cat: "Protein" , ingId: 292 , role: "protein", share: 0.696},
             { key: "m26_pasta", label: "Penne pasta", qty: 900, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
             { key: "m26_onion", label: "Large sweet onions", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.2},
             { key: "m26_broth", label: "Beef bone broth", qty: 900, unit: "mL", cat: "Liquids" , ingId: 208 , role: "fixed", baseQty: 90},
             { key: "m26_cream", label: "Reduced-fat cream cheese", qty: 120, unit: "g", cat: "Dairy" , ingId: 54 , role: "fat", share: 0.421},
-            { key: "m26_evap", label: "Fat-free evaporated milk", qty: 354, unit: "mL", cat: "Dairy" , ingId: 50 , role: "protein", share: 1},
+            { key: "m26_evap", label: "Fat-free evaporated milk", qty: 354, unit: "mL", cat: "Dairy" , ingId: 284 , role: "protein", share: 1},
             { key: "m26_cott", label: "Cottage cheese", qty: 600, unit: "g", cat: "Dairy" , ingId: 43 , role: "protein", share: 0.214},
             { key: "m26_parm", label: "Parmigiano Reggiano (grated)", qty: 80, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 0.09},
-            { key: "m26_gruy", label: "Gruyère cheese (grated)", qty: 100, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.579},
+            { key: "m26_gruy", label: "Gruyère cheese (grated)", qty: 100, unit: "g", cat: "Dairy" , ingId: 291 , role: "fat", share: 0.579},
             { key: "m26_oil", label: "Avocado oil", qty: 30, unit: "mL", cat: "Oils" , ingId: 160 , role: "fixed", baseQty: 3},
         ],
         steps: [
@@ -1251,7 +1261,7 @@ const RECIPES = [
             { key: "bell_pepper_green", label: "Green bell peppers", qty: 2, unit: "whole", cat: "Vegetables" , ingId: 105 , role: "veg", baseQty: 0.29},
             { key: "onion", label: "Onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
             { key: "garlic", label: "Garlic", qty: 10, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
-            { key: "pasta_sauce_cream", label: "Light creamy pasta sauce (Prego/Barilla jar)", qty: 500, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 71.43},
+            { key: "pasta_sauce_cream", label: "Light creamy pasta sauce (Prego/Barilla jar)", qty: 500, unit: "g", cat: "Sauces" , ingId: 290 , role: "fixed", baseQty: 71.43},
             { key: "pasta_sauce_tom", label: "Tomato spaghetti sauce (jar)", qty: 400, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 57.14},
             { key: "chicken_broth", label: "Chicken stock (½ Knorr cube + 126mL water)", qty: 126, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 18},
         
@@ -1281,7 +1291,7 @@ const RECIPES = [
             { key: "hol9_broth",   label: "Beef broth (low-sodium)",     qty: 280,  unit: "mL", cat: "Liquids"    , ingId: 208 , role: "fixed", baseQty: 40},
             { key: "hol9_oil",     label: "Olive oil",                   qty: 42,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 0.633},
             { key: "hol9_garlic",  label: "Garlic cloves",               qty: 5,    unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.71},
-            { key: "hol9_butter",  label: "Light butter (for mash)",     qty: 30,   unit: "g",  cat: "Fats"       , ingId: 162 , role: "fat", share: 0.367},
+            { key: "hol9_butter",  label: "Light butter (for mash)",     qty: 30,   unit: "g",  cat: "Fats"       , ingId: 286 , role: "fat", share: 0.367},
         ],
         steps: [
             "Preheat oven to 200°C. Pierce sweet potatoes and bake whole for 45–55 min until fully soft.",
@@ -1390,7 +1400,7 @@ const RECIPES = [
             { key: "m25_flour", label: "Plain flour", qty: 100, unit: "g", cat: "Carbs" , ingId: 277 , role: "carbs", share: 1},
             { key: "m25_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "m25_mac", label: "Macaroni pasta", qty: 320, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
-            { key: "m25_milk", label: "Fat-free evaporated milk", qty: 340, unit: "mL", cat: "Dairy" , ingId: 50 , role: "protein", share: 1},
+            { key: "m25_milk", label: "Fat-free evaporated milk", qty: 340, unit: "mL", cat: "Dairy" , ingId: 284 , role: "protein", share: 1},
             { key: "m25_cream", label: "Light cream cheese", qty: 60, unit: "g", cat: "Dairy" , ingId: 54 , role: "fat", share: 0.342},
             { key: "m25_ched", label: "Grated cheddar", qty: 70, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.658},
         ],
@@ -1545,7 +1555,7 @@ const RECIPES = [
         perPortion: {kcal:596,protein:52,carbs:68,fat:11.8},
         locked: true,
         batchItems: [
-            { key: "m44_beef", label: "93/7 lean ground beef (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 7 , role: "protein", share: 1},
+            { key: "m44_beef", label: "93/7 lean ground beef (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 289 , role: "protein", share: 1},
             { key: "m44_broc", label: "Broccoli florets", qty: 840, unit: "g", cat: "Vegetables" , ingId: 100 , role: "veg", baseQty: 120},
             { key: "m44_rice", label: "Jasmine rice (uncooked)", qty: 490, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
             { key: "m44_soy", label: "Low-sodium soy sauce", qty: 80, unit: "mL", cat: "Sauces" , ingId: 180 , role: "fixed", baseQty: 11.43},
@@ -1620,7 +1630,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "Rice",
         perPortion: {kcal:577,protein:55,carbs:66,fat:9.3},
         batchItems: [
-            { key: "m3-beef", label: "93/7 lean ground beef (raw)", qty: 454, unit: "g", cat: "Protein" , ingId: 7 , role: "protein", share: 0.838},
+            { key: "m3-beef", label: "93/7 lean ground beef (raw)", qty: 454, unit: "g", cat: "Protein" , ingId: 289 , role: "protein", share: 0.838},
             { key: "m30_rice", label: "Instant rice cups", qty: 460, unit: "g", cat: "Carbs" , ingId: 61 , role: "carbs", share: 0.712},
             { key: "m3-beans", label: "Canned black beans (drained)", qty: 120, unit: "g", cat: "Carbs" , ingId: 94 , role: "carbs", share: 0.158},
             { key: "m3-corn", label: "Canned sweet corn (drained)", qty: 125, unit: "g", cat: "Carbs" , ingId: 78 , role: "carbs", share: 0.13},
@@ -1647,7 +1657,7 @@ const RECIPES = [
         perPortion: {kcal:643,protein:53,carbs:69,fat:16.2},
         locked: true,
         batchItems: [
-            { key: "m33_turk", label: "99/1 turkey mince (raw)", qty: 1540, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
+            { key: "m33_turk", label: "99/1 turkey mince (raw)", qty: 1540, unit: "g", cat: "Protein" , ingId: 287 , role: "protein", share: 1},
             { key: "m33_rice", label: "Jasmine rice (uncooked)", qty: 525, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
             { key: "m33_pep", label: "Bell peppers (mixed colours)", qty: 3, unit: "whole", cat: "Vegetables" , ingId: 104 , role: "veg", baseQty: 0.43},
             { key: "m33_tom", label: "Diced tomatoes (canned)", qty: 400, unit: "g", cat: "Vegetables" , ingId: 109 , role: "veg", baseQty: 57.14},
@@ -1762,7 +1772,7 @@ const RECIPES = [
         batchItems: [
             { key: "m23_beef", label: "96/4 lean ground beef", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.613},
             { key: "m23_tsaus", label: "Lean turkey sausage", qty: 450, unit: "g", cat: "Protein" , ingId: 17 , role: "protein", share: 0.277},
-            { key: "m23_pepp", label: "Turkey pepperoni", qty: 198, unit: "g", cat: "Protein" , ingId: 18 , role: "protein", share: 0.109},
+            { key: "m23_pepp", label: "Turkey pepperoni", qty: 198, unit: "g", cat: "Protein" , ingId: 285 , role: "protein", share: 0.109},
             { key: "m23_pasta", label: "High-protein pasta", qty: 320, unit: "g", cat: "Carbs" , ingId: 67 , role: "carbs", share: 1},
             { key: "m23_cheese", label: "2% Mexican 4-cheese blend", qty: 280, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.794},
             { key: "m23_sauce", label: "Low-cal pizza sauce", qty: 560, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 56},
@@ -1839,7 +1849,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "Rice",
         perPortion: {kcal:444,protein:52,carbs:34,fat:9.3},
         batchItems: [
-            { key: "m2-beef", label: "93/7 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" , ingId: 7 , role: "protein", share: 0.796},
+            { key: "m2-beef", label: "93/7 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" , ingId: 289 , role: "protein", share: 0.796},
             { key: "m2-rice", label: "Instant white rice", qty: 92, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
             { key: "m2-cauli", label: "Riced cauliflower (frozen)", qty: 255, unit: "g", cat: "Vegetables" , ingId: 116 , role: "veg", baseQty: 85},
             { key: "m2-veg", label: "Mixed frozen vegetables", qty: 315, unit: "g", cat: "Vegetables" , ingId: 275 , role: "veg", baseQty: 105},
@@ -2440,7 +2450,7 @@ const RECIPES = [
         perPortion: {kcal:561,protein:52,carbs:24,fat:28},
         batchItems: [
             { key: "bf2-eggs", label: "Large eggs", qty: 13, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
-            { key: "bf2-bacon", label: "Center-cut beef bacon (raw)", qty: 283, unit: "g", cat: "Protein" , ingId: 15 , role: "protein", share: 1},
+            { key: "bf2-bacon", label: "Center-cut beef bacon (raw)", qty: 283, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 1},
             { key: "bf2-hash", label: "Frozen shredded hashbrowns", qty: 350, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 1},
             { key: "bf2-cheddar", label: "Fat-free cheddar (shredded)", qty: 308, unit: "g", cat: "Dairy" , ingId: 280 , role: "protein", share: 1},
         ],
@@ -2526,7 +2536,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌾 Rice",
         perPortion: {kcal:578,protein:56,carbs:42,fat:18.7},
         batchItems: [
-            { key: "b1_beef", label: "93/7 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 7 , role: "protein", share: 0.9},
+            { key: "b1_beef", label: "93/7 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 289 , role: "protein", share: 0.9},
             { key: "b1_eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "b1_rice", label: "Jasmine rice (uncooked)", qty: 350, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
             { key: "b1_ched", label: "Fat-free cheddar (shredded)", qty: 100, unit: "g", cat: "Dairy" , ingId: 280 , role: "protein", share: 1},
@@ -2550,9 +2560,9 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌮 Wrap",
         perPortion: {kcal:608,protein:51,carbs:34,fat:29.7},
         batchItems: [
-            { key: "m17_beef", label: "93/7 ground beef (raw)", qty: 788, unit: "g", cat: "Protein" , ingId: 7 , role: "protein", share: 0.801},
+            { key: "m17_beef", label: "93/7 ground beef (raw)", qty: 788, unit: "g", cat: "Protein" , ingId: 289 , role: "protein", share: 0.801},
             { key: "m17_eggs", label: "Large eggs", qty: 7, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
-            { key: "m17_bacon", label: "Beef bacon slices", qty: 7, unit: "whole", cat: "Protein" , ingId: 15 , role: "protein", share: 1},
+            { key: "m17_bacon", label: "Beef bacon slices", qty: 7, unit: "whole", cat: "Protein" , ingId: 283 , role: "protein", share: 1},
             { key: "m17_cheese", label: "Shredded Italian cheese blend", qty: 196, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.199},
             { key: "m17_tort", label: "High-fiber 12-inch tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 72 , role: "carbs", share: 1},
             { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
@@ -2900,7 +2910,7 @@ const RECIPES = [
         badge: "⚡ No Cook", carb: "🍌 Banana",
         perPortion: { kcal: 158, protein: 4, carbs: 36, fat: 1.1 },
         batchItems: [
-            { key: "pw_chocmilk", label: "Low-fat chocolate milk", qty: 1750, unit: "mL", cat: "Dairy" , ingId: 49 , role: "fat", share: 1},
+            { key: "pw_chocmilk", label: "Low-fat chocolate milk", qty: 1750, unit: "mL", cat: "Dairy" , ingId: 288 , role: "fat", share: 1},
             { key: "pw_banana4", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" , ingId: 140 , role: "carbs", share: 1},
             { key: "pw_ricecake2", label: "Plain rice cakes", qty: 14, unit: "whole", cat: "Carbs" , ingId: 84 , role: "carbs", share: 1},
         ],
@@ -3999,28 +4009,28 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
     var targetC = sm.carbs   || 0;
 
     // ── STEP 02 — PROTEIN: sized to hit protein target ────────────────────────
-    // Share values are auto-derived from each ingredient's protein density so
-    // they always sum to 1.0 — no hand-written fractions that can drift.
+    // Share values are auto-derived from each ingredient's macro efficiency
+    // (protein-per-calorie for protein role, etc.) so leaner/more-efficient
+    // ingredients naturally receive a larger portion of the total batch quantity.
+    // A 50/50 equal-gram split is impossible — leaner proteins always dominate.
     // ALL macros an ingredient brings (including its fat) flow into `used`.
     // Whole-unit items (eggs, cans) use unitG from ING_FLAT for macro math.
     // Fallback always uses recipePortions (NOT p) so scaling is correct.
-    var totalPDens = 0;
+    var totalPEff = 0; // sum of p/kcal efficiency across protein-role items
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
     .forEach(function(item) {
         var ing = findIng(item.ingId);
-        if (ing && item.unit === 'g' && ing.p > 0) totalPDens += ing.p;
-        else if (ing && item.unit === 'whole' && ing.unitG && ing.p > 0) totalPDens += (ing.p / 100) * ing.unitG;
+        if (ing && ing.kcal > 0 && ing.p > 0) totalPEff += ing.p / ing.kcal;
     });
     var remainP = Math.max(0, targetP - used.p);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
-        // Auto-derive share from protein density; fall back to stored share if no macro data
+        // Auto-derive share from macro efficiency (p/kcal); leaner sources get more grams.
+        // Falls back to stored share or equal split if macro data is missing.
         var share;
-        if (totalPDens > 0 && ing && item.unit === 'g' && ing.p > 0)
-            share = ing.p / totalPDens;
-        else if (totalPDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.p > 0)
-            share = ((ing.p / 100) * ing.unitG) / totalPDens;
+        if (totalPEff > 0 && ing && ing.kcal > 0 && ing.p > 0)
+            share = (ing.p / ing.kcal) / totalPEff;
         else
             share = item.share != null ? item.share : 1.0;
         var perPortion;
@@ -4050,22 +4060,19 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
     // Lean-food preference: fat from protein sources already counted in `used`.
     // If remainF = 0 (protein sources covered the fat target), oil shows 0 —
     // this is intentional: the recipe is already fat-sufficient.
-    var totalFDens = 0;
+    var totalFEff = 0; // sum of f/kcal efficiency across fat-role items
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
     .forEach(function(item) {
         var ing = findIng(item.ingId);
-        if (ing && item.unit === 'g' && ing.f > 0) totalFDens += ing.f;
-        else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) totalFDens += (ing.f / 100) * ing.unitG;
+        if (ing && ing.kcal > 0 && ing.f > 0) totalFEff += ing.f / ing.kcal;
     });
     var remainF = Math.max(0, targetF - used.f);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
         var share;
-        if (totalFDens > 0 && ing && item.unit === 'g' && ing.f > 0)
-            share = ing.f / totalFDens;
-        else if (totalFDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.f > 0)
-            share = ((ing.f / 100) * ing.unitG) / totalFDens;
+        if (totalFEff > 0 && ing && ing.kcal > 0 && ing.f > 0)
+            share = (ing.f / ing.kcal) / totalFEff;
         else
             share = item.share != null ? item.share : 1.0;
         var perPortion;
@@ -4089,22 +4096,19 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
 
     // ── STEP 04 — CARBS: fill whatever calorie room remains ───────────────────
     // Never set first — always the residual lever. Scales freely.
-    var totalCDens = 0;
+    var totalCEff = 0; // sum of c/kcal efficiency across carbs-role items
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
     .forEach(function(item) {
         var ing = findIng(item.ingId);
-        if (ing && item.unit === 'g' && ing.c > 0) totalCDens += ing.c;
-        else if (ing && item.unit === 'whole' && ing.unitG && ing.c > 0) totalCDens += (ing.c / 100) * ing.unitG;
+        if (ing && ing.kcal > 0 && ing.c > 0) totalCEff += ing.c / ing.kcal;
     });
     var remainC = Math.max(0, targetC - used.c);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
         var share;
-        if (totalCDens > 0 && ing && item.unit === 'g' && ing.c > 0)
-            share = ing.c / totalCDens;
-        else if (totalCDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.c > 0)
-            share = ((ing.c / 100) * ing.unitG) / totalCDens;
+        if (totalCEff > 0 && ing && ing.kcal > 0 && ing.c > 0)
+            share = (ing.c / ing.kcal) / totalCEff;
         else
             share = item.share != null ? item.share : 1.0;
         var perPortion;
