@@ -247,7 +247,6 @@ const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 // Generate keys once: npx web-push generate-vapid-keys
 // Paste the VAPID public key here (safe to expose — public key only).
 const PUSH_SERVER_KEY = "BMKlYKKnIpVRthufq_yxuWVOLhftk8jZWWBqYZyaGrq1_KE2PxxXeklIS41qP9FiUIpaTwKIrqgmyKnY5tt5rww";
-const FISH_OIL = { kcal: 18, fat: 2 };
 const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Fruits", "Aromatics", "Sauces", "Liquids", "Fats", "Fat"];
 const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Fruits: "🍓", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧", Fats: "🫒", Fat: "🫒" };
 // ─── FIXED MEALS ───────────────────────────────────────────────────────────
@@ -4255,8 +4254,7 @@ function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, 
     const Lbase = lr ? computePerPortion(lr, gl) : EMPTY_MACROS;
     const L = { kcal: Math.round(Lbase.kcal*ls), protein: Math.round(Lbase.protein*ls), carbs: Math.round(Lbase.carbs*ls), fat: +((Lbase.fat*ls).toFixed(1)) };
     const Dbase = dr ? computePerPortion(dr, gl) : EMPTY_MACROS;
-    const DwithOil = dr ? { kcal: Dbase.kcal + FISH_OIL.kcal, protein: Dbase.protein, carbs: Dbase.carbs, fat: +(Dbase.fat + FISH_OIL.fat).toFixed(1) } : EMPTY_MACROS;
-    const D = { kcal: Math.round(DwithOil.kcal*ds), protein: Math.round(DwithOil.protein*ds), carbs: Math.round(DwithOil.carbs*ds), fat: +((DwithOil.fat*ds).toFixed(1)) };
+    const D = { kcal: Math.round(Dbase.kcal*ds), protein: Math.round(Dbase.protein*ds), carbs: Math.round(Dbase.carbs*ds), fat: +((Dbase.fat*ds).toFixed(1)) };
     const BFbase = bfSkipped ? EMPTY_MACROS : (bfr ? computePerPortion(bfr, gl) : { kcal: Math.round(BREAKFAST.kcal*gl), protein: Math.round(BREAKFAST.protein*gl), carbs: Math.round(BREAKFAST.carbs*gl), fat: +((BREAKFAST.fat*gl).toFixed(1)) });
     const BF = bfSkipped ? EMPTY_MACROS : { kcal: Math.round(BFbase.kcal*bs), protein: Math.round(BFbase.protein*bs), carbs: Math.round(BFbase.carbs*bs), fat: +((BFbase.fat*bs).toFixed(1)) };
     const DSbase = desr ? computePerPortion(desr, gl) : EMPTY_MACROS;
