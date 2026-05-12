@@ -3069,18 +3069,16 @@ function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, di
     const p  = portions || 7;
     const et = effectiveTargets || {};
 
-    // Build the main merged batch (lunch + dinner + dessert) — macro-driven
-    const mainBatch = mergeAllItems(
-        lr, dr, null, desr, null, p,
-        true, true,
+    // Build unified batch — ALL meal slots merged into one ingredient map.
+    // Same ingId across breakfast/pre-workout/lunch/dinner/dessert are summed together.
+    // Quantities = per-portion × batch days (p). profileScale applied throughout.
+    const allBatch = mergeAllItems(
+        lr, dr, bfr, desr, prer, p,
+        bfSkipped, preSkipped,
         lunchScale || 1, dinnerScale || 1,
         profileScale || 1, et,
-        null, null, desScale || 0.05
+        bfScale, preScale, desScale || 0.05
     );
-
-    // Build breakfast and pre-workout items — macro-driven
-    const bfItems  = (!bfSkipped && bfr)  ? buildDynamicSlotItems(bfr,  et, 0.20 * (bfScale  || 1), p) : [];
-    const preItems = (!preSkipped && prer) ? buildDynamicSlotItems(prer, et, 0.10 * (preScale || 1), p) : [];
 
     let t = `SOULGAINZ MEAL PLAN — ${p} DAYS\n`;
     if (et.kcal) t += `Target: ${et.kcal} kcal · ${et.protein}g protein · ${et.carbs}g carbs · ${et.fat}g fat\n`;
@@ -3090,22 +3088,8 @@ function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, di
     if (desr) t += `\n🍮 Dessert: ${desr.name}`;
     t += "\n\n";
 
-    // Breakfast section
-    if (bfItems.length) {
-        t += "🌅 BREAKFAST\n";
-        bfItems.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
-        t += "\n";
-    }
-
-    // Pre-workout section
-    if (preItems.length) {
-        t += "⚡ PRE-WORKOUT\n";
-        preItems.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
-        t += "\n";
-    }
-
-    // Main batch — lunch/dinner/dessert grouped by category
-    Object.entries(mainBatch).forEach(([cat, items]) => {
+    // All ingredients — combined across all meal slots, grouped by category
+    Object.entries(allBatch).forEach(([cat, items]) => {
         if (!items.length) return;
         t += `${CAT_ICON[cat] || "•"} ${cat.toUpperCase()}\n`;
         items.forEach(item => { t += `  • ${fmtQty(item.qty, item.unit)} ${item.label}\n`; });
@@ -3251,84 +3235,48 @@ function normKey(key, label) {
     return key;
 }
 
-// mergeAllItems: extends mergeItems to include all assigned meal slots
+// mergeAllItems — builds the unified shopping list across all selected meal slots.
+//
+// Logic (per the user's spec):
+//   1. For each recipe: 1 portion = base_item_qty / recipe.portions * profileScale
+//   2. Shopping qty   = 1 portion * batch (p = 3 / 5 / 7)
+//   3. Ingredients with the same ingId across any two slots are summed into one line.
+//
+// No slot-fraction splitting, no macro-driven scaling — pure proportional × batch.
 function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, lScale, dScale, profileScale, effectiveTargets, bfScale, preScale, desScale) {
-    const p = portions || 7;
-    const ls = lScale || 1, ds = dScale || 1;
+    const p  = portions || 7;
     const gl = profileScale || 1;
-    const et = effectiveTargets || {};
     const map = {};
 
-    // Helper: add batchItems with pre-computed dynamic qtys OR legacy scale
-    const addDynamic = (recipe, slotFraction) => {
+    // addSlot: add one recipe's ingredients scaled to `p` batch days.
+    // qty = base_qty * (p / recipe_portions) * profileScale
+    // multiplier allows ×2 when same recipe fills both lunch + dinner slots.
+    const addSlot = (recipe, multiplier) => {
         if (!recipe || !recipe.batchItems) return;
-        // portions:1 = single-serve assembled recipe — skip dynamic scaling so
-        // shopping quantities stay proportional (base qty × batch days), matching
-        // recipe card and dashboard.
-        const hasDynamic = et.kcal && recipe.portions !== 1 && recipe.category !== 'preworkout' && recipe.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
-        if (hasDynamic) {
-            const slotMacros = slotMacrosFromTargets(et, slotFraction);
-            const qtys = computeIngredientQtys(recipe, slotMacros, p);
-            recipe.batchItems.forEach(i => {
-                const qty = qtys[i.key] != null ? qtys[i.key] : (i.qty || 0);
-                const finalQty = roundIngQty(qty, i.unit);
-                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
-                if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + finalQty });
-                else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty: finalQty });
-            });
-        } else {
-            const rPortions = recipe.flexPortions ? p : (recipe.portions || 7);
-            const scale = (p / rPortions) * gl;
-            recipe.batchItems.forEach(i => {
-                const rawQty = (i.qty || 0) * scale;
-                const qty = roundIngQty(rawQty, i.unit);
-                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
-                if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
-                else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
-            });
-        }
+        const rPortions = recipe.flexPortions ? p : (recipe.portions || 7);
+        const scale = (p / rPortions) * gl * (multiplier || 1);
+        recipe.batchItems.forEach(i => {
+            const rawQty = (i.qty || 0) * scale;
+            // Whole-unit items (eggs, slices, wraps…): always round up so you never buy too few.
+            // Gram / mL items: keep one decimal so small quantities stay accurate.
+            const qty = i.unit === 'whole' ? Math.ceil(rawQty) : +rawQty.toFixed(1);
+            const nk  = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
+            if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
+            else         map[nk] = Object.assign({}, i, { key: nk, qty });
+        });
     };
 
-    // Base slot fractions × MacroBalancer scale (scale=1 → no adjustment)
-    const lFrac  = 0.35 * (ls  || 1);
-    const dFrac  = 0.35 * (ds  || 1);
-    const bfFrac = 0.20 * ((bfScale  || 1));
-    const dsFrac = 0.05 * ((desScale || 1));
-    const prFrac = 0.10 * ((preScale || 1));
-
-    // Lunch + Dinner (same-recipe case: double up quantities)
+    // Lunch + Dinner — same recipe both slots → multiply base by 2
     if (lr && dr && lr.id === dr.id) {
-        const hasDyn = et.kcal && lr.portions !== 1 && lr.category !== 'preworkout' && lr.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
-        if (hasDyn) {
-            const lMacros = slotMacrosFromTargets(et, lFrac);
-            const dMacros = slotMacrosFromTargets(et, dFrac);
-            const lQ = computeIngredientQtys(lr, lMacros, p);
-            const dQ = computeIngredientQtys(dr, dMacros, p);
-            lr.batchItems.forEach(i => {
-                const qty = roundIngQty((lQ[i.key] || 0) + (dQ[i.key] || 0), i.unit);
-                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
-                if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
-                else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
-            });
-        } else {
-            const lPortions = lr.flexPortions ? p : (lr.portions || 7);
-            const sameScale = (p / lPortions) * gl;
-            lr.batchItems.forEach(i => {
-                const rawQty = (i.qty || 0) * (ls + ds) * sameScale;
-                const qty = roundIngQty(rawQty, i.unit);
-                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
-                if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
-                else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
-            });
-        }
+        addSlot(lr, 2);
     } else {
-        addDynamic(lr, lFrac);
-        addDynamic(dr, dFrac);
+        addSlot(lr);
+        addSlot(dr);
     }
 
-    if (!bfSkipped && bfr) addDynamic(bfr, bfFrac);
-    if (desr) addDynamic(desr, dsFrac);
-    if (!preSkipped && prer) addDynamic(prer, prFrac);
+    if (!bfSkipped && bfr) addSlot(bfr);
+    if (desr)               addSlot(desr);
+    if (!preSkipped && prer) addSlot(prer);
 
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
@@ -4846,14 +4794,9 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const et = effectiveTargets || {};
     if (!lr || !dr)
         return null;
-    // Per-slot item lists — macro-driven, 4-step framework.
-    // Slot fraction = base allocation × MacroBalancer scale (default scale=1).
-    const bfItems  = (!bfSkipped && bfr)
-        ? buildDynamicSlotItems(bfr,  et, 0.20 * (bfScale  || 1), p) : [];
-    const preItems = (!preSkipped && prer)
-        ? buildDynamicSlotItems(prer, et, 0.10 * (preScale || 1), p) : [];
-    // Main batch = lunch + dinner + dessert only, grouped by category
-    const mainBatch = mergeAllItems(lr, dr, null, desr, null, p, true, true, lunchScale, dinnerScale, profileScale, effectiveTargets, null, null, desScale);
+    // Unified batch — ALL slots merged: breakfast + pre-workout + lunch + dinner + dessert.
+    // Same ingId across any two slots is summed into one line. Quantities = per-portion × p days.
+    const mainBatch = mergeAllItems(lr, dr, bfr, desr, prer, p, bfSkipped, preSkipped, lunchScale, dinnerScale, profileScale, effectiveTargets, bfScale, preScale, desScale);
     const scalePct = Math.round(gl * 100);
     const showScaleNote = !!(profileScale && Math.abs(profileScale - 1) > 0.05);
     const sameRecipe = lr.id === dr.id;
@@ -4906,19 +4849,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                 "\u26A1 ", React.createElement("span", { style: { color: C.muted } }, "Pre-workout: "), React.createElement("span", { style: { color: C.text } }, prer.name)),
             desr && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
                 "\uD83C\uDF70 ", React.createElement("span", { style: { color: C.muted } }, "Dessert: "), React.createElement("span", { style: { color: C.text } }, desr.name))),
-        // ── Breakfast section ────────────────────────────────────────────────
-        bfItems.length > 0 && (React.createElement("div", { style: { marginBottom: 14 } },
-            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#f59e0b",
-                    letterSpacing: "0.08em", marginBottom: 6,
-                    borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "🌅 BREAKFAST"),
-            bfItems.map(item => React.createElement(Checkbox, { key: item.key, k: `b_${item.key}`, label: fmtItem(item) })))),
-        // ── Pre-workout section ──────────────────────────────────────────────
-        preItems.length > 0 && (React.createElement("div", { style: { marginBottom: 14 } },
-            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#22c55e",
-                    letterSpacing: "0.08em", marginBottom: 6,
-                    borderBottom: "1px solid " + C.dim, paddingBottom: 4 } }, "⚡ PRE-WORKOUT"),
-            preItems.map(item => React.createElement(Checkbox, { key: item.key, k: `pre_${item.key}`, label: fmtItem(item) })))),
-        // ── Lunch / Dinner / Dessert — by category ───────────────────────────
+        // ── All ingredients — all meal slots combined, by category ──────────
         Object.entries(mainBatch).map(([cat, items]) => (React.createElement("div", { key: cat, style: { marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 6 } },
                 CAT_ICON[cat], " ", cat.toUpperCase()),
