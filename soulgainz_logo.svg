@@ -1,0 +1,19 @@
+<svg width="100%" viewBox="0 0 680 320" role="img" xmlns="http://www.w3.org/2000/svg" style="">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">SoulGainz logo with tagline</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">SoulGainz brand logo featuring a flame icon above the wordmark and tagline "feed your soul · fuel your gainz"</desc>
+
+  
+
+  <!-- Flame icon -->
+  <g transform="translate(340, 108) scale(9)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <path fill-rule="evenodd" fill="#E07B2A" d="M0,-12 C0,-12 -5,-7 -5,-2 C-5,3 -2.5,6 0,6&#10;         C2.5,6 5,3 5,-2 C5,-5 3,-7 1.5,-9&#10;         C2.5,-6 2.5,-3.5 2.5,-2 C2.5,1 1.5,3.5 0,3.5&#10;         C-1.5,3.5 -2.5,1 -2.5,-2 C-2.5,-6.5 0,-12 0,-12 Z" style="fill:rgb(224, 123, 42);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text text-anchor="middle" x="340" y="218" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:middle;dominant-baseline:auto">
+    <tspan style="fill:rgb(224, 123, 42);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:72px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Soul</tspan><tspan style="fill:rgb(232, 221, 208);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Instrument Sans&quot;, Arial, sans-serif;font-size:72px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Gainz</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text text-anchor="middle" x="340" y="252" style="fill:rgb(122, 106, 90);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Instrument Sans&quot;, Arial, sans-serif;font-size:13px;font-weight:400;text-anchor:middle;dominant-baseline:auto">FEED YOUR SOUL · FUEL YOUR GAINZ</text>
+</svg>

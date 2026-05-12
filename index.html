@@ -4620,7 +4620,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
             view === "ingredients" && (React.createElement("div", null,
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" } },
                     React.createElement("span", null, "1 PORTION"),
-                    dynQtys && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your macros")),
+                    Math.abs(ps - 1) > 0.05 && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your macros")),
                 CAT_ORDER.map(cat => {
                     const catItems = r.batchItems.filter(i => i.cat === cat);
                     if (!catItems.length)
@@ -4631,11 +4631,8 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                             " ",
                             cat.toUpperCase()),
                         catItems.map(item => {
-                            // Use dynamic qty from engine (÷ p → per-1-portion); fall back to legacy scale
-                            const _dynQ = dynQtys ? dynQtys[item.key] : null;
-                            const scaledQty = (_dynQ != null && _dynQ > 0)
-                                ? _dynQ / p
-                                : item.qty * scale;  // exact — fmtQty handles display
+                            // Always use base qty × scale so ingredients match the Dashboard
+                            const scaledQty = item.qty * scale;
                             const ingM = getIngMacros(item, scaledQty);
                             const roleColor = item.role === 'protein' ? C.prot
                                 : item.role === 'carbs' ? C.carb
@@ -7471,15 +7468,20 @@ function App() {
                     React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, textAlign: "center", margin: "10px 0 14px", padding: "9px 14px", background: C.accentDim, borderRadius: 10, border: "1px solid " + C.accent } }, "\uD83C\uDF7D\uFE0F Assign meals from the Recipes tab — each recipe has a Set button"),
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                         React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.06em" } }, "\uD83C\uDF05 BREAKFAST")),
-                    breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale, portions: portions })
-                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale, portions: portions }),
+                    breakfastSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Breakfast skipped"),
+                        React.createElement("div", { style: { display: "flex", gap: 8 } },
+                            React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "← Restore"),
+                            React.createElement("button", { onClick: () => setBreakfastSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
+                    : breakfastRecipe && bfr ? React.createElement(MealCard, { meal: bfr, macros: BF, slot: "breakfast", profileScale: profileScale, portions: portions, onSkip: () => setBreakfastSkipped(true) })
+                    : React.createElement(MealCard, { meal: BREAKFAST, macros: BREAKFAST, profileScale: profileScale, portions: portions, onSkip: () => setBreakfastSkipped(true) }),
                     preSkipped ? (React.createElement("div", { style: { background: C.card, border: "1.5px dashed " + C.dim, borderRadius: 14, padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 } }, "Pre-workout skipped"),
                         React.createElement("div", { style: { display: "flex", gap: 8 } },
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 1, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "\u2190 Restore"),
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
-                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions })
-                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions }),
+                    : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions, onSkip: () => setPreSkipped(true) })
+                    : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions, onSkip: () => setPreSkipped(true) }),
                     lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions, onSkip: () => setLunch(null) })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
