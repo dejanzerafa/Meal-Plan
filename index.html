@@ -3054,7 +3054,7 @@ function getHistory() {
 // generateShoppingText — builds WhatsApp-share text from macro-driven quantities.
 // Follows the 4-step framework throughout: protein → fat → carbs as residual.
 // All slot quantities come from computeIngredientQtys (same as recipe cards and shopping list).
-function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale) {
+function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, profileScale) {
     if (!lr || !dr) return "";
     const p  = portions || 7;
     const et = effectiveTargets || {};
@@ -3064,7 +3064,7 @@ function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, di
         lr, dr, null, desr, null, p,
         true, true,
         lunchScale || 1, dinnerScale || 1,
-        1, et,
+        profileScale || 1, et,
         null, null, desScale || 0.05
     );
 
@@ -3129,6 +3129,35 @@ function fmtItem(item) {
         ? item.label + "s" : item.label;
     return `${q} ${lbl}`;
 }
+// ── Boot-time validator ───────────────────────────────────────────────────────
+// Runs once on load. Console.warns on any data integrity issue so regressions
+// are immediately visible in DevTools. Does NOT affect runtime behaviour.
+function validateRecipes() {
+    const ingIds = new Set(ING_FLAT.map(function(i) { return i.id; }));
+    RECIPES.forEach(function(r) {
+        if (!r.batchItems) return;
+        r.batchItems.forEach(function(item) {
+            if (!item.ingId) {
+                console.warn('[SoulGainz Validator] Missing ingId in recipe "' + r.id + '" item "' + (item.label || item.key) + '"');
+            } else if (!ingIds.has(item.ingId)) {
+                console.warn('[SoulGainz Validator] Unknown ingId "' + item.ingId + '" in recipe "' + r.id + '" item "' + (item.label || item.key) + '"');
+            }
+        });
+        ['protein','fat','carbs'].forEach(function(role) {
+            const roleItems = r.batchItems.filter(function(i) { return (i.role || 'fixed') === role; });
+            if (!roleItems.length) return;
+            const sum = roleItems.reduce(function(s, i) { return s + (i.share || 0); }, 0);
+            // Only warn if shares are explicitly set (any item has share defined) and don't sum to 1
+            const anyHasShare = roleItems.some(function(i) { return i.share != null; });
+            if (anyHasShare && Math.abs(sum - 1.0) > 0.05) {
+                console.warn('[SoulGainz Validator] Recipe "' + r.id + '" ' + role + ' shares sum to ' + sum.toFixed(3) + ' (expected 1.0) — now auto-derived, but you should clean these up');
+            }
+        });
+    });
+}
+// Run validator on next tick so it doesn't block render
+setTimeout(validateRecipes, 0);
+
 function mergeItems(lr, dr) {
     if (!lr || !dr)
         return {};
@@ -3231,7 +3260,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             recipe.batchItems.forEach(i => {
                 const qty = qtys[i.key] != null ? qtys[i.key] : (i.qty || 0);
                 const finalQty = roundIngQty(qty, i.unit);
-                const nk = normKey(i.key, i.label);
+                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
                 if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + finalQty });
                 else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty: finalQty });
             });
@@ -3241,7 +3270,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             recipe.batchItems.forEach(i => {
                 const rawQty = (i.qty || 0) * scale;
                 const qty = roundIngQty(rawQty, i.unit);
-                const nk = normKey(i.key, i.label);
+                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
                 if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
                 else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
             });
@@ -3265,7 +3294,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             const dQ = computeIngredientQtys(dr, dMacros, p);
             lr.batchItems.forEach(i => {
                 const qty = roundIngQty((lQ[i.key] || 0) + (dQ[i.key] || 0), i.unit);
-                const nk = normKey(i.key, i.label);
+                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
                 if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
                 else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
             });
@@ -3275,7 +3304,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             lr.batchItems.forEach(i => {
                 const rawQty = (i.qty || 0) * (ls + ds) * sameScale;
                 const qty = roundIngQty(rawQty, i.unit);
-                const nk = normKey(i.key, i.label);
+                const nk = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
                 if (map[nk]) map[nk] = Object.assign(Object.assign({}, map[nk]), { qty: map[nk].qty + qty });
                 else map[nk] = Object.assign(Object.assign({}, i), { key: nk, qty });
             });
@@ -3967,14 +3996,30 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
     var targetC = sm.carbs   || 0;
 
     // ── STEP 02 — PROTEIN: sized to hit protein target ────────────────────────
+    // Share values are auto-derived from each ingredient's protein density so
+    // they always sum to 1.0 — no hand-written fractions that can drift.
     // ALL macros an ingredient brings (including its fat) flow into `used`.
     // Whole-unit items (eggs, cans) use unitG from ING_FLAT for macro math.
     // Fallback always uses recipePortions (NOT p) so scaling is correct.
+    var totalPDens = 0;
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
+    .forEach(function(item) {
+        var ing = findIng(item.ingId);
+        if (ing && item.unit === 'g' && ing.p > 0) totalPDens += ing.p;
+        else if (ing && item.unit === 'whole' && ing.unitG && ing.p > 0) totalPDens += (ing.p / 100) * ing.unitG;
+    });
     var remainP = Math.max(0, targetP - used.p);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
-        var share = item.share != null ? item.share : 1.0;
+        // Auto-derive share from protein density; fall back to stored share if no macro data
+        var share;
+        if (totalPDens > 0 && ing && item.unit === 'g' && ing.p > 0)
+            share = ing.p / totalPDens;
+        else if (totalPDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.p > 0)
+            share = ((ing.p / 100) * ing.unitG) / totalPDens;
+        else
+            share = item.share != null ? item.share : 1.0;
         var perPortion;
         if (ing && item.unit === 'g' && ing.p > 0) {
             // Gram-weighted: solve directly from protein density
@@ -4002,11 +4047,24 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
     // Lean-food preference: fat from protein sources already counted in `used`.
     // If remainF = 0 (protein sources covered the fat target), oil shows 0 —
     // this is intentional: the recipe is already fat-sufficient.
+    var totalFDens = 0;
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
+    .forEach(function(item) {
+        var ing = findIng(item.ingId);
+        if (ing && item.unit === 'g' && ing.f > 0) totalFDens += ing.f;
+        else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) totalFDens += (ing.f / 100) * ing.unitG;
+    });
     var remainF = Math.max(0, targetF - used.f);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
-        var share = item.share != null ? item.share : 1.0;
+        var share;
+        if (totalFDens > 0 && ing && item.unit === 'g' && ing.f > 0)
+            share = ing.f / totalFDens;
+        else if (totalFDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.f > 0)
+            share = ((ing.f / 100) * ing.unitG) / totalFDens;
+        else
+            share = item.share != null ? item.share : 1.0;
         var perPortion;
         if (ing && item.unit === 'g' && ing.f > 0) {
             perPortion = (remainF * share) / (ing.f / 100);
@@ -4028,11 +4086,24 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
 
     // ── STEP 04 — CARBS: fill whatever calorie room remains ───────────────────
     // Never set first — always the residual lever. Scales freely.
+    var totalCDens = 0;
+    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
+    .forEach(function(item) {
+        var ing = findIng(item.ingId);
+        if (ing && item.unit === 'g' && ing.c > 0) totalCDens += ing.c;
+        else if (ing && item.unit === 'whole' && ing.unitG && ing.c > 0) totalCDens += (ing.c / 100) * ing.unitG;
+    });
     var remainC = Math.max(0, targetC - used.c);
     recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
     .forEach(function(item) {
         var ing   = findIng(item.ingId);
-        var share = item.share != null ? item.share : 1.0;
+        var share;
+        if (totalCDens > 0 && ing && item.unit === 'g' && ing.c > 0)
+            share = ing.c / totalCDens;
+        else if (totalCDens > 0 && ing && item.unit === 'whole' && ing.unitG && ing.c > 0)
+            share = ((ing.c / 100) * ing.unitG) / totalCDens;
+        else
+            share = item.share != null ? item.share : 1.0;
         var perPortion;
         if (ing && item.unit === 'g' && ing.c > 0) {
             perPortion = (remainC * share) / (ing.c / 100);
@@ -4650,7 +4721,7 @@ function buildDynamicSlotItems(recipe, effectiveTargets, slotFraction, portions)
         var qtys = computeIngredientQtys(recipe, slotMacros, p);
         recipe.batchItems.forEach(function(i) {
             var qty = qtys[i.key] != null ? qtys[i.key] : (i.qty || 0);
-            var nk  = normKey(i.key, i.label);
+            var nk  = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
             if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
             else         map[nk] = Object.assign({}, i, { key: nk, qty: qty });
         });
@@ -4659,7 +4730,7 @@ function buildDynamicSlotItems(recipe, effectiveTargets, slotFraction, portions)
         var scale = p / rPortions;
         recipe.batchItems.forEach(function(i) {
             var qty = i.unit === 'whole' ? Math.ceil(i.qty * scale) : +(i.qty * scale).toFixed(1);
-            var nk  = normKey(i.key, i.label);
+            var nk  = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
             if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
             else         map[nk] = Object.assign({}, i, { key: nk, qty: qty });
         });
@@ -4711,7 +4782,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                     color: p === n ? C.accent : C.sub, cursor: "pointer" } },
                 n,
                 " days")))),
-        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p, et, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
+        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p, et, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, gl)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
                 gap: 8, marginBottom: 14 } },
             React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
