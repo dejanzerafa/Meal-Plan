@@ -266,6 +266,12 @@ const PRE = {
 // ─── INGREDIENT DB ─────────────────────────────────────────────────────────
 // ─── INGREDIENT DATABASE (flat, 140+ items, macros per 100 g) ────────────────
 const ING_CATS = ["All","Protein & Meat","Fish & Seafood","Dairy & Eggs","Grains & Carbs","Legumes","Vegetables","Fruits","Fats & Nuts","Condiments & Sauces","Herbs & Spices","Baking & Sweeteners","Supplements"];
+// ─── RAW WEIGHT RULE (PERMANENT — DO NOT CHANGE) ──────────────────────────
+// ALL ingredient macros are per 100 g RAW / DRY uncooked weight.
+// Exceptions: canned/drained products (beans, tuna, sardines) use drained weight.
+// Ready-to-eat processed items (deli meat, smoked salmon) use as-purchased weight.
+// NEVER enter cooked values for fresh meat, poultry, fish, eggs, or dry grains.
+// ────────────────────────────────────────────────────────────────────────────
 const ING_FLAT = [
   {id:167, name:"Almond Butter", cat:"Fats & Nuts", kcal:614, p:21, c:19, f:56},
   {id:81, name:"Almond Flour", cat:"Grains & Carbs", kcal:576, p:21.4, c:19.6, f:52.5},
@@ -294,7 +300,7 @@ const ING_FLAT = [
   {id:105, name:"Bell Pepper (green)", cat:"Vegetables", kcal:20, p:0.9, c:4.6, f:0.2, unitG:120},
   {id:104, name:"Bell Pepper (red)", cat:"Vegetables", kcal:31, p:1, c:6, f:0.3, unitG:150},
   {id:134, name:"Bell Pepper (yellow)", cat:"Vegetables", kcal:27, p:1, c:6.3, f:0.2, unitG:150},
-  {id:94, name:"Black Beans (cooked)", cat:"Legumes", kcal:132, p:8.9, c:24, f:0.5, unitG:240},
+  {id:94, name:"Black Beans (canned, drained)", cat:"Legumes", kcal:132, p:8.9, c:24, f:0.5, unitG:240},
   {id:226, name:"Black Pepper (ground)", cat:"Herbs & Spices", kcal:251, p:10.4, c:64, f:3.3},
   {id:143, name:"Blueberries", cat:"Fruits", kcal:57, p:0.7, c:14, f:0.3},
   {id:70, name:"Bread (white sliced)", cat:"Grains & Carbs", kcal:265, p:9, c:49, f:3.2, unitG:40},
@@ -308,7 +314,7 @@ const ING_FLAT = [
   {id:87, name:"Buckwheat (dry)", cat:"Grains & Carbs", kcal:343, p:13.3, c:71.5, f:3.4},
   {id:199, name:"Buffalo Sauce", cat:"Condiments & Sauces", kcal:24, p:1.7, c:2.6, f:0.9},
   {id:162, name:"Butter (unsalted)", cat:"Fats & Nuts", kcal:717, p:0.9, c:0.1, f:81, unitG:14},
-  {id:99, name:"Butter Beans (cooked)", cat:"Legumes", kcal:115, p:7.7, c:21, f:0.4, unitG:240},
+  {id:99, name:"Butter Beans (canned, drained)", cat:"Legumes", kcal:115, p:7.7, c:21, f:0.4, unitG:240},
   {id:128, name:"Butternut Squash", cat:"Vegetables", kcal:45, p:1, c:11.7, f:0.1},
   {id:125, name:"Cabbage (white)", cat:"Vegetables", kcal:25, p:1.3, c:5.8, f:0.1},
   {id:262, name:"Capers (in brine)", cat:"Condiments & Sauces", kcal:23, p:2, c:2, f:1},
@@ -322,11 +328,10 @@ const ING_FLAT = [
   {id:110, name:"Cherry Tomatoes", cat:"Vegetables", kcal:18, p:0.9, c:3.9, f:0.2},
   {id:169, name:"Chia Seeds", cat:"Fats & Nuts", kcal:486, p:17, c:42, f:31},
   {id:207, name:"Chicken Bone Broth", cat:"Condiments & Sauces", kcal:10, p:2.3, c:0, f:0},
-  {id:1, name:"Chicken Breast (skinless)", cat:"Protein & Meat", kcal:165, p:31, c:0, f:3.6},
+  {id:1, name:"Chicken Breast (skinless, raw)", cat:"Protein & Meat", kcal:114, p:22.5, c:0, f:2.6},
   {id:17, name:"Chicken Sausage", cat:"Protein & Meat", kcal:181, p:19, c:4, f:10},
-  {id:2, name:"Chicken Thigh (boneless, skinless)", cat:"Protein & Meat", kcal:177, p:24, c:0, f:8.2},
-  {id:91, name:"Chickpeas (canned, drained)", cat:"Legumes", kcal:140, p:7.5, c:22, f:2, unitG:240},
-  {id:90, name:"Chickpeas (cooked)", cat:"Legumes", kcal:164, p:8.9, c:27, f:2.6},
+  {id:2, name:"Chicken Thigh (boneless, skinless, raw)", cat:"Protein & Meat", kcal:149, p:19, c:0, f:8},
+  {id:91, name:"Chickpeas (canned, drained)", cat:"Legumes", kcal:164, p:8.9, c:27, f:2.6, unitG:240},
   {id:227, name:"Chili Flakes / Red Pepper Flakes", cat:"Herbs & Spices", kcal:282, p:12.3, c:50, f:14.3, unitG:15},
   {id:200, name:"Chipotle Peppers in Adobo", cat:"Condiments & Sauces", kcal:120, p:3, c:20, f:3},
   {id:236, name:"Chives (fresh)", cat:"Herbs & Spices", kcal:30, p:3.3, c:4.4, f:0.7},
@@ -366,7 +371,7 @@ const ING_FLAT = [
   {id:96, name:"Edamame (shelled)", cat:"Legumes", kcal:121, p:11, c:8.9, f:5.2},
   {id:41, name:"Egg Whites", cat:"Dairy & Eggs", kcal:52, p:11, c:0.7, f:0.2, unitG:30},
   {id:119, name:"Eggplant / Aubergine", cat:"Vegetables", kcal:25, p:1, c:5.9, f:0.2},
-  {id:40, name:"Eggs (whole, large)", cat:"Dairy & Eggs", kcal:155, p:13, c:1.1, f:11, unitG:60},
+  {id:40, name:"Eggs (whole, large, raw)", cat:"Dairy & Eggs", kcal:143, p:12.6, c:0.7, f:9.5, unitG:60},
   {id:206, name:"Enchilada Sauce (mild)", cat:"Condiments & Sauces", kcal:33, p:1.5, c:6.5, f:0.4},
   {id:268, name:"Espresso (double shot)", cat:"Condiments & Sauces", kcal:5, p:0.3, c:1, f:0, unitG:60},
   {id:42, name:"Fat-Free Cottage Cheese", cat:"Dairy & Eggs", kcal:72, p:12.4, c:4.3, f:0.3},
@@ -395,7 +400,7 @@ const ING_FLAT = [
   {id:47, name:"Greek Yogurt (0% fat)", cat:"Dairy & Eggs", kcal:59, p:10, c:3.6, f:0.4},
   {id:48, name:"Greek Yogurt (2% fat)", cat:"Dairy & Eggs", kcal:73, p:9, c:3.9, f:1.9},
   {id:115, name:"Green Beans", cat:"Vegetables", kcal:31, p:1.8, c:7, f:0.1},
-  {id:3, name:"Ground Chicken (lean)", cat:"Protein & Meat", kcal:148, p:27, c:0, f:4},
+  {id:3, name:"Ground Chicken (lean, raw)", cat:"Protein & Meat", kcal:143, p:17.4, c:0, f:8.1},
   {id:5, name:"Ground Turkey (93% lean)", cat:"Protein & Meat", kcal:163, p:22, c:0, f:8},
   {id:30, name:"Hake Fillet", cat:"Fish & Seafood", kcal:82, p:18.5, c:0, f:0.7},
   {id:271, name:"Harissa Paste", cat:"Condiments & Sauces", kcal:50, p:1, c:7, f:2},
@@ -409,13 +414,13 @@ const ING_FLAT = [
   {id:102, name:"Kale", cat:"Vegetables", kcal:49, p:4.3, c:8.8, f:0.9},
   {id:56, name:"Kefir (low fat)", cat:"Dairy & Eggs", kcal:43, p:3.8, c:4.7, f:0.9},
   {id:182, name:"Ketchup", cat:"Condiments & Sauces", kcal:101, p:1.4, c:26, f:0.1},
-  {id:95, name:"Kidney Beans (cooked)", cat:"Legumes", kcal:127, p:8.7, c:22.8, f:0.5},
+  {id:95, name:"Kidney Beans (canned, drained)", cat:"Legumes", kcal:127, p:8.7, c:22.8, f:0.5},
   {id:155, name:"Kiwi", cat:"Fruits", kcal:61, p:1.1, c:15, f:0.5},
   {id:14, name:"Lamb Mince", cat:"Protein & Meat", kcal:282, p:16, c:0, f:24},
   {id:11, name:"Lean Beef (tenderloin)", cat:"Protein & Meat", kcal:179, p:29, c:0, f:6},
   {id:123, name:"Leek", cat:"Vegetables", kcal:61, p:1.5, c:14, f:0.3},
   {id:150, name:"Lemon (juice)", cat:"Fruits", kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
-  {id:93, name:"Lentils (cooked)", cat:"Legumes", kcal:116, p:9, c:20, f:0.4},
+  {id:93, name:"Green Lentils (dry)", cat:"Legumes", kcal:353, p:25.8, c:60, f:1.1},
   {id:92, name:"Lentils (red, dry)", cat:"Legumes", kcal:352, p:25, c:60, f:1},
   {id:112, name:"Lettuce (romaine)", cat:"Vegetables", kcal:17, p:1.2, c:3.3, f:0.3},
   {id:44, name:"Light Mozzarella", cat:"Dairy & Eggs", kcal:180, p:20, c:1, f:11},
@@ -465,8 +470,8 @@ const ING_FLAT = [
   {id:277, name:"Plain Flour (white)", cat:"Grains & Carbs", kcal:364, p:10, c:76, f:1},
   {id:212, name:"Plant Protein Powder", cat:"Supplements", kcal:370, p:70, c:12, f:5},
   {id:157, name:"Pomegranate Seeds", cat:"Fruits", kcal:83, p:1.7, c:18.7, f:1.2},
-  {id:13, name:"Pork Loin Chop", cat:"Protein & Meat", kcal:172, p:26, c:0, f:7},
-  {id:12, name:"Pork Tenderloin", cat:"Protein & Meat", kcal:143, p:26, c:0, f:3.5},
+  {id:13, name:"Pork Loin Chop (raw)", cat:"Protein & Meat", kcal:201, p:21, c:0, f:13},
+  {id:12, name:"Pork Tenderloin (raw)", cat:"Protein & Meat", kcal:109, p:21, c:0, f:2.2},
   {id:257, name:"Protein Pancake Mix", cat:"Baking & Sweeteners", kcal:370, p:30, c:43, f:8},
   {id:129, name:"Pumpkin", cat:"Vegetables", kcal:26, p:1, c:6.5, f:0.1},
   {id:137, name:"Pumpkin Purée (canned)", cat:"Vegetables", kcal:34, p:1.2, c:8.1, f:0.1},
@@ -484,7 +489,7 @@ const ING_FLAT = [
   {id:52, name:"Ricotta (part-skim)", cat:"Dairy & Eggs", kcal:138, p:10, c:6, f:8},
   {id:234, name:"Rosemary (fresh/dried)", cat:"Herbs & Spices", kcal:131, p:3.3, c:20.7, f:5.9},
   {id:20, name:"Salmon (Atlantic)", cat:"Fish & Seafood", kcal:208, p:20, c:0, f:13},
-  {id:27, name:"Sardines (canned in water)", cat:"Fish & Seafood", kcal:208, p:25, c:0, f:11},
+  {id:27, name:"Sardines (canned in oil, drained)", cat:"Fish & Seafood", kcal:208, p:25, c:0, f:11},
   {id:28, name:"Sea Bass", cat:"Fish & Seafood", kcal:97, p:18, c:0, f:2},
   {id:171, name:"Sesame Oil", cat:"Fats & Nuts", kcal:884, p:0, c:0, f:100},
   {id:176, name:"Sesame Seeds", cat:"Fats & Nuts", kcal:573, p:17.7, c:23.5, f:49.7},
@@ -494,7 +499,7 @@ const ING_FLAT = [
   {id:238, name:"Smoked Paprika", cat:"Herbs & Spices", kcal:282, p:14.1, c:54, f:13},
   {id:31, name:"Smoked Salmon", cat:"Fish & Seafood", kcal:117, p:18.3, c:0, f:4.3},
   {id:135, name:"Snap Peas", cat:"Vegetables", kcal:34, p:2.8, c:7, f:0.4},
-  {id:57, name:"Sour Cream (light)", cat:"Dairy & Eggs", kcal:100, p:1.5, c:4, f:8},
+  {id:57, name:"Sour Cream (light)", cat:"Dairy & Eggs", kcal:133, p:3.5, c:7, f:11},
   {id:180, name:"Soy Sauce (low sodium)", cat:"Condiments & Sauces", kcal:53, p:8.1, c:4.9, f:0.1},
   {id:101, name:"Spinach (fresh)", cat:"Vegetables", kcal:23, p:2.9, c:3.6, f:0.4},
   {id:132, name:"Spring Onion / Scallion", cat:"Vegetables", kcal:32, p:1.8, c:7.3, f:0.2, unitG:150},
@@ -522,7 +527,7 @@ const ING_FLAT = [
   {id:22, name:"Tuna Steak (fresh)", cat:"Fish & Seafood", kcal:144, p:23, c:0, f:5},
   {id:19, name:"Turkey / Chicken Ham (sliced)", cat:"Protein & Meat", kcal:105, p:16, c:2.5, f:3.5},
   {id:16, name:"Turkey Bacon", cat:"Protein & Meat", kcal:218, p:28, c:4, f:11},
-  {id:4, name:"Turkey Breast (skinless)", cat:"Protein & Meat", kcal:135, p:29, c:0, f:1},
+  {id:4, name:"Turkey Breast (skinless, raw)", cat:"Protein & Meat", kcal:104, p:22, c:0, f:1},
   {id:239, name:"Turmeric (ground)", cat:"Herbs & Spices", kcal:354, p:7.8, c:65, f:9.9},
   {id:252, name:"Vanilla Extract", cat:"Baking & Sweeteners", kcal:288, p:0.1, c:12.5, f:0.1, unitG:5},
   {id:279, name:"Vegetable Broth (low-sodium)", cat:"Condiments & Sauces", kcal:7, p:0.5, c:1, f:0},
@@ -531,7 +536,7 @@ const ING_FLAT = [
   {id:148, name:"Watermelon", cat:"Fruits", kcal:30, p:0.6, c:7.6, f:0.2},
   {id:210, name:"Whey Protein Powder", cat:"Supplements", kcal:400, p:80, c:8, f:4, unitG:30},
   {id:69, name:"White Potato", cat:"Grains & Carbs", kcal:77, p:2, c:17, f:0.1},
-  {id:61, name:"White Rice (cooked)", cat:"Grains & Carbs", kcal:130, p:2.7, c:28.2, f:0.3},
+  {id:61, name:"White Rice (cooked / instant)", cat:"Grains & Carbs", kcal:130, p:2.7, c:28.2, f:0.3},
   {id:60, name:"White Rice (dry)", cat:"Grains & Carbs", kcal:365, p:7.1, c:80, f:0.7},
   {id:202, name:"White Vinegar", cat:"Condiments & Sauces", kcal:18, p:0, c:0.7, f:0},
   {id:88, name:"Whole Wheat Wrap (medium)", cat:"Grains & Carbs", kcal:280, p:9, c:49, f:5, unitG:70},
@@ -4292,7 +4297,7 @@ function Bar({ v, t, color }) {
                 background: over ? "#ef4444" : color, borderRadius: 3, transition: "width 0.4s" } })));
 }
 // ─── MEAL CARD ──────────────────────────────────────────────────────────────
-function MealCard({ meal, macros, slot, profileScale, portions }) {
+function MealCard({ meal, macros, slot, profileScale, portions, onSkip }) {
     const [open, setOpen] = useState(false);
     const isRecipe = !meal.fixed;
     const gl = profileScale || 1;
@@ -4323,6 +4328,8 @@ function MealCard({ meal, macros, slot, profileScale, portions }) {
                 React.createElement(Macro, { label: "FAT", value: macros.fat, color: C.fat })),
             isRecipe && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🍱 Fridge pull — batch ingredients")),
+            onSkip && React.createElement("button", { onClick: onSkip, style: { marginTop: 8, fontSize: 10, fontWeight: 700, color: C.muted, background: "none",
+                    border: `1px solid ${C.dim}`, borderRadius: 6, cursor: "pointer", padding: "3px 10px", letterSpacing: "0.05em" } }, "⏭ Skip this meal"),
             !isRecipe && meal.items && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide details" : "▼ View ingredients"))),
         open && isRecipe && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
@@ -4508,7 +4515,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
     // For standard recipes, scale ingredient display by selectedBatch / recipeParts so
     // a recipe that makes 5 portions shows 100% of its batch items when batch=5 is chosen.
     const ps = profileScale || 1;
-    const scale = r.flexPortions ? ps : ((portions || 7) / getPortions(r, portions || 7)) * ps;
+    const scale = r.flexPortions ? ps : ps / getPortions(r, portions || 7); // per-1-portion for recipe display
     const p = portions || 7;
 
     // Slot fraction = base allocation × MacroBalancer scale (scale defaults to 1 = no change).
@@ -4617,7 +4624,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                     color: view === v ? "#000" : C.sub } }, lbl)))),
             view === "ingredients" && (React.createElement("div", null,
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" } },
-                    React.createElement("span", null, "BATCH \u2014 ", p, " PORTIONS"),
+                    React.createElement("span", null, "1 PORTION"),
                     dynQtys && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your macros")),
                 CAT_ORDER.map(cat => {
                     const catItems = r.batchItems.filter(i => i.cat === cat);
@@ -4629,10 +4636,10 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                             " ",
                             cat.toUpperCase()),
                         catItems.map(item => {
-                            // Use dynamic qty from engine; fall back to legacy scale if null OR zero
+                            // Use dynamic qty from engine (÷ p → per-1-portion); fall back to legacy scale
                             const _dynQ = dynQtys ? dynQtys[item.key] : null;
                             const scaledQty = (_dynQ != null && _dynQ > 0)
-                                ? _dynQ
+                                ? _dynQ / p
                                 : (item.unit === "whole" ? Math.ceil(item.qty * scale) : item.qty * scale);
                             const ingM = getIngMacros(item, scaledQty);
                             const roleColor = item.role === 'protein' ? C.prot
@@ -4682,9 +4689,6 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                         fontFamily: "inherit", lineHeight: 1.6, outline: "none" } }),
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")),
             React.createElement("div", { style: { marginTop: 14, borderTop: `1px solid ${C.dim}`, paddingTop: 12 } },
-                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: "#b45309", letterSpacing: "0.08em", marginBottom: 8 } }, "\u26A0\uFE0F ALLERGY NOTICE"),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.65, marginBottom: 10 } },
-                    "SoulGainz provides recipes, not food. We are not responsible for any allergic reactions. Always read ingredient labels carefully and adapt this recipe to suit your dietary needs and allergies."),
                 allergenEl))))));}
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
@@ -7309,8 +7313,11 @@ function App() {
         const f = FILTER_MAP[filter];
         return f ? r.badge.includes(f) : true;
     }).sort((a, b) => {
-        // Unlocked first, then locked. Both groups strictly A-Z.
-        // Emoji stripped from name before compare so "🥩 Marry Me Chicken" → "M".
+        // Active (selected) recipes float to top, then unlocked A-Z, then locked A-Z.
+        const activeIds = [lunch, dinner, breakfastRecipe, dessert, preRecipe].filter(Boolean);
+        const aActive = activeIds.includes(a.id) ? 0 : 1;
+        const bActive = activeIds.includes(b.id) ? 0 : 1;
+        if (aActive !== bActive) return aActive - bActive;
         const aLocked = canView(a.id) ? 0 : 1;
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
@@ -7432,9 +7439,7 @@ function App() {
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
                             background: filter === f ? C.accent : C.card2,
                             color: filter === f ? "#000" : C.sub } }, f))))),
-                    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
-                        React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.06em", whiteSpace: "nowrap" } }, "BATCH SIZE:"),
-                        React.createElement("div", { style: { display: "flex", gap: 4, flex: 1 } }, [3, 5, 7].map(n => (React.createElement("button", { key: n, onClick: () => setPortions(n), style: { flex: 1, padding: "5px 0", fontSize: 11, fontWeight: 700, borderRadius: 8, border: `1px solid ${portions === n ? C.accent : C.dim}`, background: portions === n ? C.accentDim : C.card2, color: portions === n ? C.accent : C.sub, cursor: "pointer" } }, n + " days")))))))
+                )
                 ,
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
                         background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)",
@@ -7480,7 +7485,7 @@ function App() {
                             React.createElement("button", { onClick: () => setPreSkipped(false), style: { flex: 2, background: C.card2, border: "1px solid " + C.dim, borderRadius: 10, padding: "11px", fontSize: 12, fontWeight: 600, color: C.sub, cursor: "pointer" } }, "Assign from Recipes tab →"))))
                     : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions })
                     : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions }),
-                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions, onSkip: () => setLunch(null) })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
@@ -7501,7 +7506,7 @@ function App() {
                             React.createElement("button", { onClick: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); }, style: { flex: 2, background: C.accent, border: "none", borderRadius: 10,
                                     padding: "11px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                                     letterSpacing: "0.02em" } }, "+ Add Food \u2192")))),
-                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
+                    dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions, onSkip: () => setDinner(null) })) : (React.createElement("div", { style: { background: C.card, border: `1.5px dashed ${C.dim}`, borderRadius: 14,
                             padding: "16px", marginBottom: 10 } },
                         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
                             React.createElement("div", null,
