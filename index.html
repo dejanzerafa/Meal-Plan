@@ -3221,7 +3221,10 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
     // Helper: add batchItems with pre-computed dynamic qtys OR legacy scale
     const addDynamic = (recipe, slotFraction) => {
         if (!recipe || !recipe.batchItems) return;
-        const hasDynamic = et.kcal && recipe.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
+        // portions:1 = single-serve assembled recipe — skip dynamic scaling so
+        // shopping quantities stay proportional (base qty × batch days), matching
+        // recipe card and dashboard.
+        const hasDynamic = et.kcal && recipe.portions !== 1 && recipe.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
         if (hasDynamic) {
             const slotMacros = slotMacrosFromTargets(et, slotFraction);
             const qtys = computeIngredientQtys(recipe, slotMacros, p);
@@ -3254,7 +3257,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
 
     // Lunch + Dinner (same-recipe case: double up quantities)
     if (lr && dr && lr.id === dr.id) {
-        const hasDyn = et.kcal && lr.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
+        const hasDyn = et.kcal && lr.portions !== 1 && lr.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; });
         if (hasDyn) {
             const lMacros = slotMacrosFromTargets(et, lFrac);
             const dMacros = slotMacrosFromTargets(et, dFrac);
@@ -4449,7 +4452,10 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
 
     // Dynamic quantities — used for INGREDIENT LIST display only (scaled to slot targets).
     // NOT used for macro pills — those must be consistent reference macros regardless of slot.
-    const dynQtys = (slotMacros && r.batchItems && r.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; }))
+    // portions:1 = single-serve assembled recipe (e.g. b0 breakfast) — skip dynamic scaling
+    // so ingredient quantities stay proportional to the base recipe (base qty × batch days),
+    // matching what the dashboard and shopping list show.
+    const dynQtys = (slotMacros && r.portions !== 1 && r.batchItems && r.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; }))
         ? computeIngredientQtys(r, slotMacros, p)
         : null;
 
@@ -4634,6 +4640,10 @@ function buildDynamicSlotItems(recipe, effectiveTargets, slotFraction, portions)
     var hasDynamic = et.kcal && recipe.batchItems.some(function(i) {
         return i.role && i.role !== 'fixed';
     });
+    // portions:1 = single-serve assembled recipe — never dynamically scale.
+    // Use straight proportional (base qty × batch days) so shopping list,
+    // recipe card, and dashboard all agree on per-day quantities.
+    if (recipe.portions === 1) hasDynamic = false;
 
     if (hasDynamic) {
         var slotMacros = slotMacrosFromTargets(et, slotFraction);
