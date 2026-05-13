@@ -4232,17 +4232,35 @@ function slotMacrosFromTargets(effectiveTargets, slotFraction) {
     };
 }
 
-// Per-ingredient macro lookup from ING_FLAT — returns scaled {kcal,p,c,f} or null
-function getIngMacros(item, scaledGrams) {
-    if (!item.ingId || item.unit === "whole") return null;
-    var ing = ING_FLAT.find(function(i) { return i.id === item.ingId; });
-    if (!ing) return null;
-    var ratio = scaledGrams / 100;
+// Per-ingredient macro lookup — returns scaled {kcal,p,c,f} or null
+// Handles both gram-based and whole-unit items.
+function getIngMacros(item, scaledQty) {
+    var md = INGREDIENT_MACROS[item.key];
+    var grams = 0;
+    if (item.unit === 'whole') {
+        // Need unitG to convert units → grams
+        if (!md || !md.unitG) return null;
+        grams = scaledQty * md.unitG;
+    } else if (item.unit === 'mL') {
+        grams = scaledQty;
+    } else {
+        grams = scaledQty;
+    }
+    if (grams <= 0) return null;
+    // Prefer ING_FLAT via ingId for most accurate per-100g values;
+    // fall back to INGREDIENT_MACROS values if no ingId set.
+    var ing = item.ingId ? ING_FLAT.find(function(i) { return i.id === item.ingId; }) : null;
+    var kcal100 = ing ? ing.kcal : (md ? md.kcal : null);
+    var p100    = ing ? ing.p    : (md ? md.p    : null);
+    var c100    = ing ? ing.c    : (md ? md.c    : null);
+    var f100    = ing ? ing.f    : (md ? md.f    : null);
+    if (kcal100 == null) return null;
+    var ratio = grams / 100;
     return {
-        kcal: Math.round(ing.kcal * ratio),
-        p:    +(ing.p * ratio).toFixed(1),
-        c:    +(ing.c * ratio).toFixed(1),
-        f:    +(ing.f * ratio).toFixed(1)
+        kcal: Math.round(kcal100 * ratio),
+        p:    +(p100 * ratio).toFixed(1),
+        c:    +(c100 * ratio).toFixed(1),
+        f:    +(f100 * ratio).toFixed(1)
     };
 }
 // Computes per-portion macros from batchItems × INGREDIENT_MACROS.
