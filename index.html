@@ -384,6 +384,11 @@ const ING_FLAT = [
   {id:290, name:"Alfredo sauce (jarred)", cat:"Sauces & Condiments", kcal:130, p:3, c:5, f:11},
   {id:291, name:"Gruyère cheese", cat:"Dairy & Eggs", kcal:413, p:30, c:0.4, f:32},
   {id:292, name:"Flank steak (raw)", cat:"Meat & Fish", kcal:165, p:21, c:0, f:8},
+  {id:293, name:"Everything Bagel (whole grain)", cat:"Grains & Carbs", kcal:263, p:9.8, c:49.0, f:3.0, unitG:105},
+  {id:294, name:"Pepper Jack Cheese", cat:"Dairy & Eggs", kcal:357, p:21.0, c:1.0, f:29.0},
+  {id:295, name:"Light Cheese Slices", cat:"Dairy & Eggs", kcal:250, p:24.0, c:2.5, f:16.0},
+  {id:296, name:"Red Chilli (fresh)", cat:"Vegetables", kcal:40, p:1.5, c:8.8, f:0.4},
+  {id:297, name:"Cannellini Beans (canned, drained)", cat:"Legumes & Beans", kcal:130, p:9.0, c:24.0, f:0.5},
   {id:53, name:"Feta Cheese", cat:"Dairy & Eggs", kcal:264, p:14, c:4.1, f:21},
   {id:193, name:"Fish Sauce", cat:"Condiments & Sauces", kcal:35, p:5, c:3.6, f:0},
   {id:168, name:"Flaxseeds / Linseeds", cat:"Fats & Nuts", kcal:534, p:18, c:29, f:42},
@@ -796,7 +801,7 @@ const RECIPES = [
         batchItems: [
             { key: "m1-beef", label: "95/5 lean ground beef (raw)", qty: 1190, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m1-tortillas", label: "Large wholemeal tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 88 , role: "carbs", share: 1},
-            { key: "m1-cheese", label: "Colby jack or light cheese (slices)", qty: 7, unit: "whole", cat: "Dairy" , ingId: 51 , role: "fat", share: 1},
+            { key: "m1-cheese", label: "Colby jack or light cheese (slices)", qty: 7, unit: "whole", cat: "Dairy" , ingId: 295 , role: "fat", share: 1},
             { key: "m1-lettuce", label: "Romaine lettuce (shredded)", qty: 218, unit: "g", cat: "Vegetables" , ingId: 112 , role: "veg", baseQty: 31.14},
             { key: "m1-onion", label: "White onion (diced)", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.29},
             { key: "m1-mayo", label: "Light mayonnaise", qty: 210, unit: "g", cat: "Sauces" , ingId: 274 , role: "fixed", baseQty: 30},
@@ -1825,7 +1830,7 @@ const RECIPES = [
             { key: "m49_mango", label: "Mangoes (ripe)", qty: 2, unit: "whole", cat: "Fruits" , ingId: 146 , role: "carbs", share: 1},
             { key: "m49_lime", label: "Limes", qty: 3, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.43},
             { key: "m49_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
-            { key: "m49_chilli", label: "Red chilli (fresh)", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 227 , role: "fixed", baseQty: 0.14},
+            { key: "m49_chilli", label: "Red chilli (fresh)", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 296 , role: "fixed", baseQty: 0.14},
             { key: "m49_cil", label: "Fresh cilantro", qty: 30, unit: "g", cat: "Aromatics" , ingId: 230 , role: "fixed", baseQty: 4.29},
         ],
         steps: [
@@ -2325,7 +2330,7 @@ const RECIPES = [
         portions: 5, locked: true,
         perPortion: {kcal:571,protein:37,carbs:80,fat:12.3},
         batchItems: [
-            { key: "v8_bean",  label: "White beans / cannellini (400g can)", qty: 2, unit: "whole", cat: "Carbs" , ingId: 99 , role: "carbs", share: 1},
+            { key: "v8_bean",  label: "White beans / cannellini (400g can)", qty: 2, unit: "whole", cat: "Carbs" , ingId: 297 , role: "carbs", share: 1},
             { key: "v8_pasta", label: "Protein pasta or wholegrain pasta (dry)", qty: 375, unit: "g", cat: "Carbs" , ingId: 67 , role: "carbs", share: 1},
             { key: "v8_spin",  label: "Baby spinach",                qty: 300, unit: "g",    cat: "Vegetables" , ingId: 121 , role: "veg", baseQty: 60},
             { key: "v8_cot",   label: "Cottage cheese (low fat)",    qty: 400, unit: "g",    cat: "Dairy"      , ingId: 43 , role: "protein", share: 0.612},
@@ -2471,8 +2476,8 @@ const RECIPES = [
         batchItems: [
             { key: "bf3-turkey", label: "Ground turkey sausage (raw)", qty: 340, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
             { key: "bf3-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
-            { key: "bf3-bagels", label: "Everything bagels", qty: 3, unit: "whole", cat: "Carbs" , ingId: 70 , role: "carbs", share: 1},
-            { key: "bf3-cheese", label: "Pepper jack cheese (slices)", qty: 3, unit: "whole", cat: "Dairy" , ingId: 51 , role: "fat", share: 1},
+            { key: "bf3-bagels", label: "Everything bagels", qty: 3, unit: "whole", cat: "Carbs" , ingId: 293 , role: "carbs", share: 1},
+            { key: "bf3-cheese", label: "Pepper jack cheese (slices)", qty: 3, unit: "whole", cat: "Dairy" , ingId: 294 , role: "fat", share: 1},
             { key: "bf3-butter", label: "Salted butter", qty: 11, unit: "g", cat: "Fats" , ingId: 162 , role: "fat", share: 1},
         ],
         steps: [
@@ -2690,8 +2695,8 @@ const RECIPES = [
         batchItems: [
             { key: "b3_turk", label: "Lean ground turkey (raw)", qty: 450, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
             { key: "b3_eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
-            { key: "b3_bag", label: "Whole grain everything bagels", qty: 4, unit: "whole", cat: "Carbs" , ingId: 71 , role: "carbs", share: 1},
-            { key: "b3_cheese", label: "Pepper jack cheese slices", qty: 4, unit: "whole", cat: "Dairy" , ingId: 51 , role: "fat", share: 1},
+            { key: "b3_bag", label: "Whole grain everything bagels", qty: 4, unit: "whole", cat: "Carbs" , ingId: 293 , role: "carbs", share: 1},
+            { key: "b3_cheese", label: "Pepper jack cheese slices", qty: 4, unit: "whole", cat: "Dairy" , ingId: 294 , role: "fat", share: 1},
             { key: "b3_but", label: "Salted butter", qty: 1, unit: "whole", cat: "Sauces" , ingId: 162 , role: "fixed", baseQty: 0.25},
         ],
         steps: [
