@@ -163,10 +163,10 @@ Any ❌ must be fixed before committing. ⚠️ warnings are worth reviewing.
 
 ## Reset to Baseline
 
-To restore the app to the verified baseline-v16 state:
+To restore the app to the verified baseline-v17 state:
 
 ```bash
 cd "/Users/dejanzerafa/Desktop/Cowork/MEAL PREP APP"
 git fetch --tags
-git reset --hard baseline-v16
+git reset --hard baseline-v17
 ```
