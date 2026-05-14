@@ -49,7 +49,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { email, first_name, last_name, marketing_opt_in = true, skip_email = false } = payload;
+  const { email, first_name, last_name, marketing_opt_in = true, skip_email = false, calc_used } = payload;
 
   if (email && !_checkRateLimit(email)) {
     return { statusCode: 429, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
@@ -92,6 +92,7 @@ exports.handler = async (event) => {
           last_name:  last_name  || null,
           marketing_opt_in,
           updated_at: new Date().toISOString(),
+          ...(calc_used === true ? { calc_used: true } : {}),
         }),
       }
     );
@@ -119,6 +120,7 @@ exports.handler = async (event) => {
           last_name:  last_name  || null,
           marketing_opt_in,
           updated_at: new Date().toISOString(),
+          ...(calc_used === true ? { calc_used: true } : {}),
         }),
       });
 

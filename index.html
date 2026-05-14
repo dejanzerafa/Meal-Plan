@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
   <meta name="theme-color" content="#E07B2A">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://formspree.io https://checkout.stripe.com https://soulgainz.netlify.app; worker-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://formspree.io https://checkout.stripe.com https://soulgainz.netlify.app/.netlify/functions/ https://fonts.googleapis.com; worker-src 'self';">
   <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png">
@@ -88,6 +88,15 @@
           .catch(e => console.log('SW:', e.message));
       });
     }
+
+    // ── Android install prompt (beforeinstallprompt) ─────────────────────────
+    window._deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window._deferredInstallPrompt = e;
+      // Dispatch a custom event so React can react
+      window.dispatchEvent(new CustomEvent('installpromptready'));
+    });
   </script>
 </head>
 <body>
@@ -4577,7 +4586,7 @@ class AppErrorBoundary extends React.Component {
                 React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#1a1612' } }, 'Something went wrong'),
                 React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, e ? e.message : 'An unexpected error occurred'),
                 React.createElement('button', { onClick: function(){ window.location.reload(); }, style: { background:'#c0602a', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:14, fontWeight:700, cursor:'pointer', marginBottom:10 } }, 'Reload App'),
-                React.createElement('button', { onClick: function(){ localStorage.clear(); window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
+                React.createElement('button', { onClick: function(){ try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {} window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
             );
         }
         return this.props.children;
@@ -4588,7 +4597,9 @@ class AppErrorBoundary extends React.Component {
 const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot, profileScale, effectiveTargets, lunchScale, dinnerScale, bfScale, preScale, desScale }) {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState("ingredients");
-    const [stepsDone, setStepsDone] = useState({});
+    const [stepsDone, setStepsDone] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('mp_steps_' + r.id) || '{}'); } catch(_) { return {}; }
+    });
     const [note, setNote] = useState(() => localStorage.getItem(`mp_note_${r.id}`) || "");
     const isL = r.id === activeLunch;
     const isD = r.id === activeDinner;
@@ -4634,7 +4645,11 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
     // This matches what the dashboard uses via computeMeals → same values everywhere.
     const displayMacros = computePerPortion(r, ps, p);
     const saveNote = v => { setNote(v); localStorage.setItem(`mp_note_${r.id}`, v); };
-    const toggleStep = i => setStepsDone(s => (Object.assign(Object.assign({}, s), { [i]: !s[i] })));
+    const toggleStep = i => setStepsDone(s => {
+        const next = Object.assign(Object.assign({}, s), { [i]: !s[i] });
+        try { localStorage.setItem('mp_steps_' + r.id, JSON.stringify(next)); } catch(_) {}
+        return next;
+    });
     const doneCount = Object.values(stepsDone).filter(Boolean).length;
     const allergenEl = (function() {
         const allergens = detectAllergens(r);
@@ -4698,7 +4713,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                     React.createElement("button", { onClick: () => setPreWorkout && setPreWorkout(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none", cursor: "pointer", background: isPRE ? "#f97316" : C.card2, color: isPRE ? "#fff" : C.sub, letterSpacing: "0.03em" } }, isPRE ? "\u26A1 Pre-Workout ✓" : "\u26A1 Set Pre-Workout")),
                 r.category === "dessert" && (
                     React.createElement("button", { onClick: () => setDessert(r.id), style: { flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: 8, border: "none", cursor: "pointer", background: isDS ? "#ec4899" : C.card2, color: isDS ? "#fff" : C.sub, letterSpacing: "0.03em" } }, isDS ? "\uD83C\uDF70 Dessert ✓" : "\uD83C\uDF70 Set Dessert")),
-                React.createElement("button", { onClick: () => setOpen(o => !o), style: { padding: "7px 10px", fontSize: 12, borderRadius: 8, border: `1px solid ${C.dim}`,
+                React.createElement("button", { onClick: () => setOpen(o => !o), 'aria-expanded': open, 'aria-label': open ? 'Collapse recipe details' : 'Expand recipe details', style: { padding: "7px 10px", fontSize: 12, borderRadius: 8, border: `1px solid ${C.dim}`,
                         cursor: "pointer", background: "none", color: C.sub } }, open ? "▲" : "▼"))),
         open && (React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, padding: "12px 14px" } },
             r.note && React.createElement("div", { style: { fontSize: 11, color: C.sub, background: C.card2, borderRadius: 6,
@@ -4842,6 +4857,14 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${(bfr||{}).id||'_'}_${(prer||{}).id||'_'}_${(desr||{}).id||'_'}_${portions||7}`;
     const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
+    React.useEffect(() => {
+        try {
+            const shopKeys = Object.keys(localStorage).filter(k => k.startsWith('mp_shop_'));
+            if (shopKeys.length > 10) {
+                shopKeys.slice(0, shopKeys.length - 10).forEach(k => localStorage.removeItem(k));
+            }
+        } catch(_) {}
+    }, []);
     const p  = portions || 7;
     const gl = profileScale || 1;
     const et = effectiveTargets || {};
@@ -5079,8 +5102,10 @@ async function startCheckout(tier, recipeId) {
         if (!res.ok)
             throw new Error("Checkout creation failed");
         const { url } = await res.json();
-        if (url)
+        if (url && url.startsWith('https://checkout.stripe.com/'))
             window.location.href = url;
+        else if (url)
+            throw new Error('Unexpected checkout URL — possible security issue');
         else
             throw new Error("No checkout URL returned");
     }
@@ -5482,6 +5507,7 @@ function OnboardingModal({ onClose }) {
             }, isLast ? "Let's go →" : "Next →")));
 }
 function UpgradeModal({ onClose }) {
+    const [showSingleHint, setShowSingleHint] = React.useState(false);
     return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(26,22,18,0.88)", zIndex: 300,
             display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0",
             overflow: "auto" } },
@@ -5532,11 +5558,16 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
                     marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 18 } },
-                React.createElement("div", { onClick: () => { alert("Tap any locked recipe to purchase it for $1.99."); onClose(); }, style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
+                React.createElement("div", { onClick: () => setShowSingleHint(s => !s), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one")),
+                showSingleHint && React.createElement("div", { style: {
+                    background: "rgba(184,74,31,0.08)", border: "1px solid rgba(184,74,31,0.28)",
+                    borderRadius: 10, padding: "12px 14px", marginTop: 8, fontSize: 13,
+                    color: C.text, lineHeight: 1.6
+                } }, "👉 Tap any locked recipe to purchase it individually for $1.99. Look for the 🔒 padlock icon on recipe cards."),
                 React.createElement("div", { onClick: () => startCheckout("calculator"), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$5.99"),
@@ -5559,7 +5590,7 @@ function DevModal({ onClose, onUnlock }) {
     };
     const resetAll = () => {
         if (!window.confirm("Reset to first-time user? All data will be cleared.")) return;
-        localStorage.clear();
+        try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {}
         window.location.reload();
     };
     const resetOnboarding = () => {
@@ -5795,6 +5826,8 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
             dob: initialProfile.dob || "",
             gender: initialProfile.gender || "male",
             height: initialProfile.height || "",
+            ftFt: initialProfile.ftFt || "",
+            ftIn: initialProfile.ftIn || "",
             weight: initialProfile.weight || "",
             heightUnit: initialProfile.heightUnit || "cm",
             weightUnit: initialProfile.weightUnit || "kg",
@@ -5805,7 +5838,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
             loseRate: initialProfile.loseRate || "sustainable",
         } : {
             firstName, lastName, dob: "", gender: "male",
-            height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+            height: "", ftFt: "", ftIn: "", weight: "", heightUnit: "cm", weightUnit: "kg",
             job: "desk", steps: "6-10k", training: "3-4", goal: "lose",
             loseRate: "sustainable",
         };
@@ -5830,10 +5863,16 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         return form.weightUnit === "lbs" ? w / 2.205 : w;
     };
     const getHeightCm = () => {
+        if (form.heightUnit === "ft") {
+            const ft = parseInt(form.ftFt || 0);
+            const inches = parseInt(form.ftIn || 0);
+            const totalIn = ft * 12 + inches;
+            return totalIn > 0 ? totalIn * 2.54 : 0;
+        }
         const h = parseFloat(form.height);
         if (!h || isNaN(h))
             return 0;
-        return form.heightUnit === "ft" ? h * 30.48 : h;
+        return h;
     };
     const computeAndSetResult = () => {
         const w = getWeightKg(), h = getHeightCm();
@@ -5864,7 +5903,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     const saveProfile = () => {
         const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString(), _schemaVersion: 1 });
         localStorage.setItem("mp_profile", JSON.stringify(profile));
-        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
+        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
     };
     const canNext = () => {
@@ -5890,8 +5929,13 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
                         React.createElement(CalcSegBtn, { selected: form.heightUnit === "cm", onClick: () => set("heightUnit", "cm"), label: "cm" }),
                         React.createElement(CalcSegBtn, { selected: form.heightUnit === "ft", onClick: () => set("heightUnit", "ft"), label: "ft" })),
-                    React.createElement(CalcTextInput, { value: form.height, onChange: e => set("height", e.target.value), placeholder: form.heightUnit === "cm" ? "e.g. 183" : "e.g. 6.0", type: "number" }),
-                    React.createElement("div", { style: { fontSize: 10, color: "#3d4d66", marginTop: 4 } }, form.heightUnit === "ft" ? "Enter as decimal: 6ft 1in = 6.08" : "")),
+                    form.heightUnit === "cm"
+                        ? React.createElement(CalcTextInput, { value: form.height, onChange: e => set("height", e.target.value), placeholder: "e.g. 183", type: "number" })
+                        : React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
+                            React.createElement("input", { value: form.ftFt, onChange: e => set("ftFt", e.target.value), placeholder: "6", type: "number", min: "0", step: "1", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
+                            React.createElement("span", { style: { color: "inherit", fontSize: 13, opacity: 0.7 } }, "ft"),
+                            React.createElement("input", { value: form.ftIn, onChange: e => set("ftIn", e.target.value), placeholder: "0", type: "number", min: "0", max: "11", step: "1", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
+                            React.createElement("span", { style: { color: "inherit", fontSize: 13, opacity: 0.7 } }, "in"))),
                 React.createElement(CalcInputRow, { label: "Current Weight" },
                     React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
                         React.createElement(CalcSegBtn, { selected: form.weightUnit === "kg", onClick: () => set("weightUnit", "kg"), label: "kg" }),
@@ -6072,7 +6116,7 @@ function ManualMacroInput({ C, onSave }) {
         const macros = { kcal, protein, carbs, fat };
         const profile = {
             firstName: "", lastName: "", dob: "", gender: "male",
-            height: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+            height: "", ftFt: "", ftIn: "", weight: "", heightUnit: "cm", weightUnit: "kg",
             job: "manual", steps: "manual", training: "manual", goal: "maintain",
             result: { macros, bmr: 0, tdee: kcal, bmi: 0, actLabel: "Manual", age: 0, w: 0, h: 0 },
             savedAt: new Date().toISOString(),
@@ -6080,7 +6124,7 @@ function ManualMacroInput({ C, onSave }) {
             _schemaVersion: 1,
         };
         localStorage.setItem("mp_profile", JSON.stringify(profile));
-        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
+        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
     };
     return React.createElement("div", null,
@@ -6235,28 +6279,18 @@ function ReminderCard({ C, userEmail }) {
         try {
             var shopISO = localStorage.getItem("mp_next_shop");
             var prepISO = localStorage.getItem("mp_next_prep");
-            if (navigator.serviceWorker) {
-                navigator.serviceWorker.ready.then(function(reg) {
-                    var now = Date.now();
-                    if (shopISO) {
-                        var sd = new Date(shopISO);
-                        var parts = shopTime.split(":");
-                        sd.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
-                        var ms = sd.getTime() - now;
-                        if (ms > 0 && ms < 7 * 86400000) {
-                            setTimeout(function(){ reg.showNotification("\uD83D\uDED2 Shop day", { body: "Grocery run today \u2014 your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day", renotify: true }); }, ms);
-                        }
-                    }
-                    if (prepISO) {
-                        var pd = new Date(prepISO);
-                        var pparts = prepTime.split(":");
-                        pd.setHours(parseInt(pparts[0]), parseInt(pparts[1]), 0, 0);
-                        var pms = pd.getTime() - now;
-                        if (pms > 0 && pms < 7 * 86400000) {
-                            setTimeout(function(){ reg.showNotification("\uD83D\uDC68\u200D\uD83C\uDF73 Prep day!", { body: "Your meals run out today \u2014 time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day", renotify: true }); }, pms);
-                        }
-                    }
-                });
+            // Update stored timestamps with new user-chosen times
+            if (shopISO) {
+                var sd = new Date(shopISO);
+                var parts = shopTime.split(":");
+                sd.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
+                try { localStorage.setItem("mp_notif_shop", String(sd.getTime())); } catch(e2) {}
+            }
+            if (prepISO) {
+                var pd = new Date(prepISO);
+                var pparts = prepTime.split(":");
+                pd.setHours(parseInt(pparts[0]), parseInt(pparts[1]), 0, 0);
+                try { localStorage.setItem("mp_notif_prep", String(pd.getTime())); } catch(e2) {}
             }
         } catch(e) {}
         setSaved(true);
@@ -6529,16 +6563,9 @@ function CalendarTab({ lunch, dinner, userEmail }) {
         nextPrep.setHours(parseInt(prepTimeParts[0]), parseInt(prepTimeParts[1]), 0, 0);
         try { localStorage.setItem("mp_next_shop", shopDay.toISOString()); } catch(e2) {}
         try { localStorage.setItem("mp_next_prep", nextPrep.toISOString()); } catch(e2) {}
-        var shopMs = shopDay.getTime() - Date.now();
-        var prepMs = nextPrep.getTime() - Date.now();
-        navigator.serviceWorker.ready.then(function(reg) {
-            if (shopMs > 0 && shopMs < 7 * 86400000) {
-                setTimeout(function(){ reg.showNotification("\uD83D\uDED2 Shop day", { body: "Grocery run today \u2014 your next prep day is tomorrow. Open your shopping list.", icon: "/icon-192.png", tag: "shop-day", renotify: true }); }, shopMs);
-            }
-            if (prepMs > 0 && prepMs < 7 * 86400000) {
-                setTimeout(function(){ reg.showNotification("\uD83D\uDC68\u200D\uD83C\uDF73 Prep day!", { body: "Your meals run out today \u2014 time to cook a new batch. Open your plan.", icon: "/icon-192.png", tag: "prep-day", renotify: true }); }, prepMs);
-            }
-        });
+        // Store scheduled times \u2014 checked on mount/focus via checkDueNotifications
+        try { localStorage.setItem("mp_notif_shop", String(shopDay.getTime())); } catch(e2) {}
+        try { localStorage.setItem("mp_notif_prep", String(nextPrep.getTime())); } catch(e2) {}
     }
     function removeBatch(startDate){
         var newLogs=batchLogs.filter(function(l){return l.date!==startDate;});
@@ -7162,6 +7189,10 @@ function App() {
     });
 
     useEffect(function() {
+        // Dismiss loader early for returning users on cached loads
+        setTimeout(function() {
+            if (typeof dismissLoader === 'function') dismissLoader();
+        }, 600);
         try {
             var shopDate = localStorage.getItem("mp_next_shop");
             var prepDate = localStorage.getItem("mp_next_prep");
@@ -7169,6 +7200,16 @@ function App() {
             if (shopDate && new Date(shopDate) <= now) { setShopAlert(true); localStorage.removeItem("mp_next_shop"); }
             if (prepDate && new Date(prepDate) <= now) { setPrepAlert(true); localStorage.removeItem("mp_next_prep"); }
         } catch(e) {}
+    }, []);
+    React.useEffect(() => {
+        if (navigator.storage && navigator.storage.estimate) {
+            navigator.storage.estimate().then(function(est) {
+                if (est.quota && est.usage / est.quota > 0.8) {
+                    console.warn('SoulGainz: localStorage nearing quota', est);
+                    // surface a one-time warning via existing toast/notification system if available
+                }
+            }).catch(function() {});
+        }
     }, []);
     const [tab, setTab] = useState(() => {
         const openTab = window._sg_open_tab;
@@ -7200,6 +7241,59 @@ function App() {
     // ── PWA install prompt (iOS only) ───────────────────────────────────────────
     const [showPWA, setShowPWA] = useState(() => IS_IOS && !IS_STANDALONE && !localStorage.getItem("mp_pwa_ok"));
     const dismissPWA = () => { localStorage.setItem("mp_pwa_ok", "1"); setShowPWA(false); };
+    // ── Android install prompt ─────────────────────────────────────────────────
+    const [showAndroidInstall, setShowAndroidInstall] = React.useState(false);
+    React.useEffect(() => {
+        if (IS_IOS || IS_STANDALONE) return;
+        if (window._deferredInstallPrompt) { setShowAndroidInstall(true); return; }
+        const handler = () => setShowAndroidInstall(true);
+        window.addEventListener('installpromptready', handler);
+        return () => window.removeEventListener('installpromptready', handler);
+    }, []);
+    // ── SW update banner ───────────────────────────────────────────────────────
+    const [swUpdateReady, setSwUpdateReady] = React.useState(false);
+    React.useEffect(() => {
+        if (!('serviceWorker' in navigator)) return;
+        navigator.serviceWorker.ready.then(reg => {
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                if (!newWorker) return;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        setSwUpdateReady(true);
+                    }
+                });
+            });
+        }).catch(() => {});
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            // Reloaded by SW update — don't show banner
+        });
+    }, []);
+    // ── Check due scheduled notifications on mount + focus ────────────────────
+    const checkDueNotifications = React.useCallback(() => {
+        const now = Date.now();
+        ['mp_notif_shop', 'mp_notif_prep'].forEach(key => {
+            try {
+                const ts = parseInt(localStorage.getItem(key) || '0');
+                if (ts && ts <= now && now - ts < 12 * 3600 * 1000) {
+                    const label = key === 'mp_notif_shop' ? 'Time to write your grocery list! 🛒' : 'Meal prep time! 🍗';
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({
+                            type: 'SHOW_NOTIFICATION',
+                            title: 'SoulGainz',
+                            body: label,
+                        });
+                    }
+                    localStorage.removeItem(key);
+                }
+            } catch(_) {}
+        });
+    }, []);
+    React.useEffect(() => {
+        checkDueNotifications();
+        window.addEventListener('focus', checkDueNotifications);
+        return () => window.removeEventListener('focus', checkDueNotifications);
+    }, [checkDueNotifications]);
     // ── Profile + effective targets ─────────────────────────────────────────────────
     const [profile, setProfile] = useState(() => {
         try {
@@ -7286,8 +7380,18 @@ function App() {
         return false;
     };
     // canUseCalculator — free ONCE per email address, paid to recalculate
+    const [serverCalcUsed, setServerCalcUsed] = React.useState(false);
+    React.useEffect(function() {
+        var _email = (localStorage.getItem("mp_acc_email") || "").trim();
+        if (!_email) return;
+        fetch("/.netlify/functions/check-user?email=" + encodeURIComponent(_email))
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(data) { if (data && data.calc_used === true) setServerCalcUsed(true); })
+            .catch(function() {});
+    }, []);
     const canUseCalculator = () => {
         if (unlocks.calculator || unlocks.allRecipes) return true;
+        if (serverCalcUsed) return false;
         try {
             const profileExists = !!localStorage.getItem("mp_profile");
             if (profileExists) return false; // already used free calc, needs payment
@@ -7432,7 +7536,7 @@ function App() {
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
                         alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "👤"),
-                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
+                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0,
                             color: active ? C.accent : C.muted } }, "ME"));
             })(),
             (() => {
@@ -7443,7 +7547,7 @@ function App() {
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
                         alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
-                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
+                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0,
                         color: active ? C.accent : C.muted } }, "METHOD"));
             })(),
             getTabMeta().map(tm => {
@@ -7454,7 +7558,7 @@ function App() {
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
                         alignItems: "center", gap: 4, transition: "all 0.15s" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, tm.icon),
-                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
+                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0,
                             color: active ? C.accent : C.muted } }, tm.label.toUpperCase())));
             }),
             React.createElement("div", { style: { flex: 1 } }),
@@ -7464,7 +7568,7 @@ function App() {
                     alignItems: "center", gap: 4, transition: "all 0.15s",
                     WebkitTapHighlightColor: "transparent" } },
                 React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "💬"),
-                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", color: C.muted } }, "FEEDBACK")),
+                React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0, color: C.muted } }, "FEEDBACK")),
             (() => {
                 const active = tab === "settings";
                 return (React.createElement("button", { onClick: () => setTab("settings"), style: { width: 52, paddingTop: 10, paddingBottom: 10,
@@ -7473,7 +7577,7 @@ function App() {
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
                         alignItems: "center", gap: 4, transition: "all 0.15s" } },
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\u2699\uFE0F"),
-                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.05em",
+                    React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0,
                             color: active ? C.accent : C.muted } }, "SETTINGS")));
             })()),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
@@ -7499,7 +7603,7 @@ function App() {
                                 background: recipeCat === cat ? C.accentDim : C.card2,
                                 color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
                     React.createElement("div", { style: { position: "relative", marginBottom: 8 } },
-                        React.createElement("input", { type: "text", value: recipeQuery, onChange: e => setRecipeQuery(e.target.value), placeholder: "\ud83d\udd0d Search recipes...", autoComplete: "off", style: {
+                        React.createElement("input", { type: "text", value: recipeQuery, onChange: e => setRecipeQuery(e.target.value.slice(0, 100)), placeholder: "\ud83d\udd0d Search recipes...", autoComplete: "off", style: {
                                 width: "100%", background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 10, color: C.text, fontSize: 13, padding: "10px 36px 10px 14px",
                                 fontFamily: "inherit", outline: "none", WebkitAppearance: "none", boxSizing: "border-box"
@@ -7634,7 +7738,7 @@ function App() {
                                 background: recipeCat === cat ? C.accentDim : C.card2,
                                 color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
                         React.createElement("div", { style: { position: "relative", marginBottom: 8 } },
-                            React.createElement("input", { type: "text", value: recipeQuery, onChange: e => setRecipeQuery(e.target.value), placeholder: "\ud83d\udd0d Search recipes by name or ingredient...", autoComplete: "off", style: {
+                            React.createElement("input", { type: "text", value: recipeQuery, onChange: e => setRecipeQuery(e.target.value.slice(0, 100)), placeholder: "\ud83d\udd0d Search recipes by name or ingredient...", autoComplete: "off", style: {
                                     width: "100%", background: C.card2, border: `1px solid ${C.dim}`,
                                     borderRadius: 10, color: C.text, fontSize: 13, padding: "10px 36px 10px 14px",
                                     fontFamily: "inherit", outline: "none", WebkitAppearance: "none", boxSizing: "border-box"
@@ -7672,7 +7776,7 @@ function App() {
                     filteredRecipes.length === 0 && (React.createElement("div", { style: { textAlign: "center", padding: "40px 20px", color: C.sub } },
                         React.createElement("div", { style: { fontSize: 28, marginBottom: 10 } }, "\uD83D\uDD0D"),
                         React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, "No recipes found"),
-                        React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
+                        React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No recipes found for "${recipeQuery}"` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
                     filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
@@ -7849,7 +7953,38 @@ function App() {
                 borderRadius: 20, padding: "5px 10px", fontSize: 9, fontWeight: 700,
                 color: "#000", cursor: "pointer", zIndex: 400, letterSpacing: "0.08em",
                 boxShadow: "0 2px 8px rgba(34,197,94,0.4)" } }, "\uD83D\uDD13 DEV \u00B7 TAP TO LOCK")),
-        showPWA && (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+        swUpdateReady && React.createElement('div', {
+            style: {
+                position: 'fixed', bottom: 80, left: '50%', transform: 'translateX(-50%)',
+                background: '#1a1612', color: '#f3ece0', padding: '12px 20px',
+                borderRadius: 12, fontSize: 13, fontWeight: 600, zIndex: 9996,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap',
+            },
+            onClick: () => {
+                navigator.serviceWorker.ready.then(reg => {
+                    if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                }).catch(() => window.location.reload());
+            }
+        }, '\uD83D\uDD04 Update available \u2014 tap to refresh'),
+        showAndroidInstall && !showUpgrade && !showDevModal && !showFeedback && React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+                width: "100%", background: C.card2, borderTop: `1px solid ${C.accent}`,
+                padding: "12px 16px", zIndex: 200, display: "flex", alignItems: "center", gap: 10 } },
+            React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDCF2"),
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Install SoulGainz"),
+                React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 1 } }, "Add to your home screen for the best experience")),
+            React.createElement("button", { onClick: () => {
+                    if (window._deferredInstallPrompt) {
+                        window._deferredInstallPrompt.prompt();
+                        window._deferredInstallPrompt.userChoice.then(() => { window._deferredInstallPrompt = null; setShowAndroidInstall(false); }).catch(() => setShowAndroidInstall(false));
+                    } else { setShowAndroidInstall(false); }
+                }, style: { background: C.accent, border: "none", color: "#fff", borderRadius: 8,
+                    padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer" } }, "Install"),
+            React.createElement("button", { onClick: () => setShowAndroidInstall(false), style: { background: "none", border: "none",
+                    color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")),
+        showPWA && !showUpgrade && !showDevModal && !showFeedback && (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
                 width: "100%", background: C.card2, borderTop: `1px solid ${C.accent}`,
                 padding: "12px 16px", zIndex: 200, display: "flex", alignItems: "center", gap: 10 } },
             React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDCF2"),
@@ -7895,7 +8030,8 @@ window.onerror = function(msg, src, line, col, err) {
     return false;
 };
 window.onunhandledrejection = function(e) {
-    showOnScreenError('Unhandled promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+    const msg = (e.reason && typeof e.reason.message === 'string') ? e.reason.message : 'Promise rejected';
+    showOnScreenError('Unhandled promise: ' + msg);
 };
 
 // Mount React — wrapped so a crash still dismisses the loader

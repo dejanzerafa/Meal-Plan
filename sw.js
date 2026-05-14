@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v117
+// SoulGainz — Service Worker v118
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v144';
+const CACHE_NAME = 'meal-plan-v145';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -21,6 +21,8 @@ const PRECACHE = [
   '/icon-32.png',
   'https://unpkg.com/react@18.2.0/umd/react.production.min.js',
   'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js',
+  'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Instrument+Sans:wght@400..700&display=swap',
+  '/offline.html',
 ];
 
 // ── Install: precache app shell ──────────────────────────────────────────────
@@ -30,7 +32,7 @@ self.addEventListener('install', event => {
       return Promise.allSettled(PRECACHE.map(url => cache.add(url)));
     })
   );
-  self.skipWaiting();
+  // skipWaiting is now controlled via message (type: SKIP_WAITING) for update banner
 });
 
 // ── Activate: remove old caches ──────────────────────────────────────────────
@@ -43,21 +45,36 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// ── Fetch: network-first for app shell, pass-through for everything else ─────
+// ── Fetch: cache-first for CDN/assets, network-first for app shell ───────────
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
   const isApp = url.hostname === self.location.hostname;
   const isCachedCDN = url.href.startsWith('https://unpkg.com/react@18.2.0/');
-  // Only intercept same-origin files and our pinned CDN scripts
   if (!isApp && !isCachedCDN) return;
 
-  // Icons and manifest — cache-first (already forced fresh via PRECACHE versioning)
-  const isAsset = /\.(png|svg|json|webp|ico)$/.test(url.pathname);
+  const isAsset = /\.(png|svg|json|webp|ico|woff2?|ttf)$/.test(url.pathname);
+  const isNavigation = event.request.mode === 'navigate';
 
-  // App resources: network-first, fall back to cache
-  // Icons/assets fall back to cache only (not index.html)
+  // Cache-first: CDN scripts + static assets
+  if (isCachedCDN || isAsset) {
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(res => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return res;
+        }).catch(() => new Response('', { status: 404 }));
+      })
+    );
+    return;
+  }
+
+  // Network-first: app shell + navigation
   event.respondWith(
     fetch(event.request)
       .then(res => {
@@ -69,10 +86,31 @@ self.addEventListener('fetch', event => {
       })
       .catch(() =>
         caches.match(event.request).then(cached =>
-          cached || (isAsset ? new Response('', { status: 404 }) : caches.match('/index.html'))
+          cached || (isNavigation ? caches.match('/offline.html') : caches.match('/index.html'))
         )
       )
   );
+});
+
+// ── Message handler ──────────────────────────────────────────────────────────
+self.addEventListener('message', event => {
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+    return;
+  }
+  if (event.data.type === 'SHOW_NOTIFICATION') {
+    const title = event.data.title || 'SoulGainz';
+    const options = {
+      body: event.data.body || 'Time to meal prep! 🍗',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'soulgainz-reminder',
+      renotify: true,
+      data: { url: '/' },
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+  }
 });
 
 // ── Push notifications ───────────────────────────────────────────────────────
