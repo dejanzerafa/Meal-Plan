@@ -5093,6 +5093,7 @@ const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2N
 const STRIPE_PRICES = {
     lifetime: "price_1TU80BGjmPEqu9q9dV53ktaZ",
     quarterly: "price_1TU81SGjmPEqu9q9UVg827sE",
+    annual: "price_annual_placeholder",
     monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
     calculator: "price_1TU824GjmPEqu9q90xWZDozk",
     single: "price_1TU82XGjmPEqu9q9EhfIpkFW",
@@ -5141,33 +5142,26 @@ async function _checkDevCode(input) {
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === DEV_HASH;
 }
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
-    // Extract the leading emoji from the recipe name to hint at protein/type
-    const hintEmoji = (r.name || "").match(/^\p{Emoji}/u)?.[0] || "\uD83C\uDF7D\uFE0F";
-    return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
-            overflow: "hidden", marginBottom: 10, position: "relative", minHeight: 140 } },
-        React.createElement("div", { style: { padding: "12px 14px", filter: "blur(6px)", opacity: 0.5, pointerEvents: "none",
-                userSelect: "none" } },
-            React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
-                React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
-                        borderRadius: 4, padding: "2px 7px" } }, "████"),
-                React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`,
-                        borderRadius: 4, padding: "2px 7px" } }, "██g")),
-            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, "████████████"),
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, "███████ ████████"),
-            React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } }, ["P", "C", "F"].map(l => (React.createElement("span", { key: l, style: { fontSize: 11, background: C.card2, border: `1px solid ${C.dim}`,
-                    borderRadius: 6, padding: "3px 14px", color: C.muted } }, "\u2014"))))),
-        React.createElement("div", { style: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center", background: "rgba(26,22,18,0.78)",
-                borderRadius: 14, gap: 6, padding: "12px" } },
-            React.createElement("span", { style: { fontSize: 32, lineHeight: 1 } }, hintEmoji),
-            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#f3ece0", marginBottom: 2 } }, "Locked Recipe"),
-            React.createElement("div", { style: { fontSize: 10, color: "rgba(243,236,224,0.6)", marginBottom: 6 } }, "Unlock to reveal name & method"),
-            React.createElement("div", { style: { display: "flex", gap: 6, width: "100%", maxWidth: 280 } },
-                React.createElement("button", { onClick: () => onUnlockSingle && onUnlockSingle(r.id, r.name), style: { flex: 1, background: "rgba(243,236,224,0.15)", border: "1px solid rgba(243,236,224,0.3)",
-                        borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 700,
-                        color: "#f3ece0", cursor: "pointer" } }, "\uD83D\uDCB3 $1.99"),
-                React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8,
-                        padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")))));
+    return React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
+            overflow: "hidden", marginBottom: 10, position: "relative" } },
+        // Visible header — name, badge, carb label
+        React.createElement("div", { style: { padding: "12px 14px 10px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 6 } },
+                    r.badge && React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 4, padding: "2px 7px" } }, r.badge),
+                    r.carb && React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`, borderRadius: 4, padding: "2px 7px" } }, r.carb)),
+                React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
+                r.subtitle && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, r.subtitle)),
+            React.createElement("div", { style: { flexShrink: 0, marginLeft: 8, background: "rgba(184,74,31,0.1)", border: "1px solid rgba(184,74,31,0.25)", borderRadius: 8, padding: "4px 8px", fontSize: 16 } }, "\uD83D\uDD12")),
+        // Blurred macro strip teaser
+        React.createElement("div", { style: { display: "flex", gap: 8, padding: "0 14px 10px", filter: "blur(4px)", opacity: 0.6, userSelect: "none", pointerEvents: "none" } },
+            ["P 52g", "C 58g", "F 14g", "620 kcal"].map(function(l) {
+                return React.createElement("span", { key: l, style: { fontSize: 11, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 6, padding: "3px 10px", color: C.text } }, l);
+            })),
+        // Unlock CTA bar
+        React.createElement("div", { style: { display: "flex", gap: 6, padding: "10px 12px 12px", borderTop: `1px solid ${C.dim}` } },
+            React.createElement("button", { onClick: () => onUnlockSingle && onUnlockSingle(r.id, r.name), style: { flex: 1, background: "none", border: `1px solid ${C.dim}`, borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83D\uDCB3 $1.99 this recipe"),
+            React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Unlock All \u2192")));
 }
 // ─── SOULFOOD SEASONAL BUNDLE POPUP ───────────────────────────────────────────
 function SeasonalPopup({ show, onClose, onBuy }) {
@@ -5538,7 +5532,7 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { style: { textAlign: "center", fontSize: 24, marginBottom: 8, opacity: 0.85 } }, "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F\uD83E\uDD90\uD83E\uDD66"),
             React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, "Choose your access"),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, textAlign: "center", lineHeight: 1.5, marginBottom: 20,
-                    fontStyle: "italic" } }, "Real food. Verified macros. High protein. Cook once, eat all week."),
+                    fontStyle: "italic" } }, "94 high-protein recipes. Verified macros. Cook once, eat all week."),
             React.createElement("div", { onClick: () => startCheckout("lifetime"), style: { background: C.accentDim, border: `2px solid ${C.accent}`, borderRadius: 14,
                     padding: "16px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, left: 14, background: C.accent,
@@ -5565,6 +5559,19 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.green, lineHeight: 1 } }, "$39.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/3 months")))),
+            React.createElement("div", { onClick: () => startCheckout("annual"), style: { background: C.card, border: `1.5px solid ${C.blueBorder}`, borderRadius: 14,
+                    padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
+                React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.blue,
+                        borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
+                        letterSpacing: "0.05em" } }, "SAVE 50%"),
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", { style: { fontSize: 10, color: C.blue, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "ANNUAL · 12 MONTHS"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + new drops"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$7.50/mo effective · Best value subscription")),
+                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
+                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.blue, lineHeight: 1 } }, "$89.99"),
+                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/year")))),
             React.createElement("div", { onClick: () => startCheckout("monthly"), style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                     padding: "14px 16px", marginBottom: 18, cursor: "pointer" } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
@@ -5596,7 +5603,7 @@ function UpgradeModal({ onClose }) {
             React.createElement("button", { onClick: () => startCheckout("lifetime"), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                     padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
                     marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $149.99 \u2192"),
-            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "Secure payments via Stripe · Cancel anytime" : "🔒 Payments launching soon — beta in progress"),
+            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "🔒 Secure via Stripe · Cancel anytime · 30-day money-back guarantee" : "🔒 Payments launching soon — beta in progress"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
                     fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
 }
@@ -7363,6 +7370,7 @@ function App() {
     // Derived: is anything unlocked at all? (used for nav/upsell visibility)
     const unlocked = unlocks.allRecipes || (unlocks.recipes && unlocks.recipes.length > 0) || unlocks.calculator;
     const [showUpgrade, setShowUpgrade] = useState(false);
+    const [showWelcomeUnlock, setShowWelcomeUnlock] = React.useState(() => { try { return localStorage.getItem('mp_new_unlock') === '1'; } catch(_) { return false; } });
     React.useEffect(() => {
         if (showUpgrade) track('upgrade_modal_opened', { source: 'modal' });
     }, [showUpgrade]);
@@ -7974,6 +7982,14 @@ function App() {
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
+        showWelcomeUnlock && React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(26,22,18,0.88)", zIndex: 800, display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+            React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "28px 22px 40px", maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)" } },
+                React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
+                    React.createElement("div", { style: { fontSize: 48, marginBottom: 12 } }, "🎉"),
+                    React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, marginBottom: 8 } }, "You're in!"),
+                    React.createElement("div", { style: { fontSize: 14, color: C.sub, lineHeight: 1.7, maxWidth: 300, margin: "0 auto" } }, "Your recipes are unlocked. Head to the Recipes tab and start building your first meal plan.")),
+                React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } },
+                    React.createElement("button", { onClick: () => { try { localStorage.removeItem('mp_new_unlock'); } catch(_) {} setShowWelcomeUnlock(false); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer" } }, "Go to Recipes →")))),
         React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); startCheckout("seasonal"); } }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onUnlock: devUnlock }),
         (unlocks.tier === "dev") && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
