@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v118
+// SoulGainz — Service Worker v119
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v145';
+const CACHE_NAME = 'meal-plan-v146';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -32,7 +32,7 @@ self.addEventListener('install', event => {
       return Promise.allSettled(PRECACHE.map(url => cache.add(url)));
     })
   );
-  // skipWaiting is now controlled via message (type: SKIP_WAITING) for update banner
+  self.skipWaiting(); // activate immediately — message handler also supports controlled update banner
 });
 
 // ── Activate: remove old caches ──────────────────────────────────────────────

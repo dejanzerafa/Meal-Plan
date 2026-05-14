@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz</title>
-  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" integrity="sha384-/d2d4A+0TRJ5pBEDCrIGAEGBFf1zFdBkVOBdPPDlZG1qopnCqN1hVGrL52C/YBm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" integrity="sha384-GKV8bQE3Ik3bLQiZ8MkMIIpnnbItpNvtHjECUX6y3MgPFWJVUBmI0IKCTQMZiYu" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://checkout.stripe.com">
   <link rel="dns-prefetch" href="https://checkout.stripe.com">
   <!-- PWA / Home Screen -->
@@ -4789,7 +4789,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")),
             React.createElement("div", { style: { marginTop: 14, borderTop: `1px solid ${C.dim}`, paddingTop: 12 } },
                 allergenEl))))));}
-});
+);
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
 function buildSlotItems(batchItems, totalScale) {
@@ -5066,6 +5066,25 @@ function IngredientBrowser() {
 const FILTERS = ["All", "🥘 Crockpot", "🍳 Stovetop", "🌬️ Oven"];
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
 const FREE_IDS = new Set(["m01", "b0", "d1"]);
+// ── Analytics ──────────────────────────────────────────────────────────────────
+const _sessionId = (() => {
+    try {
+        let id = sessionStorage.getItem('sg_session');
+        if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem('sg_session', id); }
+        return id;
+    } catch(_) { return 'anon'; }
+})();
+
+function track(eventName, properties) {
+    try {
+        const email = localStorage.getItem('mp_acc_email') || null;
+        fetch('/.netlify/functions/track-event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_name: eventName, session_id: _sessionId, email: email, properties: properties || {} }),
+        }).catch(() => {});
+    } catch(_) {}
+}
 // ── Stripe configuration ────────────────────────────────────────────────
 // Set STRIPE_ENABLED=true once Netlify env vars are configured.
 // While false: upgrade buttons show "launching soon" (safe for friend testing).
@@ -5085,6 +5104,7 @@ const STRIPE_PRICES = {
 const SOULFOOD_RECIPE_IDS = ["hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10"];
 // ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
 async function startCheckout(tier, recipeId) {
+    track('checkout_started', { tier: tier, recipe_id: recipeId || null });
     if (!STRIPE_ENABLED) {
         alert("Payments launching soon!\n\nWe're in private beta — full payment system goes live shortly. Watch your email for the launch announcement.");
         return;
@@ -5557,22 +5577,22 @@ function UpgradeModal({ onClose }) {
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/month")))),
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
                     marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
-            React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 18 } },
+            React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: showSingleHint ? 8 : 18 } },
                 React.createElement("div", { onClick: () => setShowSingleHint(s => !s), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one")),
-                showSingleHint && React.createElement("div", { style: {
-                    background: "rgba(184,74,31,0.08)", border: "1px solid rgba(184,74,31,0.28)",
-                    borderRadius: 10, padding: "12px 14px", marginTop: 8, fontSize: 13,
-                    color: C.text, lineHeight: 1.6
-                } }, "👉 Tap any locked recipe to purchase it individually for $1.99. Look for the 🔒 padlock icon on recipe cards."),
                 React.createElement("div", { onClick: () => startCheckout("calculator"), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$5.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "CALCULATOR"),
                     React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Macros only"))),
+            showSingleHint && React.createElement("div", { style: {
+                background: "rgba(184,74,31,0.08)", border: "1px solid rgba(184,74,31,0.28)",
+                borderRadius: 10, padding: "12px 14px", marginBottom: 14, fontSize: 13,
+                color: C.text, lineHeight: 1.6
+            } }, "👉 Tap any locked recipe to purchase it individually for $1.99. Look for the 🔒 padlock icon on recipe cards."),
             React.createElement("button", { onClick: () => startCheckout("lifetime"), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                     padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
                     marginBottom: 10, letterSpacing: "0.02em" } }, "Get Lifetime Access \u2014 $149.99 \u2192"),
@@ -5903,6 +5923,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     const saveProfile = () => {
         const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString(), _schemaVersion: 1 });
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        track('calc_completed', { method: 'calculator' });
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
     };
@@ -6124,6 +6145,7 @@ function ManualMacroInput({ C, onSave }) {
             _schemaVersion: 1,
         };
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        track('calc_completed', { method: 'manual' });
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
     };
@@ -7189,6 +7211,7 @@ function App() {
     });
 
     useEffect(function() {
+        track('app_open', { onboarded: !!localStorage.getItem('sg_onboarded') });
         // Dismiss loader early for returning users on cached loads
         setTimeout(function() {
             if (typeof dismissLoader === 'function') dismissLoader();
@@ -7340,6 +7363,9 @@ function App() {
     // Derived: is anything unlocked at all? (used for nav/upsell visibility)
     const unlocked = unlocks.allRecipes || (unlocks.recipes && unlocks.recipes.length > 0) || unlocks.calculator;
     const [showUpgrade, setShowUpgrade] = useState(false);
+    React.useEffect(() => {
+        if (showUpgrade) track('upgrade_modal_opened', { source: 'modal' });
+    }, [showUpgrade]);
     const [showSeasonalPopup, setShowSeasonalPopup] = useState(false);
     const [showDevModal, setShowDevModal] = useState(false);
     const [logoTaps, setLogoTaps] = useState(0);
@@ -7441,6 +7467,7 @@ function App() {
         }
     };
     const setBreakfastRecipe = id => {
+        track('recipe_selected', { slot: 'breakfast', recipe_id: id });
         setBreakfastRecipeState(id);
         if (id) { localStorage.setItem("mp_breakfast", id); setBreakfastSkipped(false); }
         else localStorage.removeItem("mp_breakfast");
@@ -7507,8 +7534,8 @@ function App() {
         if (aLocked !== bLocked) return aLocked - bLocked;
         return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
     }), [recipeCat, recipeQuery, dietaryFilter, filter, lunch, dinner, breakfastRecipe, dessert, preRecipe, portions]);
-    const handleSetLunch = id => { setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
-    const handleSetDinner = id => { setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
+    const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
+    const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
     const SW = 72;
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
