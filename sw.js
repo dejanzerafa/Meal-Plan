@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v116
+// SoulGainz — Service Worker v117
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v143';
+const CACHE_NAME = 'meal-plan-v144';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -19,6 +19,8 @@ const PRECACHE = [
   '/icon-72.png',
   '/icon-48.png',
   '/icon-32.png',
+  'https://unpkg.com/react@18.2.0/umd/react.production.min.js',
+  'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js',
 ];
 
 // ── Install: precache app shell ──────────────────────────────────────────────
@@ -47,9 +49,9 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
   const isApp = url.hostname === self.location.hostname;
-
-  // Only intercept same-origin app files — never touch CDN scripts
-  if (!isApp) return;
+  const isCachedCDN = url.href.startsWith('https://unpkg.com/react@18.2.0/');
+  // Only intercept same-origin files and our pinned CDN scripts
+  if (!isApp && !isCachedCDN) return;
 
   // Icons and manifest — cache-first (already forced fresh via PRECACHE versioning)
   const isAsset = /\.(png|svg|json|webp|ico)$/.test(url.pathname);
@@ -75,7 +77,8 @@ self.addEventListener('fetch', event => {
 
 // ── Push notifications ───────────────────────────────────────────────────────
 self.addEventListener('push', event => {
-  const data = event.data ? event.data.json() : {};
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch(e) { console.warn('SW push: invalid JSON payload', e); }
   const title = data.title || 'SoulGainz';
   const options = {
     body: data.body || "Time to meal prep! 🍗",

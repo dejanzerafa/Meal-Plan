@@ -151,6 +151,7 @@ const TIER_LABELS = {
           allRecipes: existing.allRecipes || data.unlocks.allRecipes,
           recipes: Array.from(new Set([...(existing.recipes || []), ...(data.unlocks.recipes || [])])),
           tier: data.unlocks.tier || existing.tier,
+          seasonalPriceId: data.unlocks.seasonalPriceId || existing.seasonalPriceId || null,
         };
         localStorage.setItem("mp_unlocks", JSON.stringify(merged));
       } catch (e) {

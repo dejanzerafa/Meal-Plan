@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz</title>
-  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" integrity="sha384-/d2d4A+0TRJ5pBEDCrIGAEGBFf1zFdBkVOBdPPDlZG1qopnCqN1hVGrL52C/YBm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" integrity="sha384-GKV8bQE3Ik3bLQiZ8MkMIIpnnbItpNvtHjECUX6y3MgPFWJVUBmI0IKCTQMZiYu" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://checkout.stripe.com">
   <link rel="dns-prefetch" href="https://checkout.stripe.com">
   <!-- PWA / Home Screen -->
@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
   <meta name="theme-color" content="#E07B2A">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://formspree.io https://checkout.stripe.com https://soulgainz.netlify.app; worker-src 'self';">
   <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png">
@@ -3250,6 +3251,7 @@ function normKey(key, label) {
 //
 // No slot-fraction splitting, no macro-driven scaling — pure proportional × batch.
 function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, lScale, dScale, profileScale, effectiveTargets, bfScale, preScale, desScale) {
+    try {
     const p  = portions || 7;
     const gl = profileScale || 1;
     const map = {};
@@ -3288,6 +3290,7 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
     CAT_ORDER.forEach(c => { grouped[c] = []; });
     Object.values(map).forEach(i => { (grouped[i.cat] = grouped[i.cat] || []).push(i); });
     return Object.fromEntries(Object.entries(grouped).filter(([, v]) => v.length > 0));
+    } catch(e) { console.warn('mergeAllItems error:', e); return {}; }
 }
 const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
 // INGREDIENT_MACROS — per 100g (or per 100mL for liquids; unitG = grams per whole unit)
@@ -4026,6 +4029,7 @@ function getPortions(recipe, globalPortions) {
 // remaining room.  This prevents double-counting and keeps totals clean.
 // ══════════════════════════════════════════════════════════════════
 function computeIngredientQtys(recipe, slotMacros, portions) {
+    if (!recipe || !Array.isArray(recipe.batchItems)) return {};
     var p  = portions || 7;
     var sm = slotMacros || {};
 
@@ -4269,6 +4273,7 @@ function getIngMacros(item, scaledQty) {
 // scale = profileScale (1 when no custom targets set).
 // Falls back to recipe.perPortion if ingredient data is insufficient.
 function computePerPortion(recipe, scale, globalPortions) {
+    try {
     const gl = scale || 1;
     if (!recipe) return { kcal: 0, protein: 0, carbs: 0, fat: 0 };
     // Pre-workout batchItems are weekly shopping units (1 pack, 3 bananas = week supply),
@@ -4319,6 +4324,7 @@ function computePerPortion(recipe, scale, globalPortions) {
         carbs:   Math.round(perP.carbs   * gl),
         fat:     +((perP.fat * gl).toFixed(1)),
     };
+    } catch(e) { console.warn('computePerPortion error:', e); const pp = (recipe && recipe.perPortion) || {}; return { kcal: pp.kcal||0, protein: pp.protein||0, carbs: pp.carbs||0, fat: pp.fat||0 }; }
 }
 function computeMeals(lr, dr, bfSkipped, bfr, desr, lScale, dScale, preSkipped, prer, bfScale, preScale, desScale, pScale) {
     const gl = pScale || 1;
@@ -4558,8 +4564,28 @@ function detectAllergens(recipe) {
     return found;
 }
 
+// ─── REACT ERROR BOUNDARY ────────────────────────────────────────────────────
+class AppErrorBoundary extends React.Component {
+    constructor(props) { super(props); this.state = { crashed: false, error: null }; }
+    static getDerivedStateFromError(error) { return { crashed: true, error: error }; }
+    componentDidCatch(error, info) { console.error('React boundary caught:', error, info); }
+    render() {
+        if (this.state.crashed) {
+            var e = this.state.error;
+            return React.createElement('div', { style: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100vh', fontFamily:'sans-serif', padding:'32px', textAlign:'center', background:'#f3ece0' } },
+                React.createElement('div', { style: { fontSize:32, marginBottom:16 } }, '⚠️'),
+                React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#1a1612' } }, 'Something went wrong'),
+                React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, e ? e.message : 'An unexpected error occurred'),
+                React.createElement('button', { onClick: function(){ window.location.reload(); }, style: { background:'#c0602a', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:14, fontWeight:700, cursor:'pointer', marginBottom:10 } }, 'Reload App'),
+                React.createElement('button', { onClick: function(){ localStorage.clear(); window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
+            );
+        }
+        return this.props.children;
+    }
+}
+
 // ─── RECIPE CARD (Recipes tab) ─────────────────────────────────────────────
-function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot, profileScale, effectiveTargets, lunchScale, dinnerScale, bfScale, preScale, desScale }) {
+const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDessert, activePreWorkout, setLunch, setDinner, setBreakfastRecipe, setDessert, setPreWorkout, portions, pendingSlot, profileScale, effectiveTargets, lunchScale, dinnerScale, bfScale, preScale, desScale }) {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState("ingredients");
     const [stepsDone, setStepsDone] = useState({});
@@ -4748,6 +4774,7 @@ function RecipeCard({ r, activeLunch, activeDinner, activeBreakfast, activeDesse
                 note && React.createElement("div", { style: { fontSize: 10, color: C.green, marginTop: 4 } }, "\u2713 Saved")),
             React.createElement("div", { style: { marginTop: 14, borderTop: `1px solid ${C.dim}`, paddingTop: 12 } },
                 allergenEl))))));}
+});
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
 function buildSlotItems(batchItems, totalScale) {
@@ -5062,7 +5089,12 @@ async function startCheckout(tier, recipeId) {
         console.error("Checkout error:", err);
     }
 }
-const DEV_CODE = "DEVACCESS"; // tap logo 5× to enter
+// Dev access — stored as SHA-256 hash only, never plaintext in source
+const DEV_HASH = "dea268f9d3629801df50adba7a443b93d6295bc947a035408e16dfe2cc0a42d0";
+async function _checkDevCode(input) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.toUpperCase().trim()));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === DEV_HASH;
+}
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
     // Extract the leading emoji from the recipe name to hint at protein/type
     const hintEmoji = (r.name || "").match(/^\p{Emoji}/u)?.[0] || "\uD83C\uDF7D\uFE0F";
@@ -5520,16 +5552,10 @@ function UpgradeModal({ onClose }) {
 function DevModal({ onClose, onUnlock }) {
     const [code, setCode] = useState("");
     const [error, setError] = useState(false);
-    const submit = () => {
-        if (code.toUpperCase().trim() === DEV_CODE) {
-            onUnlock();
-            onClose();
-        }
-        else {
-            setError(true);
-            setCode("");
-            setTimeout(() => setError(false), 1500);
-        }
+    const submit = async () => {
+        const ok = await _checkDevCode(code);
+        if (ok) { onUnlock(); onClose(); }
+        else { setError(true); setCode(""); setTimeout(() => setError(false), 1500); }
     };
     const resetAll = () => {
         if (!window.confirm("Reset to first-time user? All data will be cleared.")) return;
@@ -5836,7 +5862,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     };
     const prev = () => setStep(s => s - 1);
     const saveProfile = () => {
-        const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString() });
+        const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString(), _schemaVersion: 1 });
         localStorage.setItem("mp_profile", JSON.stringify(profile));
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
         onSave(profile);
@@ -6051,6 +6077,7 @@ function ManualMacroInput({ C, onSave }) {
             result: { macros, bmr: 0, tdee: kcal, bmi: 0, actLabel: "Manual", age: 0, w: 0, h: 0 },
             savedAt: new Date().toISOString(),
             isManual: true,
+            _schemaVersion: 1,
         };
         localStorage.setItem("mp_profile", JSON.stringify(profile));
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) localStorage.setItem("mp_calc_used_email", e); } catch(_) {}
@@ -6456,14 +6483,15 @@ function CalendarTab({ lunch, dinner, userEmail }) {
     var batchMap={};
     batchLogs.forEach(function(log){
         var start=new Date(log.date+"T00:00:00");
-        for(var i=0;i<log.batchSize;i++){
+        var safeBatchSize = Math.min(Math.max(parseInt(log.batchSize)||7, 1), 30);
+        for(var i=0;i<safeBatchSize;i++){
             var dd=new Date(start); dd.setDate(dd.getDate()+i);
             var key=toDS(dd.getFullYear(),dd.getMonth(),dd.getDate());
-            batchMap[key]={ lunchId:log.lunchId, dinnerId:log.dinnerId, batchSize:log.batchSize,
-                startDate:log.date, dayIndex:i, isStart:i===0, isEnd:i===log.batchSize-1,
-                daysLeft:log.batchSize-i,
-                isShopDay: i===log.batchSize-2&&log.batchSize>1,
-                isPrepDay: i===log.batchSize-1 };
+            batchMap[key]={ lunchId:log.lunchId, dinnerId:log.dinnerId, batchSize:safeBatchSize,
+                startDate:log.date, dayIndex:i, isStart:i===0, isEnd:i===safeBatchSize-1,
+                daysLeft:safeBatchSize-i,
+                isShopDay: i===safeBatchSize-2&&safeBatchSize>1,
+                isPrepDay: i===safeBatchSize-1 };
         }
     });
     var firstDow=new Date(calYear,calMonth,1).getDay();
@@ -7150,7 +7178,10 @@ function App() {
     const [filter, setFilter] = useState("All");
     const [recipeCat, setRecipeCat] = useState("breakfast");
     const [recipeQuery, setRecipeQuery] = useState("");
+    const [recipeShowCount, setRecipeShowCount] = useState(15);
     const [dietaryFilter, setDietaryFilter] = useState(null);
+    // Reset pagination when category/search changes
+    React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter]);
     // ── Theme ─────────────────────────────────────────────────────────────────
     const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
     const setTheme = th => { setThemeState(th); localStorage.setItem("mp_theme", th); };
@@ -7164,7 +7195,7 @@ function App() {
     Object.assign(C, resolvedTheme === "light" ? LIGHT_C : DARK_C);
     document.body.style.background = C.bg;
     // ── Portions scaler ────────────────────────────────────────────────────────
-    const [portions, setPortionsState] = useState(() => parseInt(localStorage.getItem("mp_portions") || "7"));
+    const [portions, setPortionsState] = useState(() => { const p = parseInt(localStorage.getItem("mp_portions") || "7"); return [3,5,7].includes(p) ? p : 7; });
     const setPortions = n => { setPortionsState(n); localStorage.setItem("mp_portions", String(n)); };
     // ── PWA install prompt (iOS only) ───────────────────────────────────────────
     const [showPWA, setShowPWA] = useState(() => IS_IOS && !IS_STANDALONE && !localStorage.getItem("mp_pwa_ok"));
@@ -7172,7 +7203,9 @@ function App() {
     // ── Profile + effective targets ─────────────────────────────────────────────────
     const [profile, setProfile] = useState(() => {
         try {
-            return JSON.parse(localStorage.getItem("mp_profile") || "null");
+            const parsed = JSON.parse(localStorage.getItem("mp_profile") || "null");
+            // Schema migration placeholder — bump _schemaVersion when field names change
+            return parsed;
         }
         catch (_a) {
             return null;
@@ -7184,8 +7217,14 @@ function App() {
     const [unlocks, setUnlocksState] = useState(() => {
         try {
             const stored = localStorage.getItem("mp_unlocks");
-            if (stored)
-                return Object.assign({ recipes: [] }, JSON.parse(stored));
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                return Object.assign({ recipes: [] }, parsed, {
+                    recipes: Array.isArray(parsed.recipes) ? parsed.recipes : [],
+                    calculator: !!parsed.calculator,
+                    allRecipes: !!parsed.allRecipes,
+                });
+            }
             // Legacy migration
             if (localStorage.getItem("mp_unlocked") === "true") {
                 const migrated = { calculator: true, allRecipes: true, recipes: [], tier: "lifetime" };
@@ -7333,9 +7372,9 @@ function App() {
             fat: profile.result.macros.fat }
         : TARGETS;
     const profileScale = (effectiveTargets.kcal && TARGETS.kcal && Math.abs(effectiveTargets.kcal - TARGETS.kcal) > 50) ? +(effectiveTargets.kcal / TARGETS.kcal).toFixed(4) : 1;
-    const { L, D, BF, DS, PRE_M, total } = computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale);
+    const { L, D, BF, DS, PRE_M, total } = React.useMemo(() => computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale), [lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale]);
     const profileName = profile ? (profile.firstName || "").trim() : "";
-    const filteredRecipes = RECIPES.filter(r => {
+    const filteredRecipes = React.useMemo(() => RECIPES.filter(r => {
         if ((r.category || "main") !== recipeCat)
             return false;
         // Search filter — applies across all categories
@@ -7363,7 +7402,7 @@ function App() {
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
         return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
-    });
+    }), [recipeCat, recipeQuery, dietaryFilter, filter, lunch, dinner, breakfastRecipe, dessert, preRecipe, portions]);
     const handleSetLunch = id => { setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -7636,7 +7675,8 @@ function App() {
                         React.createElement("div", { style: { fontSize: 12 } }, recipeQuery ? `No matches for "${recipeQuery}". Try a different search.` : "No recipes in this category yet."),
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { marginTop: 12, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 8, padding: "7px 14px", fontSize: 11, color: C.sub, cursor: "pointer" } }, "Clear search")))),
-                    filteredRecipes.map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
+                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id) }))),
+                    filteredRecipes.length > recipeShowCount && React.createElement("button", { onClick: () => setRecipeShowCount(c => c + 15), style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", marginBottom: 10 } }, "Show more (" + (filteredRecipes.length - recipeShowCount) + " remaining)"),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
@@ -7834,19 +7874,24 @@ function dismissLoader() {
 function showOnScreenError(msg, src, line) {
     dismissLoader();
     var root = document.getElementById('root');
-    if (root) {
-        root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#f3ece0;">'
-            + '<div style="font-size:32px;margin-bottom:16px;">⚠️</div>'
-            + '<div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#1a1612;">App error</div>'
-            + '<div style="font-size:12px;color:#b84a1f;margin-bottom:8px;word-break:break-all;max-width:400px;">' + msg + '</div>'
-            + (src ? '<div style="font-size:11px;color:#888;margin-bottom:20px;">' + src + (line ? ' line ' + line : '') + '</div>' : '')
-            + '<button onclick="location.reload()" style="background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">Reload</button>'
-            + '<button onclick="(function(){Object.keys(localStorage).forEach(function(k){localStorage.removeItem(k)});location.reload();})()" style="background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;">Clear Cache &amp; Reload</button>'
-            + '</div>';
-    }
+    if (!root) return;
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#f3ece0;';
+    var icon = document.createElement('div'); icon.style.cssText='font-size:32px;margin-bottom:16px;'; icon.textContent='⚠️';
+    var title = document.createElement('div'); title.style.cssText='font-size:16px;font-weight:700;margin-bottom:8px;color:#1a1612;'; title.textContent='App error';
+    var msgEl = document.createElement('div'); msgEl.style.cssText='font-size:12px;color:#b84a1f;margin-bottom:8px;word-break:break-all;max-width:400px;'; msgEl.textContent=String(msg);
+    var reloadBtn = document.createElement('button'); reloadBtn.style.cssText='background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;'; reloadBtn.textContent='Reload'; reloadBtn.onclick=function(){location.reload();};
+    var clearBtn = document.createElement('button'); clearBtn.style.cssText='background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;'; clearBtn.textContent='Clear Cache & Reload'; clearBtn.onclick=function(){Object.keys(localStorage).forEach(function(k){localStorage.removeItem(k)});location.reload();};
+    wrap.appendChild(icon); wrap.appendChild(title); wrap.appendChild(msgEl);
+    if (src) { var srcEl=document.createElement('div'); srcEl.style.cssText='font-size:11px;color:#888;margin-bottom:20px;'; srcEl.textContent=String(src)+(line?' line '+line:''); wrap.appendChild(srcEl); }
+    wrap.appendChild(reloadBtn); wrap.appendChild(clearBtn);
+    root.innerHTML=''; root.appendChild(wrap);
 }
 window.onerror = function(msg, src, line, col, err) {
-    showOnScreenError(String(msg), src, line);
+    // Only intercept JS execution errors — not resource load failures (img/font 404s etc.)
+    if (err || (typeof msg === 'string' && msg !== 'Script error.' && msg !== 'ResizeObserver loop limit exceeded')) {
+        showOnScreenError(String(msg), src, line);
+    }
     return false;
 };
 window.onunhandledrejection = function(e) {
@@ -7858,7 +7903,7 @@ try {
     if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
         throw new Error('React failed to load from CDN');
     }
-    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(AppErrorBoundary, null, React.createElement(App, null)));
     // Only auto-dismiss loader for returning users — first-timers go through onboarding
     if (localStorage.getItem("sg_onboarded")) { setTimeout(dismissLoader, 2900); }
 } catch (err) {

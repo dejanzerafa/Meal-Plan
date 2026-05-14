@@ -14,9 +14,32 @@
 //   FROM_EMAIL           - e.g. SoulGainz <admin@soulgainz.app>
 //   APP_URL              - e.g. https://soulgainz.app
 
+// Simple in-memory rate limiter: max 5 requests per email per 60 seconds
+const _rateLimitMap = new Map();
+function _checkRateLimit(email) {
+  const now = Date.now();
+  const key = email.toLowerCase().trim();
+  const entry = _rateLimitMap.get(key) || { count: 0, windowStart: now };
+  if (now - entry.windowStart > 60000) {
+    _rateLimitMap.set(key, { count: 1, windowStart: now });
+    return true;
+  }
+  if (entry.count >= 5) return false;
+  entry.count++;
+  _rateLimitMap.set(key, entry);
+  return true;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  // Origin check — only allow requests from known app origins
+  const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
+  const allowed = ["https://soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
+  if (origin && !allowed.some(o => origin.startsWith(o))) {
+    return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
   let payload;
@@ -27,6 +50,10 @@ exports.handler = async (event) => {
   }
 
   const { email, first_name, last_name, marketing_opt_in = true, skip_email = false } = payload;
+
+  if (email && !_checkRateLimit(email)) {
+    return { statusCode: 429, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
+  }
 
   if (!email || !email.includes("@")) {
     return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
