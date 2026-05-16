@@ -7077,13 +7077,15 @@ function OnboardingSignup({ onDone }) {
     const [surname, setSurname] = React.useState("");
     const [email,   setEmail]   = React.useState("");
     const [status,  setStatus]  = React.useState("idle");
-
     const [nextStep, setNextStep] = React.useState(false);
-    const [goTo, setGoTo] = React.useState(null);
+
+    // Sign-in / restore mode
+    const [mode, setMode]           = React.useState("signup"); // "signup" | "signin"
+    const [signinEmail, setSigninEmail] = React.useState("");
+    const [signinStatus, setSigninStatus] = React.useState("idle"); // idle | loading | notfound | error
 
     function finishOnboarding(destination) {
         if (window.startLoaderSequence) window.startLoaderSequence();
-        // "macros" is a logical alias — the actual tab id is "profile"
         const tabMap = { macros: "profile", recipes: "recipes" };
         if (destination) window._sg_open_tab = tabMap[destination] || destination;
         onDone();
@@ -7092,14 +7094,12 @@ function OnboardingSignup({ onDone }) {
     async function handleSignup() {
         if (!email.trim() || !email.includes("@")) return;
         setStatus("loading");
-        // Always save locally first — user gets into the app regardless of backend status
         localStorage.setItem("mp_acc_email", email.trim().toLowerCase());
         localStorage.setItem("mp_acc_first_name", name.trim());
         localStorage.setItem("mp_acc_last_name", surname.trim());
         localStorage.setItem("mp_acc_name", (name.trim() + " " + surname.trim()).trim());
         localStorage.setItem("sg_onboarded", "registered");
         localStorage.removeItem("sg_skip_ts");
-        // Fire-and-forget backend save — never block onboarding on network issues
         try {
             const res = await Promise.race([
                 fetch("/.netlify/functions/save-user", {
@@ -7120,6 +7120,43 @@ function OnboardingSignup({ onDone }) {
         }
         setStatus("done");
         setTimeout(() => setNextStep(true), 1400);
+    }
+
+    async function handleSignin() {
+        if (!signinEmail.trim() || !signinEmail.includes("@")) return;
+        setSigninStatus("loading");
+        try {
+            const res = await Promise.race([
+                fetch("/.netlify/functions/restore-account", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: signinEmail.trim().toLowerCase() }),
+                }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 10000)),
+            ]);
+            const data = await res.json();
+            if (!data.found) { setSigninStatus("notfound"); return; }
+            // Restore user data to localStorage
+            localStorage.setItem("mp_acc_email", data.email);
+            if (data.name) {
+                const parts = data.name.split(" ");
+                localStorage.setItem("mp_acc_name", data.name);
+                localStorage.setItem("mp_acc_first_name", parts[0] || "");
+                localStorage.setItem("mp_acc_last_name", parts.slice(1).join(" ") || "");
+            }
+            localStorage.setItem("sg_onboarded", "registered");
+            localStorage.removeItem("sg_skip_ts");
+            // Restore unlocks
+            if (data.unlocks && data.unlocks.tier) {
+                localStorage.setItem("mp_unlocks", JSON.stringify(data.unlocks));
+            }
+            // Short delay so user sees success, then enter app
+            setSigninStatus("done");
+            setTimeout(() => finishOnboarding("recipes"), 1200);
+        } catch(e) {
+            console.warn("restore-account failed:", e.message);
+            setSigninStatus("error");
+        }
     }
 
     const baseStyle = { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 10000, background: "#1C1208",
@@ -7183,7 +7220,47 @@ function OnboardingSignup({ onDone }) {
                 React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: 0 } },
                     "No spam. Just food, recipes, and the occasional fire tip."),
                 React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: "4px 0 0" } },
-                    "Your details are kept private and never shared."))
+                    "Your details are kept private and never shared."),
+                React.createElement("div", { style: { borderTop: "1px solid #2a2520", marginTop: 8, paddingTop: 16, textAlign: "center" } },
+                    React.createElement("button", { onClick: () => setMode("signin"),
+                        style: { background: "none", border: "none", color: "#8C8279", fontSize: 13,
+                            cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" } },
+                        "Already have an account? Sign in →")))
+
+        // ── Sign-in / restore mode ────────────────────────────────────────────
+        : mode === "signin"
+        ? React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 380 } },
+            React.createElement("h2", { style: { fontFamily: "Georgia,serif", fontSize: 22, color: "#F2EDE6",
+                fontWeight: 700, textAlign: "center", marginBottom: 4 } }, "Welcome back"),
+            React.createElement("p", { style: { fontSize: 13, color: "#8C8279", textAlign: "center", lineHeight: 1.6, marginBottom: 8 } },
+                "Enter the email you signed up with and we'll restore your access instantly."),
+            signinStatus === "done"
+                ? React.createElement("div", { style: { textAlign: "center", padding: "24px 0" } },
+                    React.createElement("div", { style: { fontSize: 36, marginBottom: 8 } }, "✅"),
+                    React.createElement("div", { style: { color: "#4ade80", fontSize: 15, fontWeight: 700 } }, "Account restored!"),
+                    React.createElement("div", { style: { color: "#8C8279", fontSize: 13, marginTop: 6 } }, "Taking you in…"))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("input", { value: signinEmail, onChange: e => setSigninEmail(e.target.value),
+                        type: "email", placeholder: "Your email address",
+                        onKeyDown: e => e.key === "Enter" && handleSignin(),
+                        style: { width: "100%", padding: "14px 16px", background: "#161412",
+                            border: "1.5px solid #2a2520", borderRadius: 10, color: "#F2EDE6",
+                            fontSize: 15, fontFamily: "inherit", outline: "none", boxSizing: "border-box" } }),
+                    signinStatus === "notfound" && React.createElement("p", { style: { fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 } },
+                        "No account found for that email. Double-check or sign up below."),
+                    signinStatus === "error" && React.createElement("p", { style: { fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 } },
+                        "Something went wrong — please try again."),
+                    React.createElement("button", { onClick: handleSignin, disabled: signinStatus === "loading",
+                        style: { width: "100%", background: "#E07B2A", color: "#fff", border: "none",
+                            borderRadius: 10, padding: "16px", fontSize: 15, fontWeight: 700,
+                            fontFamily: "inherit", cursor: signinStatus === "loading" ? "default" : "pointer",
+                            opacity: signinStatus === "loading" ? 0.6 : 1 } },
+                        signinStatus === "loading" ? "Checking…" : "Restore My Access →"),
+                    React.createElement("button", { onClick: () => { setMode("signup"); setSigninStatus("idle"); },
+                        style: { background: "none", border: "none", color: "#8C8279", fontSize: 13,
+                            cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", textAlign: "center" } },
+                        "← New here? Sign up instead")))
+        : null
     );
 }
 
