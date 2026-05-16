@@ -39,7 +39,7 @@ exports.handler = async (event) => {
   }
 
   // Subscription vs one-time mapping
-  const subscriptionTiers = ["monthly", "quarterly"];
+  const subscriptionTiers = ["monthly", "quarterly", "annual"];
   const mode = subscriptionTiers.includes(tier) ? "subscription" : "payment";
 
   try {

@@ -42,7 +42,7 @@ exports.handler = async (event) => {
     } else if (tier === "single" && recipeId) {
       unlocks.recipes = [recipeId];
       unlocks.tier = "single";
-    } else if (["lifetime", "quarterly", "monthly"].includes(tier)) {
+    } else if (["lifetime", "annual", "quarterly", "monthly"].includes(tier)) {
       unlocks.calculator = true;
       unlocks.allRecipes = true;
       unlocks.tier = tier;

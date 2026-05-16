@@ -82,6 +82,8 @@ exports.handler = async (event) => {
             current_period_end:
               tier === "lifetime" || tier === "seasonal"
                 ? null
+                : tier === "annual"
+                ? new Date(Date.now() + 365 * 86400 * 1000).toISOString()
                 : tier === "quarterly"
                 ? new Date(Date.now() + 90 * 86400 * 1000).toISOString()
                 : tier === "monthly"
@@ -166,6 +168,7 @@ async function sendEmail({ to, subject, html }) {
 function getEmailSubject(tier) {
   const subjects = {
     lifetime: "Welcome to Meal Prep — lifetime access unlocked 🎉",
+    annual: "Welcome to Meal Prep — your annual plan is active 🎉",
     quarterly: "Welcome to Meal Prep — your quarterly plan is active 🍳",
     monthly: "Welcome to Meal Prep — your subscription is live 🥩",
     calculator: "Your macro calculator is unlocked 📊",
@@ -183,6 +186,11 @@ function getEmailBody(tier, recipeId, amount) {
       label: "Lifetime Access",
       description: "Every recipe + every future drop, forever. No renewals, no limits.",
       badge: "LIFETIME",
+    },
+    annual: {
+      label: "Annual Plan",
+      description: "Full access to all recipes + every future drop for a full year. Best value.",
+      badge: "ANNUAL",
     },
     quarterly: {
       label: "Quarterly Plan",
