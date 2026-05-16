@@ -6262,13 +6262,21 @@ function AccountCard({ C }) {
         setSaving(false);
     };
     if (saved && !editing) {
+        const tier = (() => { try { return localStorage.getItem("mp_tier") || ""; } catch(e){ return ""; } })();
+        const isSubscription = ["monthly","quarterly","annual"].includes(tier);
         return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
             React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 12 } }, t("account_title")),
             React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 } }, t("account_greeting") + ", " + name + "!"),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 14 } }, t("account_subtitle")),
-            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 4 } }, email),
-            React.createElement("button", { onClick: () => setEditing(true), style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 8,
-                padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.accent, cursor: "pointer" } }, t("account_edit")));
+            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 12 } }, email),
+            React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+                React.createElement("button", { onClick: () => setEditing(true), style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 8,
+                    padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.accent, cursor: "pointer" } }, t("account_edit")),
+                isSubscription && React.createElement("a", {
+                    href: `/.netlify/functions/customer-portal?email=${encodeURIComponent(email)}`,
+                    style: { display: "inline-block", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
+                        padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", textDecoration: "none" }
+                }, "Manage subscription →")));
     }
     return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
         React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 14 } }, t("account_title")),
