@@ -39,10 +39,28 @@
   to = "/privacy.html"
   status = 200
 
-# CORS for fonts (Fraunces, Instrument Sans)
+# ── Security headers ──────────────────────────────────────────────────────────
 [[headers]]
   for = "/*"
   [headers.values]
+    # Prevent clickjacking — only allow in same-origin iframes
     X-Frame-Options = "SAMEORIGIN"
+    # Stop browsers from MIME-sniffing scripts/styles
     X-Content-Type-Options = "nosniff"
+    # Limit referrer info sent to third parties
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Force HTTPS for 1 year (including subdomains). Remove includeSubDomains if it causes issues.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Restrict browser feature access — no mic/camera/geo unless the app explicitly requests
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self), usb=()"
+    # Basic XSS protection for older browsers
+    X-XSS-Protection = "1; mode=block"
+
+# ── Netlify function CORS pre-flight ─────────────────────────────────────────
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://soulgainz.app"
+    Access-Control-Allow-Methods = "POST, GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Max-Age = "86400"

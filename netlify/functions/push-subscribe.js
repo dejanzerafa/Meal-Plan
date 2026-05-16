@@ -12,12 +12,32 @@
 // Supabase table: users
 //   Add column: push_subscription text (nullable)
 
+const ALLOWED_ORIGINS = [
+  "https://soulgainz.app",
+  "https://www.soulgainz.app",
+  "https://soulgainz.netlify.app",
+  "https://dejan-mealplan.netlify.app",
+  "http://localhost",
+  "http://127.0.0.1",
+];
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
   const headers = { "Content-Type": "application/json" };
+
+  // ── Payload size guard (push subscription objects are ~500 bytes max) ─────
+  if (event.body && event.body.length > 8192) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Payload too large" }) };
+  }
+
+  // ── Origin check ─────────────────────────────────────────────────────────
+  const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
+  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+    return { statusCode: 403, headers, body: JSON.stringify({ error: "Forbidden" }) };
+  }
 
   let payload;
   try {
@@ -29,6 +49,14 @@ exports.handler = async (event) => {
   const { email, subscription, action } = payload;
   if (!email || !action) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "email and action required" }) };
+  }
+
+  // ── Input validation ──────────────────────────────────────────────────────
+  if (!email.includes("@") || email.length > 254) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid email" }) };
+  }
+  if (!["subscribe", "unsubscribe"].includes(action)) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid action" }) };
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;

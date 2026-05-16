@@ -4,12 +4,38 @@
 // Required environment variables (set in Netlify dashboard → Site → Environment):
 //   STRIPE_SECRET_KEY    — sk_test_... or sk_live_...
 //   APP_URL              — e.g. https://dejan-mealplan.netlify.app
+//   ALLOWED_PRICE_IDS    — comma-separated list of valid Stripe price IDs (optional but recommended)
 
 const Stripe = require("stripe");
+
+// ── Allowed origins ───────────────────────────────────────────────────────────
+const ALLOWED_ORIGINS = [
+  "https://soulgainz.app",
+  "https://www.soulgainz.app",
+  "https://soulgainz.netlify.app",
+  "https://dejan-mealplan.netlify.app",
+  "http://localhost",
+  "http://127.0.0.1",
+];
+
+// ── Known tier names — reject anything outside this list ─────────────────────
+const KNOWN_TIERS = ["monthly", "quarterly", "annual", "lifetime", "calculator", "single", "seasonal"];
+const SUBSCRIPTION_TIERS = ["monthly", "quarterly", "annual"];
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  // ── Payload size guard (reject > 2 KB) ───────────────────────────────────
+  if (event.body && event.body.length > 2048) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Payload too large" }) };
+  }
+
+  // ── Origin check ─────────────────────────────────────────────────────────
+  const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
+  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+    return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -38,9 +64,32 @@ exports.handler = async (event) => {
     };
   }
 
+  // ── Validate tier ─────────────────────────────────────────────────────────
+  if (!KNOWN_TIERS.includes(tier)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid tier" }) };
+  }
+
+  // ── Validate priceId format (must be price_<alphanumeric>) ────────────────
+  if (!/^price_[A-Za-z0-9]{10,40}$/.test(priceId)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid priceId format" }) };
+  }
+
+  // ── Validate against known price ID whitelist (if env var is set) ─────────
+  const allowedPriceIds = process.env.ALLOWED_PRICE_IDS
+    ? process.env.ALLOWED_PRICE_IDS.split(",").map(p => p.trim()).filter(Boolean)
+    : null;
+  if (allowedPriceIds && allowedPriceIds.length > 0 && !allowedPriceIds.includes(priceId)) {
+    console.warn(`Blocked checkout attempt with unlisted priceId: ${priceId}`);
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid priceId" }) };
+  }
+
+  // ── Validate recipeId if present (alphanumeric, max 64 chars) ─────────────
+  if (recipeId && !/^[A-Za-z0-9_-]{1,64}$/.test(recipeId)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid recipeId" }) };
+  }
+
   // Subscription vs one-time mapping
-  const subscriptionTiers = ["monthly", "quarterly", "annual"];
-  const mode = subscriptionTiers.includes(tier) ? "subscription" : "payment";
+  const mode = SUBSCRIPTION_TIERS.includes(tier) ? "subscription" : "payment";
 
   try {
     const session = await stripe.checkout.sessions.create({

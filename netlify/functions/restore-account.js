@@ -7,12 +7,60 @@
 
 const { createClient } = require("@supabase/supabase-js");
 
+// ── Allowed origins ───────────────────────────────────────────────────────────
+const ALLOWED_ORIGINS = [
+  "https://soulgainz.app",
+  "https://www.soulgainz.app",
+  "https://soulgainz.netlify.app",
+  "https://dejan-mealplan.netlify.app",
+  "http://localhost",
+  "http://127.0.0.1",
+];
+
+// ── IP-based rate limiting: max 5 attempts per IP per 2 minutes ───────────────
+// (prevents email enumeration / brute-force scraping)
+const _ipRateMap = new Map();
+function _checkIpRateLimit(ip) {
+  if (!ip) return true; // can't rate-limit without IP — allow but log
+  const now = Date.now();
+  const entry = _ipRateMap.get(ip) || { count: 0, windowStart: now };
+  if (now - entry.windowStart > 120000) {
+    _ipRateMap.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  if (entry.count >= 5) return false;
+  entry.count++;
+  _ipRateMap.set(ip, entry);
+  return true;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
   const headers = { "Content-Type": "application/json" };
+
+  // ── Payload size guard ───────────────────────────────────────────────────
+  if (event.body && event.body.length > 1024) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Payload too large" }) };
+  }
+
+  // ── Origin check ─────────────────────────────────────────────────────────
+  const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
+  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+    return { statusCode: 403, headers, body: JSON.stringify({ error: "Forbidden" }) };
+  }
+
+  // ── IP rate limit ─────────────────────────────────────────────────────────
+  const clientIp = (event.headers && (
+    event.headers["x-forwarded-for"] ||
+    event.headers["x-nf-client-connection-ip"] ||
+    event.headers["client-ip"]
+  ) || "").split(",")[0].trim();
+  if (!_checkIpRateLimit(clientIp)) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: "Too many attempts. Please wait a moment." }) };
+  }
 
   let payload;
   try {
