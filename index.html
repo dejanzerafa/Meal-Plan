@@ -6262,7 +6262,7 @@ function AccountCard({ C }) {
         setSaving(false);
     };
     if (saved && !editing) {
-        const tier = (() => { try { return localStorage.getItem("mp_tier") || ""; } catch(e){ return ""; } })();
+        const tier = (() => { try { return JSON.parse(localStorage.getItem("mp_unlocks") || "{}").tier || ""; } catch(e){ return ""; } })();
         const isSubscription = ["monthly","quarterly","annual"].includes(tier);
         return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
             React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 12 } }, t("account_title")),
