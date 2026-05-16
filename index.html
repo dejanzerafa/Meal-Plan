@@ -50,6 +50,7 @@
     @keyframes fadeUp  { 0%{opacity:0;transform:translateY(8px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes loaderOut { 0%{opacity:1} 100%{opacity:0;pointer-events:none} }
     @keyframes tabFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
     .tab-anim { animation: tabFadeIn 0.22s ease; }
     .bar-p { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 0.5s forwards; }
     .bar-c { animation: barFill 0.85s cubic-bezier(0.4,0,0.2,1) 1.15s forwards; }
@@ -7186,15 +7187,16 @@ function OnboardingSignup({ onDone }) {
                 React.createElement("div", { style: { fontSize: 32, marginBottom: 4 } }, "🎉"),
                 React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 22, color: "#F2EDE6", fontWeight: 700, marginBottom: 4 } }, "You're in!"),
                 React.createElement("div", { style: { fontSize: 13, color: "#8C8279", lineHeight: 1.6, marginBottom: 12 } }, "Welcome guide is on its way. What would you like to do first?"),
-                React.createElement("button", { onClick: () => finishOnboarding("recipes"),
-                    style: { width: "100%", background: "#E07B2A", color: "#fff", border: "none", borderRadius: 12,
-                        padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit", cursor: "pointer" } },
-                    "🍳 Explore Our Recipes →"),
                 React.createElement("button", { onClick: () => finishOnboarding("macros"),
+                    style: { width: "100%", background: "#E07B2A", color: "#fff", border: "none", borderRadius: 12,
+                        padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit", cursor: "pointer",
+                        boxShadow: "0 0 24px rgba(224,123,42,0.45)" } },
+                    "📊 Set My Macros First →"),
+                React.createElement("button", { onClick: () => finishOnboarding("recipes"),
                     style: { width: "100%", background: "#161412", color: "#F2EDE6", border: "1px solid #2a2520", borderRadius: 12,
                         padding: "16px", fontSize: 15, fontWeight: 700, fontFamily: "inherit", cursor: "pointer" } },
-                    "📊 Set My Macros →"),
-                React.createElement("div", { style: { fontSize: 11, color: "#8C8279" } }, "You can always do both later in the app."))
+                    "🍳 Explore Recipes Instead"),
+                React.createElement("div", { style: { fontSize: 11, color: "#8C8279" } }, "Setting macros first means every recipe scales to YOU."))
             : status === "done"
             ? React.createElement("div", { style: { background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)",
                 borderRadius: 12, padding: "24px", textAlign: "center", color: "#4ade80",
@@ -7650,14 +7652,19 @@ function App() {
                     React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" }))),
             (() => {
                 const active = tab === "profile";
+                const needsMacros = !profile;
                 return React.createElement("button", { onClick: () => setTab("profile"), style: { width: 52, paddingTop: 10, paddingBottom: 10, marginBottom: 10,
-                        background: active ? C.accentDim : "none",
-                        border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
+                        background: active ? C.accentDim : needsMacros ? "rgba(224,123,42,0.10)" : "none",
+                        border: active ? `1px solid ${C.accentBorder}` : needsMacros ? "1px solid rgba(224,123,42,0.45)" : "1px solid transparent",
                         borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
-                        alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
+                        alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent",
+                        position: "relative" } },
+                    needsMacros && React.createElement("span", { style: { position: "absolute", top: 6, right: 6, width: 7, height: 7,
+                        borderRadius: "50%", background: "#E07B2A",
+                        boxShadow: "0 0 6px rgba(224,123,42,0.9)", animation: "pulse 1.8s ease-in-out infinite" } }),
                     React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "👤"),
                     React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: 0,
-                            color: active ? C.accent : C.muted } }, "ME"));
+                            color: active ? C.accent : needsMacros ? "#E07B2A" : C.muted } }, "ME"));
             })(),
             (() => {
                 const active = tab === "method";
