@@ -131,7 +131,7 @@ exports.handler = async (event) => {
           await sendEmail({
             to: customerEmail,
             subject: "Payment failed — please update your card",
-            html: `<p>Hi,</p><p>Your latest payment couldn't be processed. Update your payment method to keep your access:</p><p><a href="${process.env.APP_URL || "https://dejan-mealplan.netlify.app"}/.netlify/functions/customer-portal">Update payment method →</a></p>`,
+            html: `<p>Hi,</p><p>Your latest payment couldn't be processed. Update your payment method to keep your access:</p><p><a href="${process.env.APP_URL || "https://soulgainz.netlify.app"}/.netlify/functions/customer-portal">Update payment method →</a></p>`,
           });
         }
         break;
@@ -179,7 +179,7 @@ function getEmailSubject(tier) {
 }
 
 function getEmailBody(tier, recipeId, amount) {
-  const appUrl = process.env.APP_URL || "https://dejan-mealplan.netlify.app";
+  const appUrl = process.env.APP_URL || "https://soulgainz.netlify.app";
 
   const tierDetails = {
     lifetime: {

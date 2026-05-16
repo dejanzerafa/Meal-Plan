@@ -8,7 +8,6 @@ const ALLOWED_ORIGINS = [
   "https://soulgainz.app",
   "https://www.soulgainz.app",
   "https://soulgainz.netlify.app",
-  "https://dejan-mealplan.netlify.app",
   "http://localhost",
   "http://127.0.0.1",
 ];

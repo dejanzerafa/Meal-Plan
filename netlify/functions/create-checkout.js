@@ -3,7 +3,7 @@
 //
 // Required environment variables (set in Netlify dashboard → Site → Environment):
 //   STRIPE_SECRET_KEY    — sk_test_... or sk_live_...
-//   APP_URL              — e.g. https://dejan-mealplan.netlify.app
+//   APP_URL              — e.g. https://soulgainz.netlify.app
 //   ALLOWED_PRICE_IDS    — comma-separated list of valid Stripe price IDs (optional but recommended)
 
 const Stripe = require("stripe");
@@ -13,7 +13,6 @@ const ALLOWED_ORIGINS = [
   "https://soulgainz.app",
   "https://www.soulgainz.app",
   "https://soulgainz.netlify.app",
-  "https://dejan-mealplan.netlify.app",
   "http://localhost",
   "http://127.0.0.1",
 ];
@@ -47,7 +46,7 @@ exports.handler = async (event) => {
   }
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
-  const appUrl = process.env.APP_URL || "https://dejan-mealplan.netlify.app";
+  const appUrl = process.env.APP_URL || "https://soulgainz.netlify.app";
 
   let payload;
   try {

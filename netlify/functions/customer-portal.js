@@ -20,7 +20,7 @@ exports.handler = async (event) => {
     const customer = customers.data[0];
     const session = await stripe.billingPortal.sessions.create({
       customer: customer.id,
-      return_url: process.env.APP_URL || "https://dejan-mealplan.netlify.app",
+      return_url: process.env.APP_URL || "https://soulgainz.netlify.app",
     });
 
     return {
