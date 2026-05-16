@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
   <meta name="theme-color" content="#E07B2A">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://formspree.io https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://api.resend.com https://fonts.googleapis.com; worker-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://api.resend.com https://fonts.googleapis.com; worker-src 'self';">
   <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png">
@@ -5407,26 +5407,28 @@ function GettingStartedModal({ C, onClose }) {
 }
 
 // ─── FEEDBACK MODAL ───────────────────────────────────────────────────────────
-// Submits to Formspree — replace FORM_ID with your Formspree endpoint ID
-const FORMSPREE_ID = "maqvbrkr";
 function FeedbackModal({ onClose }) {
     const [cat, setCat] = React.useState("Feature");
     const [msg, setMsg] = React.useState("");
-    const [email, setEmail] = React.useState("");
+    const [email, setEmail] = React.useState(localStorage.getItem("mp_acc_email") || "");
     const [status, setStatus] = React.useState("idle"); // idle | sending | ok | err
     function submit() {
         if (!msg.trim()) return;
         setStatus("sending");
-        const payload = { category: cat, message: msg };
-        if (email && email.trim()) payload._replyto = email.trim();
-        fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+        // Collect context automatically
+        const unlocks = JSON.parse(localStorage.getItem("mp_unlocks") || "{}");
+        const tier = unlocks.tier || "free";
+        const ua = navigator.userAgent || "";
+        const device = /iPhone|iPad/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Macintosh/.test(ua) ? "Mac" : /Windows/.test(ua) ? "Windows" : "Other";
+        const tab = (typeof activeTab !== "undefined" ? activeTab : null) || "unknown";
+        fetch("/.netlify/functions/send-feedback", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(payload)
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ category: cat, message: msg.trim(), email: email.trim() || null, tier, device, tab })
         }).then(function(r){
             if (r.ok) { setStatus("ok"); }
-            else { r.json().then(function(d){ console.warn("Formspree error:", d); }).catch(function(){}); setStatus("err"); }
-        }).catch(function(e){ console.warn("Formspree fetch error:", e); setStatus("err"); });
+            else { setStatus("err"); }
+        }).catch(function(){ setStatus("err"); });
     }
     var cats = ["Bug", "Feature", "Recipe", "Content", "Other"];
     var inp = { background: C.card2, border: "1px solid " + C.dim, borderRadius: 8,
