@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v127
+// SoulGainz — Service Worker v128
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v154';
+const CACHE_NAME = 'meal-plan-v155';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -39,14 +39,12 @@ self.addEventListener('install', event => {
   );
 });
 
-// ── Activate: wipe ALL old caches, then force-reload every open client ────────
+// ── Activate: wipe old caches and claim clients ───────────────────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
-      .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
-      .then(clients => clients.forEach(client => client.navigate(client.url)))
   );
 });
 
@@ -88,11 +86,21 @@ self.addEventListener('fetch', event => {
         }
         return res;
       })
-      .catch(() =>
-        caches.match(event.request).then(cached =>
-          cached || (isNavigation ? caches.match('/offline.html') : caches.match('/index.html'))
-        )
-      )
+      .catch(async () => {
+        // Always return a valid Response — never let respondWith resolve to null/undefined
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        if (isNavigation) {
+          const offline = await caches.match('/offline.html');
+          if (offline) return offline;
+          const index = await caches.match('/index.html');
+          if (index) return index;
+        }
+        return new Response('Offline — please reload when connected.', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain' },
+        });
+      })
   );
 });
 
