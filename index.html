@@ -7209,33 +7209,6 @@ function OnboardingSignup({ onDone }) {
                 borderRadius: 12, padding: "24px", textAlign: "center", color: "#4ade80",
                 fontSize: 15, fontWeight: 600, maxWidth: 380, width: "100%" } },
                 "You're in! Loading…")
-            : React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 380 } },
-                React.createElement("div", { style: { display: "flex", gap: 10 } },
-                    React.createElement("input", { value: name, onChange: e => setName(e.target.value),
-                        placeholder: "First name", style: Object.assign({}, inputStyle, { flex: 1 }) }),
-                    React.createElement("input", { value: surname, onChange: e => setSurname(e.target.value),
-                        placeholder: "Surname", style: Object.assign({}, inputStyle, { flex: 1 }) })),
-                React.createElement("input", { value: email, onChange: e => setEmail(e.target.value),
-                    type: "email", placeholder: "Your email address",
-                    onKeyDown: e => e.key === "Enter" && handleSignup(), style: inputStyle }),
-                React.createElement("button", { onClick: handleSignup, disabled: status === "loading",
-                    style: { width: "100%", background: "#E07B2A", color: "#fff", border: "none",
-                        borderRadius: 10, padding: "16px", fontSize: 15, fontWeight: 700,
-                        fontFamily: "inherit", cursor: status === "loading" ? "default" : "pointer",
-                        opacity: status === "loading" ? 0.6 : 1, letterSpacing: "0.02em" } },
-                    status === "loading" ? "Saving…" : "Get Early Access + Welcome Guide →"),
-                status === "error" && React.createElement("p", { style: { fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 } },
-                    "Something went wrong — please try again."),
-                React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: 0 } },
-                    "No spam. Just food, recipes, and the occasional fire tip."),
-                React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: "4px 0 0" } },
-                    "Your details are kept private and never shared."),
-                React.createElement("div", { style: { borderTop: "1px solid #2a2520", marginTop: 8, paddingTop: 16, textAlign: "center" } },
-                    React.createElement("button", { onClick: () => setMode("signin"),
-                        style: { background: "none", border: "none", color: "#8C8279", fontSize: 13,
-                            cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" } },
-                        "Already have an account? Sign in →")))
-
         // ── Sign-in / restore mode ────────────────────────────────────────────
         : mode === "signin"
         ? React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 380 } },
@@ -7269,7 +7242,33 @@ function OnboardingSignup({ onDone }) {
                         style: { background: "none", border: "none", color: "#8C8279", fontSize: 13,
                             cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", textAlign: "center" } },
                         "← New here? Sign up instead")))
-        : null
+        // ── Sign-up mode (default) ────────────────────────────────────────────
+        : React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 380 } },
+                React.createElement("div", { style: { display: "flex", gap: 10 } },
+                    React.createElement("input", { value: name, onChange: e => setName(e.target.value),
+                        placeholder: "First name", style: Object.assign({}, inputStyle, { flex: 1 }) }),
+                    React.createElement("input", { value: surname, onChange: e => setSurname(e.target.value),
+                        placeholder: "Surname", style: Object.assign({}, inputStyle, { flex: 1 }) })),
+                React.createElement("input", { value: email, onChange: e => setEmail(e.target.value),
+                    type: "email", placeholder: "Your email address",
+                    onKeyDown: e => e.key === "Enter" && handleSignup(), style: inputStyle }),
+                React.createElement("button", { onClick: handleSignup, disabled: status === "loading",
+                    style: { width: "100%", background: "#E07B2A", color: "#fff", border: "none",
+                        borderRadius: 10, padding: "16px", fontSize: 15, fontWeight: 700,
+                        fontFamily: "inherit", cursor: status === "loading" ? "default" : "pointer",
+                        opacity: status === "loading" ? 0.6 : 1, letterSpacing: "0.02em" } },
+                    status === "loading" ? "Saving…" : "Get Early Access + Welcome Guide →"),
+                status === "error" && React.createElement("p", { style: { fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 } },
+                    "Something went wrong — please try again."),
+                React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: 0 } },
+                    "No spam. Just food, recipes, and the occasional fire tip."),
+                React.createElement("p", { style: { fontSize: 11, color: "#8C8279", textAlign: "center", margin: "4px 0 0" } },
+                    "Your details are kept private and never shared."),
+                React.createElement("div", { style: { borderTop: "1px solid #2a2520", marginTop: 8, paddingTop: 16, textAlign: "center" } },
+                    React.createElement("button", { onClick: () => setMode("signin"),
+                        style: { background: "none", border: "none", color: "#8C8279", fontSize: 13,
+                            cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" } },
+                        "Already have an account? Sign in →")))
     );
 }
 
