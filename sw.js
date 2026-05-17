@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v125
+// SoulGainz — Service Worker v126
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v152';
+const CACHE_NAME = 'meal-plan-v153';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -31,22 +31,23 @@ const PRECACHE = [
 
 // ── Install: precache app shell ──────────────────────────────────────────────
 self.addEventListener('install', event => {
+  self.skipWaiting(); // activate immediately — take over all clients without waiting
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return Promise.allSettled(PRECACHE.map(url => cache.add(url)));
     })
   );
-  self.skipWaiting(); // activate immediately — message handler also supports controlled update banner
 });
 
-// ── Activate: remove old caches ──────────────────────────────────────────────
+// ── Activate: wipe ALL old caches, then force-reload every open client ────────
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+      .then(clients => clients.forEach(client => client.navigate(client.url)))
   );
-  self.clients.claim();
 });
 
 // ── Fetch: cache-first for CDN/assets, network-first for app shell ───────────
