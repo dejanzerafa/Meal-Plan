@@ -3,6 +3,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+  command = "mkdir -p vendor && curl -sL 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl -sL 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && echo 'React self-hosted OK'"
 
 # ── Secrets scanning ─────────────────────────────────────────────────────────
 # VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).

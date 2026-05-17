@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v126
+// SoulGainz — Service Worker v127
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v153';
+const CACHE_NAME = 'meal-plan-v154';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -23,8 +23,8 @@ const PRECACHE = [
   '/icon-72.png',
   '/icon-48.png',
   '/icon-32.png',
-  'https://unpkg.com/react@18.2.0/umd/react.production.min.js',
-  'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js',
+  '/vendor/react.min.js',
+  '/vendor/react-dom.min.js',
   'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Instrument+Sans:wght@400..700&display=swap',
   '/offline.html',
 ];
@@ -50,20 +50,19 @@ self.addEventListener('activate', event => {
   );
 });
 
-// ── Fetch: cache-first for CDN/assets, network-first for app shell ───────────
+// ── Fetch: cache-first for assets, network-first for app shell ───────────────
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
   const isApp = url.hostname === self.location.hostname;
-  const isCachedCDN = url.href.startsWith('https://unpkg.com/react@18.2.0/');
-  if (!isApp && !isCachedCDN) return;
+  if (!isApp) return; // only handle same-origin requests (React is now self-hosted)
 
-  const isAsset = /\.(png|svg|json|webp|ico|woff2?|ttf)$/.test(url.pathname);
+  const isAsset = /\.(png|svg|json|webp|ico|woff2?|ttf|js)$/.test(url.pathname);
   const isNavigation = event.request.mode === 'navigate';
 
-  // Cache-first: CDN scripts + static assets
-  if (isCachedCDN || isAsset) {
+  // Cache-first: static assets + vendor JS (React)
+  if (isAsset) {
     event.respondWith(
       caches.match(event.request).then(cached => {
         if (cached) return cached;
