@@ -1,18 +1,18 @@
 // netlify/functions/birthday-emails.js
-// Scheduled daily at 08:00 UTC â€” finds members whose birthday is today,
+// Scheduled daily at 08:00 UTC \u2014 finds members whose birthday is today,
 // issues a unique 10% Stripe promotional code, stores it, and sends a
 // branded birthday email.
 //
 // Required env vars:
-//   SUPABASE_URL         â€” https://xxxx.supabase.co
-//   SUPABASE_SERVICE_KEY â€” service_role key
-//   RESEND_API_KEY       â€” re_xxxx...
-//   STRIPE_SECRET_KEY    â€” sk_live_xxxx... (for creating promo codes)
-//   FROM_EMAIL           â€” SoulGainz <admin@soulgainz.app>
-//   APP_URL              â€” https://soulgainz.app
+//   SUPABASE_URL         \u2014 https://xxxx.supabase.co
+//   SUPABASE_SERVICE_KEY \u2014 service_role key
+//   RESEND_API_KEY       \u2014 re_xxxx...
+//   STRIPE_SECRET_KEY    \u2014 sk_live_xxxx... (for creating promo codes)
+//   FROM_EMAIL           \u2014 SoulGainz <admin@soulgainz.app>
+//   APP_URL              \u2014 https://soulgainz.app
 //
 // Stripe setup (one-time in Stripe Dashboard):
-//   1. Promotions â†’ Coupons â†’ Create coupon: 10% off, name "BIRTHDAY10BASE"
+//   1. Promotions \u2192 Coupons \u2192 Create coupon: 10% off, name "BIRTHDAY10BASE"
 //   2. Copy the coupon ID into STRIPE_BIRTHDAY_COUPON_ID env var
 //   (The function creates a unique promotional code on top of that coupon)
 
@@ -26,7 +26,7 @@ exports.handler = async (event) => {
   const appUrl      = process.env.APP_URL    || "https://soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey || !resendKey) {
-    console.log("Missing required env vars â€” skipping birthday run");
+    console.log("Missing required env vars \u2014 skipping birthday run");
     return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
   }
 
@@ -39,7 +39,7 @@ exports.handler = async (event) => {
   console.log(`Birthday check for ${month}-${day} (${year})`);
 
   try {
-    // â”€â”€ 1. Find users whose birthday is today â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // \u2500\u2500 1. Find users whose birthday is today \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     // date_of_birth is stored as DATE; we match on month + day only.
     const usersRes = await fetch(
       `${supabaseUrl}/rest/v1/users` +
@@ -75,7 +75,7 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ sent: 0 }) };
     }
 
-    // â”€â”€ 2. Process each birthday â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // \u2500\u2500 2. Process each birthday \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     const results = { sent: [], skipped: [], failed: [] };
 
     for (const user of todaysBirthdays) {
@@ -101,13 +101,13 @@ exports.handler = async (event) => {
           }
         }
 
-        // â”€â”€ Generate a unique promo code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // \u2500\u2500 Generate a unique promo code \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
         // Format: BDAY-XXXXXX-YYYY (6 random uppercase alphanumeric chars)
         const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
         const promoCode  = `BDAY-${randomPart}-${year}`;
         let stripePromoId = null;
 
-        // â”€â”€ Create Stripe promotional code (if Stripe is configured) â”€â”€â”€â”€â”€
+        // \u2500\u2500 Create Stripe promotional code (if Stripe is configured) \u2500\u2500\u2500\u2500\u2500
         if (stripeKey && couponId) {
           try {
             const stripeRes = await fetch("https://api.stripe.com/v1/promotion_codes", {
@@ -134,14 +134,14 @@ exports.handler = async (event) => {
               console.log("Stripe promo created:", promoCode);
             } else {
               const err = await stripeRes.text();
-              console.warn("Stripe promo creation warning:", err, "â€” using code without Stripe link");
+              console.warn("Stripe promo creation warning:", err, "\u2014 using code without Stripe link");
             }
           } catch (stripeErr) {
             console.warn("Stripe error (non-fatal):", stripeErr.message);
           }
         }
 
-        // â”€â”€ Store the code in Supabase â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // \u2500\u2500 Store the code in Supabase \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
         await fetch(`${supabaseUrl}/rest/v1/birthday_codes`, {
           method: "POST",
           headers: {
@@ -158,7 +158,7 @@ exports.handler = async (event) => {
           }),
         }).catch((e) => console.error("Store birthday code error:", e));
 
-        // â”€â”€ Send birthday email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // \u2500\u2500 Send birthday email \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
         const firstName = user.first_name || user.email.split("@")[0] || "there";
         const emailRes  = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -169,13 +169,13 @@ exports.handler = async (event) => {
           body: JSON.stringify({
             from:    fromEmail,
             to:      user.email,
-            subject: `Happy Birthday ${firstName}! ðŸŽ‚ Your 10% gift is inside`,
+            subject: `Happy Birthday ${firstName}! \u{1F382} Your 10% gift is inside`,
             html:    buildBirthdayEmail(firstName, promoCode, appUrl),
           }),
         });
 
         if (emailRes.ok) {
-          console.log("Birthday email sent to", user.email, "â€” code:", promoCode);
+          console.log("Birthday email sent to", user.email, "\u2014 code:", promoCode);
           results.sent.push({ email: user.email, code: promoCode });
         } else {
           const err = await emailRes.text();
@@ -209,7 +209,7 @@ exports.handler = async (event) => {
   }
 };
 
-// â”€â”€ Birthday email HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// \u2500\u2500 Birthday email HTML \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function buildBirthdayEmail(firstName, promoCode, appUrl) {
   const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     .toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
@@ -228,14 +228,14 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
             <div style="font-family:Georgia,serif;font-size:22px;letter-spacing:0.06em;">
               <span style="color:#E07B2A;">SOUL</span><span style="color:#F2EDE6;">GAINZ</span>
             </div>
-            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL Â· FUEL YOUR GAINZ</div>
+            <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL \u00B7 FUEL YOUR GAINZ</div>
           </td>
         </tr>
 
         <!-- Birthday hero -->
         <tr>
           <td style="background:linear-gradient(135deg,#1a1612 0%,#2d1f0e 100%);padding:32px;text-align:center;">
-            <div style="font-size:56px;margin-bottom:12px;">ðŸŽ‚</div>
+            <div style="font-size:56px;margin-bottom:12px;">\u{1F382}</div>
             <h1 style="font-family:Georgia,serif;font-size:28px;color:#F2EDE6;margin:0 0 8px;">Happy Birthday, ${firstName}!</h1>
             <p style="font-size:14px;color:#8C8279;margin:0;letter-spacing:0.08em;">FROM THE SOULGAINZ KITCHEN TO YOU</p>
           </td>
@@ -245,7 +245,7 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
         <tr>
           <td style="padding:32px;">
             <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
-              Your birthday deserves a treat â€” and we don't mean the cheat meal ðŸ˜„. We're giving you <strong style="color:#1a1612;">10% off</strong> any unlock or plan upgrade, just for today (and the next 30 days).
+              Your birthday deserves a treat \u2014 and we don't mean the cheat meal \u{1F604}. We're giving you <strong style="color:#1a1612;">10% off</strong> any unlock or plan upgrade, just for today (and the next 30 days).
             </p>
 
             <!-- Discount code block -->
@@ -254,7 +254,7 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
                 <td style="background:#1a1612;border-radius:12px;padding:24px;text-align:center;">
                   <div style="font-size:11px;color:#8C8279;letter-spacing:0.14em;margin-bottom:10px;">YOUR BIRTHDAY DISCOUNT</div>
                   <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#E07B2A;letter-spacing:0.1em;">${promoCode}</div>
-                  <div style="font-size:11px;color:#8C8279;margin-top:10px;">10% off Â· expires ${expiryDate}</div>
+                  <div style="font-size:11px;color:#8C8279;margin-top:10px;">10% off \u00B7 expires ${expiryDate}</div>
                 </td>
               </tr>
             </table>
@@ -262,17 +262,17 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
             <!-- What to use it on -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">ðŸ”“</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">\u{1F513}</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Unlock a recipe</div>
                   <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Any single recipe unlock for just $1.61 instead of $1.99.</div>
                 </td>
               </tr>
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">â™¾ï¸</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">\u267E\uFE0F</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Go lifetime</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Lifetime access drops to $53.99 â€” every recipe, every future drop, forever.</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Lifetime access drops to $53.99 \u2014 every recipe, every future drop, forever.</div>
                 </td>
               </tr>
             </table>
@@ -282,7 +282,7 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
               <tr>
                 <td align="center">
                   <a href="${appUrl}" style="display:inline-block;background:#E07B2A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 40px;border-radius:10px;letter-spacing:0.02em;">
-                    Claim Your Birthday Gift â†’
+                    Claim Your Birthday Gift \u2192
                   </a>
                 </td>
               </tr>
@@ -300,7 +300,7 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
         <tr>
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
-              Cook once. Eat all week. And have a brilliant birthday. ðŸŽ‰<br>
+              Cook once. Eat all week. And have a brilliant birthday. \u{1F389}<br>
               Questions? <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
             </p>
           </td>
