@@ -1433,6 +1433,28 @@ const RECIPES = [
         note: "Air fry broccoli immediately after chicken — same basket, no cleaning needed. Thicker chicken breasts need the full 20 min. Keeps 5 days refrigerated; reheat in microwave 90 sec.",
     },
     {
+        id: "m53", category: "main",
+        name: "🍗 Italian Herb Chicken, Sweet Potato & Broccoli", subtitle: "Air Fryer · batch cook",
+        badge: "💨 Air Fryer", carb: "🍠 Sweet Potato", portions: 7,
+        perPortion: {kcal:440, protein:48, carbs:51, fat:6.3},
+        batchItems: [
+            { key: "m53_chick", label: "Chicken breast (skinless, raw)", qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
+            { key: "m53_swpot", label: "Sweet potato (cubed, raw)",      qty: 1400, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1     },
+            { key: "m53_broc",  label: "Broccoli (florets)",             qty: 1050, unit: "g",  cat: "Vegetables", ingId: 100, role: "veg",     baseQty: 150 },
+            { key: "m53_herb",  label: "Italian herb seasoning",         qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2   },
+            { key: "m53_oil",   label: "Olive oil spray",                qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71},
+        ],
+        steps: [
+            "Season chicken breasts generously with Italian herb seasoning, salt, and black pepper on both sides. Spray lightly with olive oil.",
+            "Air fry chicken at 200°C for 18–20 min, flipping halfway. Check internal temp reaches 75°C. Rest 3 min, then slice or dice.",
+            "Peel and cube sweet potato into 2cm pieces. Spray with oil and season with salt.",
+            "Air fry sweet potato at 200°C for 20–25 min, shaking halfway, until golden and tender.",
+            "Spray broccoli florets with oil and season. Air fry at 200°C for 8–10 min until tender-crisp.",
+            "Weigh total batch, divide equally into 7 containers. Portion chicken, sweet potato, and broccoli evenly.",
+        ],
+        note: "Lower carb and lower calorie than the rice version — great for cut days or higher-fat meal plans. Sweet potato and broccoli can air fry together in the same basket. Keeps 5 days refrigerated.",
+    },
+    {
         id: "m25", category: "main",
         name: "🍗 High-Protein KFC Mac & Cheese", subtitle: "Air fryer · 45 min",
         badge: "💨 Air Fryer", carb: "🧀 Mac & Cheese", portions: 4,
@@ -4078,6 +4100,12 @@ const INGREDIENT_MACROS = {
   "v9_spin": {kcal:23.0,p:2.9,c:3.6,f:0.4},  // Baby Spinach
   "v9_tom": {kcal:18.0,p:0.9,c:3.9,f:0.2},  // Cherry Tomatoes
   // ─── m52 Italian Herb Chicken, Rice & Broccoli ───────────────────────────
+  // ─── m53 Italian Herb Chicken, Sweet Potato & Broccoli ───────────────────
+  "m53_chick": {kcal:114.0, p:22.5, c:0.0,  f:2.6},   // Chicken breast
+  "m53_swpot": {kcal:86.0,  p:1.6,  c:20.0, f:0.1},   // Sweet potato
+  "m53_broc":  {kcal:34.0,  p:2.8,  c:6.6,  f:0.4},   // Broccoli
+  "m53_herb":  {kcal:265.0, p:13.0, c:44.0, f:7.0},   // Italian herb seasoning
+  "m53_oil":   {kcal:884.0, p:0.0,  c:0.0,  f:100.0}, // Olive oil spray
   "m52_chick": {kcal:114.0, p:22.5, c:0.0,  f:2.6},   // Chicken breast (skinless, raw)
   "m52_rice":  {kcal:365.0, p:7.1,  c:80.0, f:0.7},   // White rice (dry)
   "m52_broc":  {kcal:34.0,  p:2.8,  c:6.6,  f:0.4},   // Broccoli
