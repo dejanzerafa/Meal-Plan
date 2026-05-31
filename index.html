@@ -402,6 +402,7 @@ const ING_FLAT = [
   {id:297, name:"Cannellini Beans (canned, drained)", cat:"Legumes & Beans", kcal:130, p:9.0, c:24.0, f:0.5},
   {id:298, name:"Dark Chocolate 72% (Godiva)", cat:"Snacks & Treats", kcal:598, p:7.8, c:33.7, f:43.4},
   {id:299, name:"Lotus Biscoff Biscuit", cat:"Snacks & Treats", kcal:484, p:5.2, c:70.0, f:19.2, unitG:7.5},
+  {id:300, name:"Italian Herb Seasoning (dried)", cat:"Herbs & Spices", kcal:265, p:13.0, c:44.0, f:7.0},
   {id:53, name:"Feta Cheese", cat:"Dairy & Eggs", kcal:264, p:14, c:4.1, f:21},
   {id:193, name:"Fish Sauce", cat:"Condiments & Sauces", kcal:35, p:5, c:3.6, f:0},
   {id:168, name:"Flaxseeds / Linseeds", cat:"Fats & Nuts", kcal:534, p:18, c:29, f:42},
@@ -1409,6 +1410,27 @@ const RECIPES = [
             "Combine steak, rice, and veg in a large bowl. Weigh, divide equally, and distribute sauce per container.",
         ],
         note: "Top sirloin or any lean cut of beef works well — ask your butcher for a similar lean option.",
+    },
+    {
+        id: "m52", category: "main",
+        name: "🍗 Italian Herb Chicken, Rice & Broccoli", subtitle: "Air Fryer · batch cook",
+        badge: "💨 Air Fryer", carb: "🌾 Rice", portions: 7,
+        perPortion: {kcal:523, protein:50, carbs:67, fat:6.6},
+        batchItems: [
+            { key: "m52_chick", label: "Chicken breast (skinless, raw)", qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
+            { key: "m52_rice",  label: "White rice (dry)",               qty: 490,  unit: "g",  cat: "Carbs",      ingId: 60,  role: "carbs",   share: 1     },
+            { key: "m52_broc",  label: "Broccoli (florets)",             qty: 1050, unit: "g",  cat: "Vegetables", ingId: 100, role: "veg",     baseQty: 150 },
+            { key: "m52_herb",  label: "Italian herb seasoning",         qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2   },
+            { key: "m52_oil",   label: "Olive oil spray",                qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71},
+        ],
+        steps: [
+            "Season chicken breasts generously with Italian herb seasoning, salt, and black pepper on both sides. Spray lightly with olive oil.",
+            "Air fry at 200°C for 18–20 min, flipping halfway. Check internal temp reaches 75°C. Rest 3 min, then slice or dice.",
+            "Cook rice in a rice cooker or pot (1:1.5 rice to water ratio). Fluff with a fork when done.",
+            "Spray broccoli florets with oil, season with salt. Air fry at 200°C for 8–10 min until tender-crisp with light char.",
+            "Weigh total batch, divide equally into 7 containers. Portion chicken, rice, and broccoli evenly.",
+        ],
+        note: "Air fry broccoli immediately after chicken — same basket, no cleaning needed. Thicker chicken breasts need the full 20 min. Keeps 5 days refrigerated; reheat in microwave 90 sec.",
     },
     {
         id: "m25", category: "main",
@@ -4055,6 +4077,12 @@ const INGREDIENT_MACROS = {
   "v9_oil": {kcal:884.0,p:0.0,c:0.0,f:100.0},  // Olive Oil (extra virgin)
   "v9_spin": {kcal:23.0,p:2.9,c:3.6,f:0.4},  // Baby Spinach
   "v9_tom": {kcal:18.0,p:0.9,c:3.9,f:0.2},  // Cherry Tomatoes
+  // ─── m52 Italian Herb Chicken, Rice & Broccoli ───────────────────────────
+  "m52_chick": {kcal:114.0, p:22.5, c:0.0,  f:2.6},   // Chicken breast (skinless, raw)
+  "m52_rice":  {kcal:365.0, p:7.1,  c:80.0, f:0.7},   // White rice (dry)
+  "m52_broc":  {kcal:34.0,  p:2.8,  c:6.6,  f:0.4},   // Broccoli
+  "m52_herb":  {kcal:265.0, p:13.0, c:44.0, f:7.0},   // Italian herb seasoning
+  "m52_oil":   {kcal:884.0, p:0.0,  c:0.0,  f:100.0}, // Olive oil spray
   // ─── bf13 Blueberry Cinnamon Protein Oats ────────────────────────────────
   "bf13_oats":  {kcal:389.0, p:17.0, c:66.0,  f:7.0},   // Rolled oats
   "bf13_whey":  {kcal:400.0, p:80.0, c:8.0,   f:4.0, unitG:30}, // Whey protein (1 scoop)
