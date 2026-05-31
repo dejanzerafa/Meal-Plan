@@ -2733,7 +2733,7 @@ const RECIPES = [
             { key: "bf13_milk",  label: "Skimmed milk",                   qty: 60,  unit: "mL",  cat: "Dairy"   , ingId: 50  , role: "fixed",   baseQty: 60  },
             { key: "bf13_yog",   label: "Greek yogurt 0%",                qty: 50,  unit: "g",   cat: "Dairy"   , ingId: 47  , role: "protein", share: 0.182 },
             { key: "bf13_blue",  label: "Blueberries",                    qty: 40,  unit: "g",   cat: "Carbs"   , ingId: 143 , role: "carbs",   share: 0.143 },
-            { key: "bf13_cinn",  label: "Cinnamon",                       qty: 2,   unit: "g",   cat: "Spices"  , ingId: 220 , role: "fixed",   baseQty: 2   },
+            { key: "bf13_cinn",  label: "Cinnamon",                       qty: 2,   unit: "g",   cat: "Aromatics", ingId: 220 , role: "fixed",   baseQty: 2   },
         ],
         steps: [
             "In a bowl or jar, combine rolled oats, skimmed milk, Greek yogurt, and whey protein. Stir until fully mixed and smooth.",
@@ -2754,7 +2754,7 @@ const RECIPES = [
             { key: "bf14_yog",   label: "Greek yogurt 0%",                qty: 50,  unit: "g",   cat: "Dairy"   , ingId: 47  , role: "protein", share: 0.182 },
             { key: "bf14_ban",   label: "Banana (half, sliced)",          qty: 50,  unit: "g",   cat: "Carbs"   , ingId: 140 , role: "carbs",   share: 0.208 },
             { key: "bf14_blue",  label: "Blueberries",                    qty: 74,  unit: "g",   cat: "Carbs"   , ingId: 143 , role: "carbs",   share: 0.188 },
-            { key: "bf14_cinn",  label: "Cinnamon",                       qty: 2,   unit: "g",   cat: "Spices"  , ingId: 220 , role: "fixed",   baseQty: 2   },
+            { key: "bf14_cinn",  label: "Cinnamon",                       qty: 2,   unit: "g",   cat: "Aromatics", ingId: 220 , role: "fixed",   baseQty: 2   },
         ],
         steps: [
             "In a bowl or jar, combine rolled oats, skimmed milk, Greek yogurt, and whey protein. Stir until fully mixed.",
@@ -2774,9 +2774,9 @@ const RECIPES = [
             { key: "bf15_milk",  label: "Skimmed milk",                      qty: 60,  unit: "mL", cat: "Dairy"   , ingId: 50  , role: "fixed",   baseQty: 60  },
             { key: "bf15_yog",   label: "Greek yogurt 0%",                   qty: 50,  unit: "g",  cat: "Dairy"   , ingId: 47  , role: "protein", share: 0.182 },
             { key: "bf15_ban",   label: "Banana (half, sliced)",             qty: 50,  unit: "g",  cat: "Carbs"   , ingId: 140 , role: "carbs",   share: 0.229 },
-            { key: "bf15_choc",  label: "Godiva 72% dark chocolate, melted", qty: 35,  unit: "g",  cat: "Snacks"  , ingId: 298 , role: "fat",     share: 1     },
-            { key: "bf15_cinn",  label: "Cinnamon",                          qty: 2,   unit: "g",  cat: "Spices"  , ingId: 220 , role: "fixed",   baseQty: 2   },
-            { key: "bf15_lotus", label: "Lotus biscuit (half, crumbled)",    qty: 1,   unit: "pc", cat: "Snacks"  , ingId: 299 , role: "carbs",   share: 0.104 },
+            { key: "bf15_choc",  label: "Godiva 72% dark chocolate, melted", qty: 35,  unit: "g",  cat: "Sauces"  , ingId: 298 , role: "fat",     share: 1     },
+            { key: "bf15_cinn",  label: "Cinnamon",                          qty: 2,   unit: "g",  cat: "Aromatics", ingId: 220 , role: "fixed",   baseQty: 2   },
+            { key: "bf15_lotus", label: "Lotus biscuit (half, crumbled)",    qty: 3.75, unit: "g",   cat: "Carbs", ingId: 299 , role: "carbs",   share: 0.104 },
         ],
         steps: [
             "In a bowl or jar, combine rolled oats, skimmed milk, Greek yogurt, and whey protein. Stir well until smooth.",
@@ -4045,6 +4045,30 @@ const INGREDIENT_MACROS = {
   "v9_oil": {kcal:884.0,p:0.0,c:0.0,f:100.0},  // Olive Oil (extra virgin)
   "v9_spin": {kcal:23.0,p:2.9,c:3.6,f:0.4},  // Baby Spinach
   "v9_tom": {kcal:18.0,p:0.9,c:3.9,f:0.2},  // Cherry Tomatoes
+  // ─── bf13 Blueberry Cinnamon Protein Oats ────────────────────────────────
+  "bf13_oats":  {kcal:389.0, p:17.0, c:66.0,  f:7.0},   // Rolled oats
+  "bf13_whey":  {kcal:400.0, p:80.0, c:8.0,   f:4.0, unitG:30}, // Whey protein (1 scoop)
+  "bf13_milk":  {kcal:34.0,  p:3.4,  c:4.9,   f:0.2},   // Skimmed milk
+  "bf13_yog":   {kcal:59.0,  p:10.0, c:3.6,   f:0.4},   // Greek yogurt 0%
+  "bf13_blue":  {kcal:57.0,  p:0.7,  c:14.0,  f:0.3},   // Blueberries
+  "bf13_cinn":  {kcal:247.0, p:4.0,  c:81.0,  f:1.2},   // Cinnamon
+  // ─── bf14 Banana Blueberry Protein Oats ──────────────────────────────────
+  "bf14_oats":  {kcal:389.0, p:17.0, c:66.0,  f:7.0},
+  "bf14_whey":  {kcal:400.0, p:80.0, c:8.0,   f:4.0, unitG:30},
+  "bf14_milk":  {kcal:34.0,  p:3.4,  c:4.9,   f:0.2},
+  "bf14_yog":   {kcal:59.0,  p:10.0, c:3.6,   f:0.4},
+  "bf14_ban":   {kcal:89.0,  p:1.1,  c:23.0,  f:0.3},   // Banana
+  "bf14_blue":  {kcal:57.0,  p:0.7,  c:14.0,  f:0.3},
+  "bf14_cinn":  {kcal:247.0, p:4.0,  c:81.0,  f:1.2},
+  // ─── bf15 Banana Dark Chocolate Lotus Protein Oats ───────────────────────
+  "bf15_oats":  {kcal:389.0, p:17.0, c:66.0,  f:7.0},
+  "bf15_whey":  {kcal:400.0, p:80.0, c:8.0,   f:4.0, unitG:30},
+  "bf15_milk":  {kcal:34.0,  p:3.4,  c:4.9,   f:0.2},
+  "bf15_yog":   {kcal:59.0,  p:10.0, c:3.6,   f:0.4},
+  "bf15_ban":   {kcal:89.0,  p:1.1,  c:23.0,  f:0.3},
+  "bf15_choc":  {kcal:598.0, p:7.8,  c:33.7,  f:43.4},  // Godiva 72% dark chocolate
+  "bf15_cinn":  {kcal:247.0, p:4.0,  c:81.0,  f:1.2},
+  "bf15_lotus": {kcal:484.0, p:5.2,  c:70.0,  f:19.2},  // Lotus Biscoff biscuit
 };
 
 
