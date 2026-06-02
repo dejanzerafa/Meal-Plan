@@ -398,8 +398,8 @@ const ING_FLAT = [
   {id:291, name:"Gruyère cheese", cat:"Dairy & Eggs", kcal:413, p:30, c:0.4, f:32},
   {id:292, name:"Flank steak (raw)", cat:"Meat & Fish", kcal:165, p:21, c:0, f:8},
   {id:293, name:"Everything Bagel (whole grain)", cat:"Grains & Carbs", kcal:263, p:9.8, c:49.0, f:3.0, unitG:105},
-  {id:294, name:"Pepper Jack Cheese", cat:"Dairy & Eggs", kcal:357, p:21.0, c:1.0, f:29.0},
-  {id:295, name:"Light Cheese Slices", cat:"Dairy & Eggs", kcal:250, p:24.0, c:2.5, f:16.0},
+  {id:294, name:"Pepper Jack Cheese", cat:"Dairy & Eggs", kcal:357, p:21.0, c:1.0, f:29.0, unitG:28},
+  {id:295, name:"Light Cheese Slices", cat:"Dairy & Eggs", kcal:250, p:24.0, c:2.5, f:16.0, unitG:21},
   {id:296, name:"Red Chilli (fresh)", cat:"Vegetables", kcal:40, p:1.5, c:8.8, f:0.4},
   {id:297, name:"Cannellini Beans (canned, drained)", cat:"Legumes & Beans", kcal:130, p:9.0, c:24.0, f:0.5},
   {id:298, name:"Dark Chocolate 72% (Godiva)", cat:"Snacks & Treats", kcal:598, p:7.8, c:45.9, f:42.6},
@@ -605,7 +605,6 @@ const RECIPES = [
             "Transfer to a large baking dish. Bake at 180°C for 20 min until top is lightly golden.",
             "Rest 5 min. Weigh total casserole, divide equally, and portion into containers.",
         ],
-        note: "A hearty, no-fuss American casserole — ground beef, rice, and vegetables in one dish. Cottage cheese blended into the sauce adds 12g protein per 100g without any visible dairy texture. This recipe scales up easily if you need to feed a crowd on Veterans Day.",
     },
     {
         category: "main", id: "m40",
@@ -630,7 +629,6 @@ const RECIPES = [
             "Steam or blanch green beans 4 min. Season with salt and pepper.",
             "Weigh cooked chicken, divide equally. Portion thighs, potatoes, and green beans into containers.",
         ],
-        note: "Thighs are juicier than breast and more forgiving to reheat. Skin removed keeps fat in check. Best reheated in an air fryer or oven.",
     },
     {
         category: "main", id: "m37",
@@ -656,7 +654,6 @@ const RECIPES = [
             "Portion cod, potatoes, and vegetables across containers.",
             "Squeeze remaining lemon over each portion. Refrigerate immediately.",
         ],
-        note: "Cod is one of the leanest fish proteins available (~20g protein per 100g). Use tilapia or basa as a budget substitute.",
     },
     {
         category: "main", id: "hol6",
@@ -689,13 +686,11 @@ const RECIPES = [
             "Layer rice, corn-bean salsa, and sliced BBQ chicken in each container.",
             "Add a dollop of Greek yogurt ranch on top. Drizzle with olive oil. Seal and refrigerate.",
         ],
-        note: "BBQ chicken, corn, and black beans are as American as it gets on July 4th. Sugar-free BBQ sauce saves ~50 kcal per portion without losing any of the smoky-sweet flavour. This is the highest-carb recipe in the seasonal bundle — great on heavy training days.",
     },
     {
         category: "main", id: "m13", name: "🥩 Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
         perPortion: {kcal:753, protein:54.8, carbs:81.3, fat:22.4},
-        note: "Steak replaced with lean 5% beef mince. Cheese blend: 196g FF CC + 37g light mozz + 12g parmesan. Sour cream reduced to 140g to keep fat at target. Drain beef thoroughly.",
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1300, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "rice_white", label: "White rice (jasmine)", qty: 630, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -721,7 +716,6 @@ const RECIPES = [
         category: "main", id: "m04", name: "🥩 Beef Mince Bake", subtitle: "Lean mince · white & sweet potato · roasted veg",
         badge: "🌬️ Oven", carb: "Potato", portions: 7,
         perPortion: {kcal:705, protein:54.2, carbs:81.8, fat:19.1},
-        note: "Use PAM spray only for roasting — the ½ tbsp olive oil drizzle is added at serving. 50/50 potato split gives better glycaemic balance vs all white potato.",
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "white_potato", label: "White potato (raw)", qty: 1250, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 0.459},
@@ -743,7 +737,6 @@ const RECIPES = [
         category: "main", id: "m02", name: "🥩 Big Mac Protein Pasta", subtitle: "Lean beef · pasta · high-protein Big Mac sauce",
         badge: "🍳 Stovetop", carb: "Pasta", portions: 7,
         perPortion: {kcal:769, protein:58.8, carbs:87.4, fat:19.3},
-        note: "Drain beef thoroughly after browning — removes excess fat and keeps macro accurate. No cheese needed in this recipe.",
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1350, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 750, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -794,13 +787,11 @@ const RECIPES = [
             "Weigh total chilli, divide equally, and portion into containers.",
             "Serve with optional low-fat sour cream or plain Greek yogurt on top (not included in macros).",
         ],
-        note: "Orange-themed pumpkin and black beans make this batch authentically Halloween-coloured and macro-excellent. Chipotle gives deep smoky heat without adding fat. The chilli thickens as it cools — great for meal prep.",
     },
     {
         category: "main", id: "m09", name: "🍗 Buffalo Ranch Chicken Pasta", subtitle: "Slow-cooked buffalo chicken · pasta · beef bacon · ranch",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
-        perPortion: {kcal:776,protein:64,carbs:85,fat:19.1},
-        note: "Cheese blend: 256g FF cottage cheese + 48g light mozz + 16g parmesan replaces fat-free mozzarella and cheddar. Chicken increased to 1.25kg for protein.",
+        perPortion: {kcal:764,protein:62.4,carbs:80.7,fat:18.8},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1250, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "bacon_bits", label: "Beef bacon (cooked and crumbled)", qty: 86, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.023},
@@ -808,7 +799,6 @@ const RECIPES = [
             { key: "cottage_cheese_ff", label: "Fat-free cottage cheese", qty: 256, unit: "g", cat: "Dairy" , ingId: 42 , role: "protein", share: 0.056},
             { key: "mozz_light", label: "Président Light mozzarella (shredded)", qty: 48, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.025},
             { key: "parmesan", label: "Parmesan", qty: 16, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 0.043},
-            { key: "sun_dried_tom", label: "Sun-dried tomatoes", qty: 60, unit: "g", cat: "Vegetables" , ingId: 133 , role: "veg", baseQty: 20.86},
             { key: "hot_sauce", label: "Frank's Red Hot Wings Sauce", qty: 166, unit: "mL", cat: "Sauces" , ingId: 199 , role: "fixed", baseQty: 23.71},
             { key: "ranch_dressing", label: "Hidden Valley Fat-Free Ranch", qty: 166, unit: "mL", cat: "Sauces" , ingId: 204 , role: "fixed", baseQty: 23.71},
         
@@ -816,7 +806,7 @@ const RECIPES = [
         steps: [
             "Add chicken, Frank's Red Hot Sauce and ranch dressing to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Drain. Cook beef bacon until crispy, crumble.",
-            "Shred chicken. Add pasta, bacon, sun-dried tomatoes, cottage cheese and Président Light mozzarella. Mix well.",
+            "Shred chicken. Add pasta, bacon, cottage cheese and Président Light mozzarella. Mix well.",
             "Top each portion with a sprinkle of parmesan. Divide into containers.",
             "Add olive oil per portion.",
         ],
@@ -826,7 +816,7 @@ const RECIPES = [
         name: "🥩 Cheeseburger Burritos",
         subtitle: "Stovetop · ~25 min",
         badge: "🍳 Stovetop", carb: "Tortilla", portions: 7,
-        perPortion: {kcal:510, protein:43.7, carbs:42.1, fat:18.4},
+        perPortion: {kcal:563, protein:48.7, carbs:42.6, fat:21.8},
         batchItems: [
             { key: "m1-beef", label: "95/5 lean ground beef (raw)", qty: 1190, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m1-tortillas", label: "Large wholemeal tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 88 , role: "carbs", share: 1},
@@ -846,7 +836,6 @@ const RECIPES = [
             "Fold both ends in, then roll tightly to form burritos.",
             "Toast burritos on a lightly oiled skillet over medium-high heat until golden on both sides.",
         ],
-        note: "Use high-fibre wholemeal tortilla wraps to keep carbs in check. Choose lean beef mince (5% fat) for a lower-fat filling. Adjust mustard quantity to taste.",
     },
     {
         category: "main", id: "m38",
@@ -872,7 +861,6 @@ const RECIPES = [
             "Add baby spinach and stir until wilted (1–2 min). Return chicken and mix everything together.",
             "Weigh total, divide equally, portion into containers.",
         ],
-        note: "Lowest-carb option in the database. Ideal for users dialling back carbs while keeping protein high. Swap cauli rice for jasmine rice to add ~60g carbs if needed.",
     },
     {
         category: "main", id: "m45",
@@ -900,13 +888,11 @@ const RECIPES = [
             "Remove chicken, shred with two forks, return to pot. Stir in spinach until wilted.",
             "Adjust seasoning. Portion soup into containers — lentils continue to thicken overnight, which is normal.",
         ],
-        note: "Red lentils dissolve into the broth, creating a naturally thick, hearty soup. Exceptionally high protein-per-kcal ratio. Keeps 5 days refrigerated.",
     },
     {
         category: "main", id: "m14", name: "🍗 Chicken Alfredo Red Sauce", subtitle: "Slow-cooked chicken · Alfredo · Italian tomato sauce · cottage cheese",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:719,protein:56,carbs:77,fat:20.7},
-        note: "Chicken increased to 1.12kg. Cheese blend: 182g FF CC + 34g light mozz + 11g parmesan replaces fat-free mozzarella. Prego Alfredo and Italian sauces available at most supermarkets.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1119, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (farfalle or any)", qty: 600, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -929,7 +915,6 @@ const RECIPES = [
         category: "main", id: "m12", name: "🍗 Chicken Bacon Mac", subtitle: "Chicken · beef bacon · pasta · blended cottage cheese sauce",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:788,protein:64,carbs:80,fat:22.4},
-        note: "Cheese blend: 490g FF CC + 22g light mozz + parmesan replaces all fat-free mozzarella and cheddar. Beef bacon replaces pork bacon. Most involved recipe but excellent flavour.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1035, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "bacon_beef", label: "Beef bacon", qty: 220, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.061},
@@ -976,7 +961,6 @@ const RECIPES = [
             "Turn off heat. Return mushroom mix to pan. Pour sauce over everything and stir — residual heat thickens the sauce.",
             "Finish with fresh parsley. Serve with rice or roasted veg.",
         ],
-        note: "Scale to 1.2kg chicken for 8 portions. The coffee adds depth — you won't taste it directly. Extremely lean, ideal lean meal.",
     },
     {
         id: "v3", category: "main",
@@ -1005,13 +989,11 @@ const RECIPES = [
             "Mix roasted chickpeas and vegetables through the couscous.",
             "Portion into containers. Add fresh cucumber when serving for crunch.",
         ],
-        note: "Boost protein: stir in 100g of feta per container (+6g protein). Contains gluten (couscous). Harissa level is mild at 40g — double it if you want heat.",
     },
     {
         category: "main", id: "m07", name: "🍗 Chipotle Chicken Bowl", subtitle: "Blended chipotle · rice · corn · pico · Daisy sour cream",
         badge: "🥘 Crockpot", carb: "Rice", portions: 7,
         perPortion: {kcal:796,protein:69,carbs:88,fat:18.4},
-        note: "Rice reduced to 560g (carb correction). Cheese blend: 118g FF cottage cheese + 22g light mozz + 7g parmesan. Stock: 2 bouillon chicken cubes in 1L hot water.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1637, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "White rice (long grain)", qty: 560, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -1059,7 +1041,6 @@ const RECIPES = [
             "Weigh total cooked chicken, divide equally. Portion rice, chicken, and broccoli into containers.",
             "Finish each container with a squeeze of fresh lemon.",
         ],
-        note: "The most macro-friendly prep you can make. Season chicken generously — it's the flavour foundation.",
     },
     {
         id: "m26", category: "main",
@@ -1089,7 +1070,6 @@ const RECIPES = [
             "Add drained pasta, diced steak, and parmesan. Mix well. Fold in Gruyère.",
             "Cover and cook on low heat 10–15 min until sauce thickens. Portion into containers.",
         ],
-        note: "A higher calorie batch — ideal for muscle-gain phases or active training weeks. Freezer-friendly. Gruyère optional; sub with extra parmesan.",
     },
     {
         id: "m21", category: "main",
@@ -1111,7 +1091,6 @@ const RECIPES = [
             "Air fry at 180°C for 25–30 minutes until golden and crispy and internal temp reaches 75°C.",
             "Serve with a dipping sauce — Greek yogurt mixed with Dijon mustard and garlic powder works perfectly.",
         ],
-        note: "Batch for 5 days (2 balls per day). Adjust portions field for 3 or 7-day batches — macros recalculate automatically. The Corn Flake crust gives real crunch without deep frying. Kids love these too.",
     },
     {
         category: "main", id: "m43",
@@ -1139,13 +1118,11 @@ const RECIPES = [
             "Pour egg mixture over the vegetables in the pan. Bake at 190°C for 20–22 min until set and lightly golden.",
             "Cool, cut frittata into portions. Serve each with a portion of roasted potatoes.",
         ],
-        note: "Egg whites keep fat minimal while delivering exceptional protein. Frittata slices reheat well — microwave 60 sec or air fryer 3 min.",
     },
     {
         category: "main", id: "m05", name: "🍗 French Onion Pasta", subtitle: "Chicken · caramelized onions · cottage cheese & parmesan sauce",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:764,protein:63,carbs:80,fat:20.5},
-        note: "Onions must turn dark brown — takes ~45 min, be patient. Cheese blend: 112g FF cottage cheese + 21g Président Light mozzarella + parmesan. Stock: 1 bouillon beef cube in 750mL hot water.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1130, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (penne or short)", qty: 650, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1173,7 +1150,6 @@ const RECIPES = [
         category: "main", id: "m10", name: "🍗 Garlic Parmesan Chicken Pasta", subtitle: "Chicken · broccoli · garlic parmesan & cream cheese sauce",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:828, protein:66.1, carbs:83.5, fat:24.7},
-        note: "Use light cream pasta sauce + 4 tbsp minced garlic + Italian herbs in place of branded garlic parmesan sauce. Cheese blend: 94g FF CC + 18g light mozz. Parmesan stays at 156g for the garlic parmesan flavour profile.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1150, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 640, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1221,7 +1197,6 @@ const RECIPES = [
             "Return shrimp to pan, add soy sauce and snap peas. Toss 1 min.",
             "Weigh total stir-fry, divide equally. Portion with brown rice into containers.",
         ],
-        note: "Shrimp cooks in minutes — don't overcook or it turns rubbery. Brown rice provides slower-digesting carbs than white.",
     },
     {
         category: "main", id: "m46",
@@ -1249,7 +1224,6 @@ const RECIPES = [
             "Toss orzo with cucumber, tomatoes, olives, feta, lemon juice, and a drizzle of olive oil.",
             "Weigh sliced chicken, divide equally. Portion over orzo salad in containers.",
         ],
-        note: "Mediterranean flavour profile. Orzo holds well when dressed — can be prepped up to 4 days. Crumble feta on just before eating if you prefer it fresh.",
     },
     {
         id: "v4", category: "main", portions: 5,
@@ -1276,13 +1250,11 @@ const RECIPES = [
             "Divide quinoa into containers. Layer roasted veg, then egg-cottage cheese mixture, then wilted greens.",
             "Top each container with crumbled feta or Parmesan. Refrigerate — eat within 3 days for best egg texture.",
         ],
-        note: "One of the highest-protein vegetarian options in the library. Eggs and cottage cheese together make a complete, creamy high-protein combo. Contains eggs and dairy.",
     },
     {
         category: "main", id: "m11", name: "🍗 Green Pepper & Onion Pasta", subtitle: "Chicken · sautéed green peppers · creamy + tomato sauce",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:760,protein:62,carbs:78,fat:21.9},
-        note: "Use any light creamy pasta sauce + smoked paprika + chipotle powder as substitute for branded creamy poblano sauce. Chicken increased to 1.3kg + cottage cheese added to sauce to fix protein (was 46P, now 62P).",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1300, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (spaghetti or any)", qty: 615, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1335,7 +1307,6 @@ const RECIPES = [
             "Slice steaks thin against the grain. Weigh and divide across containers.",
             "Plate sweet potato mash, broccoli, and steak slices. Drizzle with yogurt steak sauce and pan juices.",
         ],
-        note: "The Father's Day classic — steak, done right for the whole week. Sirloin is the leanest cut that still delivers serious flavour. Searing in batches is non-negotiable; do not crowd the pan or you'll steam the steak. The yogurt steak sauce replaces butter-heavy béarnaise at a fraction of the fat.",
     },
     {
         category: "main", id: "m39",
@@ -1362,7 +1333,6 @@ const RECIPES = [
             "Add canned tomatoes and drained black beans. Simmer 8–10 min.",
             "Portion rice, turkey-bean mixture across containers. Squeeze lime over each portion.",
         ],
-        note: "Black beans add fibre, texture, and slow-release carbs. Use 99/1 turkey for lower fat, or 93/7 for a bit more flavour.",
     },
     {
         category: "main", id: "hol3",
@@ -1395,14 +1365,13 @@ const RECIPES = [
             "Crumble feta and add a dollop of mint yogurt sauce over each container.",
             "Drizzle with remaining lemon juice before sealing. Best consumed within 4 days.",
         ],
-        note: "Lamb is classically associated with Easter across Mediterranean, British, and Australian traditions. The feta and mint yogurt sauce elevates this into a genuinely special meal. Lamb leftovers are exceptional cold — don't be afraid to eat it straight from the fridge.",
     },
     {
         category: "main", id: "m51",
         name: "🥩 Hibachi Steak Bowl",
         subtitle: "Stovetop · ~30 min",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
-        perPortion: {kcal:576, protein:41.3, carbs:54.7, fat:19.8},
+        perPortion: {kcal:598, protein:42.0, carbs:55.1, fat:21.8},
         batchItems: [
             { key: "m51-steak", label: "Top sirloin steak (raw, trimmed)", qty: 990, unit: "g", cat: "Protein" , ingId: 9 , role: "protein", share: 1},
             { key: "m51-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
@@ -1411,17 +1380,18 @@ const RECIPES = [
             { key: "m51-carrots", label: "Frozen carrots", qty: 350, unit: "g", cat: "Vegetables" , ingId: 117 , role: "veg", baseQty: 50},
             { key: "m51-onion", label: "Yellow onion (diced)", qty: 157, unit: "g", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 22.43},
             { key: "m51-mayo", label: "Light mayonnaise", qty: 105, unit: "g", cat: "Sauces" , ingId: 274 , role: "fixed", baseQty: 15},
+            { key: "m51-soy", label: "Low-sodium soy sauce", qty: 60, unit: "mL", cat: "Sauces" , ingId: 180 , role: "fixed", baseQty: 8.57},
+            { key: "m51-sesame", label: "Sesame oil", qty: 14, unit: "g", cat: "Fats" , ingId: 171 , role: "fixed", baseQty: 2},
         ],
         steps: [
             "Cook jasmine rice the night before and refrigerate — cold rice is essential for fried rice.",
-            "Cut steak into bite-sized cubes. Season and set aside.",
-            "Heat a large skillet over high heat. Add cold rice, frozen vegetables, and diced onion. Stir-fry for 5-10 mins.",
+            "Cut steak into bite-sized cubes. Season with salt, pepper, and a splash of soy sauce. Set aside.",
+            "Heat a large skillet over high heat. Add sesame oil, then cold rice, frozen vegetables, and diced onion. Stir-fry for 5-10 mins. Add soy sauce and toss to coat.",
             "Push rice to the edges. Crack eggs into the centre and scramble until cooked, then mix into the rice.",
-            "Remove rice from pan. Add steak cubes and cook to medium-rare (130-140°F internal).",
+            "Remove rice from pan. Sear steak cubes over high heat until medium-rare (130–140°F internal).",
             "Mix yum-yum sauce: mayo + Frank's Red Hot Sauce of your choice + squeeze of lime.",
             "Combine steak, rice, and veg in a large bowl. Weigh, divide equally, and distribute sauce per container.",
         ],
-        note: "Top sirloin or any lean cut of beef works well — ask your butcher for a similar lean option.",
     },
     {
         id: "m52", category: "main",
@@ -1442,7 +1412,6 @@ const RECIPES = [
             "Spray broccoli florets with oil, season with salt. Air fry at 200°C for 8–10 min until tender-crisp with light char.",
             "Weigh total batch, divide equally into 7 containers. Portion chicken, rice, and broccoli evenly.",
         ],
-        note: "Air fry broccoli immediately after chicken — same basket, no cleaning needed. Thicker chicken breasts need the full 20 min. Keeps 5 days refrigerated; reheat in microwave 90 sec.",
     },
     {
         id: "m53", category: "main",
@@ -1464,7 +1433,6 @@ const RECIPES = [
             "Spray broccoli florets with oil and season. Air fry at 200°C for 8–10 min until tender-crisp.",
             "Weigh total batch, divide equally into 7 containers. Portion chicken, sweet potato, and broccoli evenly.",
         ],
-        note: "Lower carb and lower calorie than the rice version — great for cut days or higher-fat meal plans. Sweet potato and broccoli can air fry together in the same basket. Keeps 5 days refrigerated.",
     },
     {
         id: "m54", category: "main",
@@ -1490,7 +1458,6 @@ const RECIPES = [
             "Weigh total batch. Divide beef, rice, and veg evenly into 7 containers.",
             "Top each with 80g fat-free cottage cheese and a sprinkle of paprika. Add fresh just before eating.",
         ],
-        note: "Cottage cheese adds ~10g protein per portion — keep cold and add fresh for best texture. Any colour bell pepper works. Keeps 5 days refrigerated.",
     },
     {
         id: "m55", category: "main",
@@ -1516,7 +1483,6 @@ const RECIPES = [
             "Weigh total batch. Divide beef, sweet potato, and veg evenly into 7 containers.",
             "Top each with 80g fat-free cottage cheese and a paprika sprinkle. Add fresh just before eating.",
         ],
-        note: "Lower-carb swap of m54 — sweet potato gives slower-burning carbs. Ideal for cut days or blood sugar management. Keeps 5 days refrigerated.",
     },
     {
         id: "m56", category: "main",
@@ -1541,7 +1507,6 @@ const RECIPES = [
             "Weigh total batch. Divide chicken, rice, and veg evenly into 7 containers.",
             "Top each with 80g fat-free cottage cheese and a paprika sprinkle. Add fresh just before eating.",
         ],
-        note: "High-protein chicken bowl with cottage cheese topping — adds ~10g extra protein per portion. Broccoli and peppers can air fry together. Keeps 5 days refrigerated.",
     },
     {
         id: "m57", category: "main",
@@ -1566,7 +1531,6 @@ const RECIPES = [
             "Weigh total batch. Divide chicken, sweet potato, and veg evenly into 7 containers.",
             "Top each with 80g fat-free cottage cheese and a paprika sprinkle. Add fresh just before eating.",
         ],
-        note: "Lower-carb chicken bowl — great for cut days. All veg and sweet potato can go in the air fryer. Keeps 5 days refrigerated.",
     },
     {
         id: "m58", category: "main",
@@ -1591,7 +1555,6 @@ const RECIPES = [
             "Add baby spinach and stir until fully wilted, about 2 min.",
             "Weigh total chili. Divide evenly into 7 containers with roasted sweet potato alongside or folded in.",
         ],
-        note: "Taco-spiced chili — hearty and full of flavour. Fold sweet potato into the chili for a thicker texture, or keep separate for a cleaner portion. Freezes well up to 3 months.",
     },
     {
         id: "m25", category: "main",
@@ -1616,13 +1579,11 @@ const RECIPES = [
             "Stir drained macaroni into the cheese sauce.",
             "Portion into containers — store chicken separately from mac for best crispiness. Reheat chicken in air fryer 2–3 min, mac in microwave with a splash of milk.",
         ],
-        note: "Verify with your exact brands — evaporated milk and cheese vary significantly. Store chicken and mac separately for best texture.",
     },
     {
         category: "main", id: "m06", name: "🍗 Honey Chipotle Chicken Bowl", subtitle: "Slow-cooked chicken · honey chipotle · jasmine rice",
         badge: "🥘 Crockpot", carb: "Rice", portions: 7,
         perPortion: {kcal:754,protein:66,carbs:82,fat:17.1},
-        note: "Tortilla wraps removed — served as rice bowl. Cheese blend replaces fat-free mozzarella: 314g FF cottage cheese + 59g light mozz + 20g parmesan. Chicken increased to 1.57kg.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1565, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "White rice (jasmine)", qty: 580, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -1671,7 +1632,6 @@ const RECIPES = [
             "Lay out tortilla wraps. Divide chicken mixture, cooked rice and mozzarella evenly among each.",
             "Fold ends in, roll tightly. Toast each burrito on a nonstick skillet over medium-high heat until golden brown on both sides.",
         ],
-        note: "Exceptionally high protein to fat ratio. Freeze extras — reheat in air fryer at 180°C for 8 min.",
     },
     {
         category: "main", id: "hol8",
@@ -1704,7 +1664,6 @@ const RECIPES = [
             "Layer quinoa-spinach-strawberry mix into containers. Add sliced honey chicken on top.",
             "Scatter sliced almonds over each portion. Add yogurt dressing on the side. Refrigerate.",
         ],
-        note: "The strawberry-spinach-quinoa base is vibrant, elegant, and genuinely special — perfect for a Mother's Day meal that feels like a treat but delivers 58g protein per serving. Keep almonds separate if prepping more than 2 days ahead to preserve their crunch.",
     },
     {
         id: "m22", category: "main",
@@ -1728,7 +1687,6 @@ const RECIPES = [
             "Add garlic powder, onion powder, smoked paprika, salt, pepper, minced garlic, tomato paste, chili flakes, and honey. Stir and cook until slightly caramelised.",
             "Divide roasted veg and beef into containers. Drizzle any remaining pan juices over the top.",
         ],
-        note: "Higher fat due to beef — ideal on training days. Freezer-friendly. Reheat in the microwave 2–3 min or air fryer 5 min.",
     },
     {
         id: "m20", category: "main",
@@ -1749,7 +1707,6 @@ const RECIPES = [
             "Ensure internal temp reaches 75°C (165°F). Rest 5 min before slicing.",
             "Serve sliced. Pairs with rice, roasted potatoes, or salad.",
         ],
-        note: "Scale to 900g chicken for 4–5 portions. Outstanding protein-to-calorie ratio — ideal cut day or post-workout meal. Yogurt keeps it incredibly juicy.",
     },
     {
         category: "main", id: "m44",
@@ -1776,7 +1733,6 @@ const RECIPES = [
             "Add broccoli to the wok and toss everything together over high heat for 2 min.",
             "Weigh beef-broccoli mixture, divide equally. Portion with jasmine rice into containers.",
         ],
-        note: "Drain beef thoroughly after browning to hit the fat targets. Oyster sauce adds depth without many calories.",
     },
     {
         id: "m15",
@@ -1799,13 +1755,11 @@ const RECIPES = [
             "Seal the lid. Set to Pressure Cook (High) for 40 minutes. Allow 10 min natural release, then quick release.",
             "Transfer all contents to a large bowl. Weigh total in grams, divide equally into containers ensuring even meat and potato distribution.",
         ],
-        note: "Leftovers keep in the fridge for 5 days. Beef bone broth: use 1 large Knorr cube dissolved in 700mL boiling water.",
     },
     {
         category: "main", id: "m08", name: "🥩 Lean Beef Hamburger Helper", subtitle: "Lean beef · pasta in beef broth · cottage cheese & parmesan sauce",
         badge: "🍳 Stovetop", carb: "Pasta", portions: 7,
         perPortion: {kcal:788, protein:64.7, carbs:83.5, fat:20.6},
-        note: "Beef increased to 1.32kg to maintain protein after cheese substitution. Cheese blend: 208g FF CC + 39g light mozz + 13g parmesan. Stock: 1 bouillon beef cube in 1L hot water. No oil drizzle — beef fat is sufficient.",
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1315, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "pasta_regular", label: "Pasta (elbow or short)", qty: 730, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1851,7 +1805,6 @@ const RECIPES = [
             "Add chopped lettuce and toss gently.",
             "Season with Frank's Red Hot Sauce and divide into containers.",
         ],
-        note: "Canned black beans and corn are widely available. Fresh tomatoes and onion make a great pico de gallo — just dice and mix with lime juice and coriander.",
     },
     {
         category: "main", id: "m33",
@@ -1877,7 +1830,6 @@ const RECIPES = [
             "Pour in diced tomatoes and broth. Simmer uncovered 10 min until sauce thickens.",
             "Weigh turkey mixture, divide equally. Portion with cooked rice into containers.",
         ],
-        note: "99/1 turkey mince gives extraordinary protein-to-fat ratio. Season aggressively — it needs it.",
     },
     {
         id: "v1", category: "main",
@@ -1907,13 +1859,11 @@ const RECIPES = [
             "Stir in frozen spinach. Cook 5 min more until wilted. Season generously with salt and black pepper.",
             "Portion into containers. Dahl thickens as it cools — stir in a splash of water when reheating.",
         ],
-        note: "Fully plant-based. Red lentils are a complete high-protein carb source. Add a dollop of Greek yogurt to each portion to boost protein by ~6g.",
     },
     {
         category: "main", id: "m01", name: "🍗 Marry Me Chicken", subtitle: "Jasmine rice · mushrooms · peas & carrots",
         badge: "🥘 Crockpot", carb: "Rice", portions: 7,
         perPortion: {kcal:771,protein:71,carbs:86,fat:16.9},
-        note: "Stock: 1 bouillon chicken cube dissolved in 280mL hot water. Fold peas, carrots and spinach into hot rice off heat.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "White rice (jasmine)", qty: 490, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -1942,7 +1892,6 @@ const RECIPES = [
         category: "main", id: "m03", name: "🍗 Marry Me Chicken — Pasta", subtitle: "Pasta · mushrooms · peas & carrots · highest protein",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
         perPortion: {kcal:801,protein:76,carbs:88,fat:16.9},
-        note: "Same slow cooker method as rice version. Stock: 1 bouillon chicken cube in 280mL hot water. Highest protein of all 14 recipes.",
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 550, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1990,7 +1939,6 @@ const RECIPES = [
             "Stir over low heat until the cream cheese melts and everything is creamy and well combined.",
             "Portion into containers. Keeps 5 days refrigerated or 3 months frozen.",
         ],
-        note: "Note: original calorie count may read low — verify in MyFitnessPal with your exact brands. Sub regular pasta if high-protein pasta is not available locally.",
     },
     {
         category: "main", id: "m41",
@@ -2016,7 +1964,6 @@ const RECIPES = [
             "Steam green beans 4 min. Season with salt and lemon.",
             "Slice pork, weigh total, divide equally. Portion with rice and green beans.",
         ],
-        note: "Pork tenderloin is the leanest cut of pork — similar protein content to chicken breast. Let it rest before slicing to retain juices.",
     },
     {
         category: "main", id: "m49",
@@ -2043,7 +1990,6 @@ const RECIPES = [
             "Portion rice into containers. Top with prawns, mango, and avocado.",
             "Drizzle remaining dressing over each bowl. Add fresh cilantro to garnish.",
         ],
-        note: "Add avocado and mango on the day of eating for best texture — pre-slice if eating within 2 days. Prawn + mango is an exceptional post-workout flavour reward.",
     },
     {
         category: "main", id: "m29",
@@ -2051,7 +1997,7 @@ const RECIPES = [
         subtitle: "Lean beef · potatoes · ranch sauce",
         portions: 3,
         badge: "🍳 Stovetop", carb: "Rice",
-        perPortion: {kcal:534, protein:55.8, carbs:51.5, fat:10.9},
+        perPortion: {kcal:559, protein:56.2, carbs:56.6, fat:11.2},
         batchItems: [
             { key: "m2-beef", label: "95/5 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.796},
             { key: "m2-rice", label: "White jasmine rice (uncooked)", qty: 125, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -2059,17 +2005,17 @@ const RECIPES = [
             { key: "m2-veg", label: "Mixed frozen vegetables", qty: 315, unit: "g", cat: "Vegetables" , ingId: 275 , role: "veg", baseQty: 105},
             { key: "m2-yogurt", label: "Plain nonfat Greek yogurt", qty: 150, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.117},
             { key: "m2-mozz", label: "Fat-free mozzarella (shredded)", qty: 56, unit: "g", cat: "Dairy" , ingId: 281 , role: "protein", share: 0.087},
+            { key: "m2-ranch", label: "Hidden Valley Fat-Free Ranch", qty: 85, unit: "mL", cat: "Sauces" , ingId: 204 , role: "fixed", baseQty: 28.33},
         ],
         steps: [
             "Microwave the instant rice according to package instructions. Set aside.",
             "Microwave the riced cauliflower in its bag. Set aside.",
-            "Cook the ground beef in a large skillet over medium-high heat with buffalo ranch seasoning (or garlic, onion powder, and paprika).",
+            "Cook the ground beef in a large skillet over medium-high heat with garlic powder, onion powder, and paprika.",
             "Add the cooked cauliflower rice to the skillet and mix well.",
             "Boil or steam the frozen mixed vegetables until tender.",
-            "In a large bowl, combine beef-cauli mix, instant rice, vegetables, Greek yogurt, and shredded cheese.",
-            "Season with Frank's Red Hot Sauce or preferred seasoning. Mix well. Divide into containers.",
+            "In a large bowl, combine beef-cauli mix, instant rice, vegetables, Greek yogurt, shredded cheese, and Hidden Valley Ranch. Mix well.",
+            "Divide into 3 containers and refrigerate.",
         ],
-        note: "Buffalo ranch seasoning can be substituted with a mix of Frank's Red Hot Sauce, garlic powder, and onion powder.",
     },
     {
         category: "main", id: "hol1",
@@ -2101,7 +2047,6 @@ const RECIPES = [
             "Portion sweet potato and broccoli into each container. Add cranberry sauce per portion.",
             "Top each portion with Greek yogurt as a protein-rich sauce. Seal and refrigerate.",
         ],
-        note: "Turkey rests better than it reheats dry — slice just before packing. Sugar-free cranberry sauce keeps carbs in check while delivering that festive flavour. Reheat covered with a splash of water to retain moisture.",
     },
     {
         category: "main", id: "hol7",
@@ -2134,7 +2079,6 @@ const RECIPES = [
             "Portion quinoa across containers. Add a salmon fillet (skin-off) and asparagus spears to each.",
             "Spoon lemon-dill yogurt sauce over each portion. Refrigerate. Best consumed within 3 days.",
         ],
-        note: "Salmon is the definitive Valentine's Day dinner protein — omega-3 rich, restaurant-quality, and impressive. This batch cook delivers that date-night feel all week. The lemon-dill yogurt sauce replaces hollandaise at a fraction of the calories.",
     },
     {
         id: "m19", category: "main", portions: 1,
@@ -2158,7 +2102,6 @@ const RECIPES = [
             "Place the mixture in the centre of the wrap. Fold sides in, roll tightly.",
             "Air fry at 180°C for 10 min flipping halfway until wrap is golden and crispy. Serve immediately.",
         ],
-        note: "Make fresh, not batch-cook. Optional: scatter sunflower seeds for extra crunch. Use canned salmon to save time.",
     },
     {
         category: "main", id: "m34",
@@ -2184,7 +2127,6 @@ const RECIPES = [
             "Place salmon skin-down on the baking sheet. Add asparagus alongside. Roast 14–16 min until salmon flakes easily.",
             "Portion quinoa, one salmon fillet, and asparagus spears into containers. Garnish with fresh dill and lemon wedge.",
         ],
-        note: "Salmon provides omega-3s that aid recovery. Eat within 3 days — fish deteriorates faster. Freeze portions 4–7 for best freshness.",
     },
     {
         category: "main", id: "m48",
@@ -2211,7 +2153,6 @@ const RECIPES = [
             "Rest 2 min. Slice or leave whole.",
             "Portion quinoa tabbouleh into containers. Add tuna. Serve with lemon wedge.",
         ],
-        note: "Tuna steaks are best seared fresh and eaten within 2 days. Freeze portions 3–7 raw and sear as needed. Quinoa tabbouleh keeps 4 days.",
     },
     {
         category: "main", id: "m32",
@@ -2237,7 +2178,6 @@ const RECIPES = [
             "Portion sliced steak, sweet potato cubes, and cucumber salad across containers.",
             "Drizzle any resting juices from the steak over each container before sealing.",
         ],
-        note: "For even portions, weigh total steak after resting and divide. Sweet potato can be swapped for roasted baby potatoes.",
     },
     {
         id: "m24", category: "main",
@@ -2267,7 +2207,6 @@ const RECIPES = [
             "Stir in cashews just before serving. Shred or slice the chicken.",
             "Serve over jasmine rice — macros shown are without rice, add ~130 kcal / 27C per cooked rice.",
         ],
-        note: "Freezer-friendly without rice. Add rice to containers separately. Hoisin sauce available at most Asian grocery stores or supermarkets.",
     },
     {
         category: "main", id: "m50",
@@ -2293,7 +2232,6 @@ const RECIPES = [
             "Cook jasmine rice in rice cooker. Steam or bake sweet potato cubes separately.",
             "Weigh pulled chicken mixture, divide equally. Portion with rice and sweet potato into containers.",
         ],
-        note: "Pulled chicken freezes exceptionally well. Make double and freeze half in individual portions. Passata adds flavour without fat.",
     },
     {
         category: "main", id: "hol2",
@@ -2326,7 +2264,6 @@ const RECIPES = [
             "Finish each portion with cranberry sauce. Drizzle olive oil over the top.",
             "Seal containers. Reheat uncovered 2–3 min in microwave, adding water if needed.",
         ],
-        note: "The cottage cheese gravy trick gives you creamy Thanksgiving texture with less than half the fat of traditional gravy. Butternut squash gets sweeter when slow-cooked — don't rush it.",
     },
     {
         category: "main", id: "hol5",
@@ -2359,7 +2296,6 @@ const RECIPES = [
             "Divide into containers. Top each with remaining caramelised onions.",
             "Serve with a dollop of plain Greek yogurt (per portion included in macros).",
         ],
-        note: "Mujadara is one of the oldest dishes in the Arab world — rice, lentils, and caramelised onions. This protein-boosted version adds spiced lamb for Eid celebrations. The caramelised onions cannot be rushed — they are the soul of this dish.",
     },
     {
         id: "m27", category: "main",
@@ -2383,7 +2319,6 @@ const RECIPES = [
             "Crack the eggs over the vegetables. Sprinkle with Parmesan and season with salt and pepper.",
             "Bake 30 min until eggs are set and the top is golden. Slice into portions.",
         ],
-        note: "A lighter vegetarian option — great as a secondary meal or rest-day dinner. Low protein — pair with a protein shake if needed.",
     },
     {
         category: "main", id: "m47",
@@ -2412,7 +2347,6 @@ const RECIPES = [
             "Return chicken to pan, pour teriyaki sauce over. Toss on medium heat until sauce thickens and coats chicken — 2 min.",
             "Portion rice, teriyaki chicken, broccoli, and edamame across containers.",
         ],
-        note: "Edamame adds plant protein and a satisfying bite. Sauce thickens further when refrigerated — add a splash of water before reheating.",
     },
     {
         id: "v2", category: "main",
@@ -2439,7 +2373,6 @@ const RECIPES = [
             "Return tofu to the pan. Pour teriyaki sauce and soy sauce over everything. Toss to coat and cook 2 min until sauce thickens.",
             "Portion rice into containers, top with tofu/veggie mix, and sprinkle sesame seeds.",
         ],
-        note: "High protein for a fully plant-based meal. Press the tofu well — moisture is the enemy of browning. Contains soy and sesame allergens.",
     },
     {
         category: "main", id: "m36",
@@ -2466,7 +2399,6 @@ const RECIPES = [
             "Pour dressing over and toss to coat.",
             "Portion into containers. Keep dressing separate if prepping more than 3 days ahead.",
         ],
-        note: "No cooking required — ready in 15 min. Keep containers refrigerated; tuna bowls are best within 3 days. Add capers or olives for extra Mediterranean flavour.",
     },
     {
         id: "v9", category: "main",
@@ -2495,7 +2427,6 @@ const RECIPES = [
             "Bake 30–35 min until centre is fully set and top is lightly golden. Test with a skewer — it should come out clean.",
             "Cool 10 min before slicing into equal portions. Store in airtight containers."
         ],
-        note: "Frittatas are one of the most efficient high-protein vegetarian batch cooks — 2 eggs + cottage cheese per portion delivers ~28g protein with minimal carbs. Great for low-carb days. Contains eggs and dairy. Keeps 4 days refrigerated."
     },
     {
         id: "v6", category: "main",
@@ -2527,7 +2458,6 @@ const RECIPES = [
             "Remove from heat. Crumble feta over the top.",
             "Portion equal eggs + sauce into each container. Serve with wholegrain pita or rice cakes."
         ],
-        note: "A North African/Middle Eastern classic adapted for batch cooking. The chickpeas boost protein and fibre significantly. Contains eggs, dairy. Keeps 3 days refrigerated — eggs firm up on reheating."
     },
     {
         id: "v8", category: "main",
@@ -2557,7 +2487,6 @@ const RECIPES = [
             "Taste and adjust seasoning. Simmer 1–2 min to meld flavours.",
             "Portion into containers. Add extra parmesan on top if desired. Reheat with a splash of water."
         ],
-        note: "Cottage cheese blended into the sauce is virtually undetectable but adds ~15g protein per portion. White beans provide additional plant protein and fibre. Contains gluten (pasta) and dairy. Keeps 4 days refrigerated."
     },
     {
         id: "v5", category: "main",
@@ -2589,7 +2518,6 @@ const RECIPES = [
             "Return paneer to the pan. Add spinach and stir until wilted (~2 min).",
             "Portion rice into containers. Top with paneer tikka masala sauce."
         ],
-        note: "Paneer is a high-protein non-melting Indian cheese — it holds its shape when cooked. Greek yogurt replaces heavy cream to cut fat without losing creaminess. Contains dairy. Keeps 4 days refrigerated."
     },
     {
         id: "v7", category: "main",
@@ -2621,7 +2549,6 @@ const RECIPES = [
             "Assemble: divide rice into containers. Top with roasted sweet potato, black bean salsa mix.",
             "Top each bowl with shredded cheddar. Add a dollop of Greek yogurt to each container when serving."
         ],
-        note: "High carb, moderate protein — ideal for active days or carb-cycling. Pair with a protein shake to hit higher protein targets. Fully plant-based except for dairy toppings (swap yogurt and cheese for vegan alternatives if needed). Keeps 5 days refrigerated."
     },
     {
         category: "main", id: "m42",
@@ -2648,7 +2575,6 @@ const RECIPES = [
             "Portion rice and one tilapia fillet into each container. Top with mango salsa.",
             "Add a fresh lime wedge to each container for serving.",
         ],
-        note: "Refreshing tropical flavour profile. Mango salsa keeps 3 days. Basa is a great substitute for tilapia at a lower price point.",
     },
     {
         category: "breakfast", id: "bf1",
@@ -2671,14 +2597,13 @@ const RECIPES = [
             "Add bacon (a strip or two per container).",
             "Optional: serve with sugar-free ketchup.",
         ],
-        note: "Use beef or turkey bacon. The bacon fat in the pan adds flavour to the hashbrowns — do not drain.",
     },
     {
         category: "breakfast", id: "bf2",
         name: "🥚 Breakfast Bagel Sandwich",
         subtitle: "Fresh each morning · ~15 min",
         badge: "🍳 Stovetop", carb: "Bagel", portions: 3,
-        perPortion: {kcal:558, protein:39.1, carbs:51.9, fat:20.9},
+        perPortion: {kcal:658, protein:45, carbs:52.2, fat:29},
         batchItems: [
             { key: "bf2-turkey", label: "Ground turkey sausage (raw)", qty: 340, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
             { key: "bf2-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
@@ -2694,7 +2619,6 @@ const RECIPES = [
             "Assemble: bagel bottom → cheese slice → turkey patty → egg → bagel top.",
             "Serve immediately or wrap for meal prep.",
         ],
-        note: "Substitute turkey sausage with chicken sausage or lean beef mince patties (5% fat) seasoned with garlic, paprika, and salt.",
     },
     {
         id: "bf3", category: "breakfast",
@@ -2716,7 +2640,6 @@ const RECIPES = [
             "For the chocolate topping: mix Greek yogurt + chocolate protein powder + a little milk until creamy. Pour over the pancakes.",
             "Serve immediately. Optional: drizzle honey or add fresh berries.",
         ],
-        note: "The carrot keeps these super moist. Don't skip squeezing out the moisture. The chocolate sauce makes this feel indulgent while staying on macros.",
     },
     {
         category: "breakfast", id: "bf4",
@@ -2735,7 +2658,6 @@ const RECIPES = [
             "Spread cottage cheese on toast and serve.",
             "Optional: add sliced tomato or cucumber on top.",
         ],
-        note: "One of the fastest high-protein breakfasts. Keep cottage cheese pre-seasoned in the fridge for grab-and-go mornings.",
     },
     {
         id: "bf5", category: "breakfast",
@@ -2759,7 +2681,6 @@ const RECIPES = [
             "Top each container with cheddar and mozzarella cheese.",
             "Optional: pack a small portion of sugar-free syrup on the side for a sweet-savoury combo.",
         ],
-        note: "Keeps refrigerated for 5 days. Reheat covered in microwave 90 sec.",
     },
     {
         id: "bf6", category: "breakfast",
@@ -2784,7 +2705,6 @@ const RECIPES = [
             "Toast each burrito on medium-high heat until golden brown on all sides.",
             "Cool completely before refrigerating. Wrap individually in foil for easy grab-and-go.",
         ],
-        note: "Best eaten within 4 days. Reheat in microwave 60–90 sec or air fryer 180°C for 5 min. Sriracha mayo optional — adds approx 40 kcal.",
     },
     {
         category: "breakfast", id: "bf7",
@@ -2803,7 +2723,6 @@ const RECIPES = [
             "Toast the bread slices.",
             "Serve eggs on toast. Optional: add smoked salmon for extra protein.",
         ],
-        note: "No-cook version: cottage cheese and toast is faster on busy mornings. Swap eggs for 200g FF cottage cheese.",
     },
     {
         category: "breakfast", id: "bf8",
@@ -2822,7 +2741,6 @@ const RECIPES = [
             "Avoid flavoured yogurts — they add unnecessary sugar.",
             "Optional: add a scoop of unflavoured protein powder for extra protein.",
         ],
-        note: "Any 0% fat Greek yogurt works well. Pre-portion into containers on Sunday for the whole week.",
     },
     {
         id: "bf9", category: "breakfast",
@@ -2849,7 +2767,6 @@ const RECIPES = [
             "Pull a double espresso and combine with skimmed milk.",
             "Blend the whey protein with the espresso-milk for the protein hit.",
         ],
-        note: "The default daily breakfast — designed to hit ~50% of daily protein in one meal. Assembled, not cooked: just toast, plate, drink. Can be prepped in 5 min before training.",
     },
     {
         id: "bf10", category: "breakfast",
@@ -2871,7 +2788,6 @@ const RECIPES = [
             "Drizzle with maple syrup to taste.",
             "Eat immediately for fresh texture, or refrigerate overnight as overnight oats for a thicker, denser consistency.",
         ],
-        note: "High calorie — ideal as the main pre-training breakfast. Prep tip: portion dry oats + whey into jars in advance; add yogurt/milk/toppings fresh each morning for best texture.",
     },
     {
         id: "bf11", category: "breakfast",
@@ -2890,7 +2806,6 @@ const RECIPES = [
             "Pour into a bowl.",
             "Top with mixed seeds, coconut flakes, crushed nuts, or more berries. Serve immediately.",
         ],
-        note: "No cooking needed. Frozen berries chill and thicken the bowl naturally. Works with any protein powder flavour — vanilla is great too.",
     },
     {
         id: "bf12", category: "breakfast",
@@ -2913,7 +2828,6 @@ const RECIPES = [
             "Assemble each sandwich: bottom bagel half → a slice of cheese → a turkey patty → an egg → top bagel half.",
             "Serve immediately or wrap individually for meal prep. Reheat in microwave 60 sec.",
         ],
-        note: "Makes 4 sandwiches. Note higher fat from eggs + butter. Great post-workout breakfast.",
     },
     {
         id: "bf13", category: "breakfast",
@@ -2933,7 +2847,6 @@ const RECIPES = [
             "Fold in blueberries and dust generously with cinnamon.",
             "Eat immediately for fresh texture, or refrigerate 15–30 min for a thicker overnight oats consistency.",
         ],
-        note: "Lower-calorie oat option. Cinnamon adds natural sweetness — no sweetener needed. Prep tip: portion dry oats + whey into jars in advance; add wet ingredients fresh.",
     },
     {
         id: "bf14", category: "breakfast",
@@ -2954,7 +2867,6 @@ const RECIPES = [
             "Top with sliced banana and blueberries. Dust with cinnamon.",
             "Eat immediately or refrigerate as overnight oats for a denser, colder texture.",
         ],
-        note: "Banana and blueberries deliver both fast and slow carbs — great pre- or post-workout. Higher carb version for high-output training days.",
     },
     {
         id: "bf15", category: "breakfast",
@@ -2977,7 +2889,6 @@ const RECIPES = [
             "Melt the dark chocolate in a microwave (30 sec bursts, stirring between). Drizzle over the bowl.",
             "Crumble half a Lotus biscuit on top and finish with a dust of cinnamon. Serve immediately.",
         ],
-        note: "Highest calorie of the oat series — ideal for high-training days or bigger calorie targets. The Lotus biscuit adds caramel crunch; serve immediately before it softens.",
     },
     {
         id: "d5", category: "dessert",
@@ -3002,7 +2913,6 @@ const RECIPES = [
             "Spoon caramel over the set mousse, then drizzle melted chocolate over the top. It will set into a thin shell.",
             "Refrigerate until ready to eat. Best after overnight.",
         ],
-        note: "With 1 scoop chocolate whey: ~690 kcal · 56P. Higher calorie — treat as a post-workout dessert. Freezer-stable for up to 1 month without the chocolate drizzle.",
     },
     {
         category: "dessert", id: "ds2",
@@ -3028,7 +2938,6 @@ const RECIPES = [
             "Place in the freezer for at least 15 minutes to set.",
             "Store in freezer and eat directly from frozen.",
         ],
-        note: "PB Fit or any powdered peanut butter works. Available at most health food stores and online.",
     },
     {
         id: "d3", category: "dessert",
@@ -3053,7 +2962,6 @@ const RECIPES = [
             "Make the topping: mix Greek yogurt + protein powder + cocoa powder until creamy. Spread over the cooled cake.",
             "Slice into equal portions. Store in the fridge.",
         ],
-        note: "Gets better on day 2. Keeps 5 days refrigerated. Optional: top with crushed peanuts.",
     },
     {
         id: "d4", category: "dessert",
@@ -3080,7 +2988,6 @@ const RECIPES = [
             "Cool completely before unmoulding. Spread topping over bread.",
             "Top with berries. Slice into portions.",
         ],
-        note: "Riper bananas = sweeter bread with no added sugar. Keeps 5 days refrigerated. Matcha topping colour is dramatic and Instagrammable.",
     },
     {
         id: "d2", category: "dessert",
@@ -3103,7 +3010,6 @@ const RECIPES = [
             "Allow to cool slightly before eating — the texture becomes firmer and creamier as it cools.",
             "Optional: top with Greek yogurt mixed with a small amount of chocolate protein powder as frosting.",
         ],
-        note: "Single serving. Can substitute oat flour (15g) for protein powder for a different texture. Top with berries or nut butter for variety.",
     },
     {
         id: "d1", category: "dessert",
@@ -3133,7 +3039,6 @@ const RECIPES = [
             "Make the frosting: mix together Greek yogurt + Jello vanilla sugar-free pudding mix + Cool Whip until combined.",
             "Frost cooled cookies and top with crushed chocolate sandwich cookies if desired.",
         ],
-        note: "Makes 4 cookies. Store in the fridge for up to 5 days. These taste best chilled overnight.",
     },
     {
         category: "preworkout", id: "pw2",
@@ -3154,7 +3059,6 @@ const RECIPES = [
             "Blend 45 seconds until smooth. Drink immediately.",
             "Can batch-prep oat+powder portions in zip bags for fast morning assembly.",
         ],
-        note: "One of the most effective pre-workout combinations — fast carbs, sustained energy from oats, protein primer. Consume 30–45 min before.",
     },
     {
         category: "preworkout", id: "pw0",
@@ -3172,7 +3076,6 @@ const RECIPES = [
             "Spread jam generously across the rice cakes.",
             "Consume 45–60 min before training. Skip on rest days.",
         ],
-        note: "Fast-digesting carbs only — designed to top up glycogen without sitting heavy. 43g carbs, minimal protein and fat for maximum absorption speed.",
     },
     {
         category: "preworkout", id: "pw6",
@@ -3192,7 +3095,6 @@ const RECIPES = [
             "Pair with a banana and a few rice cakes.",
             "Consume 30–45 min before training.",
         ],
-        note: "Chocolate milk has a near-perfect carb-to-protein ratio for pre-workout fuelling. Backed by sports nutrition research. Simplest option in the list.",
     },
     {
         category: "preworkout", id: "pw4",
@@ -3212,7 +3114,6 @@ const RECIPES = [
             "Spread jam across the toast. Serve egg whites alongside.",
             "Quick to make fresh each morning — no bulk prep needed.",
         ],
-        note: "Ultra-lean protein source with fast-digesting carbs from the toast and jam. Easy to digest before a workout.",
     },
     {
         category: "preworkout", id: "pw3",
@@ -3233,7 +3134,6 @@ const RECIPES = [
             "Top with granola and a drizzle of honey.",
             "Keep granola separate until eating if prepping more than 2 days ahead — prevents sogging.",
         ],
-        note: "High protein for a pre-workout — great if you train mid-morning. Berries provide antioxidants to reduce exercise-induced inflammation.",
     },
     {
         category: "preworkout", id: "pw5",
@@ -3255,7 +3155,6 @@ const RECIPES = [
             "Seal and refrigerate overnight (or up to 4 days).",
             "In the morning, top with sliced banana or berries. Eat cold or microwave 60 sec.",
         ],
-        note: "The gold-standard batch pre-workout meal — prep all 7 on Sunday and grab one each morning. Chia seeds gel overnight adding satiety without heaviness.",
     },
     {
         category: "preworkout", id: "pw1",
@@ -3276,7 +3175,6 @@ const RECIPES = [
             "Slice half a banana over the top.",
             "Drizzle honey. Eat 30–45 min before training.",
         ],
-        note: "Fast-digesting carbs + a small amount of fat and protein. Keep bananas and rice cakes stocked — nothing to cook.",
     }
 ];
 // Always keep RECIPES in alphabetical order at source level.
@@ -5994,7 +5892,7 @@ function DevModal({ onClose, onUnlock }) {
                 React.createElement("button", { onClick: resetOnboarding, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
                         padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
-const FILTER_MAP = { "All": null, "🥘 Crockpot": "SC", "🍳 Stovetop": "ST", "🌬️ Oven": "AF" };
+const FILTER_MAP = { "All": null, "🍳 Stovetop": "Stovetop", "🌬️ Oven": "Oven", "🥘 Crockpot": "Crockpot", "💨 Air Fryer": "Air Fryer", "⚡ Instant Pot": "Instant Pot" };
 
 function getRecipeCategoryEmoji(recipe) {
     const name = ((recipe.name || "") + " " + (recipe.subtitle || "")).toLowerCase();
