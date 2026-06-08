@@ -1540,7 +1540,7 @@ const RECIPES = [
     {
         category: "main", id: "m59", name: "🥩 Beef, Cottage Cheese & Sweet Potato Bowl", subtitle: "Lean ground beef · fat-free cottage cheese · roasted sweet potato",
         badge: "🌬️ Oven", carb: "Sweet Potato", portions: 5,
-        perPortion: {kcal:579, protein:59, carbs:54, fat:14},
+        perPortion: {kcal:601, protein:60, carbs:59, fat:14},
         batchItems: [
             { key: "m59_beef",   label: "95/5 lean ground beef (raw)",   qty: 1000, unit: "g",     cat: "Protein",   ingId: 6,   role: "protein", share: 0.776 },
             { key: "m59_cc",     label: "Fat-free cottage cheese",        qty: 500,  unit: "g",     cat: "Dairy",     ingId: 42,  role: "protein", share: 0.224 },
@@ -1549,19 +1549,22 @@ const RECIPES = [
             { key: "m59_gpow",   label: "Garlic powder",                  qty: 5,    unit: "g",     cat: "Aromatics", ingId: 224, role: "fixed",   baseQty: 1   },
             { key: "m59_ppow",   label: "Paprika",                        qty: 5,    unit: "g",     cat: "Aromatics", ingId: 221, role: "fixed",   baseQty: 1   },
             { key: "m59_onpow",  label: "Onion powder",                   qty: 5,    unit: "g",     cat: "Aromatics", ingId: 225, role: "fixed",   baseQty: 1   },
-        ],
+        
+            { key: "m59_tomato",  label: "Cherry tomatoes",           qty: 250,  unit: "g", cat: "Vegetables", ingId: 110, role: "veg",   baseQty: 50  },
+            { key: "m59_ronion",  label: "Red onion (diced)",          qty: 150,  unit: "g", cat: "Vegetables", ingId: 107, role: "veg",   baseQty: 30  },
+            { key: "m59_parsley", label: "Fresh parsley (chopped)",    qty: 10,   unit: "g", cat: "Aromatics",  ingId: 229, role: "fixed", baseQty: 2   },        ],
         steps: [
             "Preheat oven to 200°C (400°F). Peel and cube sweet potatoes into bite-sized pieces. Toss with olive oil, paprika, salt and pepper. Spread on a lined baking tray.",
             "Roast sweet potatoes 25–30 min, turning halfway, until golden and tender.",
             "While potatoes roast, cook ground beef in a large skillet over medium-high heat. Break up meat and season with garlic powder, onion powder, paprika, salt and pepper. Cook until browned, no pink remains. Drain excess fat.",
-            "Weigh beef, cottage cheese and sweet potato. Divide equally across 5 containers.",
+            "Dice red onion and halve cherry tomatoes. Weigh beef, cottage cheese, sweet potato, tomatoes and onion. Divide equally across 5 containers. Garnish with fresh parsley.",
             "Season cottage cheese with black pepper if desired. Refrigerate immediately.",
         ],
     },
     {
         category: "main", id: "m60", name: "🍗 Chicken, Quinoa & Zucchini Bowl", subtitle: "Herb chicken breast · quinoa · sautéed zucchini · lemon",
         badge: "🍳 Stovetop", carb: "Quinoa", portions: 5,
-        perPortion: {kcal:578, protein:57, carbs:51, fat:14},
+        perPortion: {kcal:602, protein:58, carbs:56, fat:14},
         batchItems: [
             { key: "m60_chick",  label: "Chicken breast (skinless, raw)", qty: 1000, unit: "g",     cat: "Protein",   ingId: 1,   role: "protein", share: 1.0   },
             { key: "m60_quin",   label: "Quinoa (dry)",                   qty: 350,  unit: "g",     cat: "Carbs",     ingId: 74,  role: "carbs",   share: 1.0   },
@@ -1570,18 +1573,21 @@ const RECIPES = [
             { key: "m60_garlic", label: "Garlic (fresh cloves)",          qty: 15,   unit: "g",     cat: "Aromatics", ingId: 108, role: "fixed",   baseQty: 3   },
             { key: "m60_lemon",  label: "Lemon juice (fresh)",            qty: 25,   unit: "g",     cat: "Aromatics", ingId: 150, role: "fixed",   baseQty: 5   },
             { key: "m60_herbs",  label: "Italian herb seasoning",         qty: 10,   unit: "g",     cat: "Aromatics", ingId: 300, role: "fixed",   baseQty: 2   },
-        ],
+        
+            { key: "m60_tomato",  label: "Cherry tomatoes",           qty: 250,  unit: "g", cat: "Vegetables", ingId: 110, role: "veg",   baseQty: 50  },
+            { key: "m60_pepper",  label: "Red bell pepper (sliced)",   qty: 300,  unit: "g", cat: "Vegetables", ingId: 105, role: "veg",   baseQty: 60  },
+            { key: "m60_chilli",  label: "Chili flakes",               qty: 5,    unit: "g", cat: "Aromatics",  ingId: 227, role: "fixed", baseQty: 1   },        ],
         steps: [
             "Rinse quinoa well. Add to pot with 700mL water. Bring to boil, reduce to low, cover and simmer 15 min. Fluff with fork and set aside.",
             "Season chicken with Italian herb seasoning, salt and pepper. Heat half the olive oil in a large pan over medium-high heat. Cook chicken 6–7 min per side until internal temp reaches 75°C (165°F). Rest 5 min then slice or dice.",
-            "Heat remaining olive oil in the same pan over medium heat. Add minced garlic and sauté 30 sec. Add sliced zucchini and cook 5–6 min until lightly golden. Squeeze lemon juice over and toss.",
+            "Heat remaining olive oil in the same pan over medium heat. Add minced garlic and chili flakes; sauté 30 sec. Add sliced zucchini and bell pepper. Cook 5–6 min until lightly golden. Add cherry tomatoes for the last 2 min. Squeeze lemon juice over and toss.",
             "Weigh chicken, quinoa and zucchini. Divide equally across 5 containers.",
         ],
     },
     {
         category: "main", id: "m61", name: "🥩 Ground Beef, Eggs & Brown Rice Bowl", subtitle: "93/7 lean ground beef · scrambled eggs · brown rice",
         badge: "🍳 Stovetop", carb: "Brown Rice", portions: 5,
-        perPortion: {kcal:686, protein:45, carbs:77, fat:22},
+        perPortion: {kcal:711, protein:47, carbs:82, fat:22},
         batchItems: [
             { key: "m61_beef",   label: "93/7 lean ground beef (raw)",   qty: 700,  unit: "g",     cat: "Protein",   ingId: 289, role: "protein", share: 0.776 },
             { key: "m61_eggs",   label: "Eggs (whole, large)",            qty: 5,    unit: "whole", cat: "Protein",   ingId: 40,  role: "protein", share: 0.224 },
@@ -1590,10 +1596,13 @@ const RECIPES = [
             { key: "m61_gpow",   label: "Garlic powder",                  qty: 5,    unit: "g",     cat: "Aromatics", ingId: 224, role: "fixed",   baseQty: 1   },
             { key: "m61_onpow",  label: "Onion powder",                   qty: 5,    unit: "g",     cat: "Aromatics", ingId: 225, role: "fixed",   baseQty: 1   },
             { key: "m61_ppow",   label: "Paprika",                        qty: 5,    unit: "g",     cat: "Aromatics", ingId: 221, role: "fixed",   baseQty: 1   },
-        ],
+        
+            { key: "m61_scallion", label: "Spring onion / scallion",  qty: 150,  unit: "g", cat: "Vegetables", ingId: 132, role: "veg",   baseQty: 30  },
+            { key: "m61_bpepper",  label: "Green bell pepper (diced)", qty: 240,  unit: "g", cat: "Vegetables", ingId: 105, role: "veg",   baseQty: 48  },
+            { key: "m61_soy",      label: "Low-sodium soy sauce",      qty: 50,   unit: "mL",cat: "Sauces",     ingId: 180, role: "fixed", baseQty: 10  },        ],
         steps: [
             "Cook brown rice: combine with 1000mL water. Bring to boil, reduce to low, cover and simmer 35–40 min. Fluff and set aside.",
-            "Heat olive oil in a large skillet over medium-high heat. Add ground beef, breaking it up. Season with garlic powder, onion powder, paprika, salt and pepper. Cook until browned. Drain excess fat.",
+            "Heat olive oil in a large skillet over medium-high heat. Add ground beef and diced bell pepper. Break up meat and season with garlic powder, onion powder, paprika, salt and pepper. Cook until browned. Add soy sauce and stir through. Drain excess fat.",
             "In a separate non-stick pan, whisk eggs with a pinch of salt and scramble over medium-low heat until just set. Remove from heat while still slightly soft — they will continue cooking.",
             "Weigh beef, eggs and brown rice. Divide equally across 5 containers. Refrigerate immediately.",
         ],
@@ -1601,7 +1610,7 @@ const RECIPES = [
     {
         category: "main", id: "m62", name: "🐟 Salmon, Avocado & Spinach Bowl", subtitle: "Baked Atlantic salmon · fresh avocado · wilted spinach · lemon",
         badge: "🌬️ Oven", carb: "—", portions: 5,
-        perPortion: {kcal:600, protein:44, carbs:10, fat:42},
+        perPortion: {kcal:612, protein:44, carbs:12, fat:42},
         batchItems: [
             { key: "m62_salmon", label: "Salmon (Atlantic, raw)",         qty: 1000, unit: "g",     cat: "Protein",   ingId: 20,  role: "protein", share: 1.0   },
             { key: "m62_avo",    label: "Avocado",                        qty: 375,  unit: "g",     cat: "Fats",      ingId: 149, role: "fat",     share: 0.737 },
@@ -1609,12 +1618,15 @@ const RECIPES = [
             { key: "m62_oil",    label: "Olive oil",                      qty: 20,   unit: "g",     cat: "Fats",      ingId: 160, role: "fat",     share: 0.263 },
             { key: "m62_lemon",  label: "Lemon juice (fresh)",            qty: 25,   unit: "g",     cat: "Aromatics", ingId: 150, role: "fixed",   baseQty: 5   },
             { key: "m62_garlic", label: "Garlic (fresh cloves)",          qty: 15,   unit: "g",     cat: "Aromatics", ingId: 108, role: "fixed",   baseQty: 3   },
-        ],
+        
+            { key: "m62_capers",   label: "Capers (in brine, drained)", qty: 50,   unit: "g", cat: "Sauces",     ingId: 262, role: "fixed", baseQty: 10  },
+            { key: "m62_cucumber", label: "Cucumber (sliced)",          qty: 300,  unit: "g", cat: "Vegetables", ingId: 111, role: "veg",   baseQty: 60  },
+            { key: "m62_dill",     label: "Fresh dill",                 qty: 10,   unit: "g", cat: "Aromatics",  ingId: 233, role: "fixed", baseQty: 2   },        ],
         steps: [
             "Preheat oven to 200°C (400°F). Place salmon fillets on a lined baking tray. Drizzle with half the olive oil, squeeze lemon juice over, and press on minced garlic. Season with salt and pepper. Bake 12–15 min until salmon flakes easily.",
             "Heat remaining olive oil in a pan over medium heat. Add baby spinach and sauté 2–3 min until just wilted. Season with salt and pepper.",
             "Slice or cube avocado portions just before sealing containers to minimise browning.",
-            "Divide salmon, wilted spinach and avocado equally across 5 containers. Consume within 3 days.",
+            "Divide salmon, wilted spinach, avocado, cucumber and capers equally across 5 containers. Garnish with fresh dill. Consume within 3 days.",
         ],
     },
         batchItems: [
@@ -4322,6 +4334,19 @@ const INGREDIENT_MACROS = {
         "m62_oil":    {kcal:884.0, p:0.0,  c:0.0,  f:100.0},
         "m62_lemon":  {kcal:22.0,  p:0.4,  c:6.9,  f:0.2},
         "m62_garlic": {kcal:149.0, p:6.4,  c:33.0, f:0.5},
+
+        "m59_tomato":  {kcal:18.0,  p:0.9,  c:3.9,  f:0.2},
+        "m59_ronion":  {kcal:40.0,  p:1.1,  c:9.3,  f:0.1},
+        "m59_parsley": {kcal:36.0,  p:3.0,  c:6.3,  f:0.8},
+        "m60_tomato":  {kcal:18.0,  p:0.9,  c:3.9,  f:0.2},
+        "m60_pepper":  {kcal:20.0,  p:0.9,  c:4.6,  f:0.2},
+        "m60_chilli":  {kcal:282.0, p:12.3, c:50.0, f:14.3},
+        "m61_scallion":{kcal:32.0,  p:1.8,  c:7.3,  f:0.2},
+        "m61_bpepper": {kcal:20.0,  p:0.9,  c:4.6,  f:0.2},
+        "m61_soy":     {kcal:53.0,  p:8.1,  c:4.9,  f:0.1},
+        "m62_capers":  {kcal:23.0,  p:2.0,  c:2.0,  f:1.0},
+        "m62_cucumber":{kcal:15.0,  p:0.7,  c:3.6,  f:0.1},
+        "m62_dill":    {kcal:43.0,  p:3.5,  c:7.0,  f:1.1},
 
 };
 
