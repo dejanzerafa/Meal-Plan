@@ -442,6 +442,7 @@ const ING_FLAT = [
   {id:311, name:"Green Lentils (cooked)", cat:"Legumes", kcal:116, p:9.0, c:20.1, f:0.4},
   {id:92, name:"Lentils (red, dry)", cat:"Legumes", kcal:352, p:25, c:60, f:1},
   {id:312, name:"Lentils (red, cooked)", cat:"Legumes", kcal:116, p:8.9, c:20.1, f:0.4},
+  {id:313, name:"Bok Choy", cat:"Vegetables", kcal:13, p:1.5, c:2.2, f:0.2},
   {id:112, name:"Lettuce (romaine)", cat:"Vegetables", kcal:17, p:1.2, c:3.3, f:0.3},
   {id:44, name:"Light Mozzarella", cat:"Dairy & Eggs", kcal:180, p:20, c:1, f:11},
   {id:151, name:"Lime (juice)", cat:"Fruits", kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
@@ -736,7 +737,7 @@ const RECIPES = [
     {
         category: "main", id: "m02", name: "🥩 Big Mac Protein Pasta", subtitle: "Lean beef · pasta · high-protein Big Mac sauce",
         badge: "🍳 Stovetop", carb: "Pasta", portions: 7,
-        perPortion: {kcal:769, protein:58.8, carbs:87.4, fat:19.3},
+        perPortion: {kcal:791, protein:61.2, carbs:91.0, fat:19.7},
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1350, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 750, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -747,7 +748,10 @@ const RECIPES = [
             { key: "mustard_yellow", label: "Yellow mustard", qty: 14, unit: "g", cat: "Sauces" , ingId: 183 , role: "fixed", baseQty: 2},
             { key: "sweet_relish", label: "Sweet relish", qty: 105, unit: "g", cat: "Sauces" , ingId: 278 , role: "fixed", baseQty: 15},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 46, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 46, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m02_spinach", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m02_pickles", label: "Dill pickles / gherkins (sliced)", qty: 210, unit: "g", cat: "Vegetables", ingId: 203, role: "veg", baseQty: 30 },
+        ],
         steps: [
             "Brown beef with garlic powder and paprika. Add onion halfway. Drain excess fat.",
             "Cook pasta separately. Drain.",
@@ -791,7 +795,7 @@ const RECIPES = [
     {
         category: "main", id: "m09", name: "🍗 Buffalo Ranch Chicken Pasta", subtitle: "Slow-cooked buffalo chicken · pasta · beef bacon · ranch",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
-        perPortion: {kcal:764,protein:62.4,carbs:80.7,fat:18.8},
+        perPortion: {kcal:795, protein:65.3, carbs:86.0, fat:19.3},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1250, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "bacon_bits", label: "Beef bacon (cooked and crumbled)", qty: 86, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.023},
@@ -802,7 +806,10 @@ const RECIPES = [
             { key: "hot_sauce", label: "Frank's Red Hot Wings Sauce", qty: 166, unit: "mL", cat: "Sauces" , ingId: 199 , role: "fixed", baseQty: 23.71},
             { key: "ranch_dressing", label: "Hidden Valley Fat-Free Ranch", qty: 166, unit: "mL", cat: "Sauces" , ingId: 204 , role: "fixed", baseQty: 23.71},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 60, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 60, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m09_celery", label: "Celery (diced)", qty: 560, unit: "g", cat: "Vegetables", ingId: 118, role: "veg", baseQty: 80 },
+            { key: "m09_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+        ],
         steps: [
             "Add chicken, Frank's Red Hot Sauce and ranch dressing to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Drain. Cook beef bacon until crispy, crumble.",
@@ -892,7 +899,7 @@ const RECIPES = [
     {
         category: "main", id: "m14", name: "🍗 Chicken Alfredo Red Sauce", subtitle: "Slow-cooked chicken · Alfredo · Italian tomato sauce · cottage cheese",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
-        perPortion: {kcal:719,protein:56,carbs:77,fat:20.7},
+        perPortion: {kcal:836, protein:68.2, carbs:97.8, fat:22.3},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1119, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (farfalle or any)", qty: 600, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -903,7 +910,11 @@ const RECIPES = [
             { key: "alfredo_sauce", label: "Alfredo sauce — Prego (1 jar)", qty: 624, unit: "g", cat: "Sauces" , ingId: 290 , role: "fixed", baseQty: 89.14},
             { key: "italian_sauce", label: "Italian tomato sauce — Prego (1 jar)", qty: 680, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 97.14},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 29, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 29, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m14_spin", label: "Baby spinach", qty: 700, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 100 },
+            { key: "m14_brocc", label: "Broccoli florets", qty: 1400, unit: "g", cat: "Vegetables", ingId: 100, role: "veg", baseQty: 200 },
+            { key: "m14_mush", label: "Mushrooms (sliced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 120 },
+        ],
         steps: [
             "Add chicken, both sauces and garlic to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Drain.",
@@ -993,7 +1004,7 @@ const RECIPES = [
     {
         category: "main", id: "m07", name: "🍗 Chipotle Chicken Bowl", subtitle: "Blended chipotle · rice · corn · pico · Daisy sour cream",
         badge: "🥘 Crockpot", carb: "Rice", portions: 7,
-        perPortion: {kcal:796,protein:69,carbs:88,fat:18.4},
+        perPortion: {kcal:1060, protein:86.8, carbs:136.0, fat:19.4},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1637, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "White rice (long grain)", qty: 560, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -1008,7 +1019,9 @@ const RECIPES = [
             { key: "lime", label: "Lime", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.14},
             { key: "chicken_broth", label: "Chicken stock (2 Knorr cubes + 1L water)", qty: 1000, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 18},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 43, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 43, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m07_beans", label: "Black beans (canned, drained)", qty: 1400, unit: "g", cat: "Carbs", ingId: 94, role: "veg", baseQty: 200 },
+        ],
         steps: [
             "Blend chipotle peppers, garlic, lime juice and stock until smooth.",
             "Pour into slow cooker. Add chicken. Cook HIGH 3hr.",
@@ -1022,7 +1035,7 @@ const RECIPES = [
         name: "🍗 Classic Chicken, Rice & Broccoli",
         subtitle: "Chicken breast · jasmine rice · broccoli · garlic-lemon",
         badge: "🌬️ Oven", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:592,protein:51,carbs:75,fat:10.2},
+        perPortion: {kcal:623, protein:52.7, carbs:81.4, fat:10.6},
         locked: true,
         batchItems: [
             { key: "m31_chk", label: "Chicken breast (raw)", qty: 1260, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1031,6 +1044,9 @@ const RECIPES = [
             { key: "m31_oil", label: "Olive oil", qty: 30, unit: "g", cat: "Fats" , ingId: 160 , role: "fat", share: 1},
             { key: "m31_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m31_lem", label: "Lemons", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 150 , role: "fixed", baseQty: 0.29},
+        
+            { key: "m31_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
+            { key: "m31_parsley", label: "Fresh parsley (chopped)", qty: 70, unit: "g", cat: "Aromatics", ingId: 229, role: "veg", baseQty: 10 },
         ],
         steps: [
             "Cook jasmine rice: rinse, then cook dry rice with water in rice cooker or pot until tender. Season with salt.",
@@ -1047,7 +1063,7 @@ const RECIPES = [
         name: "🥩 Creamy Steak Pasta", subtitle: "Stovetop · 75 min",
         portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
-        perPortion: {kcal:719,protein:51,carbs:77,fat:21.1},
+        perPortion: {kcal:802, protein:60.0, carbs:91.4, fat:22.3},
         batchItems: [
             { key: "m26_steak", label: "Flank steak (raw, trimmed)", qty: 900, unit: "g", cat: "Protein" , ingId: 292 , role: "protein", share: 0.696},
             { key: "m26_pasta", label: "Penne pasta", qty: 900, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1059,6 +1075,10 @@ const RECIPES = [
             { key: "m26_parm", label: "Parmigiano Reggiano (grated)", qty: 80, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 0.09},
             { key: "m26_gruy", label: "Gruyère cheese (grated)", qty: 100, unit: "g", cat: "Dairy" , ingId: 291 , role: "fat", share: 0.579},
             { key: "m26_oil", label: "Avocado oil", qty: 30, unit: "mL", cat: "Oils" , ingId: 160 , role: "fixed", baseQty: 3},
+        
+            { key: "m26_spin", label: "Baby spinach", qty: 1000, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 100 },
+            { key: "m26_mush", label: "Mushrooms (sliced)", qty: 1500, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
+            { key: "m26_tomato", label: "Cherry tomatoes", qty: 1500, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Season steak generously with salt and lightly with pepper. Rest on a wire rack while you prep the rest (or cook immediately).",
@@ -1122,7 +1142,7 @@ const RECIPES = [
     {
         category: "main", id: "m05", name: "🍗 French Onion Pasta", subtitle: "Chicken · caramelized onions · cottage cheese & parmesan sauce",
         badge: "🥘 Crockpot", carb: "Pasta", portions: 7,
-        perPortion: {kcal:764,protein:63,carbs:80,fat:20.5},
+        perPortion: {kcal:818, protein:70.2, carbs:88.6, fat:21.4},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1130, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (penne or short)", qty: 650, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1137,7 +1157,11 @@ const RECIPES = [
             { key: "dijon_mustard", label: "Dijon mustard", qty: 15, unit: "g", cat: "Sauces" , ingId: 184 , role: "fixed", baseQty: 2.14},
             { key: "beef_broth", label: "Beef stock (1 Knorr cube + 750mL water)", qty: 750, unit: "mL", cat: "Liquids" , ingId: 208 , role: "fixed", baseQty: 142.86},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 53, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 53, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m05_mush", label: "Mushrooms (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
+            { key: "m05_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m05_thyme", label: "Fresh thyme", qty: 21, unit: "g", cat: "Aromatics", ingId: 235, role: "veg", baseQty: 3 },
+        ],
         steps: [
             "Slow cooker: add chicken, garlic, Dijon, Worcestershire, stock and seasonings. Cook HIGH 3hr.",
             "Caramelize the onions in butter + remaining stock over medium heat until dark brown (~45 min).",
@@ -1371,7 +1395,7 @@ const RECIPES = [
         name: "🥩 Hibachi Steak Bowl",
         subtitle: "Stovetop · ~30 min",
         badge: "🍳 Stovetop", carb: "Rice", portions: 7,
-        perPortion: {kcal:598, protein:42.0, carbs:55.1, fat:21.8},
+        perPortion: {kcal:650, protein:47.5, carbs:63.8, fat:22.7},
         batchItems: [
             { key: "m51-steak", label: "Top sirloin steak (raw, trimmed)", qty: 990, unit: "g", cat: "Protein" , ingId: 9 , role: "protein", share: 1},
             { key: "m51-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
@@ -1382,6 +1406,9 @@ const RECIPES = [
             { key: "m51-mayo", label: "Light mayonnaise", qty: 105, unit: "g", cat: "Sauces" , ingId: 274 , role: "fixed", baseQty: 15},
             { key: "m51-soy", label: "Low-sodium soy sauce", qty: 60, unit: "mL", cat: "Sauces" , ingId: 180 , role: "fixed", baseQty: 8.57},
             { key: "m51-sesame", label: "Sesame oil", qty: 14, unit: "g", cat: "Fats" , ingId: 171 , role: "fixed", baseQty: 2},
+        
+            { key: "m51_zucc", label: "Zucchini (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 103, role: "veg", baseQty: 150 },
+            { key: "m51_mush", label: "Mushrooms (sliced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 120 },
         ],
         steps: [
             "Cook jasmine rice the night before and refrigerate — cold rice is essential for fried rice.",
@@ -1397,13 +1424,18 @@ const RECIPES = [
         id: "m52", category: "main",
         name: "🍗 Italian Herb Chicken, Rice & Broccoli", subtitle: "Air Fryer · batch cook",
         badge: "💨 Air Fryer", carb: "🌾 Rice", portions: 7,
-        perPortion: {kcal:523, protein:50, carbs:67, fat:6.6},
+        perPortion: {kcal:580, protein:52.8, carbs:79.8, fat:7.1},
         batchItems: [
             { key: "m52_chick", label: "Chicken breast (skinless, raw)", qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
             { key: "m52_rice",  label: "White rice (dry)",               qty: 490,  unit: "g",  cat: "Carbs",      ingId: 60,  role: "carbs",   share: 1     },
             { key: "m52_broc",  label: "Broccoli (florets)",             qty: 1050, unit: "g",  cat: "Vegetables", ingId: 100, role: "veg",     baseQty: 150 },
             { key: "m52_herb",  label: "Italian herb seasoning",         qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2   },
             { key: "m52_oil",   label: "Olive oil spray",                qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71},
+        
+            { key: "m52_garlic", label: "Garlic (fresh, minced)", qty: 105, unit: "g", cat: "Aromatics", ingId: 108, role: "veg", baseQty: 15 },
+            { key: "m52_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
+            { key: "m52_lemon", label: "Lemon juice", qty: 140, unit: "g", cat: "Aromatics", ingId: 150, role: "veg", baseQty: 20 },
+            { key: "m52_parsley", label: "Fresh parsley", qty: 70, unit: "g", cat: "Aromatics", ingId: 229, role: "veg", baseQty: 10 },
         ],
         steps: [
             "Season chicken breasts generously with Italian herb seasoning, salt, and black pepper on both sides. Spray lightly with olive oil.",
@@ -1417,13 +1449,17 @@ const RECIPES = [
         id: "m53", category: "main",
         name: "🍗 Italian Herb Chicken, Sweet Potato & Broccoli", subtitle: "Air Fryer · batch cook",
         badge: "💨 Air Fryer", carb: "🍠 Sweet Potato", portions: 7,
-        perPortion: {kcal:440, protein:48, carbs:51, fat:6.3},
+        perPortion: {kcal:494, protein:50.5, carbs:63.2, fat:6.7},
         batchItems: [
             { key: "m53_chick", label: "Chicken breast (skinless, raw)", qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
             { key: "m53_swpot", label: "Sweet potato (cubed, raw)",      qty: 1400, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1     },
             { key: "m53_broc",  label: "Broccoli (florets)",             qty: 1050, unit: "g",  cat: "Vegetables", ingId: 100, role: "veg",     baseQty: 150 },
             { key: "m53_herb",  label: "Italian herb seasoning",         qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2   },
             { key: "m53_oil",   label: "Olive oil spray",                qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71},
+        
+            { key: "m53_garlic", label: "Garlic (fresh, minced)", qty: 105, unit: "g", cat: "Aromatics", ingId: 108, role: "veg", baseQty: 15 },
+            { key: "m53_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
+            { key: "m53_lemon", label: "Lemon juice", qty: 140, unit: "g", cat: "Aromatics", ingId: 150, role: "veg", baseQty: 20 },
         ],
         steps: [
             "Season chicken breasts generously with Italian herb seasoning, salt, and black pepper on both sides. Spray lightly with olive oil.",
@@ -1438,7 +1474,7 @@ const RECIPES = [
         id: "m54", category: "main",
         name: "🥩 Lean Beef Bowl with Rice & Vegetables", subtitle: "Stovetop · batch cook",
         badge: "🍳 Stovetop", carb: "🌾 Rice", portions: 7,
-        perPortion: {kcal:603, protein:51.4, carbs:74.6, fat:10.9},
+        perPortion: {kcal:648, protein:55.1, carbs:83.3, fat:11.5},
         batchItems: [
             { key: "m54_beef",  label: "Beef mince (5% fat)",              qty: 1050, unit: "g",  cat: "Protein",    ingId: 6,   role: "protein", share: 1      },
             { key: "m54_rice",  label: "White rice (dry)",                  qty: 490,  unit: "g",  cat: "Carbs",      ingId: 60,  role: "carbs",   share: 1      },
@@ -1449,6 +1485,9 @@ const RECIPES = [
             { key: "m54_pap",   label: "Paprika (sprinkle on CC)",          qty: 7,    unit: "g",  cat: "Aromatics",  ingId: 221, role: "fixed",   baseQty: 1    },
             { key: "m54_gar",   label: "Garlic (minced)",                   qty: 21,   unit: "g",  cat: "Aromatics",  ingId: 108, role: "fixed",   baseQty: 3    },
             { key: "m54_oil",   label: "Olive oil",                         qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71 },
+        
+            { key: "m54_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m54_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Heat olive oil in a large skillet over medium-high. Add beef mince and cook until browned, breaking it up. Season with smoked paprika, salt, and pepper.",
@@ -1463,7 +1502,7 @@ const RECIPES = [
         id: "m55", category: "main",
         name: "🥩 Lean Beef Bowl with Sweet Potato & Vegetables", subtitle: "Stovetop · batch cook",
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato", portions: 7,
-        perPortion: {kcal:502, protein:49.3, carbs:54.6, fat:10.6},
+        perPortion: {kcal:547, protein:53.0, carbs:63.3, fat:11.2},
         batchItems: [
             { key: "m55_beef",  label: "Beef mince (5% fat)",              qty: 1050, unit: "g",  cat: "Protein",    ingId: 6,   role: "protein", share: 1      },
             { key: "m55_swpot", label: "Sweet potato (cubed, raw)",         qty: 1260, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1      },
@@ -1474,6 +1513,9 @@ const RECIPES = [
             { key: "m55_pap",   label: "Paprika (sprinkle on CC)",          qty: 7,    unit: "g",  cat: "Aromatics",  ingId: 221, role: "fixed",   baseQty: 1    },
             { key: "m55_gar",   label: "Garlic (minced)",                   qty: 21,   unit: "g",  cat: "Aromatics",  ingId: 108, role: "fixed",   baseQty: 3    },
             { key: "m55_oil",   label: "Olive oil",                         qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71 },
+        
+            { key: "m55_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m55_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Cube sweet potato into 2cm pieces. Air fry at 200°C for 20–25 min or roast at 200°C for 25 min until golden and tender.",
@@ -1488,7 +1530,7 @@ const RECIPES = [
         id: "m56", category: "main",
         name: "🍗 Herb Chicken Bowl with Rice & Vegetables", subtitle: "Air Fryer · batch cook",
         badge: "💨 Air Fryer", carb: "🌾 Rice", portions: 7,
-        perPortion: {kcal:598, protein:60, carbs:73, fat:7.1},
+        perPortion: {kcal:643, protein:63.7, carbs:81.7, fat:7.7},
         batchItems: [
             { key: "m56_chick", label: "Chicken breast (skinless, raw)",   qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1      },
             { key: "m56_rice",  label: "White rice (dry)",                  qty: 490,  unit: "g",  cat: "Carbs",      ingId: 60,  role: "carbs",   share: 1      },
@@ -1498,6 +1540,9 @@ const RECIPES = [
             { key: "m56_herb",  label: "Italian herb seasoning",            qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2    },
             { key: "m56_pap",   label: "Paprika (sprinkle on CC)",          qty: 7,    unit: "g",  cat: "Aromatics",  ingId: 221, role: "fixed",   baseQty: 1    },
             { key: "m56_oil",   label: "Olive oil spray",                   qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71 },
+        
+            { key: "m56_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m56_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Season chicken with Italian herb seasoning, salt, and pepper. Spray with olive oil.",
@@ -1512,7 +1557,7 @@ const RECIPES = [
         id: "m57", category: "main",
         name: "🍗 Herb Chicken Bowl with Sweet Potato & Vegetables", subtitle: "Air Fryer · batch cook",
         badge: "💨 Air Fryer", carb: "🍠 Sweet Potato", portions: 7,
-        perPortion: {kcal:497, protein:58, carbs:53, fat:6.8},
+        perPortion: {kcal:542, protein:61.7, carbs:61.7, fat:7.4},
         batchItems: [
             { key: "m57_chick", label: "Chicken breast (skinless, raw)",   qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1      },
             { key: "m57_swpot", label: "Sweet potato (cubed, raw)",         qty: 1260, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1      },
@@ -1522,6 +1567,9 @@ const RECIPES = [
             { key: "m57_herb",  label: "Italian herb seasoning",            qty: 14,   unit: "g",  cat: "Aromatics",  ingId: 300, role: "fixed",   baseQty: 2    },
             { key: "m57_pap",   label: "Paprika (sprinkle on CC)",          qty: 7,    unit: "g",  cat: "Aromatics",  ingId: 221, role: "fixed",   baseQty: 1    },
             { key: "m57_oil",   label: "Olive oil spray",                   qty: 5,    unit: "g",  cat: "Sauces",     ingId: 160, role: "fixed",   baseQty: 0.71 },
+        
+            { key: "m57_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m57_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Season chicken with Italian herb seasoning, salt, and pepper. Spray with olive oil.",
@@ -1652,7 +1700,7 @@ const RECIPES = [
         id: "m25", category: "main",
         name: "🍗 High-Protein KFC Mac & Cheese", subtitle: "Air fryer · 45 min",
         badge: "💨 Air Fryer", carb: "🧀 Mac & Cheese", portions: 4,
-        perPortion: {kcal:812, protein:68.0, carbs:89.1, fat:17.8},
+        perPortion: {kcal:898, protein:75.9, carbs:105.2, fat:18.9},
         batchItems: [
             { key: "m25_chk", label: "Diced chicken breast", qty: 700, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
             { key: "m25_flour", label: "Plain flour", qty: 100, unit: "g", cat: "Carbs" , ingId: 277 , role: "carbs", share: 1},
@@ -1661,6 +1709,9 @@ const RECIPES = [
             { key: "m25_milk", label: "Fat-free evaporated milk", qty: 340, unit: "mL", cat: "Dairy" , ingId: 284 , role: "protein", share: 1},
             { key: "m25_cream", label: "Light cream cheese", qty: 60, unit: "g", cat: "Dairy" , ingId: 54 , role: "fat", share: 0.342},
             { key: "m25_ched", label: "Grated cheddar", qty: 70, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.658},
+        
+            { key: "m25_brocc", label: "Broccoli florets", qty: 800, unit: "g", cat: "Vegetables", ingId: 100, role: "veg", baseQty: 200 },
+            { key: "m25_spin", label: "Baby spinach", qty: 320, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
         ],
         steps: [
             "Mix flour with KFC spice blend (salt, mustard powder, thyme, black pepper, basil, celery salt, white pepper, garlic powder, ginger powder, smoked paprika, oregano) and baking powder.",
@@ -1675,7 +1726,7 @@ const RECIPES = [
     {
         category: "main", id: "m06", name: "🍗 Honey Chipotle Chicken Bowl", subtitle: "Slow-cooked chicken · honey chipotle · jasmine rice",
         badge: "🥘 Crockpot", carb: "Rice", portions: 7,
-        perPortion: {kcal:754,protein:66,carbs:82,fat:17.1},
+        perPortion: {kcal:1036, protein:86.1, carbs:132.9, fat:18.4},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1565, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "White rice (jasmine)", qty: 580, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
@@ -1688,7 +1739,10 @@ const RECIPES = [
             { key: "honey", label: "Raw honey", qty: 42, unit: "g", cat: "Sauces" , ingId: 195 , role: "fixed", baseQty: 6},
             { key: "garlic", label: "Garlic cloves", qty: 20, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 55, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 55, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m06_beans", label: "Black beans (canned, drained)", qty: 1400, unit: "g", cat: "Carbs", ingId: 94, role: "veg", baseQty: 200 },
+            { key: "m06_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+        ],
         steps: [
             "Slow cooker: add chicken, chipotle peppers, honey and seasonings. Cook HIGH 3hr.",
             "Blend fat-free cottage cheese, Président Light mozzarella, parmesan, tomato sauce, garlic, milk and remaining honey until smooth.",
@@ -1702,7 +1756,7 @@ const RECIPES = [
 
     category: "main",        name: "🍗 Honey Chipotle Chicken Burritos", subtitle: "Wrap + Rice · Crockpot",
         badge: "🥘 Crockpot", carb: "🌮 Wrap", portions: 7,
-        perPortion: {kcal:620, protein:69.4, carbs:59.3, fat:10.2},
+        perPortion: {kcal:685, protein:73.2, carbs:71.2, fat:11.0},
         batchItems: [
             { key: "m16_chk", label: "Chicken breast (raw)", qty: 1200, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.788},
             { key: "m16_cheese", label: "Fat-free mozzarella (shredded)", qty: 400, unit: "g", cat: "Dairy" , ingId: 281 , role: "protein", share: 0.17},
@@ -1714,6 +1768,9 @@ const RECIPES = [
             { key: "m16_tom", label: "Tomato sauce", qty: 170, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 24.29},
             { key: "m16_milk", label: "Fat-free milk", qty: 80, unit: "mL", cat: "Liquids" , ingId: 50 , role: "fixed", baseQty: 11.43},
             { key: "m16_garl", label: "Garlic cloves", qty: 3, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.43},
+        
+            { key: "m16_pepper", label: "Bell pepper (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 150 },
+            { key: "m16_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
         ],
         steps: [
             "In a crockpot, add raw chicken, chipotle peppers in adobo sauce, honey, garlic salt and onion powder. Stir to coat.",
@@ -1805,7 +1862,7 @@ const RECIPES = [
         name: "🥩 Lean Beef & Broccoli Rice Bowl",
         subtitle: "95/5 lean ground beef · broccoli · jasmine rice · soy-ginger sauce",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:597,protein:52,carbs:67,fat:13},
+        perPortion: {kcal:653, protein:57.9, carbs:77.3, fat:13.7},
         locked: true,
         batchItems: [
             { key: "m44_beef", label: "95/5 lean ground beef (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
@@ -1816,6 +1873,9 @@ const RECIPES = [
             { key: "m44_ging", label: "Fresh ginger (grated)", qty: 20, unit: "g", cat: "Aromatics" , ingId: 228 , role: "fixed", baseQty: 2.86},
             { key: "m44_garl", label: "Garlic cloves", qty: 6, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.86},
             { key: "m44_ses", label: "Sesame oil", qty: 14, unit: "g", cat: "Fats" , ingId: 171 , role: "fat", share: 1},
+        
+            { key: "m44_snappea", label: "Snap peas", qty: 700, unit: "g", cat: "Vegetables", ingId: 135, role: "veg", baseQty: 100 },
+            { key: "m44_mush", label: "Mushrooms (sliced)", qty: 700, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 100 },
         ],
         steps: [
             "Cook jasmine rice in rice cooker.",
@@ -1851,7 +1911,7 @@ const RECIPES = [
     {
         category: "main", id: "m08", name: "🥩 Lean Beef Hamburger Helper", subtitle: "Lean beef · pasta in beef broth · cottage cheese & parmesan sauce",
         badge: "🍳 Stovetop", carb: "Pasta", portions: 7,
-        perPortion: {kcal:788, protein:64.7, carbs:83.5, fat:20.6},
+        perPortion: {kcal:863, protein:72.8, carbs:96.9, fat:21.6},
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1315, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "pasta_regular", label: "Pasta (elbow or short)", qty: 730, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1863,7 +1923,11 @@ const RECIPES = [
             { key: "garlic", label: "Minced garlic", qty: 25, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
             { key: "beef_broth", label: "Beef stock (1 Knorr cube + 1L water)", qty: 1000, unit: "mL", cat: "Liquids" , ingId: 208 , role: "fixed", baseQty: 142.86},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 50, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 50, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m08_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m08_mush", label: "Mushrooms (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
+            { key: "m08_pepper", label: "Bell pepper (diced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 105, role: "veg", baseQty: 120 },
+        ],
         steps: [
             "Sauté onion and garlic until softened.",
             "Add beef, season with chili powder, garlic powder and paprika. Brown fully. Drain excess fat.",
@@ -1903,7 +1967,7 @@ const RECIPES = [
         name: "🦃 Lean Turkey Mince Rice Bowl",
         subtitle: "99/1 turkey · jasmine rice · bell peppers · tomato base",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:574,protein:60,carbs:69,fat:3.1},
+        perPortion: {kcal:622, protein:64.2, carbs:77.6, fat:4.0},
         locked: true,
         batchItems: [
             { key: "m33_turk", label: "99/1 turkey mince (raw)", qty: 1540, unit: "g", cat: "Protein" , ingId: 287 , role: "protein", share: 1},
@@ -1913,6 +1977,10 @@ const RECIPES = [
             { key: "m33_onion", label: "Yellow onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
             { key: "m33_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m33_broth", label: "Chicken broth (low-sodium)", qty: 250, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 35.71},
+        
+            { key: "m33_zucc", label: "Zucchini / courgette (diced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 103, role: "veg", baseQty: 150 },
+            { key: "m33_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m33_jalap", label: "Jalapeño (optional, sliced)", qty: 105, unit: "g", cat: "Vegetables", ingId: 127, role: "veg", baseQty: 15 },
         ],
         steps: [
             "Cook jasmine rice in rice cooker with water and a pinch of salt.",
@@ -2013,7 +2081,7 @@ const RECIPES = [
         name: "🍕 Pepperoni Pizza Pasta", subtitle: "Stovetop · 30 min",
         portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
-        perPortion: {kcal:519, protein:46.5, carbs:28.6, fat:24.9},
+        perPortion: {kcal:648, protein:57.0, carbs:52.0, fat:26.6},
         batchItems: [
             { key: "m23_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.613},
             { key: "m23_tsaus", label: "Lean turkey sausage", qty: 450, unit: "g", cat: "Protein" , ingId: 17 , role: "protein", share: 0.277},
@@ -2022,6 +2090,11 @@ const RECIPES = [
             { key: "m23_cheese", label: "2% Mexican 4-cheese blend", qty: 280, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.794},
             { key: "m23_sauce", label: "Low-cal pizza sauce", qty: 560, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 56},
             { key: "m23_cream", label: "1/3 less-fat cream cheese", qty: 120, unit: "g", cat: "Dairy" , ingId: 54 , role: "fat", share: 0.206},
+        
+            { key: "m23_mush", label: "Mushrooms (sliced)", qty: 1500, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
+            { key: "m23_pepper", label: "Bell pepper (diced)", qty: 1500, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 150 },
+            { key: "m23_spin", label: "Baby spinach", qty: 1000, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 100 },
+            { key: "m23_tomato", label: "Cherry tomatoes", qty: 1500, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Cook ground beef and turkey sausage together in a large pan over medium-high heat. Season with garlic powder, onion powder, basil, and salt. Drain any excess fat.",
@@ -2037,7 +2110,7 @@ const RECIPES = [
         name: "🐷 Pork Tenderloin & Jasmine Rice",
         subtitle: "Pork tenderloin · jasmine rice · green beans · Dijon-herb crust",
         badge: "🌬️ Oven", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:552,protein:50,carbs:69,fat:7.4},
+        perPortion: {kcal:609, protein:54.7, carbs:80.6, fat:7.8},
         locked: true,
         batchItems: [
             { key: "m41_pork", label: "Pork tenderloin (whole)", qty: 1400, unit: "g", cat: "Protein" , ingId: 12 , role: "protein", share: 1},
@@ -2047,6 +2120,9 @@ const RECIPES = [
             { key: "m41_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m41_lem", label: "Lemons", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 150 , role: "fixed", baseQty: 0.29},
             { key: "m41_oil", label: "Olive oil", qty: 14, unit: "g", cat: "Fats" , ingId: 160 , role: "fat", share: 1},
+        
+            { key: "m41_aspar", label: "Asparagus (trimmed)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 114, role: "veg", baseQty: 150 },
+            { key: "m41_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Preheat oven to 200°C. Cook jasmine rice in rice cooker.",
@@ -2305,7 +2381,7 @@ const RECIPES = [
         name: "🍗 Slow-Cooked Pulled Chicken & Rice",
         subtitle: "Chicken breast · jasmine rice · sweet potato · BBQ spice rub · broth",
         badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:603,protein:54,carbs:82,fat:5.9},
+        perPortion: {kcal:776, protein:62.2, carbs:117.4, fat:8.2},
         locked: true,
         batchItems: [
             { key: "m50_chk", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -2315,6 +2391,10 @@ const RECIPES = [
             { key: "m50_tom", label: "Tomato passata", qty: 400, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 57.14},
             { key: "m50_onion", label: "Yellow onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
             { key: "m50_garl", label: "Garlic cloves", qty: 6, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.86},
+        
+            { key: "m50_spin", label: "Baby spinach (stir in last 5 min)", qty: 700, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 100 },
+            { key: "m50_corn", label: "Corn (canned, drained)", qty: 840, unit: "g", cat: "Carbs", ingId: 78, role: "veg", baseQty: 120 },
+            { key: "m50_pepper", label: "Bell pepper (diced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Dice onion and cube sweet potatoes. Mince garlic.",
@@ -2417,7 +2497,7 @@ const RECIPES = [
         name: "🍗 Teriyaki Chicken & Edamame Rice",
         subtitle: "Chicken breast · jasmine rice · edamame · broccoli · teriyaki glaze",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:622,protein:56,carbs:80,fat:8.8},
+        perPortion: {kcal:676, protein:61.0, carbs:90.3, fat:9.5},
         locked: true,
         batchItems: [
             { key: "m47_chk", label: "Chicken breast (raw)", qty: 1260, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -2429,6 +2509,9 @@ const RECIPES = [
             { key: "m47_ging", label: "Fresh ginger (grated)", qty: 20, unit: "g", cat: "Aromatics" , ingId: 228 , role: "fixed", baseQty: 2.86},
             { key: "m47_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m47_corn", label: "Cornstarch", qty: 14, unit: "g", cat: "Sauces" , ingId: 265 , role: "fixed", baseQty: 2},
+        
+            { key: "m47_snappea", label: "Snap peas", qty: 700, unit: "g", cat: "Vegetables", ingId: 135, role: "veg", baseQty: 100 },
+            { key: "m47_bokchoy", label: "Bok choy (halved)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", baseQty: 150 },
         ],
         steps: [
             "Cook jasmine rice in rice cooker. Cook edamame in boiling water 4 min, drain.",
@@ -2673,12 +2756,16 @@ const RECIPES = [
         name: "🥓 Bacon & Hashbrown Bowl",
         subtitle: "Stovetop · ~20 min",
         badge: "🍳 Stovetop", carb: "Potato", portions: 5,
-        perPortion: {kcal:508,protein:51,carbs:15,fat:25.4},
+        perPortion: {kcal:565, protein:54.4, carbs:25.9, fat:26.0},
         batchItems: [
             { key: "bf1-eggs", label: "Large eggs", qty: 13, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "bf1-bacon", label: "Center-cut beef bacon (raw)", qty: 283, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 1},
             { key: "bf1-hash", label: "Frozen shredded hashbrowns", qty: 350, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 1},
             { key: "bf1-cheddar", label: "Fat-free cheddar (shredded)", qty: 308, unit: "g", cat: "Dairy" , ingId: 280 , role: "protein", share: 1},
+        
+            { key: "bf1_spin", label: "Baby spinach", qty: 300, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 60 },
+            { key: "bf1_tomato", label: "Cherry tomatoes", qty: 500, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 100 },
+            { key: "bf1_pepper", label: "Bell pepper (diced)", qty: 400, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 80 },
         ],
         steps: [
             "Lightly spray a large skillet with oil. Scramble all the eggs until cooked. Set aside.",
@@ -2695,13 +2782,16 @@ const RECIPES = [
         name: "🥚 Breakfast Bagel Sandwich",
         subtitle: "Fresh each morning · ~15 min",
         badge: "🍳 Stovetop", carb: "Bagel", portions: 3,
-        perPortion: {kcal:658, protein:45, carbs:52.2, fat:29},
+        perPortion: {kcal:676, protein:46.4, carbs:55.6, fat:29.2},
         batchItems: [
             { key: "bf2-turkey", label: "Ground turkey sausage (raw)", qty: 340, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
             { key: "bf2-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "bf2-bagels", label: "Everything bagels", qty: 3, unit: "whole", cat: "Carbs" , ingId: 293 , role: "carbs", share: 1},
             { key: "bf2-cheese", label: "Pepper jack cheese (slices)", qty: 3, unit: "whole", cat: "Dairy" , ingId: 294 , role: "fat", share: 1},
             { key: "bf2-butter", label: "Salted butter", qty: 11, unit: "g", cat: "Fats" , ingId: 162 , role: "fat", share: 1},
+        
+            { key: "bf2_spin", label: "Baby spinach", qty: 90, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 30 },
+            { key: "bf2_tomato", label: "Tomato (fresh, sliced)", qty: 180, unit: "g", cat: "Vegetables", ingId: 109, role: "veg", baseQty: 60 },
         ],
         steps: [
             "Divide turkey sausage into equal portions (one per serving) and shape into patties.",
@@ -2739,10 +2829,14 @@ const RECIPES = [
         name: "🧀 Cottage Cheese & Toast",
         subtitle: "No cook · 3 min",
         badge: "❄️ No Cook", carb: "Wholegrain",
-        perPortion: {kcal:378,protein:34,carbs:41,fat:7.7},
+        perPortion: {kcal:403, protein:35.2, carbs:46.6, fat:8.0},
         batchItems: [
             { key: "bf4-cc", label: "Low-fat cottage cheese", qty: 200, unit: "g", cat: "Dairy" , ingId: 43 , role: "protein", share: 1},
             { key: "bf4-toast", label: "Wholegrain bread slice", qty: 2, unit: "whole", cat: "Carbs" , ingId: 71 , role: "carbs", share: 1},
+        
+            { key: "bf4_tomato", label: "Cherry tomatoes (halved)", qty: 80, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 80 },
+            { key: "bf4_cucumber", label: "Cucumber (sliced)", qty: 60, unit: "g", cat: "Vegetables", ingId: 111, role: "veg", baseQty: 60 },
+            { key: "bf4_parsley", label: "Fresh parsley", qty: 5, unit: "g", cat: "Aromatics", ingId: 229, role: "veg", baseQty: 5 },
         ],
         steps: [
             "Toast the bread slices.",
@@ -2756,13 +2850,17 @@ const RECIPES = [
         name: "🥚 Egg, Beef & Cheese Breakfast Bowl", subtitle: "Stovetop · batch cook",
         portions: 7,
         badge: "🍳 Stovetop", carb: "🌾 Rice",
-        perPortion: {kcal:577, protein:56.5, carbs:41.7, fat:19.1},
+        perPortion: {kcal:634, protein:59.9, carbs:52.6, fat:19.7},
         batchItems: [
             { key: "bf5_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.9},
             { key: "bf5_eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "bf5_rice", label: "Jasmine rice (uncooked)", qty: 350, unit: "g", cat: "Carbs" , ingId: 60 , role: "carbs", share: 1},
             { key: "bf5_ched", label: "Fat-free cheddar (shredded)", qty: 100, unit: "g", cat: "Dairy" , ingId: 280 , role: "protein", share: 1},
             { key: "bf5_mozz", label: "Fat-free mozzarella (shredded)", qty: 100, unit: "g", cat: "Dairy" , ingId: 281 , role: "protein", share: 0.1},
+        
+            { key: "bf5_spin", label: "Baby spinach", qty: 420, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 60 },
+            { key: "bf5_tomato", label: "Cherry tomatoes", qty: 700, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 100 },
+            { key: "bf5_pepper", label: "Bell pepper (diced)", qty: 560, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 80 },
         ],
         steps: [
             "Add rice and water to a rice cooker. Let cook fully.",
@@ -2779,7 +2877,7 @@ const RECIPES = [
         name: "🥚🥩 Egg, Beef & Cheese Breakfast Burritos", subtitle: "Wrap · Stovetop",
         portions: 7,
         badge: "🍳 Stovetop", carb: "🌮 Wrap",
-        perPortion: {kcal:545, protein:45.6, carbs:29.6, fat:26.6},
+        perPortion: {kcal:590, protein:48.3, carbs:37.8, fat:27.1},
         batchItems: [
             { key: "bf6_beef", label: "95/5 lean ground beef (raw)", qty: 788, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.801},
             { key: "bf6_eggs", label: "Large eggs", qty: 7, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
@@ -2787,6 +2885,9 @@ const RECIPES = [
             { key: "bf6_cheese", label: "Shredded Italian cheese blend", qty: 196, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.199},
             { key: "bf6_tort", label: "High-fiber 12-inch tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 72 , role: "carbs", share: 1},
             { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+        
+            { key: "bf6_spin", label: "Baby spinach", qty: 420, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 60 },
+            { key: "bf6_pepper", label: "Bell pepper (diced)", qty: 700, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 100 },
         ],
         steps: [
             "In a large skillet, spray oil and scramble the eggs with salt and pepper until fully cooked. Set aside.",
@@ -2808,6 +2909,9 @@ const RECIPES = [
             { key: "bf7-eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "bf7-whites", label: "Egg whites", qty: 21, unit: "whole", cat: "Protein" , ingId: 41 , role: "protein", share: 1},
             { key: "bf7-toast", label: "Wholegrain bread slice", qty: 14, unit: "whole", cat: "Carbs" , ingId: 71 , role: "carbs", share: 1},
+        
+            { key: "bf7_spin", label: "Baby spinach", qty: 420, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 60 },
+            { key: "bf7_tomato", label: "Cherry tomatoes", qty: 700, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 100 },
         ],
         steps: [
             "Crack the whole eggs and egg whites into a bowl and whisk.",
@@ -2904,13 +3008,16 @@ const RECIPES = [
         name: "🥯 Turkey Sausage Breakfast Bagel", subtitle: "Stovetop · batch cook",
         portions: 4,
         badge: "🍳 Stovetop", carb: "🥯 Bagel",
-        perPortion: {kcal:556, protein:38.9, carbs:51.9, fat:20.7},
+        perPortion: {kcal:574, protein:40.3, carbs:55.3, fat:20.9},
         batchItems: [
             { key: "bf12_turk", label: "Lean ground turkey (raw)", qty: 450, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
             { key: "bf12_eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "bf12_bag", label: "Whole grain everything bagels", qty: 4, unit: "whole", cat: "Carbs" , ingId: 293 , role: "carbs", share: 1},
             { key: "bf12_cheese", label: "Pepper jack cheese slices", qty: 4, unit: "whole", cat: "Dairy" , ingId: 294 , role: "fat", share: 1},
             { key: "bf12_but", label: "Salted butter", qty: 1, unit: "whole", cat: "Sauces" , ingId: 162 , role: "fixed", baseQty: 0.25},
+        
+            { key: "bf12_spin", label: "Baby spinach", qty: 120, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 30 },
+            { key: "bf12_tomato", label: "Tomato (fresh, sliced)", qty: 240, unit: "g", cat: "Vegetables", ingId: 109, role: "veg", baseQty: 60 },
         ],
         steps: [
             "Divide ground turkey into equal portions (one per serving). Form each into a thick round patty.",
@@ -4347,6 +4454,82 @@ const INGREDIENT_MACROS = {
         "m62_capers":  {kcal:23.0,  p:2.0,  c:2.0,  f:1.0},
         "m62_cucumber":{kcal:15.0,  p:0.7,  c:3.6,  f:0.1},
         "m62_dill":    {kcal:43.0,  p:3.5,  c:7.0,  f:1.1},
+
+        "m02_spinach": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m02_pickles": {kcal:11.0, p:0.3, c:2.3, f:0.2},
+        "m05_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m05_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m05_thyme": {kcal:101.0, p:5.6, c:24.4, f:1.7},
+        "m06_beans": {kcal:132.0, p:8.9, c:24.0, f:0.5},
+        "m06_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m07_beans": {kcal:132.0, p:8.9, c:24.0, f:0.5},
+        "m08_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m08_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m08_pepper": {kcal:20.0, p:0.9, c:4.6, f:0.2},
+        "m09_celery": {kcal:16.0, p:0.7, c:3.0, f:0.2},
+        "m09_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m14_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m14_brocc": {kcal:34.0, p:2.8, c:6.6, f:0.4},
+        "m14_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m16_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "m16_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m23_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m23_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "m23_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m23_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m25_brocc": {kcal:34.0, p:2.8, c:6.6, f:0.4},
+        "m25_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m26_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m26_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m26_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m31_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m31_parsley": {kcal:36.0, p:3.0, c:6.3, f:0.8},
+        "m33_zucc": {kcal:17.0, p:1.2, c:3.1, f:0.3},
+        "m33_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m33_jalap": {kcal:29.0, p:0.9, c:6.5, f:0.4},
+        "m41_aspar": {kcal:20.0, p:2.2, c:3.9, f:0.1},
+        "m41_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m44_snappea": {kcal:34.0, p:2.8, c:7.0, f:0.4},
+        "m44_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m47_snappea": {kcal:34.0, p:2.8, c:7.0, f:0.4},
+        "m47_bokchoy": {kcal:13.0, p:1.5, c:2.2, f:0.2},
+        "m50_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m50_corn": {kcal:86.0, p:3.2, c:19.0, f:1.2},
+        "m50_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "m51_zucc": {kcal:17.0, p:1.2, c:3.1, f:0.3},
+        "m51_mush": {kcal:22.0, p:3.1, c:3.3, f:0.3},
+        "m52_garlic": {kcal:149.0, p:6.4, c:33.0, f:0.5},
+        "m52_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m52_lemon": {kcal:22.0, p:0.4, c:6.9, f:0.2},
+        "m52_parsley": {kcal:36.0, p:3.0, c:6.3, f:0.8},
+        "m53_garlic": {kcal:149.0, p:6.4, c:33.0, f:0.5},
+        "m53_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m53_lemon": {kcal:22.0, p:0.4, c:6.9, f:0.2},
+        "m54_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m54_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m55_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m55_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m56_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m56_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "m57_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "m57_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf1_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf1_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf1_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "bf2_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf2_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf4_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf4_cucumber": {kcal:15.0, p:0.7, c:3.6, f:0.1},
+        "bf4_parsley": {kcal:36.0, p:3.0, c:6.3, f:0.8},
+        "bf5_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf5_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf5_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "bf6_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf6_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
+        "bf7_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf7_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
+        "bf12_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},
+        "bf12_tomato": {kcal:18.0, p:0.9, c:3.9, f:0.2},
 
 };
 
