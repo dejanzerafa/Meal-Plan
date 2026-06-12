@@ -2641,7 +2641,7 @@ const RECIPES = [
         name: "\uD83E\uDD6C Spinach & White Bean Pasta", subtitle: "White beans · pasta · spinach · garlic-parmesan sauce",
         badge: "🍳 Stovetop", carb: "\uD83C\uDF5D Pasta",
         portions: 5, locked: true,
-        perPortion: {kcal:461, protein:29.2, carbs:60.3, fat:11.9},
+        perPortion: {kcal:585,protein:37.9,carbs:83.4,fat:12.4},
         batchItems: [
             { key: "v8_bean",  label: "White beans / cannellini (400g can)", qty: 2, unit: "whole", cat: "Carbs" , ingId: 297 , role: "carbs", share: 1},
             { key: "v8_pasta", label: "Protein pasta or wholegrain pasta (dry)", qty: 375, unit: "g", cat: "Carbs" , ingId: 67 , role: "carbs", share: 1},
@@ -3726,6 +3726,7 @@ const INGREDIENT_MACROS = {
   "d4_yog": {kcal:73.0, p:9.0, c:3.9, f:1.9},
   "d5_alm": {kcal:576.0, p:21.4, c:19.6, f:52.5},
   "d5_cac": {kcal:228.0, p:19.6, c:57.9, f:13.7},
+    "d5_coc": {kcal:228.0, p:19.6, c:57.9, f:13.7},
   "d5_chia": {kcal:486.0, p:17.0, c:42.0, f:31.0},
   "d5_choc": {kcal:598.0, p:7.8, c:46.0, f:43.0},
   "d5_maple": {kcal:260.0, p:0.0, c:67.0, f:0.1},
@@ -4268,7 +4269,7 @@ const INGREDIENT_MACROS = {
   "v7_swpot": {kcal:86.0, p:1.6, c:20.0, f:0.1},  // Sweet Potato
   "v7_tom": {kcal:18.0, p:0.9, c:3.9, f:0.2},  // Cherry Tomatoes
   "v7_yog": {kcal:59.0, p:10.0, c:3.6, f:0.4},  // Greek Yogurt (0% fat)
-  "v8_bean": {kcal:130.0, p:9.0, c:24.0, f:0.5},  // Butter Beans (canned, drained)
+  "v8_bean": {kcal:130.0, p:9.0, c:24.0, f:0.5, unitG:240},  // Butter Beans (canned, drained), 240g drained per 400g can
   "v8_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:15.0},  // Chili Flakes / Red Pepper Flakes
   "v8_cot": {kcal:90.0, p:12.0, c:4.0, f:2.5},  // Low-Fat Cottage Cheese (2%)
   "v8_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
