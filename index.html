@@ -978,10 +978,10 @@ const RECIPES = [
         id: "v3", category: "main",
         name: "🌿 Chickpea & Roasted Veggie Couscous", subtitle: "Chickpeas · roasted capsicum · zucchini · couscous · harissa",
         badge: "🌬️ Oven", carb: "🌾 Couscous", portions: 6,
-        perPortion: {kcal:623, protein:23.7, carbs:107.5, fat:11.0},
+        perPortion: {kcal:548, protein:30.3, carbs:76.8, fat:11.2},
         batchItems: [
             { key: "v3_chick",  label: "Chickpeas in water (400g can)", qty: 3, unit: "whole", cat: "Carbs"      , ingId: 91 , role: "carbs", share: 1},
-            { key: "v3_cous",   label: "Couscous (dry)",               qty: 450, unit: "g",    cat: "Carbs"      , ingId: 76 , role: "carbs", share: 1},
+            { key: "v3_cous",   label: "Couscous (dry)",               qty: 180, unit: "g",    cat: "Carbs"      , ingId: 76 , role: "carbs", share: 1},
             { key: "v3_caps",   label: "Red & yellow capsicum (diced)", qty: 600, unit: "g",   cat: "Vegetables"  , ingId: 104 , role: "veg", baseQty: 100},
             { key: "v3_zucc",   label: "Zucchini (diced)",             qty: 400, unit: "g",    cat: "Vegetables"  , ingId: 103 , role: "veg", baseQty: 66.67},
             { key: "v3_red",    label: "Red onion (diced)",            qty: 2,   unit: "whole", cat: "Vegetables"  , ingId: 107 , role: "veg", baseQty: 0.33},
@@ -991,6 +991,8 @@ const RECIPES = [
             { key: "v3_cuc",    label: "Cucumber (diced, for serving)", qty: 1,  unit: "whole", cat: "Vegetables"  , ingId: 111 , role: "veg", baseQty: 0.17},
             { key: "v3_pars",   label: "Fresh parsley (chopped)",      qty: 30,  unit: "g",    cat: "Vegetables"  , ingId: 229 , role: "veg", baseQty: 5},
             { key: "v3_lem",    label: "Lemon (juice of 2)",           qty: 2,   unit: "whole", cat: "Sauces"     , ingId: 150 , role: "fixed", baseQty: 0.33},
+            { key: "v3_cot",  label: "Fat-free cottage cheese",  qty: 400, unit: "g", cat: "Dairy",   ingId: 42,  role: "protein", share: 1},
+            { key: "v3_yog",  label: "0% Greek yogurt (to serve)", qty: 300, unit: "g", cat: "Dairy",   ingId: 47,  role: "protein", share: 1}
         ],
         steps: [
             "Preheat oven to 220°C (430°F). Drain and rinse chickpeas. Pat dry with a paper towel — this is key for crispness.",
@@ -1097,11 +1099,11 @@ const RECIPES = [
         name: "🍗 Crispy Chicken Nuggets", subtitle: "Cornflake crusted · Air fryer · 25 min",
         portions: 7,
         badge: "💨 Air Fryer", carb: "🌽 Cornflake",
-        perPortion: {kcal:107, protein:9.7, carbs:5.3, fat:5.1},
+        perPortion: {kcal:316, protein:28.7, carbs:16.0, fat:14.9},
         batchItems: [
-            { key: "m21_chk", label: "Ground chicken (formed into balls)", qty: 286, unit: "g", cat: "Protein" , ingId: 3 , role: "protein", share: 1},
-            { key: "m21_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
-            { key: "m21_corn", label: "Corn Flakes (crushed, sugar-free)", qty: 43, unit: "g", cat: "Carbs" , ingId: 266 , role: "carbs", share: 1},
+            { key: "m21_chk", label: "Ground chicken (formed into balls)", qty: 840, unit: "g", cat: "Protein" , ingId: 3 , role: "protein", share: 1},
+            { key: "m21_egg", label: "Large eggs", qty: 6, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
+            { key: "m21_corn", label: "Corn Flakes (crushed, sugar-free)", qty: 130, unit: "g", cat: "Carbs" , ingId: 266 , role: "carbs", share: 1},
             { key: "m21_spray", label: "Cooking oil spray", qty: 10, unit: "g", cat: "Fat" , ingId: 172 , role: "fixed", baseQty: 2.14},
         ],
         steps: [
@@ -1365,18 +1367,18 @@ const RECIPES = [
         badge: "🐣 EASTER",
         subtitle: "Batch roasted · ~55 min",
         carb: "🌾 Quinoa",
-        perPortion: {kcal:799, protein:42.7, carbs:47.1, fat:49.2},
+        perPortion: {kcal:685, protein:39.1, carbs:47.8, fat:37.8},
         locked: true,
         seasonal: true,
         portions: 7,
         batchItems: [
-            { key: "hol3_lamb",    label: "Lamb leg boneless (raw)",     qty: 1050, unit: "g",  cat: "Protein"    , ingId: 14 , role: "protein", share: 0.828},
+            { key: "hol3_lamb",    label: "Lamb leg boneless (raw)",     qty: 800, unit: "g",  cat: "Protein"    , ingId: 14 , role: "protein", share: 0.828},
             { key: "hol3_quinoa",  label: "Quinoa (dry)",                qty: 420,  unit: "g",  cat: "Carbs"      , ingId: 74 , role: "carbs", share: 1},
             { key: "hol3_asp",     label: "Asparagus spears",            qty: 700,  unit: "g",  cat: "Vegetables" , ingId: 114 , role: "veg", baseQty: 100},
-            { key: "hol3_yogurt",  label: "0% Greek yogurt",             qty: 350,  unit: "g",  cat: "Dairy"      , ingId: 47 , role: "protein", share: 0.172},
+            { key: "hol3_yogurt",  label: "0% Greek yogurt",             qty: 500,  unit: "g",  cat: "Dairy"      , ingId: 47 , role: "protein", share: 0.172},
             { key: "hol3_feta",    label: "Feta cheese (light)",         qty: 140,  unit: "g",  cat: "Dairy"      , ingId: 53 , role: "fat", share: 0.457},
             { key: "hol3_lemon",   label: "Lemon juice",                 qty: 100,  unit: "mL", cat: "Aromatics"  , ingId: 150 , role: "fixed", baseQty: 14.29},
-            { key: "hol3_oil",     label: "Olive oil",                   qty: 35,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 0.543},
+            { key: "hol3_oil",     label: "Olive oil",                   qty: 15,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 0.543},
             { key: "hol3_mint",    label: "Fresh mint leaves",           qty: 15,   unit: "g",  cat: "Aromatics"  , ingId: 232 , role: "fixed", baseQty: 2.14},
             { key: "hol3_garlic",  label: "Garlic cloves",               qty: 6,    unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.86},
         ],
@@ -1997,11 +1999,11 @@ const RECIPES = [
         id: "v1", category: "main",
         name: "🍛 Lentil & Spinach Dahl", subtitle: "Red lentils · coconut milk · spinach · ginger-turmeric",
         badge: "⚡ Instant Pot", carb: "🫘 Lentil", portions: 7,
-        perPortion: {kcal:570, protein:30.8, carbs:79.6, fat:15.9},
+        perPortion: {kcal:547, protein:35.9, carbs:79.9, fat:10.5},
         batchItems: [
             { key: "v1_lent",   label: "Red lentils (dry)",            qty: 700, unit: "g",    cat: "Carbs"      , ingId: 92 , role: "carbs", share: 1},
             { key: "v1_spin",   label: "Frozen spinach",               qty: 400, unit: "g",    cat: "Vegetables"  , ingId: 101 , role: "veg", baseQty: 57.14},
-            { key: "v1_coco",   label: "Coconut milk (400mL can)",     qty: 1,   unit: "whole", cat: "Dairy"      , ingId: 263 , role: "fixed", baseQty: 0.14},
+            { key: "v1_coco",   label: "Coconut milk (reduced)",       qty: 200, unit: "g", cat: "Dairy"      , ingId: 263 , role: "fixed", baseQty: 0.14},
             { key: "v1_tom",    label: "Crushed tomatoes (400g can)",  qty: 2,   unit: "whole", cat: "Vegetables"  , ingId: 187 , role: "veg", baseQty: 0.29},
             { key: "v1_onion",  label: "Large onion (diced)",          qty: 2,   unit: "whole", cat: "Vegetables"  , ingId: 106 , role: "veg", baseQty: 0.29},
             { key: "v1_gar",    label: "Garlic cloves (minced)",       qty: 6,   unit: "whole", cat: "Vegetables"  , ingId: 108 , role: "veg", baseQty: 0.86},
@@ -2011,6 +2013,7 @@ const RECIPES = [
             { key: "v1_cur",    label: "Cumin (tsp)",                  qty: 2,   unit: "tsp",  cat: "Sauces"      , ingId: 222 , role: "fixed", baseQty: 0.29},
             { key: "v1_cor",    label: "Coriander powder (tsp)",       qty: 1,   unit: "tsp",  cat: "Sauces"      , ingId: 264 , role: "fixed", baseQty: 0.14},
             { key: "v1_oil",    label: "Olive oil",                    qty: 20,  unit: "mL",   cat: "Sauces"      , ingId: 160 , role: "fixed", baseQty: 2.86},
+            { key: "v1_yog",  label: "0% Greek yogurt (stirred in to serve)", qty: 400, unit: "g", cat: "Dairy",   ingId: 47,  role: "protein", share: 1}
         ],
         steps: [
             "Rinse red lentils thoroughly under cold water until water runs clear.",
@@ -2445,18 +2448,18 @@ const RECIPES = [
         badge: "🌙 EID AL-FITR",
         subtitle: "Stovetop · ~50 min",
         carb: "🌾 Rice & Lentils",
-        perPortion: {kcal:890, protein:43.2, carbs:80.9, fat:43.8},
+        perPortion: {kcal:776, protein:39.6, carbs:81.7, fat:32.5},
         locked: true,
         seasonal: true,
         portions: 7,
         batchItems: [
-            { key: "hol5_lamb",    label: "Lean lamb mince (raw)",       qty: 1050, unit: "g",  cat: "Protein"    , ingId: 14 , role: "protein", share: 0.828},
+            { key: "hol5_lamb",    label: "Lean lamb mince (raw)",       qty: 800, unit: "g",  cat: "Protein"    , ingId: 14 , role: "protein", share: 0.828},
             { key: "hol5_rice",    label: "Brown rice (dry)",             qty: 490,  unit: "g",  cat: "Carbs"      , ingId: 62 , role: "carbs", share: 0.771},
             { key: "hol5_lentils", label: "Green lentils (cooked)",       qty: 560,  unit: "g",  cat: "Carbs"      , ingId: 311, role: "carbs", share: 0.229},
             { key: "hol5_onion",   label: "Onion (large)",                qty: 3,    unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.43},
-            { key: "hol5_yogurt",  label: "0% Greek yogurt",              qty: 350,  unit: "g",  cat: "Dairy"      , ingId: 47 , role: "protein", share: 0.172},
+            { key: "hol5_yogurt",  label: "0% Greek yogurt",              qty: 500,  unit: "g",  cat: "Dairy"      , ingId: 47 , role: "protein", share: 0.172},
             { key: "hol5_paste",   label: "Tomato paste",                 qty: 60,   unit: "g",  cat: "Sauces"     , ingId: 186 , role: "fixed", baseQty: 8.57},
-            { key: "hol5_oil",     label: "Olive oil",                    qty: 35,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 1},
+            { key: "hol5_oil",     label: "Olive oil",                    qty: 15,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 1},
             { key: "hol5_garlic",  label: "Garlic cloves",                qty: 5,    unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.71},
             { key: "hol5_spices",  label: "Baharat spice blend",          qty: 12,   unit: "g",  cat: "Aromatics"  , ingId: 261 , role: "fixed", baseQty: 1.71},
         ],
@@ -2476,14 +2479,15 @@ const RECIPES = [
         name: "🥚 Sweet Potato Veggie Egg Bake", subtitle: "Oven · 75 min",
         portions: 4,
         badge: "🌬️ Oven", carb: "🍠 Sweet Potato",
-        perPortion: {kcal:213,protein:13,carbs:25,fat:7.5},
+        perPortion: {kcal:370, protein:28.2, carbs:28.0, fat:13.1},
         batchItems: [
             { key: "m27_sp", label: "Large sweet potato", qty: 400, unit: "g", cat: "Carbs" , ingId: 68 , role: "carbs", share: 1},
             { key: "m27_zucc", label: "Zucchini (sliced)", qty: 1, unit: "whole", cat: "Vegetables" , ingId: 103 , role: "veg", baseQty: 0.25},
             { key: "m27_asparagus", label: "Asparagus (chopped)", qty: 150, unit: "g", cat: "Vegetables" , ingId: 114 , role: "veg", baseQty: 37.5},
             { key: "m27_toms", label: "Cherry tomatoes (halved)", qty: 150, unit: "g", cat: "Vegetables" , ingId: 110 , role: "veg", baseQty: 37.5},
-            { key: "m27_eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
+            { key: "m27_eggs", label: "Large eggs", qty: 8, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "m27_parm", label: "Parmesan (grated)", qty: 15, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 1},
+            { key: "m27_cot",  label: "Fat-free cottage cheese",  qty: 300, unit: "g", cat: "Dairy",   ingId: 42,  role: "protein", share: 1}
         ],
         steps: [
             "Preheat oven to 200°C (400°F). Bake whole sweet potato for 45 min until completely soft. Allow to cool slightly.",
@@ -2670,12 +2674,12 @@ const RECIPES = [
         name: "\uD83E\uDDC0 Paneer Tikka Masala Bowl", subtitle: "Paneer · basmati rice · tomato-cream masala",
         badge: "🍳 Stovetop", carb: "\uD83C\uDF5A Rice",
         portions: 7, locked: true,
-        perPortion: {kcal:905, protein:45.0, carbs:72.9, fat:49.4},
+        perPortion: {kcal:732, protein:39.4, carbs:75.0, fat:29.5},
         batchItems: [
-            { key: "v5_pan",   label: "Paneer (cubed)",               qty: 1125, unit: "g",    cat: "Protein"    , ingId: 276 , role: "protein", share: 1},
+            { key: "v5_pan",   label: "Paneer (cubed)",               qty: 600, unit: "g",    cat: "Protein"    , ingId: 276 , role: "protein", share: 1},
             { key: "v5_rice",  label: "Wholegrain brown rice (dry)",           qty: 490, unit: "g",    cat: "Carbs"      , ingId: 62 , role: "carbs", share: 1},
             { key: "v5_tom",   label: "Crushed tomatoes (400g can)",  qty: 2,   unit: "whole", cat: "Vegetables" , ingId: 187 , role: "veg", baseQty: 0.29},
-            { key: "v5_yog",   label: "0% Greek yogurt",              qty: 375, unit: "g",    cat: "Dairy"      , ingId: 47 , role: "protein", share: 1},
+            { key: "v5_yog",   label: "0% Greek yogurt",              qty: 600, unit: "g",    cat: "Dairy"      , ingId: 47 , role: "protein", share: 1},
             { key: "v5_onion", label: "Large onion (diced)",          qty: 2,   unit: "whole", cat: "Vegetables" , ingId: 106 , role: "veg", baseQty: 0.29},
             { key: "v5_gar",   label: "Garlic cloves (minced)",       qty: 6,   unit: "whole", cat: "Vegetables" , ingId: 108 , role: "veg", baseQty: 0.86},
             { key: "v5_ging",  label: "Fresh ginger (grated)",        qty: 20,  unit: "g",    cat: "Sauces"     , ingId: 228 , role: "fixed", baseQty: 2.86},
@@ -2683,6 +2687,7 @@ const RECIPES = [
             { key: "v5_pap",   label: "Smoked paprika",               qty: 10,  unit: "g",    cat: "Sauces"     , ingId: 238 , role: "fixed", baseQty: 1.43},
             { key: "v5_oil",   label: "Olive oil",                    qty: 20,  unit: "mL",   cat: "Sauces"     , ingId: 160 , role: "fixed", baseQty: 2.86},
             { key: "v5_spin",  label: "Baby spinach",                 qty: 200, unit: "g",    cat: "Vegetables" , ingId: 121 , role: "veg", baseQty: 28.57},
+            { key: "v5_cot",  label: "Fat-free cottage cheese",  qty: 350, unit: "g", cat: "Dairy",   ingId: 42,  role: "protein", share: 1}
         ],
         steps: [
             "Cook basmati rice: rinse rice, simmer in salted water 12–14 min. Fluff and set aside.",
@@ -2701,21 +2706,21 @@ const RECIPES = [
         name: "\uD83E\uDEB4 Black Bean & Sweet Potato Burrito Bowls", subtitle: "Black beans · sweet potato · rice · salsa",
         badge: "🌬️ Oven", carb: "\uD83C\uDF5A Rice",
         portions: 7, locked: true,
-        perPortion: {kcal:607, protein:27.1, carbs:94.6, fat:15.4},
+        perPortion: {kcal:635, protein:33.5, carbs:79.7, fat:21.8},
         batchItems: [
             { key: "v7_bean",  label: "Black beans (400g can)",       qty: 3,   unit: "whole", cat: "Carbs"      , ingId: 94 , role: "carbs", share: 1},
-            { key: "v7_swpot", label: "Sweet potato (cubed, raw)",    qty: 1000,unit: "g",    cat: "Carbs"      , ingId: 68 , role: "carbs", share: 0.338},
+            { key: "v7_swpot", label: "Sweet potato (cubed, raw)",    qty: 600,unit: "g",    cat: "Carbs"      , ingId: 68 , role: "carbs", share: 0.338},
             { key: "v7_rice",  label: "Wholegrain brown rice (dry)",           qty: 180, unit: "g",    cat: "Carbs"      , ingId: 62 , role: "carbs", share: 0.662},
-            { key: "v7_corn",  label: "Canned corn (drained)",        qty: 400, unit: "g",    cat: "Vegetables" , ingId: 78 , role: "veg", baseQty: 57.14},
+            { key: "v7_corn",  label: "Canned corn (drained)",        qty: 200, unit: "g",    cat: "Vegetables" , ingId: 78 , role: "veg", baseQty: 57.14},
             { key: "v7_tom",   label: "Cherry tomatoes (halved)",     qty: 400, unit: "g",    cat: "Vegetables" , ingId: 110 , role: "veg", baseQty: 57.14},
             { key: "v7_onion", label: "Red onion (diced)",            qty: 2,   unit: "whole", cat: "Vegetables" , ingId: 107 , role: "veg", baseQty: 0.29},
             { key: "v7_gar",   label: "Garlic cloves (minced)",       qty: 4,   unit: "whole", cat: "Vegetables" , ingId: 108 , role: "veg", baseQty: 0.57},
-            { key: "v7_chees", label: "Reduced-fat cheddar (shredded)", qty: 210, unit: "g",  cat: "Dairy"      , ingId: 51 , role: "fat", share: 1},
+            { key: "v7_chees", label: "Reduced-fat cheddar (shredded)", qty: 350, unit: "g",  cat: "Dairy"      , ingId: 51 , role: "fat", share: 1},
             { key: "v7_lime",  label: "Lime (juice)",                 qty: 2,   unit: "whole", cat: "Sauces"     , ingId: 151 , role: "fixed", baseQty: 0.29},
             { key: "v7_cumin", label: "Cumin (tsp)",                  qty: 2,   unit: "tsp",  cat: "Sauces"     , ingId: 222 , role: "fixed", baseQty: 0.29},
             { key: "v7_pap",   label: "Smoked paprika",               qty: 10,  unit: "g",    cat: "Sauces"     , ingId: 238 , role: "fixed", baseQty: 1.43},
             { key: "v7_oil",   label: "Olive oil",                    qty: 20,  unit: "mL",   cat: "Sauces"     , ingId: 160 , role: "fixed", baseQty: 2.86},
-            { key: "v7_yog",   label: "0% Greek yogurt (for serving)", qty: 250, unit: "g",   cat: "Dairy"      , ingId: 47 , role: "protein", share: 1},
+            { key: "v7_yog",   label: "0% Greek yogurt (for serving)", qty: 500, unit: "g",   cat: "Dairy"      , ingId: 47 , role: "protein", share: 1},
         ],
         steps: [
             "Preheat oven to 200°C. Cube sweet potato into 2cm pieces. Toss with olive oil, cumin, paprika, salt, and pepper.",
@@ -4193,7 +4198,7 @@ const INGREDIENT_MACROS = {
   "cb_jam": {kcal:250.0, p:0.5, c:63.0, f:0.0},  // Jam / Fruit Spread (any flavour)
   "cb_ricecake": {kcal:385.0, p:7.0, c:83.0, f:1.8, unitG:9.0},  // Rice Cakes (plain)
   "v1_broth": {kcal:7.0, p:0.5, c:1.0, f:0.0},  // Vegetable Broth (low-sodium)
-  "v1_coco": {kcal:197.0, p:2.0, c:5.5, f:20.0, unitG:400.0},  // Coconut Milk (canned, full-fat)
+  "v1_coco": {kcal:197.0, p:2.0, c:5.5, f:20.0},  // Coconut Milk (canned, full-fat)
   "v1_cor": {kcal:298.0, p:12.0, c:55.0, f:18.0},  // Coriander (ground)
   "v1_cur": {kcal:375.0, p:17.8, c:44.0, f:22.0},  // Cumin (ground)
   "v1_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
@@ -4499,6 +4504,12 @@ const INGREDIENT_MACROS = {
   "m51-soy":     {kcal:53.0, p:8.1, c:4.9, f:0.1},
   "m51-sesame":  {kcal:884.0, p:0, c:0, f:100.0},
   "m2-ranch":    {kcal:88.0, p:1.5, c:18.0, f:0.9},
+    "m27_cot":    {kcal:98.0,  p:11.0, c:3.4, f:0.3},
+    "v3_cot":    {kcal:98.0,  p:11.0, c:3.4, f:0.3},
+    "v3_yog":    {kcal:59.0,  p:10.0, c:3.4, f:0.4},
+    "v1_yog":    {kcal:59.0,  p:10.0, c:3.4, f:0.4},
+    "v5_cot":    {kcal:98.0,  p:11.0, c:3.4, f:0.3},
+
 };
 
 
