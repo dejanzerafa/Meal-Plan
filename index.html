@@ -7886,6 +7886,7 @@ function App() {
     const [recipeQuery, setRecipeQuery] = useState("");
     const [recipeShowCount, setRecipeShowCount] = useState(15);
     const [dietaryFilter, setDietaryFilter] = useState(null);
+    const [recipeView, setRecipeView] = useState("recipes"); // "recipes" | "foods"
     // Reset pagination when category/search changes
     React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter]);
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -8407,6 +8408,18 @@ function App() {
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Today tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
 
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 14, background: C.card, borderRadius: 12, padding: 4 } },
+                        React.createElement("button", { onClick: () => setRecipeView("recipes"), style: { flex: 1, padding: "8px 0", fontSize: 11, fontWeight: 700, borderRadius: 9, border: "none", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.15s",
+                            background: recipeView === "recipes" ? C.accent : "transparent",
+                            color: recipeView === "recipes" ? "#fff" : C.sub } }, "🍳 RECIPES"),
+                        React.createElement("button", { onClick: () => setRecipeView("foods"), style: { flex: 1, padding: "8px 0", fontSize: 11, fontWeight: 700, borderRadius: 9, border: "none", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.15s",
+                            background: recipeView === "foods" ? C.accent : "transparent",
+                            color: recipeView === "foods" ? "#fff" : C.sub } }, "🥦 FOODS DB")),
+
+                    recipeView === "foods" && React.createElement(IngredientBrowser, null),
+
+                    recipeView === "recipes" && React.createElement("div", null,
+
                     React.createElement("div", { style: { display: "none" } },
                         React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } }, [["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flex: 1, padding: "8px 4px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                                 border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
@@ -8459,7 +8472,6 @@ function App() {
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
-                    React.createElement(FoodsDBSection, null),
                     filteredRecipes.length > 0 && (React.createElement("div", { style: { marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${C.dim}` } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.1em",
                                 marginBottom: 10, textAlign: "center" } }, "\uD83D\uDCC5 COMING SOON"),
@@ -8473,7 +8485,7 @@ function App() {
                         React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.5 } },
                             "Subscribers get 2 new recipes every month.",
                             React.createElement("br", null),
-                            "Quarterly seasonal specials available separately.")))),
+                            "Quarterly seasonal specials available separately."))))),
                 tab === "macros" && React.createElement("div", { className: "tab-anim", key: "mac" },
                     React.createElement(IngredientBrowser, null)),
                 tab === "info" && React.createElement("div", { className: "tab-anim", key: "info" },
