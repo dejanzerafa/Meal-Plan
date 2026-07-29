@@ -32,7 +32,7 @@
     html, body {
       height: 100%;
       height: -webkit-fill-available;
-      background: #1a1209;
+      background: #1a1612;
       color: #1a1612;
       font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
@@ -102,7 +102,7 @@
 </head>
 <body>
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
-  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#f3ece0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) 36px 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#1a1612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) 36px 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
 
     <!-- Loader content -->
     <div style="position:relative;z-index:1;width:100%;max-width:320px;">
@@ -115,7 +115,7 @@
             <path d="M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z" fill="#E07B2A"/>
           </svg>
           <div style="line-height:1;">
-            <span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#E07B2A;letter-spacing:0.09em;">SOUL</span><span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#2D1E0F;letter-spacing:0.09em;">GAINZ</span>
+            <span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#E07B2A;letter-spacing:0.09em;">SOUL</span><span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#f3ece0;letter-spacing:0.09em;">GAINZ</span>
           </div>
         </div>
         <!-- Tagline -->
@@ -131,7 +131,7 @@
             <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#b84a1f;">● PROTEIN</span>
             <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
             <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#b84a1f,#d56a3c);border-radius:2px;"></div>
           </div>
         </div>
@@ -141,7 +141,7 @@
             <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#5a6536;">● CARBS</span>
             <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
             <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#5a6536,#9aa86a);border-radius:2px;"></div>
           </div>
         </div>
@@ -151,7 +151,7 @@
             <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#8a3614;">● FAT</span>
             <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
           </div>
-          <div style="height:3px;background:#c9bda9;border-radius:2px;overflow:hidden;">
+          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
             <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#8a3614,#b84a1f);border-radius:2px;"></div>
           </div>
         </div>
@@ -252,7 +252,7 @@ const DARK_C = {
     dim: "#3a2f24",
 };
 // Default: PAPER (matches method.html). Mutable; reassigned per render.
-let C = Object.assign({}, LIGHT_C);
+let C = Object.assign({}, DARK_C);
 const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 // ── Push notification VAPID key ──────────────────────────────────────────────
 // Generate keys once: npx web-push generate-vapid-keys
@@ -5113,9 +5113,9 @@ class AppErrorBoundary extends React.Component {
     render() {
         if (this.state.crashed) {
             var e = this.state.error;
-            return React.createElement('div', { style: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100vh', fontFamily:'sans-serif', padding:'32px', textAlign:'center', background:'#f3ece0' } },
+            return React.createElement('div', { style: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100vh', fontFamily:'sans-serif', padding:'32px', textAlign:'center', background:'#1a1612' } },
                 React.createElement('div', { style: { fontSize:32, marginBottom:16 } }, '⚠️'),
-                React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#1a1612' } }, 'Something went wrong'),
+                React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#f3ece0' } }, 'Something went wrong'),
                 React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, e ? e.message : 'An unexpected error occurred'),
                 React.createElement('button', { onClick: function(){ window.location.reload(); }, style: { background:'#c0602a', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:14, fontWeight:700, cursor:'pointer', marginBottom:10 } }, 'Reload App'),
                 React.createElement('button', { onClick: function(){ try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {} window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
@@ -5594,6 +5594,19 @@ function IngredientBrowser() {
         )
     );
 }
+// ─── FOODS DB SECTION (inline in Recipes tab) ─────────────────────────────
+function FoodsDBSection() {
+    const [open, setOpen] = React.useState(false);
+    return React.createElement("div", { style: { marginTop: 20, borderTop: `1px solid ${C.dim}`, paddingTop: 16 } },
+        React.createElement("button", { onClick: () => setOpen(o => !o),
+            style: { width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px",
+                cursor: "pointer", color: C.sub, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em" } },
+            React.createElement("span", null, "🥦 INGREDIENT DATABASE"),
+            React.createElement("span", { style: { fontSize: 16, color: C.muted } }, open ? "▲" : "▼")),
+        open && React.createElement("div", { style: { marginTop: 8 } },
+            React.createElement(IngredientBrowser, null)));
+}
 // ─── APP ───────────────────────────────────────────────────────────────────
 const FILTERS = ["All", "🍳 Stovetop", "🌬️ Oven", "🥘 Crockpot", "💨 Air Fryer", "⚡ Instant Pot"];
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
@@ -5865,7 +5878,7 @@ function GettingStartedModal({ C, onClose }) {
         },
         {
             num: "03", icon: "☀️", title: "Assign Lunch & Dinner",
-            desc: "From the MEALS tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.",
+            desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.",
             tip: "Locked recipes can still be assigned — tap to preview them."
         },
         {
@@ -5875,7 +5888,7 @@ function GettingStartedModal({ C, onClose }) {
         },
         {
             num: "05", icon: "📅", title: "Log Your Prep Day",
-            desc: "Open the CALENDAR tab and mark the day you're cooking. The app tracks when your next shop day falls and reminds you on Sundays.",
+            desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.",
             tip: "Cook once. The calendar keeps you on schedule."
         },
         {
@@ -6226,11 +6239,9 @@ function getAllergens(recipe) {
     return found;
 }
 function getTabMeta() { return [
-    { id: "meals",    label: "DASHBOARD",      icon: "🏠" },
+    { id: "meals",    label: "TODAY",          icon: "🏠" },
     { id: "recipes",  label: t("tab_recipes"), icon: "🍳" },
     { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
-    { id: "history",  label: t("tab_history"), icon: "📅" },
-    { id: "macros",   label: t("tab_macros"),  icon: "🥦" },
     { id: "info",     label: "GUIDE",          icon: "📖"  },
 ]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
@@ -6334,34 +6345,34 @@ function CalcInputRow({ label, children }) {
         children));
 }
 function CalcTextInput({ value, onChange, placeholder, type }) {
-    return (React.createElement("input", { value: value, onChange: onChange, placeholder: placeholder, type: type || "text", autoComplete: "off", style: { width: "100%", background: "#e3d9c8", border: "1px solid #1e2433", borderRadius: 10,
-            color: "#1a1612", fontSize: 14, padding: "11px 14px", fontFamily: "inherit",
+    return (React.createElement("input", { value: value, onChange: onChange, placeholder: placeholder, type: type || "text", autoComplete: "off", style: { width: "100%", background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10,
+            color: C.text, fontSize: 14, padding: "11px 14px", fontFamily: "inherit",
             outline: "none", WebkitAppearance: "none", boxSizing: "border-box" } }));
 }
 function CalcSegBtn({ selected, onClick, label, accent }) {
-    const ac = accent || "#b84a1f";
+    const ac = accent || C.accent;
     return (React.createElement("button", { onClick: onClick, style: { flex: 1, padding: "9px 4px", fontSize: 11, fontWeight: 700, borderRadius: 8,
-            border: `1px solid ${selected ? ac : "#c9bda9"}`,
-            background: selected ? `rgba(184,74,31,0.12)` : "#e3d9c8",
-            color: selected ? ac : "#8896b3", cursor: "pointer",
+            border: `1px solid ${selected ? ac : C.border}`,
+            background: selected ? C.accentDim : C.card2,
+            color: selected ? ac : C.muted, cursor: "pointer",
             WebkitTapHighlightColor: "transparent" } }, label));
 }
 function CalcOptionBtn({ selected, onClick, label, sub }) {
-    return (React.createElement("button", { onClick: onClick, style: { width: "100%", background: selected ? "rgba(184,74,31,0.12)" : "#e3d9c8",
-            border: `1.5px solid ${selected ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10,
+    return (React.createElement("button", { onClick: onClick, style: { width: "100%", background: selected ? C.accentDim : C.card2,
+            border: `1.5px solid ${selected ? C.accent : C.border}`, borderRadius: 10,
             padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8,
             WebkitTapHighlightColor: "transparent", transition: "border-color 0.15s" } },
-        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: selected ? "#b84a1f" : "#1a1612" } }, label),
-        sub && React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, sub)));
+        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: selected ? C.accent : C.text } }, label),
+        sub && React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 2 } }, sub)));
 }
 function CalcMacroBar({ label, val, max, color }) {
     return (React.createElement("div", { style: { marginBottom: 12 } },
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: 5 } },
-            React.createElement("span", { style: { fontSize: 11, color: "#8896b3", fontWeight: 600 } }, label),
+            React.createElement("span", { style: { fontSize: 11, color: C.muted, fontWeight: 600 } }, label),
             React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color } },
                 val,
                 "g")),
-        React.createElement("div", { style: { height: 6, background: "#e3d9c8", borderRadius: 3, overflow: "hidden" } },
+        React.createElement("div", { style: { height: 6, background: C.card2, borderRadius: 3, overflow: "hidden" } },
             React.createElement("div", { style: { width: `${Math.min(100, (val / max) * 100)}%`, height: "100%",
                     background: color, borderRadius: 3, transition: "width 0.6s ease" } }))));
 }
@@ -6525,18 +6536,18 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                 React.createElement(CalcOptionBtn, { selected: form.goal === "maintain", onClick: () => set("goal", "maintain"), label: "\u2696\uFE0F Maintain & Perform", sub: "Eat at TDEE \u00B7 Optimise performance" }),
                 React.createElement(CalcOptionBtn, { selected: form.goal === "gain", onClick: () => set("goal", "gain"), label: "\uD83D\uDCAA Build Muscle", sub: "Calorie surplus \u00B7 Maximum protein \u00B7 Strength focus" }),
                 form.goal === "lose" && React.createElement("div", { style: { marginTop: 16, padding: "14px", background: "rgba(184,74,31,0.06)", borderRadius: 12, border: "1px solid rgba(184,74,31,0.2)" } },
-                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: "#8896b3", letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 10 } }, "How fast do you want to lose weight?"),
-                    React.createElement("button", { onClick: () => set("loseRate", "light"), style: { width: "100%", background: form.loseRate === "light" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "light" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "light" ? "#b84a1f" : "#1a1612" } }, "\uD83D\uDC22 Light \u2014 0.5 kg / week"),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "300 kcal deficit \u00B7 Easiest to maintain \u00B7 Minimal muscle risk")),
-                    React.createElement("button", { onClick: () => set("loseRate", "sustainable"), style: { width: "100%", background: form.loseRate === "sustainable" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "sustainable" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 10 } }, "How fast do you want to lose weight?"),
+                    React.createElement("button", { onClick: () => set("loseRate", "light"), style: { width: "100%", background: form.loseRate === "light" ? C.accentDim : C.card2, border: `1.5px solid ${form.loseRate === "light" ? C.accent : C.border}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "light" ? C.accent : C.text } }, "\uD83D\uDC22 Light \u2014 0.5 kg / week"),
+                        React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 2 } }, "300 kcal deficit \u00B7 Easiest to maintain \u00B7 Minimal muscle risk")),
+                    React.createElement("button", { onClick: () => set("loseRate", "sustainable"), style: { width: "100%", background: form.loseRate === "sustainable" ? C.accentDim : C.card2, border: `1.5px solid ${form.loseRate === "sustainable" ? C.accent : C.border}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 8, WebkitTapHighlightColor: "transparent" } },
                         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
-                            React.createElement("span", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "sustainable" ? "#b84a1f" : "#1a1612" } }, "\u2696\uFE0F Sustainable \u2014 1 kg / week"),
-                            React.createElement("span", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "#fff", background: "#b84a1f", borderRadius: 4, padding: "2px 6px" } }, "MOST POPULAR")),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "500 kcal deficit \u00B7 Evidence-based sweet spot \u00B7 Preserves muscle")),
-                    React.createElement("button", { onClick: () => set("loseRate", "aggressive"), style: { width: "100%", background: form.loseRate === "aggressive" ? "rgba(184,74,31,0.12)" : "#e3d9c8", border: `1.5px solid ${form.loseRate === "aggressive" ? "#b84a1f" : "#c9bda9"}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 0, WebkitTapHighlightColor: "transparent" } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "aggressive" ? "#b84a1f" : "#1a1612" } }, "\uD83D\uDD25 Aggressive \u2014 1.5 kg / week"),
-                        React.createElement("div", { style: { fontSize: 11, color: "#8896b3", marginTop: 2 } }, "700 kcal deficit \u00B7 Faster results \u00B7 Requires strict adherence")))));
+                            React.createElement("span", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "sustainable" ? C.accent : C.text } }, "\u2696\uFE0F Sustainable \u2014 1 kg / week"),
+                            React.createElement("span", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "#fff", background: C.accent, borderRadius: 4, padding: "2px 6px" } }, "MOST POPULAR")),
+                        React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 2 } }, "500 kcal deficit \u00B7 Evidence-based sweet spot \u00B7 Preserves muscle")),
+                    React.createElement("button", { onClick: () => set("loseRate", "aggressive"), style: { width: "100%", background: form.loseRate === "aggressive" ? C.accentDim : C.card2, border: `1.5px solid ${form.loseRate === "aggressive" ? C.accent : C.border}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", textAlign: "left", marginBottom: 0, WebkitTapHighlightColor: "transparent" } },
+                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: form.loseRate === "aggressive" ? C.accent : C.text } }, "\uD83D\uDD25 Aggressive \u2014 1.5 kg / week"),
+                        React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 2 } }, "700 kcal deficit \u00B7 Faster results \u00B7 Requires strict adherence")))));
         if (step === 4 && result) {
             const { bmr, tdee, bmi, macros, actLabel, age, w, h } = result;
             const bmiInfo = bmiLabel(bmi);
@@ -7524,7 +7535,7 @@ const FLAME_PATH = "M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12
 
 function FlameWordmark({ size, light }) {
     const s = size || 22;
-    const gainzColor = light ? "#F2EDE6" : "#2D1E0F";
+    const gainzColor = light ? "#F2EDE6" : (typeof C !== "undefined" ? C.text : "#2D1E0F");
     return React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 0 } },
         React.createElement("div", { style: { display: "flex", flexDirection: "row", alignItems: "center", gap: Math.round(s * 0.3) } },
             React.createElement("svg", { width: Math.round(s * 0.55), height: Math.round(s * 0.85), viewBox: "-12 -32 24 44" },
@@ -7878,7 +7889,7 @@ function App() {
     // Reset pagination when category/search changes
     React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter]);
     // ── Theme ─────────────────────────────────────────────────────────────────
-    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
+    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "dark");
     const setTheme = th => { setThemeState(th); localStorage.setItem("mp_theme", th); };
     // ── Language ──────────────────────────────────────────────────────────────
     const [lang, setLangState] = useState(() => { try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } });
@@ -8178,9 +8189,9 @@ function App() {
             paddingBottom: "0px",
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
             color: C.text, overflow: "hidden",
-            background: `linear-gradient(to right, ${C.card} ${SW}px, ${C.bg} ${SW}px)` } },
+            background: C.bg } },
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
-                borderRight: `1px solid ${C.dim}40`, display: "flex", flexDirection: "column",
+                borderRight: `1px solid ${C.border}`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
                 boxShadow: `2px 0 12px ${C.card}80` } },
             React.createElement("div", { onClick: tapLogo, style: { marginBottom: 14, flexShrink: 0, cursor: "pointer",
@@ -8249,8 +8260,8 @@ function App() {
             tab === "method"
                 ? React.createElement("iframe", { key: "method", src: "/method.html", title: "The Method",
                     style: { flex: 1, border: "none", width: "100%", minHeight: 0, display: "block" } })
-                : React.createElement("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 12px 0px" } },
-                React.createElement("div", { style: { position: "sticky", top: 0, zIndex: 20, background: C.bg, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12, paddingTop: 16, paddingBottom: 14, borderBottom: `1px solid ${C.dim}`, marginBottom: 16 } },
+                : React.createElement("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 24px" } },
+                React.createElement("div", { style: { position: "sticky", top: 0, zIndex: 20, background: C.bg, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12, paddingTop: 18, paddingBottom: 16, borderBottom: `1px solid ${C.border}`, marginBottom: 16 } },
                     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 } },
                         React.createElement("div", { style: { fontSize: 9, letterSpacing: "0.13em", color: C.sub, fontWeight: 700 } }, "REAL FOOD · MADE SIMPLE"),
                         React.createElement("div", { style: { fontSize: 10, color: C.muted, fontWeight: 600 } },
@@ -8393,7 +8404,7 @@ function App() {
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" }, (!lr || !dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
                     React.createElement("div", { style: { fontSize: 32, marginBottom: 12 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
-                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Meals tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale }))),
+                    React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Today tab to generate your shopping list."))) : (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale }))),
                 tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
 
                     React.createElement("div", { style: { display: "none" } },
@@ -8448,6 +8459,7 @@ function App() {
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#fff", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
+                    React.createElement(FoodsDBSection, null),
                     filteredRecipes.length > 0 && (React.createElement("div", { style: { marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${C.dim}` } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.1em",
                                 marginBottom: 10, textAlign: "center" } }, "\uD83D\uDCC5 COMING SOON"),
@@ -8471,9 +8483,9 @@ function App() {
                     [
                         { num: "01", icon: "👤", title: "Set Your Macros", desc: "Head to the ME tab and tap 'Calculate My Macros'. Enter your details — the app will work out your daily protein, carb and fat targets. Free on first use.", tip: "Do this first — your macros guide everything else." },
                         { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Tap the RECIPES tab. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients, method, and macros. Lock icons mean the recipe requires a plan.", tip: "Most recipes are free to view. Unlock all with a plan." },
-                        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the MEALS tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
+                        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
                         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: "Batch size scales every ingredient quantity automatically." },
-                        { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Open the CALENDAR tab and mark the day you're cooking. The app tracks when your next shop day falls and reminds you on Sundays.", tip: "Cook once. The calendar keeps you on schedule." },
+                        { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
                         { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library. Monthly access from $14.99/mo, or go lifetime for $149.99 — every recipe, every future drop, forever.", tip: null },
                     ].map((s) => React.createElement("div", { key: s.num, style: { display: "flex", gap: 14, marginBottom: 14, padding: "14px", background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14 } },
                         React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 36 } },
@@ -8683,9 +8695,9 @@ function showOnScreenError(msg, src, line) {
     var root = document.getElementById('root');
     if (!root) return;
     var wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#f3ece0;';
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;padding:32px;text-align:center;background:#1a1612;';
     var icon = document.createElement('div'); icon.style.cssText='font-size:32px;margin-bottom:16px;'; icon.textContent='⚠️';
-    var title = document.createElement('div'); title.style.cssText='font-size:16px;font-weight:700;margin-bottom:8px;color:#1a1612;'; title.textContent='App error';
+    var title = document.createElement('div'); title.style.cssText='font-size:16px;font-weight:700;margin-bottom:8px;color:#f3ece0;'; title.textContent='App error';
     var msgEl = document.createElement('div'); msgEl.style.cssText='font-size:12px;color:#b84a1f;margin-bottom:8px;word-break:break-all;max-width:400px;'; msgEl.textContent=String(msg);
     var reloadBtn = document.createElement('button'); reloadBtn.style.cssText='background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;'; reloadBtn.textContent='Reload'; reloadBtn.onclick=function(){location.reload();};
     var clearBtn = document.createElement('button'); clearBtn.style.cssText='background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;'; clearBtn.textContent='Clear Cache & Reload'; clearBtn.onclick=function(){Object.keys(localStorage).forEach(function(k){localStorage.removeItem(k)});location.reload();};
