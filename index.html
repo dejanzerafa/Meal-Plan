@@ -32,8 +32,8 @@
     html, body {
       height: 100%;
       height: -webkit-fill-available;
-      background: #1a1612;
-      color: #1a1612;
+      background: #FFFCF8;
+      color: #1A1612;
       font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior: none;
@@ -58,6 +58,12 @@
     .loader-title { animation: fadeUp 0.6s ease 0.1s both; }
     .loader-sub   { animation: fadeUp 0.6s ease 0.25s both; }
     .loader-bars  { animation: fadeUp 0.6s ease 0.4s both; }
+    /* ── Light-mode card elevation ── */
+    [data-theme="light"] .card-el { box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04); }
+    [data-theme="light"] .card-el-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 2px 6px rgba(0,0,0,0.03); }
+    [data-theme="light"] { --ring: rgba(224,123,42,0.20); }
+    /* ── Fraunces numerals ── */
+    .num-display { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
   </style>
 
   <script>
@@ -209,26 +215,27 @@ function t(key) {
 // ─── THEME COLOR TOKENS ────────────────────────────────────────────────────
 // ── PAPER (light, default) — matches method.html ─────────────────────────
 const LIGHT_C = {
-    bg: "#f3ece0",
-    card: "#ebe2d3",
-    card2: "#e3d9c8",
-    border: "#c9bda9",
-    accent: "#b84a1f",
-    accentDim: "rgba(184,74,31,0.08)",
-    accentBorder: "rgba(184,74,31,0.28)",
-    prot: "#b84a1f",
-    carb: "#5a6536",
-    fat: "#8a3614",
-    green: "#5a6536",
-    greenDim: "rgba(90,101,54,0.08)",
-    greenBorder: "rgba(90,101,54,0.28)",
-    blueDim: "rgba(90,101,54,0.06)",
-    blueBorder: "rgba(90,101,54,0.22)",
-    text: "#1a1612",
-    sub: "#4a3f33",
-    muted: "#7a6d5e",
-    dim: "#c9bda9",
-    purple: "#6d28d9",
+    bg: "#FFFCF8",
+    card: "#FFFFFF",
+    card2: "#F7F3EE",
+    border: "#ECE7E0",
+    accent: "#E07B2A",
+    accentDim: "rgba(224,123,42,0.08)",
+    accentBorder: "rgba(224,123,42,0.28)",
+    prot: "#C84820",
+    carb: "#5C7235",
+    fat: "#B87320",
+    green: "#5C7235",
+    greenDim: "rgba(92,114,53,0.08)",
+    greenBorder: "rgba(92,114,53,0.28)",
+    blueDim: "rgba(92,114,53,0.06)",
+    blueBorder: "rgba(92,114,53,0.22)",
+    text: "#1A1612",
+    sub: "#4A3D32",
+    muted: "#9A8B7A",
+    dim: "#ECE7E0",
+    purple: "#6D28D9",
+    cardShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 14px rgba(0,0,0,0.04)",
 };
 // ── INK (dark, alt) — warm dark mode, same family ─────────────────────────
 const DARK_C = {
@@ -252,6 +259,7 @@ const DARK_C = {
     muted: "#7a6d5e",
     dim: "#3a2f24",
     purple: "#7c3aed",
+    cardShadow: "none",
 };
 // Default: PAPER (matches method.html). Mutable; reassigned per render.
 let C = Object.assign({}, DARK_C);
@@ -4925,14 +4933,14 @@ function MealCard({ meal, macros, slot, profileScale, portions, onSkip }) {
     // Dividing by it gives the per-portion quantity, then × profileScale.
     const recipePortions = getPortions(meal, portions || 7);
     const portionScale = gl / recipePortions;
-    return (React.createElement("div", { style: { background: C.card, border: `1px solid ${borderColor}`, borderRadius: 14,
+    return (React.createElement("div", { style: { background: C.card, border: `1px solid ${borderColor}`, borderRadius: 14, boxShadow: C.cardShadow,
             overflow: "hidden", marginBottom: 10 } },
         React.createElement("div", { style: { padding: "12px 14px" } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 } },
                 React.createElement("div", null,
                     React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
                         React.createElement("span", { style: { fontSize: 16 } }, meal.icon || (slot === "lunch" ? "☀️" : slot === "dessert" ? "🍰" : slot === "breakfast" ? "🌅" : slot === "preworkout" ? "⚡" : "🌙")),
-                        React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.sub, letterSpacing: "0.05em" } }, meal.type || (slot === "lunch" ? "LUNCH" : slot === "dessert" ? "DESSERT" : slot === "breakfast" ? "BREAKFAST" : slot === "preworkout" ? "PRE-WORKOUT" : "DINNER")),
+                        React.createElement("span", { style: { fontSize: 11, fontWeight: 600, color: C.sub, letterSpacing: "0.05em" } }, meal.type || (slot === "lunch" ? "LUNCH" : slot === "dessert" ? "DESSERT" : slot === "breakfast" ? "BREAKFAST" : slot === "preworkout" ? "PRE-WORKOUT" : "DINNER")),
                         isRecipe && React.createElement("span", { style: { fontSize: 10, color: C.sub, background: slotBg,
                                 border: `1px solid ${borderColor}`, borderRadius: 4, padding: "1px 6px" } }, meal.badge)),
                     React.createElement("div", { style: { fontSize: 16, fontWeight: 700, color: C.text, marginTop: 3 } }, meal.name),
@@ -5026,7 +5034,7 @@ function TotalBar({ total, targets, profileName }) {
         { label: "Carbs", v: total.carbs, t: T.carbs, kind: "carbs" },
         { label: "Fat", v: total.fat, t: T.fat, kind: "fat" },
     ];
-    return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14, padding: "14px 16px", marginBottom: 10 } },
+    return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14, padding: "14px 16px", marginBottom: 10, boxShadow: C.cardShadow } },
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 } },
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
                 React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.07em" } }, "DAILY TOTAL"),
@@ -5037,7 +5045,7 @@ function TotalBar({ total, targets, profileName }) {
                     "\uD83C\uDFAF ",
                     profileName ? profileName + "'s" : "Your",
                     " plan"))),
-            React.createElement("span", { style: { fontSize: 18, fontWeight: 800, color: ks.c } },
+            React.createElement("span", { className: "num-display", style: { fontSize: 18, color: ks.c } },
                 total.kcal,
                 React.createElement("span", { style: { fontSize: 11, fontWeight: 400, color: C.sub } },
                     " / ",
@@ -5196,16 +5204,14 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                     borderRadius: 6, padding: "3px 8px" } }, a.icon, " ", a.name); })));
     })();
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${active ? C.accentBorder : C.border}`,
-            borderTop: `3px solid ${r.category === "breakfast" ? "#f59e0b" : r.category === "preworkout" ? C.green : r.category === "dessert" ? C.prot : C.accent}`,
-            borderRadius: 14, overflow: "hidden", marginBottom: 10 } },
+            ...(active ? { borderTop: `3px solid ${r.category === "breakfast" ? "#f59e0b" : r.category === "preworkout" ? C.green : r.category === "dessert" ? C.prot : C.accent}` } : {}),
+            borderRadius: 14, overflow: "hidden", marginBottom: 10, boxShadow: C.cardShadow } },
         React.createElement("div", { style: { padding: "12px 14px" } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 } },
                 React.createElement("div", { style: { flex: 1 } },
                     React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
                         React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, r.badge),
-                        React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`,
-                                borderRadius: 4, padding: "2px 7px" } }, r.carb),
                         isL && React.createElement("span", { style: { fontSize: 10, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`,
                                 borderRadius: 4, padding: "2px 7px" } }, "\u2600\uFE0F Lunch"),
                         isD && React.createElement("span", { style: { fontSize: 10, color: "#a78bfa", background: "rgba(167,139,250,0.10)", border: "1px solid rgba(167,139,250,0.25)",
@@ -5215,15 +5221,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                         isDS && React.createElement("span", { style: { fontSize: 10, color: "#ec4899", background: "rgba(236,72,153,0.10)", border: "1px solid rgba(236,72,153,0.25)",
                                 borderRadius: 4, padding: "2px 7px" } }, "\uD83C\uDF70 Dessert"),
                         isPRE && React.createElement("span", { style: { fontSize: 10, color: "#f97316", background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.3)",
-                                borderRadius: 4, padding: "2px 7px" } }, "\u26A1 Pre-Workout"),
-                        lastCooked && React.createElement("span", { style: { fontSize: 10, color: C.green, background: C.greenDim, border: `1px solid ${C.greenBorder}`,
-                                borderRadius: 4, padding: "2px 7px" } },
-                            "\uD83D\uDD50 ",
-                            lastCooked),
-                        neverUsed && !isL && !isD && React.createElement("span", { style: { fontSize: 10, color: "#fb923c", background: "rgba(251,146,60,0.12)", border: "1px solid rgba(251,146,60,0.35)",
-                                borderRadius: 4, padding: "2px 7px", fontWeight: 700 } }, "TRY ME \uD83E\uDD24"),
-                        r.isNew && React.createElement("span", { style: { fontSize: 10, color: "#f43f5e", background: "rgba(244,63,94,0.12)", border: "1px solid rgba(244,63,94,0.35)",
-                                borderRadius: 4, padding: "2px 7px", fontWeight: 700 } }, "NEW \uD83D\uDD25")),
+                                borderRadius: 4, padding: "2px 7px" } }, "\u26A1 Pre-Workout")),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
                     React.createElement("div", { style: { fontSize: 12, color: C.sub, marginTop: 1 } }, r.subtitle))),
             React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
@@ -5233,11 +5231,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                         v,
                         "g"),
                     " ",
-                    l))),
-                React.createElement("span", { style: { fontSize: 11, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
-                        borderRadius: 6, padding: "3px 7px" } },
-                    displayMacros.kcal,
-                    " kcal")),
+                    l)))),
             (function() {
                 const total = (displayMacros.protein || 0) + (displayMacros.carbs || 0) + (displayMacros.fat || 0);
                 if (!total) return null;
@@ -5441,14 +5435,11 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                     color: p === n ? C.accent : C.sub, cursor: "pointer" } },
                 n,
                 " days")))),
-        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p, et, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, gl)), "_blank"), style: { width: "100%", padding: "11px", background: "#25d366", border: "none", borderRadius: 10,
-                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                gap: 8, marginBottom: 14 } },
-            React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
-            React.createElement("span", { style: { fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: "0.04em" } },
-                "Share via WhatsApp (",
-                p,
-                " days)")),
+        React.createElement("button", { onClick: () => window.open("https://wa.me/?text=" + encodeURIComponent(generateShoppingText(lr, dr, p, et, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, gl)), "_blank"), style: { padding: "7px 14px", background: "none", border: `1px solid ${C.dim}`, borderRadius: 8,
+                cursor: "pointer", display: "inline-flex", alignItems: "center",
+                gap: 6, marginBottom: 14 } },
+            React.createElement("span", { style: { fontSize: 13 } }, "\uD83D\uDCAC"),
+            React.createElement("span", { style: { fontSize: 11, fontWeight: 600, color: C.sub } }, "Share list via WhatsApp")),
         (function() {
             const totalBatch = Object.values(mainBatch).reduce((s, arr) => s + arr.length, 0);
             const totalFixed = Object.entries(FIXED).filter(([section]) => !section.startsWith("\ud83c\udf05") && !section.startsWith("\u26a1")).reduce((s, [, items]) => s + items.length, 0);
@@ -5465,23 +5456,20 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                 React.createElement("div", { style: { height: 5, background: C.card2, borderRadius: 3, overflow: "hidden" } },
                     React.createElement("div", { style: { width: pct + "%", height: "100%", background: allDone ? C.green : C.accent, borderRadius: 3, transition: "width 0.3s ease" } })));
         })(),
-        React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`,
-                borderRadius: 12, padding: "10px 14px", marginBottom: 12 } },
-            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 } },
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.07em" } },
-                    "ALL MEAL INGREDIENTS \u2014 ",
+        React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 10, marginBottom: 12 } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 } },
+                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.07em" } },
+                    "INGREDIENTS \xB7 ",
                     p,
                     " DAYS"),
-                targets && targets.kcal !== 2500 && (React.createElement("div", { style: { fontSize: 9, color: C.green, fontWeight: 700 } },
-                    "\uD83C\uDFAF ",
-                    profileName ? profileName + "'s" : "Your",
-                    " ",
+                targets && targets.kcal !== 2500 && (React.createElement("div", { style: { fontSize: 9, color: C.sub } },
+                    profileName ? profileName + " \xB7 " : "",
                     targets.kcal,
-                    " kcal target"))),
-            React.createElement("div", { style: { fontSize: 12, color: C.text } },
-                "\u2600\uFE0F ", lr.name, " ", sameRecipe ? "× 2 slots (×2 qty)" : `+ 🌙 ${dr.name}`),
-            sameRecipe && React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Same recipe both meals \u2014 quantities doubled."),
-            showScaleNote && React.createElement("div", { style: { fontSize: 10, color: C.purple, marginTop: 3, fontWeight: 600 } }, "📊 Quantities at " + scalePct + "% · " + (targets.kcal||2500) + " kcal profile"),
+                    " kcal"))),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub } },
+                "\u2600\uFE0F ", lr.name, " ", sameRecipe ? "\xD7 2" : `+ \uD83C\uDF19 ${dr.name}`),
+            sameRecipe && React.createElement("div", { style: { fontSize: 10, color: C.muted, marginTop: 2 } }, "Same recipe both meals \u2014 quantities doubled."),
+            showScaleNote && React.createElement("div", { style: { fontSize: 10, color: C.purple, marginTop: 2 } }, "\uD83D\uDCCA " + scalePct + "% scale \xB7 " + (targets.kcal||2500) + " kcal"),
             !bfSkipped && bfr && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
                 "\uD83C\uDF05 ", React.createElement("span", { style: { color: C.muted } }, "Breakfast: "), React.createElement("span", { style: { color: C.text } }, bfr.name)),
             !preSkipped && prer && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } },
@@ -5706,7 +5694,7 @@ async function _checkDevCode(input) {
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === DEV_HASH;
 }
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle }) {
-    return React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14,
+    return React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14, boxShadow: C.cardShadow,
             overflow: "hidden", marginBottom: 10, position: "relative" } },
         // Visible header — name, badge, carb label
         React.createElement("div", { style: { padding: "12px 14px 10px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
@@ -6235,6 +6223,23 @@ function DevModal({ onClose, onUnlock }) {
                         padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
 const FILTER_MAP = { "All": null, "🍳 Stovetop": "Stovetop", "🌬️ Oven": "Oven", "🥘 Crockpot": "Crockpot", "💨 Air Fryer": "Air Fryer", "⚡ Instant Pot": "Instant Pot" };
+const PROTEIN_FILTERS = ["All", "🍗 Chicken", "🥩 Beef", "🐟 Fish", "🦃 Turkey", "🐷 Pork", "🦐 Shrimp", "🌱 Veg", "🥚 Eggs", "🌙 Lamb"];
+function getProteinType(r) {
+    const n = r.name || "";
+    const s = (r.subtitle || "").toLowerCase();
+    const t = n.toLowerCase() + " " + s;
+    if (n.startsWith("🍳") || (t.includes("egg") && !t.includes("eggplant"))) return "Eggs";
+    if (n.startsWith("🍳") || t.includes("shakshuka") || t.includes("frittata")) return "Eggs";
+    if (n.startsWith("🐗") || t.includes("pork") || t.includes("tenderloin")) return "Pork";
+    if (n.startsWith("🦐") || t.includes("shrimp") || t.includes("prawn")) return "Shrimp";
+    if (n.startsWith("🦃") || t.includes(" turkey") || t.includes("turkey ")) return "Turkey";
+    if (n.startsWith("🐟") || n.startsWith("❤") || n.startsWith("🥑") || t.includes("salmon") || t.includes(" cod") || t.includes("tuna") || t.includes(" fish") || t.includes("fish ") || t.includes("tilapia") || t.includes("trout")) return "Fish";
+    if (n.startsWith("🌙") || n.startsWith("🐣") || t.includes(" lamb") || t.includes("lamb ")) return "Lamb";
+    if (n.startsWith("🥩") || t.includes("beef") || t.includes("steak") || t.includes("sirloin") || t.includes("mince") || t.includes("brisket")) return "Beef";
+    if (n.startsWith("🐗️") || n.startsWith("🍗") || t.includes("chicken") || t.includes("pulled chicken") || t.includes("buffalo")) return "Chicken";
+    if (n.startsWith("🌿") || n.startsWith("🦴") || n.startsWith("🧀") || n.startsWith("🪴") || n.startsWith("🍛") || n.startsWith("🥦") || n.startsWith("🥢") || t.includes("tofu") || t.includes("chickpea") || t.includes("lentil") || t.includes("bean") || t.includes("paneer") || t.includes("veggie") || t.includes("vegan") || t.includes("couscous") || t.includes("edamame")) return "Veg";
+    return null;
+}
 
 function getRecipeCategoryEmoji(recipe) {
     const name = ((recipe.name || "") + " " + (recipe.subtitle || "")).toLowerCase();
@@ -6276,7 +6281,6 @@ function getTabMeta() { return [
     { id: "meals",    label: "TODAY",          icon: "🏠" },
     { id: "recipes",  label: t("tab_recipes"), icon: "🍳" },
     { id: "shopping", label: t("tab_shop"),    icon: "🛒" },
-    { id: "info",     label: "GUIDE",          icon: "📖"  },
 ]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
 // All helper components defined OUTSIDE MacroCalculator to prevent focus loss
@@ -6807,71 +6811,107 @@ function ManualMacroInput({ C, onSave }) {
             "Updates daily macro bars, calorie goals and portions across the whole app."));
 }
 // ─── ACCOUNT CARD ─────────────────────────────────────────────────────────
-function AccountCard({ C }) {
-    const [name, setName] = useState(() => { try { return localStorage.getItem("mp_acc_name") || ""; } catch(e){ return ""; } });
-    const [email, setEmail] = useState(() => { try { return localStorage.getItem("mp_acc_email") || ""; } catch(e){ return ""; } });
-    // Show as already saved if onboarding registered them (mp_acc_email set at signup)
-    const [saved, setSaved] = useState(() => { try { return !!localStorage.getItem("mp_acc_email"); } catch(e){ return false; } });
-    const [saving, setSaving] = useState(false);
+// ── GuideAccordion — collapsible getting-started guide ──────────────────────
+function GuideAccordion({ C }) {
+    const [open, setOpen] = React.useState(false);
+    const steps = [
+        { num: "01", icon: "👤", title: "Set Your Macros", desc: "Tap ‘Calculate My Macros’ above. Enter your details — the app works out your daily protein, carb and fat targets.", tip: "Do this first — your macros guide everything else." },
+        { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Go to RECIPES. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients and macros.", tip: "Most recipes are free to view. Unlock all with a plan." },
+        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From TODAY, tap ‘+ Add Food’ to assign meals. Add breakfast, pre-workout and dessert slots too.", tip: null },
+        { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to SHOP. The app builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: null },
+        { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you’re cooking.", tip: "Cook once. The calendar keeps you on schedule." },
+        { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library. Monthly from $14.99, or go Lifetime for $149.99.", tip: null },
+    ];
+    return React.createElement("div", null,
+        React.createElement("button", { onClick: function() { setOpen(function(o) { return !o; }); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: "1px solid " + C.dim, textAlign: "left", cursor: "pointer", marginBottom: open ? 8 : 0 } },
+            React.createElement("span", { style: { fontSize: 20 } }, "📘"),
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Getting Started"),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "6-step setup guide")),
+            React.createElement("span", { style: { fontSize: 12, color: C.muted } }, open ? "▲" : "▼")),
+        open && steps.map(function(s) { return React.createElement("div", { key: s.num, style: { display: "flex", gap: 12, padding: "12px", background: C.bg, border: "1px solid " + C.dim, borderRadius: 10, marginBottom: 6 } },
+            React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: 28 } },
+                React.createElement("div", { style: { fontSize: 18, lineHeight: 1 } }, s.icon),
+                React.createElement("div", { style: { fontSize: 8, fontWeight: 800, color: C.accent } }, s.num)),
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 4 } }, s.title),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6 } }, s.desc),
+                s.tip && React.createElement("div", { style: { fontSize: 10, color: C.accent, fontWeight: 600, marginTop: 4 } }, "💡 " + s.tip))); }));
+}
+// ── LegalAccordion — collapsible legal section ───────────────────────────────
+function LegalAccordion({ C }) {
+    const [open, setOpen] = React.useState(false);
+    const sections = [
+        { title: "Trademark", body: '"SoulGainz", the SoulGainz flame mark, and "Feed Your Soul · Fuel Your Gainz" are trademarks of SoulGainz (soulgainz.app). All brand assets are protected under applicable trademark and intellectual property law.' },
+        { title: "Intellectual Property", body: "All content within this application — including source code, design, user interface, recipes, nutritional data, meal plans, and visual assets — is the exclusive proprietary property of SoulGainz. All rights reserved worldwide." },
+        { title: "© 2026 SoulGainz", body: "All Rights Reserved." },
+    ];
+    return React.createElement("div", { style: { background: C.card, border: "1px solid " + C.dim, borderRadius: 16, overflow: "hidden", marginBottom: 12, boxShadow: C.cardShadow } },
+        React.createElement("button", { onClick: function() { setOpen(function(o) { return !o; }); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "14px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" } },
+            React.createElement("span", { style: { fontSize: 16 } }, "⚖️"),
+            React.createElement("span", { style: { flex: 1, fontSize: 11, fontWeight: 700, color: C.sub } }, "Legal & Copyright"),
+            React.createElement("span", { style: { fontSize: 11, color: C.muted } }, open ? "▲" : "▼")),
+        open && React.createElement("div", { style: { padding: "0 16px 16px", borderTop: "1px solid " + C.dim } },
+            React.createElement("div", { style: { paddingTop: 12 } },
+                sections.map(function(ls) { return React.createElement("div", { key: ls.title, style: { marginBottom: 12 } },
+                    React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 4 } }, ls.title),
+                    React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6 } }, ls.body)); }))));
+}
+// ── MeHeader — profile card with inline edit ──────────────────────────────
+function MeHeader({ C, onDone, tier: tierProp }) {
+    const [name, setName] = useState(() => { try{ return localStorage.getItem("mp_acc_name")||""; }catch(e){ return ""; } });
+    const [email, setEmail] = useState(() => { try{ return localStorage.getItem("mp_acc_email")||""; }catch(e){ return ""; } });
+    const [saved, setSaved] = useState(() => { try{ return !!localStorage.getItem("mp_acc_email"); }catch(e){ return false; } });
     const [editing, setEditing] = useState(false);
-    const inputStyle = { width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${C.dim}`,
-        background: C.card2, color: C.text, fontSize: 14, fontFamily: "inherit", outline: "none", marginBottom: 10 };
+    const [saving, setSaving] = useState(false);
+    const tier = tierProp || "free";
+    const tierMap = { lifetime: { label: "LIFETIME", color: "#f59e0b", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.3)" }, annual: { label: "ANNUAL PRO", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.3)" }, quarterly: { label: "QUARTERLY PRO", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.3)" }, monthly: { label: "PRO", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.3)" } };
+    const ti = tierMap[tier] || { label: "FREE", color: C.muted, bg: C.card2, border: C.dim };
+    const isSubscription = ["monthly","quarterly","annual"].includes(tier);
+    const initials = name ? name.split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2) : null;
     const handleSave = async () => {
         if (!name.trim() || !email.trim()) return;
         setSaving(true);
         try {
-            const nameParts = name.trim().split(" ");
-            const firstName = (nameParts[0] || "").trim();
-            const lastName  = nameParts.slice(1).join(" ").trim() || "";
+            const parts = name.trim().split(" ");
             localStorage.setItem("mp_acc_name", name.trim());
             localStorage.setItem("mp_acc_email", email.trim());
-            localStorage.setItem("mp_acc_first_name", firstName);
-            localStorage.setItem("mp_acc_last_name", lastName);
-            // skip_email: true — welcome was already sent at onboarding signup
-            // Only updates Supabase/Resend data, never re-sends any email
-            await fetch("/.netlify/functions/save-user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: email.trim().toLowerCase(),
-                    first_name: firstName,
-                    last_name: lastName,
-                    marketing_opt_in: true,
-                    skip_email: true,
-                }),
-            }).catch(() => {});
+            localStorage.setItem("mp_acc_first_name", parts[0]||"");
+            localStorage.setItem("mp_acc_last_name", parts.slice(1).join(" ")||"");
+            await fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email.trim().toLowerCase(), first_name: parts[0]||"", last_name: parts.slice(1).join(" ")||"", marketing_opt_in: true, skip_email: true }) }).catch(()=>{});
         } catch(e) {}
-        setSaved(true);
-        setEditing(false);
-        setSaving(false);
+        setSaved(true); setEditing(false); setSaving(false);
+        if (onDone) onDone();
     };
-    if (saved && !editing) {
-        const tier = (() => { try { return JSON.parse(localStorage.getItem("mp_unlocks") || "{}").tier || ""; } catch(e){ return ""; } })();
-        const isSubscription = ["monthly","quarterly","annual"].includes(tier);
-        return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
-            React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 12 } }, t("account_title")),
-            React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 } }, t("account_greeting") + ", " + name + "!"),
-            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 14 } }, t("account_subtitle")),
-            React.createElement("div", { style: { fontSize: 12, color: C.sub, marginBottom: 12 } }, email),
-            React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
-                React.createElement("button", { onClick: () => setEditing(true), style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 8,
-                    padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.accent, cursor: "pointer" } }, t("account_edit")),
-                isSubscription && React.createElement("a", {
-                    href: `/.netlify/functions/customer-portal?email=${encodeURIComponent(email)}`,
-                    style: { display: "inline-block", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8,
-                        padding: "8px 16px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", textDecoration: "none" }
-                }, "Manage subscription →")));
+    const inputStyle = { width: "100%", padding: "10px 12px", borderRadius: 8, border: `1px solid ${C.dim}`, background: C.card2, color: C.text, fontSize: 14, fontFamily: "inherit", outline: "none", marginBottom: 10, boxSizing: "border-box" };
+    // ── Edit / signup form ──
+    if (!saved || editing) {
+        return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "20px 16px", marginBottom: 12 } },
+            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 14 } }, editing ? "EDIT PROFILE" : "YOUR ACCOUNT"),
+            React.createElement("input", { type: "text", placeholder: "Your name", value: name, onChange: e => setName(e.target.value), style: inputStyle }),
+            React.createElement("input", { type: "email", placeholder: "Email address", value: email, onChange: e => setEmail(e.target.value), style: inputStyle }),
+            React.createElement("div", { style: { display: "flex", gap: 8 } },
+                React.createElement("button", { onClick: handleSave, disabled: saving || !name.trim() || !email.trim(),
+                    style: { flex: 1, background: (saving || !name.trim() || !email.trim()) ? C.dim : C.accent, border: "none", borderRadius: 8, padding: "11px", fontSize: 13, fontWeight: 700, color: "#000", cursor: "pointer" } },
+                    saving ? "Saving…" : "Save"),
+                editing && React.createElement("button", { onClick: () => setEditing(false), style: { padding: "11px 16px", background: "none", border: `1px solid ${C.dim}`, borderRadius: 8, fontSize: 13, color: C.sub, cursor: "pointer" } }, "Cancel")));
     }
-    return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 16 } },
-        React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em", marginBottom: 14 } }, t("account_title")),
-        React.createElement("input", { type: "text", placeholder: t("account_name"), value: name, onChange: e => setName(e.target.value), style: inputStyle }),
-        React.createElement("input", { type: "email", placeholder: t("account_email"), value: email, onChange: e => setEmail(e.target.value), style: inputStyle }),
-        React.createElement("button", { onClick: handleSave, disabled: saving || !name.trim() || !email.trim(),
-            style: { width: "100%", background: (saving || !name.trim() || !email.trim()) ? C.dim : C.accent,
-                border: "none", borderRadius: 8, padding: "11px", fontSize: 13, fontWeight: 700,
-                color: "#000", cursor: (saving || !name.trim() || !email.trim()) ? "default" : "pointer" } },
-            saving ? t("account_saving") : t("account_save")));
+    // ── Saved display ──
+    return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "20px 16px", marginBottom: 12 } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 16 } },
+            React.createElement("div", { style: { width: 56, height: 56, borderRadius: "50%", background: C.accentDim, border: `2px solid ${C.accentBorder}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } },
+                React.createElement("span", { style: { fontSize: initials ? 20 : 26, fontWeight: 800, color: C.accent, lineHeight: 1 } }, initials || "👤")),
+            React.createElement("div", { style: { flex: 1, minWidth: 0 } },
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 2 } }, name),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, email),
+                React.createElement("span", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: ti.color, background: ti.bg, border: `1px solid ${ti.border}`, borderRadius: 4, padding: "2px 8px" } }, ti.label))),
+        React.createElement("div", { style: { display: "flex", gap: 8 } },
+            React.createElement("button", { onClick: () => setEditing(true), style: { fontSize: 11, fontWeight: 700, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 8, padding: "7px 14px", cursor: "pointer" } }, "Edit profile"),
+            isSubscription && React.createElement("a", { href: `/.netlify/functions/customer-portal?email=${encodeURIComponent(email)}`, style: { fontSize: 11, fontWeight: 700, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "7px 14px", cursor: "pointer", textDecoration: "none" } }, "Manage plan →")));
 }
+
+
 // ─── NOTIFICATION TOGGLE ──────────────────────────────────────────────────
 function ReminderCard({ C, userEmail }) {
     const [permState, setPermState] = React.useState(() => {
@@ -7916,23 +7956,33 @@ function App() {
         return "meals";
     });
     const [filter, setFilter] = useState("All");
-    const [recipeCat, setRecipeCat] = useState("breakfast");
+    const [proteinFilter, setProteinFilter] = useState(null);
+    const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "main");
     const [recipeQuery, setRecipeQuery] = useState("");
     const [recipeShowCount, setRecipeShowCount] = useState(15);
     const [dietaryFilter, setDietaryFilter] = useState(null);
+    const [dietaryExpanded, setDietaryExpanded] = useState(false);
     const [recipeView, setRecipeView] = useState(() => localStorage.getItem("mp_recipeView") || "recipes"); // "recipes" | "foods"
     React.useEffect(() => { localStorage.setItem("mp_recipeView", recipeView); }, [recipeView]);
     // Reset pagination when category/search changes
-    React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter]);
+    React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter]);
+    // Persist last-used recipe category
+    React.useEffect(() => { try { localStorage.setItem("mp_recipeCat", recipeCat); } catch(e){} }, [recipeCat]);
     // ── Theme ─────────────────────────────────────────────────────────────────
-    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "dark");
+    const [theme, setThemeState] = useState(() => localStorage.getItem("mp_theme") || "light");
     const setTheme = th => { setThemeState(th); localStorage.setItem("mp_theme", th); };
     // ── Language ──────────────────────────────────────────────────────────────
     const [lang, setLangState] = useState(() => { try { return localStorage.getItem("mp_lang") || "en"; } catch(e){ return "en"; } });
     const setLang = l => { _lang = l; setLangState(l); try { localStorage.setItem("mp_lang", l); } catch(e){} document.documentElement.lang = l; };
-    const resolvedTheme = theme === "system"
-        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-        : theme;
+    // ── System dark mode — reactive to OS changes ─────────────────────────────
+    const [systemDark, setSystemDark] = React.useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
+    React.useEffect(function() {
+        const mq = window.matchMedia("(prefers-color-scheme: dark)");
+        const handler = function(e) { setSystemDark(e.matches); };
+        mq.addEventListener ? mq.addEventListener("change", handler) : mq.addListener(handler);
+        return function() { mq.removeEventListener ? mq.removeEventListener("change", handler) : mq.removeListener(handler); };
+    }, []);
+    const resolvedTheme = theme === "system" ? (systemDark ? "dark" : "light") : theme;
     // Mutate global C for this render cycle (all children see updated values)
     Object.assign(C, resolvedTheme === "light" ? LIGHT_C : DARK_C);
     document.body.style.background = C.bg;
@@ -8198,6 +8248,8 @@ function App() {
         }
         if (dietaryFilter && !getDietaryTags(r).some(t => t.label === dietaryFilter))
             return false;
+        if (proteinFilter && getProteinType(r) !== proteinFilter)
+            return false;
         if (recipeCat !== "main")
             return true;
         const f = FILTER_MAP[filter];
@@ -8212,7 +8264,7 @@ function App() {
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
         return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
-    }), [recipeCat, recipeQuery, dietaryFilter, filter, lunch, dinner, breakfastRecipe, dessert, preRecipe, portions]);
+    }), [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, portions]);
     const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -8220,7 +8272,7 @@ function App() {
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
     if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const tabMap = { macros: "profile", recipes: "recipes" }; const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(tabMap[dest] || dest); } setOnboardStep("app"); } });
 
-    return (React.createElement("div", { style: { display: "flex", height: "100svh", width: "100%",
+    return (React.createElement("div", { "data-theme": resolvedTheme, style: { display: "flex", height: "100svh", width: "100%",
             paddingTop: "env(safe-area-inset-top, 0px)",
             paddingBottom: "0px",
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
@@ -8229,7 +8281,7 @@ function App() {
         React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.border}`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
-                boxShadow: `2px 0 12px ${C.card}80` } },
+} },
             React.createElement("div", { onClick: tapLogo, style: { marginBottom: 14, flexShrink: 0, cursor: "pointer",
                     WebkitTapHighlightColor: "transparent", display: "flex", flexDirection: "column", alignItems: "center" } },
                 React.createElement("svg", { width: 22, height: 31, viewBox: "-12 -32 24 44" },
@@ -8250,17 +8302,6 @@ function App() {
                     React.createElement("span", { style: { fontSize: 10, fontWeight: 700, letterSpacing: 0,
                             color: active ? C.accent : needsMacros ? "#E07B2A" : C.muted } }, "ME"));
             })(),
-            (() => {
-                const active = tab === "method";
-                return React.createElement("button", { onClick: () => setTab("method"), style: { width: 60, paddingTop: 10, paddingBottom: 10, marginBottom: 8,
-                        background: active ? C.accentDim : "none",
-                        border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
-                        borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
-                        alignItems: "center", gap: 4, transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
-                    React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\uD83D\uDCD6"),
-                    React.createElement("span", { style: { fontSize: 10, fontWeight: 700, letterSpacing: 0,
-                        color: active ? C.accent : C.muted } }, "METHOD"));
-            })(),
             getTabMeta().map(tm => {
                 const active = tab === tm.id;
                 return (React.createElement("button", { key: tm.id, onClick: () => setTab(tm.id), style: { width: 60, paddingTop: 10, paddingBottom: 10, marginBottom: 8,
@@ -8272,25 +8313,7 @@ function App() {
                     React.createElement("span", { style: { fontSize: 10, fontWeight: 700, letterSpacing: 0,
                             color: active ? C.accent : C.muted } }, tm.label.toUpperCase())));
             }),
-            React.createElement("div", { style: { flex: 1 } }),
-            React.createElement("button", { onClick: () => setShowFeedback(true), style: { width: 60, paddingTop: 10, paddingBottom: 10, marginBottom: 6,
-                    background: "none", border: "1px solid transparent", borderRadius: 12,
-                    cursor: "pointer", display: "flex", flexDirection: "column",
-                    alignItems: "center", gap: 4, transition: "all 0.15s",
-                    WebkitTapHighlightColor: "transparent" } },
-                React.createElement("span", { style: { fontSize: 22, lineHeight: 1 } }, "💬"),
-                React.createElement("span", { style: { fontSize: 10, fontWeight: 700, letterSpacing: 0, color: C.muted } }, "FEEDBACK")),
-            (() => {
-                const active = tab === "settings";
-                return (React.createElement("button", { onClick: () => setTab("settings"), style: { width: 60, paddingTop: 10, paddingBottom: 10,
-                        background: active ? C.accentDim : "none",
-                        border: active ? `1px solid ${C.accentBorder}` : "1px solid transparent",
-                        borderRadius: 12, cursor: "pointer", display: "flex", flexDirection: "column",
-                        alignItems: "center", gap: 4, transition: "all 0.15s" } },
-                    React.createElement("span", { style: { fontSize: 20, lineHeight: 1 } }, "\u2699\uFE0F"),
-                    React.createElement("span", { style: { fontSize: 10, fontWeight: 700, letterSpacing: 0,
-                            color: active ? C.accent : C.muted } }, "SETTINGS")));
-            })()),
+            React.createElement("div", { style: { flex: 1 } })),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" } },
             tab === "method"
@@ -8322,13 +8345,29 @@ function App() {
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
                                 background: "none", border: "none", color: C.muted, fontSize: 18, cursor: "pointer",
                                 padding: "0 6px", lineHeight: 1 } }, "\u2715"))),
+                    React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap", alignItems: "center" } },
+                        React.createElement("button", { onClick: () => setDietaryExpanded(x => !x),
+                            style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20,
+                                border: `1px solid ${dietaryFilter ? C.accentBorder : C.dim}`,
+                                background: dietaryFilter ? C.accentDim : C.card2,
+                                color: dietaryFilter ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } },
+                            dietaryFilter ? `✓ ${dietaryFilter}` : "Dietary ▾"),
+                        dietaryExpanded && [["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", C.purple]].map(([lbl, col]) => {
+                            const active = dietaryFilter === lbl;
+                            return React.createElement("button", { key: lbl, onClick: () => { setDietaryFilter(active ? null : lbl); setDietaryExpanded(false); },
+                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? col : C.dim}`,
+                                    background: active ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.card2,
+                                    color: active ? col : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                        })),
                     React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
-                        [["All", null], ["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", C.purple]].map(([lbl, col]) => {
-                            const active = dietaryFilter === (lbl === "All" ? null : lbl);
-                            return React.createElement("button", { key: lbl, onClick: () => setDietaryFilter(lbl === "All" ? null : (dietaryFilter === lbl ? null : lbl)),
-                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? (col || C.accent) : C.dim}`,
-                                    background: active ? (col ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.accentDim) : C.card2,
-                                    color: active ? (col || C.accent) : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                        PROTEIN_FILTERS.map(p => {
+                            const val = p === "All" ? null : p.split(" ").slice(1).join(" ");
+                            const active = proteinFilter === val;
+                            return React.createElement("button", { key: p, onClick: () => setProteinFilter(active ? null : val),
+                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20,
+                                    border: `1px solid ${active ? C.accent : C.dim}`,
+                                    background: active ? C.accentDim : C.card2,
+                                    color: active ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, p);
                         })),
                     recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "5px 4px", fontSize: 10, fontWeight: 700,
                             borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
@@ -8346,18 +8385,13 @@ function App() {
                     React.createElement("button", { onClick: dismissSunday, style: { background: "none", border: "none", color: C.sub,
                             fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0, lineHeight: 1 } }, "\u2715"))),
                 tab === "meals" && React.createElement("div", { className: "tab-anim", key: "meals" },
-                    shopAlert && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 12, padding: "12px 14px", marginBottom: 10 } },
-                        React.createElement("div", { style: { fontSize: 20 } }, "\uD83D\uDED2"),
-                        React.createElement("div", { style: { flex: 1 } },
-                            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.accent } }, "Shop day today"),
-                            React.createElement("div", { style: { fontSize: 12, color: C.sub } }, "Time to grab your groceries \xB7 Your shopping list is ready")),
-                        React.createElement("button", { onClick: () => setShopAlert(false), style: { background: "none", border: "none", color: C.sub, cursor: "pointer", fontSize: 16 } }, "\u2715")),
-                    prepAlert && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.3)", borderRadius: 12, padding: "12px 14px", marginBottom: 10 } },
-                        React.createElement("div", { style: { fontSize: 20 } }, "\uD83D\uDC68\u200D\uD83C\uDF73"),
-                        React.createElement("div", { style: { flex: 1 } },
-                            React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.accent } }, "Prep day today"),
-                            React.createElement("div", { style: { fontSize: 12, color: C.sub } }, "Your current batch runs out today \xB7 Time to cook a new one")),
-                        React.createElement("button", { onClick: () => setPrepAlert(false), style: { background: "none", border: "none", color: C.sub, cursor: "pointer", fontSize: 16 } }, "\u2715")),
+                    (shopAlert || prepAlert) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 18, flexShrink: 0 } }, shopAlert && prepAlert ? "\uD83D\uDED2\uD83D\uDC68\u200D\uD83C\uDF73" : shopAlert ? "\uD83D\uDED2" : "\uD83D\uDC68\u200D\uD83C\uDF73"),
+                        React.createElement("div", { style: { flex: 1, fontSize: 12, color: C.sub } },
+                            shopAlert && prepAlert ? "Shop + prep day \u2014 grab groceries and cook your new batch"
+                            : shopAlert ? "Shop day \u2014 your shopping list is ready"
+                            : "Prep day \u2014 time to cook your new batch"),
+                        React.createElement("button", { onClick: () => { setShopAlert(false); setPrepAlert(false); }, style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 15, padding: "0 2px", flexShrink: 0 } }, "\u2715")),
                     !profile && !lr && !dr && React.createElement("div", { style: { textAlign: "center", padding: "28px 20px 20px", marginBottom: 8 } },
                         React.createElement("div", { style: { fontSize: 36, marginBottom: 12 } }, "\uD83D\uDD25"),
                         React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 6 } }, "Welcome to SoulGainz"),
@@ -8370,8 +8404,8 @@ function App() {
                             React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.purple } }, "Set your macro target"),
                             React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Macros and shopping quantities adjust to YOUR calories \xB7 Tap to set up")),
                         React.createElement("div", { style: { marginLeft: "auto", fontSize: 14, color: C.purple } }, "\u2192")),
-                    profile && Math.abs(profileScale - 1) > 0.05 && React.createElement("div", { style: { background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 10, padding: "8px 12px", marginBottom: 10, fontSize: 11, color: C.purple, fontWeight: 600 } },
-                        "\uD83D\uDCCA All portions scaled to your " + effectiveTargets.kcal + " kcal target (" + Math.round(profileScale * 100) + "% of base recipe)"),
+                    profile && Math.abs(profileScale - 1) > 0.05 && React.createElement("div", { style: { fontSize: 10, color: C.purple, fontWeight: 600, marginBottom: 8, paddingLeft: 2 } },
+                        "\uD83D\uDCCA Portions at " + Math.round(profileScale * 100) + "% \u00B7 " + effectiveTargets.kcal + " kcal target"),
 
                     React.createElement(TotalBar, { total: total, targets: effectiveTargets, profileName: profileName }),
                     (!lr || !dr) && React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, textAlign: "center", margin: "10px 0 14px", padding: "9px 14px", background: C.accentDim, borderRadius: 10, border: "1px solid " + C.accent } }, "\uD83C\uDF7D\uFE0F Assign meals from the Recipes tab — each recipe has a Set button"),
@@ -8481,13 +8515,29 @@ function App() {
                             recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
                                     background: "none", border: "none", color: C.muted, fontSize: 18, cursor: "pointer",
                                     padding: "0 6px", lineHeight: 1 } }, "\u2715"))),
+                        React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap", alignItems: "center" } },
+                            React.createElement("button", { onClick: () => setDietaryExpanded(x => !x),
+                                style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20,
+                                    border: `1px solid ${dietaryFilter ? C.accentBorder : C.dim}`,
+                                    background: dietaryFilter ? C.accentDim : C.card2,
+                                    color: dietaryFilter ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } },
+                                dietaryFilter ? `✓ ${dietaryFilter}` : "Dietary ▾"),
+                            dietaryExpanded && [["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", C.purple]].map(([lbl, col]) => {
+                                const active = dietaryFilter === lbl;
+                                return React.createElement("button", { key: lbl, onClick: () => { setDietaryFilter(active ? null : lbl); setDietaryExpanded(false); },
+                                    style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? col : C.dim}`,
+                                        background: active ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.card2,
+                                        color: active ? col : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                            })),
                         React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
-                            [["All", null], ["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", C.purple]].map(([lbl, col]) => {
-                                const active = dietaryFilter === (lbl === "All" ? null : lbl);
-                                return React.createElement("button", { key: lbl, onClick: () => setDietaryFilter(lbl === "All" ? null : (dietaryFilter === lbl ? null : lbl)),
-                                    style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? (col || C.accent) : C.dim}`,
-                                        background: active ? (col ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.accentDim) : C.card2,
-                                        color: active ? (col || C.accent) : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, lbl);
+                            PROTEIN_FILTERS.map(p => {
+                                const val = p === "All" ? null : p.split(" ").slice(1).join(" ");
+                                const active = proteinFilter === val;
+                                return React.createElement("button", { key: p, onClick: () => setProteinFilter(active ? null : val),
+                                    style: { flexShrink: 0, padding: "5px 10px", fontSize: 10, fontWeight: 700, borderRadius: 20,
+                                        border: `1px solid ${active ? C.accent : C.dim}`,
+                                        background: active ? C.accentDim : C.card2,
+                                        color: active ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em" } }, p);
                             })),
                         recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "5px 4px", fontSize: 10, fontWeight: 700,
                                 borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
@@ -8519,20 +8569,7 @@ function App() {
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
                             marginTop: 8, letterSpacing: "0.03em" } }, "\uD83D\uDD13 Unlock All Recipes \u2192")),
-                    filteredRecipes.length > 0 && (React.createElement("div", { style: { marginTop: 24, paddingTop: 20, borderTop: `1px dashed ${C.dim}` } },
-                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.1em",
-                                marginBottom: 10, textAlign: "center" } }, "\uD83D\uDCC5 COMING SOON"),
-                        React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 10 } }, [1, 2].map(i => (React.createElement("div", { key: i, style: { flex: 1, background: C.card, border: `1.5px dashed ${C.dim}`,
-                                borderRadius: 12, padding: "14px 12px", textAlign: "center", opacity: 0.7 } },
-                            React.createElement("div", { style: { fontSize: 18, marginBottom: 4 } }, "\uD83C\uDF7D\uFE0F"),
-                            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub } }, "New recipe"),
-                            React.createElement("div", { style: { fontSize: 10, color: C.muted, marginTop: 2 } },
-                                "Drop ",
-                                i))))),
-                        React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.5 } },
-                            "Subscribers get 2 new recipes every month.",
-                            React.createElement("br", null),
-                            "Quarterly seasonal specials available separately."))))),
+)),
                 tab === "macros" && React.createElement("div", { className: "tab-anim", key: "mac" },
                     React.createElement(IngredientBrowser, null)),
                 tab === "info" && React.createElement("div", { className: "tab-anim", key: "info" },
@@ -8638,48 +8675,54 @@ function App() {
                             "\u00A9 2026 SoulGainz \u00B7 soulgainz.app",
                             React.createElement("br", null),
                             "Feed Your Soul \u00B7 Fuel Your Gainz"))),
-                tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile" },
-                    React.createElement(AccountCard, { C: C }),
-                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") })),
-                tab === "history" && React.createElement(CalendarTab, { lunch: lunch, dinner: dinner, userEmail: profile ? (profile.email || "") : "" }),
-                tab === "story" && React.createElement("div", { className: "tab-anim", key: "story",
-                    style: { paddingBottom: 32 } },
-                    // Logo header
-                    React.createElement("div", { style: { background: "#0C0B0A", borderRadius: 14, padding: "28px 20px 22px", marginBottom: 14, display: "flex", flexDirection: "column", alignItems: "center" } },
-                        React.createElement("svg", { width: 28, height: 40, viewBox: "-12 -32 24 44", style: { marginBottom: 10 } },
-                            React.createElement("path", { d: FLAME_PATH, fill: "#E07B2A" })),
-                        React.createElement("div", { style: { lineHeight: 1 } },
-                            React.createElement("span", { style: { fontFamily: "Georgia,serif", fontSize: 20, fontWeight: 700, color: "#E07B2A", letterSpacing: "0.09em" } }, "SOUL"),
-                            React.createElement("span", { style: { fontFamily: "Georgia,serif", fontSize: 20, fontWeight: 700, color: "#F2EDE6", letterSpacing: "0.09em" } }, "GAINZ")),
-                        React.createElement("div", { style: { fontSize: 7, color: "#8C8279", letterSpacing: "0.2em", marginTop: 5, textAlign: "center" } }, "FEED YOUR SOUL · FUEL YOUR GAINZ")),
-                    // Why
-                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", marginBottom: 10 } },
-                        React.createElement("div", { style: { fontSize: 9, color: C.accent, letterSpacing: "0.2em", fontWeight: 700, marginBottom: 8 } }, "OUR WHY"),
-                        React.createElement("h3", { style: { fontSize: 16, fontWeight: 700, color: C.text, fontFamily: "Georgia,serif", lineHeight: 1.3, marginBottom: 12 } },
-                            "Stop paying nearly $10,000 a year for food you don't even like."),
-                        React.createElement("p", { style: { fontSize: 13, color: C.sub, lineHeight: 1.75, fontStyle: "italic" } },
-                            "\"I was spending a fortune on meal delivery every month. The food was small, bland, and I had no idea what was in it. I wasn't seeing results. I wasn't enjoying my meals. So I built SoulGainz.\""),
-                        React.createElement("div", { style: { marginTop: 8, fontSize: 11, color: C.muted, fontWeight: 600 } }, "— Dejan, Founder")),
-                    // Values grid
-                    React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 } },
-                        [
-                            { icon: "🥩", title: "Real Food",        desc: "Whole ingredients only. No powders." },
-                            { icon: "🧠", title: "Made Simple",      desc: "Max 10 ingredients. Cook once." },
-                            { icon: "🔥", title: "Delicious",        desc: "Food you look forward to eating." },
-                            { icon: "💸", title: "Affordable",       desc: "Under $300 per fortnight." },
-                            { icon: "🤝", title: "Community",        desc: "Built by real people for real people." },
-                            { icon: "🚫", title: "No BS",            desc: "No meal kits. No subscription traps." },
-                        ].map(v => React.createElement("div", { key: v.title, style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px" } },
-                            React.createElement("div", { style: { fontSize: 16, marginBottom: 4 } }, v.icon),
-                            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 2 } }, v.title),
-                            React.createElement("div", { style: { fontSize: 10, color: C.muted, lineHeight: 1.5 } }, v.desc)))),
-                    // Stats bar
-                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14, padding: "16px", display: "flex", justifyContent: "space-around" } },
-                        [["30+","Recipes"],["<$300","Fortnight"],["10","Max Ingredients"],["1×","Cook Session"]].map(([n, l]) =>
-                            React.createElement("div", { key: l, style: { textAlign: "center" } },
-                                React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 18, fontWeight: 700, color: C.accent } }, n),
-                                React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.05em", marginTop: 2 } }, l))))
-                )))),
+                tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile", style: { paddingBottom: 32 } },
+                    React.createElement(MeHeader, { C: C, tier: (unlocks && unlocks.tier) || "free" }),
+                                        // ── Daily targets ───────────────────────────────────────
+                    profile && React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
+                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 14 } }, "DAILY TARGETS"),
+                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 } },
+                            [
+                                { label: "KCAL", value: effectiveTargets.kcal, color: C.accent },
+                                { label: "PROTEIN", value: effectiveTargets.protein + "g", color: C.prot },
+                                { label: "CARBS", value: effectiveTargets.carbs + "g", color: C.carb },
+                                { label: "FAT", value: effectiveTargets.fat + "g", color: C.fat },
+                            ].map(function(m) { return React.createElement("div", { key: m.label, style: { textAlign: "center", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10, padding: "10px 4px" } },
+                                React.createElement("div", { className: "num-display", style: { fontSize: 18, color: m.color, lineHeight: 1 } }, m.value),
+                                React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.06em", marginTop: 3 } }, m.label)); })),
+                        profileScale && Math.abs(profileScale - 1) > 0.05 && React.createElement("div", { style: { fontSize: 10, color: C.purple, fontWeight: 600 } }, "📊 Scaled to " + Math.round(profileScale * 100) + "% of base recipe quantities")),
+                    // ── Macro calculator ────────────────────────────────────
+                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator") }),
+                    // ── Preferences ─────────────────────────────────────────
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
+                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 16 } }, "PREFERENCES"),
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, marginBottom: 8 } }, "🎨 Appearance"),
+                        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 16 } },
+                            [{ id: "light", label: "☀️ Light" }, { id: "dark", label: "🌙 Dark" }, { id: "system", label: "⚙️ System" }].map(function(t2) {
+                                return React.createElement("button", { key: t2.id, onClick: () => setTheme(t2.id), style: { flex: 1, padding: "9px 4px", borderRadius: 9, border: `1px solid ${theme === t2.id ? C.accentBorder : C.dim}`, background: theme === t2.id ? C.accentDim : C.card2, color: theme === t2.id ? C.accent : C.sub, fontSize: 11, fontWeight: 700, cursor: "pointer" } }, t2.label); })),
+                        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, marginBottom: 8 } }, "🌐 Language"),
+                        React.createElement("div", { style: { display: "flex", gap: 6 } },
+                            [["en","🇬🇧"],["fr","🇫🇷"],["es","🇪🇸"],["it","🇮🇹"]].map(function(pair) {
+                                return React.createElement("button", { key: pair[0], onClick: () => setLang(pair[0]), style: { flex: 1, padding: "9px 4px", borderRadius: 9, border: `1px solid ${lang === pair[0] ? C.accentBorder : C.dim}`, background: lang === pair[0] ? C.accentDim : C.card2, color: lang === pair[0] ? C.accent : C.sub, fontSize: 15, fontWeight: 700, cursor: "pointer" } }, pair[1]); }))),
+                    // ── More ────────────────────────────────────────────────
+                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
+                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "MORE"),
+                        React.createElement("a", { href: "/method.html", target: "_blank", rel: "noopener", style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textDecoration: "none", marginBottom: 8, cursor: "pointer" } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "📖"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "The Method"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "How batch cooking works")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "↗️")),
+                        React.createElement("button", { onClick: () => setShowFeedback(true), style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer", marginBottom: 8 } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "💬"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Send Feedback"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Feature requests, bugs or ideas")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        // Getting started guide (collapsible)
+                        React.createElement(GuideAccordion, { C: C })),
+                    // ── Legal (collapsed) ───────────────────────────────────
+                    React.createElement(LegalAccordion, { C: C })),
+        ))),
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ localStorage.setItem("mp_onboarded","1"); }catch(e){} } }),
         showUpgrade && React.createElement(UpgradeModal, { onClose: () => setShowUpgrade(false) }),
