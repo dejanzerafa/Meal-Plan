@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz</title>
   <script src="/vendor/react.min.js"></script>
   <script src="/vendor/react-dom.min.js"></script>
@@ -4781,17 +4781,6 @@ function logHistory(lunchId, dinnerId) {
     }
     catch (e) { }
 }
-function getHistory() {
-    try {
-        return JSON.parse(localStorage.getItem("mp_history") || "[]");
-    }
-    catch (e) {
-        return [];
-    }
-}
-// generateShoppingText — builds WhatsApp-share text from macro-driven quantities.
-// Follows the 4-step framework throughout: protein → fat → carbs as residual.
-// All slot quantities come from computeIngredientQtys (same as recipe cards and shopping list).
 function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, profileScale) {
     if (!lr || !dr) return "";
     const p  = portions || 7;
@@ -6765,25 +6754,6 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
 );
 // ─── SHOPPING LIST ──────────────────────────────────────────────────────────
 // Build a flat sorted item list for a single meal slot
-function buildSlotItems(batchItems, totalScale) {
-    if (!batchItems || !batchItems.length) return [];
-    const map = {};
-    batchItems.forEach(function(i) {
-        const qty = i.unit === "whole" ? Math.ceil(i.qty * totalScale) : +(i.qty * totalScale).toFixed(1);
-        if (map[i.key]) map[i.key] = Object.assign({}, map[i.key], { qty: map[i.key].qty + qty });
-        else map[i.key] = Object.assign({}, i, { qty: qty });
-    });
-    const arr = Object.values(map);
-    arr.sort(function(a, b) {
-        var ai = CAT_ORDER.indexOf(a.cat), bi = CAT_ORDER.indexOf(b.cat);
-        return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
-    });
-    return arr;
-}
-
-// buildDynamicSlotItems — macro-aware replacement for buildSlotItems.
-// Follows the 4-step framework: protein first → fat second → carbs residual.
-// Falls back to legacy proportional scaling when no effectiveTargets are set.
 function buildDynamicSlotItems(recipe, effectiveTargets, slotFraction, portions) {
     if (!recipe || !recipe.batchItems || !recipe.batchItems.length) return [];
     var p  = portions || 7;
@@ -7112,21 +7082,7 @@ const QUARTERLY_DROP_IDS = new Set(["m65","m66","m67","m68","m69","m70","m71","m
 // Premium recipes exclusive to lifetime members only — the permanent reward for the biggest commitment.
 const LIFETIME_EXCLUSIVE_IDS = new Set(["m76","m77","m78","m79","m80","m81","m82","m83","m84","v8","v9"]);
 // ── Promo Codes ──────────────────────────────────────────────────────────────
-// To add a new code: { tier: "monthly"|"quarterly"|"annual"|"lifetime", expires: "YYYY-MM-DD"|null, label: "Name for your records" }
-// expires: null = permanent access. Codes are case-insensitive.
-// Example: "DEJAN-FRIENDS": { tier: "lifetime", expires: null, label: "Inner Circle" }
-const PROMO_CODES = {
-    // Add personalised codes here, e.g.:
-    // "BETA-ACCESS": { tier: "quarterly", expires: "2025-12-31", label: "Beta Tester Q4" },
-};
-// Codes loaded at runtime from /promo-codes.json (managed via admin.html — no source editing needed)
-let DYNAMIC_PROMO_CODES = {};
-(function loadDynamicCodes() {
-    fetch("/promo-codes.json?v=" + Date.now())
-        .then(function(r){ return r.ok ? r.json() : {}; })
-        .then(function(data){ if (data && typeof data === "object") DYNAMIC_PROMO_CODES = data; })
-        .catch(function(){});
-})();
+// Promo codes managed via Supabase DB — see AdminPanel + redeem()
 
 // ── Supabase — auth + database ────────────────────────────────────────────────
 // Fill in your project URL and anon key from: Supabase Dashboard → Project Settings → API
@@ -7165,6 +7121,16 @@ function sbRowToProfile(row) {
     };
 }
 // Convert app profile object → Supabase upsert payload
+// ── User basics — always-persistent body stats (DOB, gender, weight, height) ──
+// Stored separately from mp_profile so they're available regardless of tier/macros
+function getUserBasics() {
+    try { return JSON.parse(localStorage.getItem("mp_basics") || "null"); } catch(_) { return null; }
+}
+function saveUserBasics(b) {
+    try { localStorage.setItem("mp_basics", JSON.stringify({ ...b, updatedAt: new Date().toISOString() })); } catch(_) {}
+}
+
+
 function profileToSbRow(userId, email, p) {
     return {
         id:          userId,
@@ -7188,6 +7154,42 @@ function profileToSbRow(userId, email, p) {
         updated_at:  new Date().toISOString(),
     };
 }
+// Upload whatever the user already has in localStorage up to Supabase (called after new signup)
+async function uploadLocalDataToSupabase(userId, userEmail) {
+    const sb = getSB(); if (!sb) return;
+    // Profile
+    try {
+        const raw = localStorage.getItem("mp_profile");
+        if (raw) {
+            const p = JSON.parse(raw);
+            await sb.from("profiles").upsert(profileToSbRow(userId, userEmail, p), { onConflict:"id" });
+        } else {
+            // Ensure at least a stub profile row exists
+            await sb.from("profiles").upsert({ id:userId, email:userEmail, updated_at:new Date().toISOString() }, { onConflict:"id" });
+        }
+    } catch(e) { console.warn("SG: upload profile", e); }
+    // Favourites
+    try {
+        const favs = JSON.parse(localStorage.getItem("sg_favourites") || "[]");
+        if (favs.length) {
+            await sb.from("favourites").upsert(
+                favs.map(rid => ({ user_id:userId, recipe_id:rid })),
+                { onConflict:"user_id,recipe_id", ignoreDuplicates:true }
+            );
+        }
+    } catch(e) { console.warn("SG: upload favs", e); }
+    // Cooked-it
+    try {
+        const cooked = JSON.parse(localStorage.getItem("sg_cooked") || "[]");
+        if (cooked.length) {
+            await sb.from("cooked_it").upsert(
+                cooked.map(rid => ({ user_id:userId, recipe_id:rid })),
+                { onConflict:"user_id,recipe_id", ignoreDuplicates:true }
+            );
+        }
+    } catch(e) { console.warn("SG: upload cooked", e); }
+}
+
 // ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
 async function startCheckout(tier, recipeId) {
     track('checkout_started', { tier: tier, recipe_id: recipeId || null });
@@ -7429,93 +7431,6 @@ function SeasonalPopup({ show, onClose, onBuy }) {
 }
 
 // ─── GETTING STARTED GUIDE MODAL ──────────────────────────────────────────────
-function GettingStartedModal({ C, onClose }) {
-    const steps = [
-        {
-            num: "01", icon: "👤", title: "Set Your Macros",
-            desc: "Head to the ME tab and tap 'Calculate My Macros'. Enter your details — the app will work out your daily protein, carb and fat targets. Free on first use.",
-            tip: "Do this first — your macros guide everything else."
-        },
-        {
-            num: "02", icon: "🍽️", title: "Browse Recipes",
-            desc: "Tap the RECIPES tab. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients, method, and macros. Lock icons mean the recipe requires a plan.",
-            tip: "Most recipes are free to view. Unlock all with a plan."
-        },
-        {
-            num: "03", icon: "☀️", title: "Assign Lunch & Dinner",
-            desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.",
-            tip: "Locked recipes can still be assigned — tap to preview them."
-        },
-        {
-            num: "04", icon: "🛒", title: "Generate Your Grocery List",
-            desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.",
-            tip: "Batch size scales every ingredient quantity automatically."
-        },
-        {
-            num: "05", icon: "📅", title: "Log Your Prep Day",
-            desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.",
-            tip: "Cook once. The calendar keeps you on schedule."
-        },
-        {
-            num: "06", icon: "🔓", title: "Unlock More",
-            desc: "Browse more recipes and unlock the full library. Monthly access from $14.99/mo, or go lifetime for $149.99 — every recipe, every future drop, forever.",
-            tip: null
-        },
-    ];
-
-    return React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0,
-        background: "rgba(0,0,0,0.72)", zIndex: 600, display: "flex", alignItems: "flex-end",
-        justifyContent: "center" },
-        onClick: (e) => { if (e.target === e.currentTarget) onClose(); } },
-
-        React.createElement("div", { style: { width: "100%", maxWidth: 520, background: C.bg,
-            borderRadius: "24px 24px 0 0", maxHeight: "92vh", display: "flex", flexDirection: "column",
-            overflow: "hidden", paddingBottom: "env(safe-area-inset-bottom, 0px)" } },
-
-            // Header
-            React.createElement("div", { style: { padding: "20px 20px 16px", borderBottom: `1px solid ${C.dim}`,
-                flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between" } },
-                React.createElement("div", null,
-                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, fontFamily: "Georgia,serif" } }, "Getting Started"),
-                    React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, "Your 6-step setup guide")),
-                React.createElement("button", { onClick: onClose, style: { background: C.card2, border: `1px solid ${C.dim}`,
-                    borderRadius: 10, padding: "8px 14px", fontSize: 12, fontWeight: 700,
-                    color: C.sub, cursor: "pointer" } }, "Done")),
-
-            // Steps
-            React.createElement("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch",
-                padding: "16px 16px 24px", flex: 1 } },
-                steps.map((s) =>
-                    React.createElement("div", { key: s.num, style: { display: "flex", gap: 14,
-                        marginBottom: 20, padding: "14px 14px", background: C.card,
-                        border: `1px solid ${C.dim}`, borderRadius: 14 } },
-
-                        // Step number + icon
-                        React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 36 } },
-                            React.createElement("div", { style: { fontSize: 22, lineHeight: 1 } }, s.icon),
-                            React.createElement("div", { style: { fontSize: 9, fontWeight: 800, color: C.accent, letterSpacing: "0.05em" } }, s.num)),
-
-                        // Content
-                        React.createElement("div", { style: { flex: 1 } },
-                            React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, s.title),
-                            React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.6, marginBottom: s.tip ? 8 : 0 } }, s.desc),
-                            s.tip && React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 600, display: "flex", alignItems: "flex-start", gap: 4 } },
-                                React.createElement("span", null, "💡"),
-                                React.createElement("span", null, s.tip)))
-                    )
-                ),
-
-                // Footer note
-                React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted,
-                    marginTop: 4, padding: "12px 8px", background: C.card2, borderRadius: 10,
-                    border: `1px solid ${C.dim}` } },
-                    "✅ Your account is already registered — every visit is saved and you'll receive updates via email.")
-            )
-        )
-    );
-}
-
-// ─── FEEDBACK MODAL ───────────────────────────────────────────────────────────
 function FeedbackModal({ onClose }) {
     const [cat, setCat] = React.useState("Feature");
     const [msg, setMsg] = React.useState("");
@@ -7649,13 +7564,22 @@ function PromoCodeInput({ C, onRedeemed }) {
         if (!key) return;
         setStatus("loading");
 
-        // 1. Look up code — hardcoded first, then Supabase
-        let entry = PROMO_CODES[key] || DYNAMIC_PROMO_CODES[key];
+        // 1. Look up code in Supabase only
         const sb = getSB();
-        if (!entry && sb) {
+        let entry = null;
+        if (sb) {
             try {
                 const { data: dbCode } = await sb.from("promo_codes").select("*").eq("code", key).eq("active", true).single();
-                if (dbCode) entry = { tier:dbCode.tier, expires:dbCode.expires, label:dbCode.label };
+                if (dbCode) {
+                    // Calculate real tier_expires from duration_days at moment of redemption
+                    let tierExpires = null;
+                    if (dbCode.duration_days) {
+                        const exp = new Date();
+                        exp.setDate(exp.getDate() + dbCode.duration_days);
+                        tierExpires = exp.toISOString().split("T")[0];
+                    }
+                    entry = { tier:dbCode.tier, expires:dbCode.expires, tierExpires, label:dbCode.label, durationDays:dbCode.duration_days };
+                }
             } catch(_) {}
         }
         if (!entry) { setStatus("invalid"); return; }
@@ -7669,9 +7593,10 @@ function PromoCodeInput({ C, onRedeemed }) {
                     const { data: existing } = await sb.from("redemptions").select("id").eq("user_id", user.id).eq("code", key).maybeSingle();
                     if (existing) { setStatus("used"); return; }
                     // Record redemption
-                    await sb.from("redemptions").insert({ user_id:user.id, code:key, tier_granted:entry.tier, tier_expires:entry.expires });
-                    // Update profile tier in Supabase
-                    await sb.from("profiles").update({ tier:entry.tier, tier_via:"promo", tier_label:entry.label, tier_expires:entry.expires }).eq("id", user.id);
+                    await sb.from("redemptions").insert({ user_id:user.id, code:key, tier_granted:entry.tier, tier_expires:entry.tierExpires });
+                    // Update profile tier in Supabase + deactivate code (one use)
+                    await sb.from("profiles").update({ tier:entry.tier, tier_via:"promo", tier_label:entry.label, tier_expires:entry.tierExpires }).eq("id", user.id);
+                    await sb.from("promo_codes").update({ active:false }).eq("code", key);
                 } else {
                     // Not logged in — fall back to localStorage
                     const used = JSON.parse(localStorage.getItem("mp_redeemed_promos") || "{}");
@@ -7688,8 +7613,8 @@ function PromoCodeInput({ C, onRedeemed }) {
             } catch(e2) {}
         }
 
-        // 3. Apply unlock locally
-        const unlock = { tier: entry.tier, via: "promo", label: entry.label, expires: entry.expires, redeemedAt: new Date().toISOString() };
+        // 3. Apply unlock locally (use tierExpires = now+duration, falls back to "no expiry" for lifetime)
+        const unlock = { tier: entry.tier, via: "promo", label: entry.label, expires: entry.tierExpires || null, redeemedAt: new Date().toISOString() };
         localStorage.setItem("mp_unlocks", JSON.stringify(unlock));
         setRedeemedInfo(entry);
         setStatus("success");
@@ -8105,25 +8030,34 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         const parts = storedFull.trim().split(" ");
         const firstName = storedFirst || (parts[0] || "");
         const lastName  = storedLast  || (parts.slice(1).join(" ") || "");
+        // Pull from saved basics (DOB/gender/weight/height always available)
+        const basics = getUserBasics();
         return initialProfile ? {
             firstName: initialProfile.firstName || firstName,
             lastName:  initialProfile.lastName  || lastName,
-            dob: initialProfile.dob || "",
-            gender: initialProfile.gender || "male",
-            height: initialProfile.height || "",
-            ftFt: initialProfile.ftFt || "",
-            ftIn: initialProfile.ftIn || "",
-            weight: initialProfile.weight || "",
-            heightUnit: initialProfile.heightUnit || "cm",
-            weightUnit: initialProfile.weightUnit || "kg",
+            dob:        initialProfile.dob        || (basics?.dob        || ""),
+            gender:     initialProfile.gender     || (basics?.gender      || "male"),
+            height:     initialProfile.height     || (basics?.height      || ""),
+            ftFt:       initialProfile.ftFt       || (basics?.ftFt        || ""),
+            ftIn:       initialProfile.ftIn       || (basics?.ftIn        || ""),
+            weight:     initialProfile.weight     || (basics?.weight      || ""),
+            heightUnit: initialProfile.heightUnit || (basics?.heightUnit  || "cm"),
+            weightUnit: initialProfile.weightUnit || (basics?.weightUnit  || "kg"),
             job: initialProfile.job || "desk",
             steps: initialProfile.steps || "6-10k",
             training: initialProfile.training || "3-4",
             goal: initialProfile.goal || "lose",
             loseRate: initialProfile.loseRate || "sustainable",
         } : {
-            firstName, lastName, dob: "", gender: "male",
-            height: "", ftFt: "", ftIn: "", weight: "", heightUnit: "cm", weightUnit: "kg",
+            firstName, lastName,
+            dob:        basics?.dob        || "",
+            gender:     basics?.gender     || "male",
+            height:     basics?.height     || "",
+            ftFt:       basics?.ftFt       || "",
+            ftIn:       basics?.ftIn       || "",
+            weight:     basics?.weight     || "",
+            heightUnit: basics?.heightUnit || "cm",
+            weightUnit: basics?.weightUnit || "kg",
             job: "desk", steps: "6-10k", training: "3-4", goal: "lose",
             loseRate: "sustainable",
         };
@@ -8188,6 +8122,9 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
     const saveProfile = () => {
         const profile = Object.assign(Object.assign({}, form), { result, savedAt: new Date().toISOString(), _schemaVersion: 1 });
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        // Keep basics in sync so they persist across recalcs
+        saveUserBasics({ dob:form.dob, gender:form.gender, weight:form.weight, weightUnit:form.weightUnit,
+            height:form.height, heightUnit:form.heightUnit, ftFt:form.ftFt, ftIn:form.ftIn });
         track('calc_completed', { method: 'calculator' });
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
@@ -8387,13 +8324,17 @@ function ManualMacroInput({ C, onSave }) {
     const [kcal, setKcal] = React.useState(2500);
     const [protein, setProtein] = React.useState(205);
     const [fat, setFat] = React.useState(55);
-    const [showBodyStats, setShowBodyStats] = React.useState(false);
-    const [weight, setWeight] = React.useState("");
-    const [weightUnit, setWeightUnit] = React.useState("kg");
-    const [height, setHeight] = React.useState("");
-    const [heightUnit, setHeightUnit] = React.useState("cm");
-    const [dob, setDob] = React.useState("");
-    const [gender, setGender] = React.useState("male");
+    // Pre-populate body stats from saved basics so user doesn't re-enter them
+    const [showBodyStats, setShowBodyStats] = React.useState(() => {
+        const b = getUserBasics();
+        return !!(b && (b.dob || b.weight || b.height));
+    });
+    const [weight, setWeight] = React.useState(() => getUserBasics()?.weight || "");
+    const [weightUnit, setWeightUnit] = React.useState(() => getUserBasics()?.weightUnit || "kg");
+    const [height, setHeight] = React.useState(() => getUserBasics()?.height || "");
+    const [heightUnit, setHeightUnit] = React.useState(() => getUserBasics()?.heightUnit || "cm");
+    const [dob, setDob] = React.useState(() => getUserBasics()?.dob || "");
+    const [gender, setGender] = React.useState(() => getUserBasics()?.gender || "male");
     const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
     const isValid = kcal > 0 && protein > 0 && fat > 0 && carbs >= 0;
     const pPct = Math.round((protein * 4 / kcal) * 100);
@@ -8446,6 +8387,8 @@ function ManualMacroInput({ C, onSave }) {
             _schemaVersion: 1,
         };
         localStorage.setItem("mp_profile", JSON.stringify(profile));
+        // Keep basics in sync
+        if (bodyStatsComplete) saveUserBasics({ dob, gender, weight, weightUnit, height, heightUnit, ftFt:"", ftIn:"" });
         track('calc_completed', { method: 'manual' });
         try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { localStorage.setItem("mp_calc_used_email", e); try { fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }); } catch(_2) {} } } catch(_) {}
         onSave(profile);
@@ -8829,6 +8772,121 @@ function ReminderCard({ C, userEmail }) {
         }, saved ? "\u2713 Saved!" : "\uD83D\uDD14 Save Notification Times"));
 }
 
+// ── ProfileBasicsEditor ───────────────────────────────────────────────────────
+// Always-visible personal details card: DOB, gender, weight, height
+// Stored in mp_basics, auto-populates both macro calculators
+function ProfileBasicsEditor({ C, onSaved }) {
+    const [form, setForm] = React.useState(() => {
+        const b = getUserBasics();
+        return b || { dob:"", gender:"male", weight:"", weightUnit:"kg", height:"", heightUnit:"cm", ftFt:"", ftIn:"" };
+    });
+    const [saved, setSaved] = React.useState(false);
+    const set = (k,v) => { setForm(f => ({...f,[k]:v})); setSaved(false); };
+
+    const calcAge = (d) => {
+        if (!d) return null;
+        const b = new Date(d), n = new Date();
+        if (isNaN(b.getTime())) return null;
+        let a = n.getFullYear()-b.getFullYear();
+        if (n < new Date(n.getFullYear(),b.getMonth(),b.getDate())) a--;
+        return a>=10 && a<=120 ? a : null;
+    };
+    const getWeightKg = () => {
+        const w = parseFloat(form.weight); if (!w) return 0;
+        return form.weightUnit==="lbs" ? w/2.205 : w;
+    };
+    const getHeightCm = () => {
+        if (form.heightUnit==="ft") {
+            const ft=parseInt(form.ftFt||0), inch=parseInt(form.ftIn||0);
+            const tot=ft*12+inch; return tot>0 ? tot*2.54 : 0;
+        }
+        const h=parseFloat(form.height); return h||0;
+    };
+
+    const wKg = getWeightKg(), hCm = getHeightCm(), age = calcAge(form.dob);
+    const bmi = (wKg && hCm) ? parseFloat(calcBMI(wKg,hCm).toFixed(1)) : null;
+    const bmiInfo = bmi ? bmiLabel(bmi) : null;
+    const isComplete = !!age && wKg>0 && hCm>0;
+
+    const handleSave = () => {
+        saveUserBasics(form);
+        setSaved(true);
+        if (onSaved) onSaved(form);
+    };
+
+    const inp = { width:"100%", padding:"10px 12px", borderRadius:8, border:"1.5px solid "+C.dim,
+        background:C.card2, color:C.text, fontSize:15, fontFamily:"inherit", outline:"none",
+        WebkitAppearance:"none", boxSizing:"border-box" };
+    const seg = (label, active, onClick) => React.createElement("button", {
+        onClick, style:{ flex:1, padding:"8px 4px", borderRadius:7, border:"1.5px solid "+(active?C.accent:C.dim),
+            background:active?C.accentDim:C.card2, color:active?C.accent:C.sub,
+            fontWeight:700, fontSize:13, cursor:"pointer", transition:"all 0.15s" }
+    }, label);
+
+    return React.createElement("div", { style:{ background:C.card, border:"1px solid "+C.dim, borderRadius:16,
+            padding:"18px 16px", marginBottom:14 } },
+        React.createElement("div", { style:{ fontSize:11, fontWeight:700, color:C.sub, letterSpacing:"0.1em", marginBottom:14 } }, "YOUR PROFILE"),
+
+        // DOB + gender row
+        React.createElement("div", { style:{ marginBottom:12 } },
+            React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Date of Birth"),
+            React.createElement("input", { type:"date", value:form.dob, onChange:e=>set("dob",e.target.value), style:inp }),
+            age!==null && React.createElement("div", { style:{ fontSize:11, color:C.green, marginTop:4, fontWeight:600 } }, "✓ "+age+" years old")),
+        React.createElement("div", { style:{ marginBottom:12 } },
+            React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Gender"),
+            React.createElement("div", { style:{ display:"flex", gap:8 } },
+                seg("Male",   form.gender==="male",   ()=>set("gender","male")),
+                seg("Female", form.gender==="female", ()=>set("gender","female")))),
+
+        // Weight
+        React.createElement("div", { style:{ marginBottom:12 } },
+            React.createElement("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 } },
+                React.createElement("div", { style:{ fontSize:11, color:C.muted, fontWeight:600 } }, "Weight"),
+                React.createElement("div", { style:{ display:"flex", gap:4 } },
+                    seg("kg",  form.weightUnit==="kg",  ()=>set("weightUnit","kg")),
+                    seg("lbs", form.weightUnit==="lbs", ()=>set("weightUnit","lbs")))),
+            React.createElement("input", { type:"number", value:form.weight, onChange:e=>set("weight",e.target.value),
+                placeholder:form.weightUnit==="kg"?"e.g. 85":"e.g. 187", style:inp })),
+
+        // Height
+        React.createElement("div", { style:{ marginBottom:14 } },
+            React.createElement("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 } },
+                React.createElement("div", { style:{ fontSize:11, color:C.muted, fontWeight:600 } }, "Height"),
+                React.createElement("div", { style:{ display:"flex", gap:4 } },
+                    seg("cm", form.heightUnit==="cm", ()=>set("heightUnit","cm")),
+                    seg("ft",  form.heightUnit==="ft",  ()=>set("heightUnit","ft")))),
+            form.heightUnit==="cm"
+                ? React.createElement("input", { type:"number", value:form.height, onChange:e=>set("height",e.target.value),
+                    placeholder:"e.g. 183", style:inp })
+                : React.createElement("div", { style:{ display:"flex", gap:8, alignItems:"center" } },
+                    React.createElement("input", { type:"number", value:form.ftFt, onChange:e=>set("ftFt",e.target.value),
+                        placeholder:"6", style:{...inp, width:70} }),
+                    React.createElement("span", { style:{ color:C.muted, fontSize:13 } }, "ft"),
+                    React.createElement("input", { type:"number", value:form.ftIn, onChange:e=>set("ftIn",e.target.value),
+                        placeholder:"0", min:0, max:11, style:{...inp, width:70} }),
+                    React.createElement("span", { style:{ color:C.muted, fontSize:13 } }, "in"))),
+
+        // BMI preview (when complete)
+        bmi && React.createElement("div", { style:{ display:"flex", alignItems:"center", gap:12, background:C.card2,
+                borderRadius:10, padding:"10px 12px", marginBottom:14, border:"1px solid "+C.dim } },
+            React.createElement("div", { style:{ textAlign:"center", minWidth:52 } },
+                React.createElement("div", { style:{ fontSize:22, fontWeight:900, color:bmiInfo.c, lineHeight:1 } }, bmi),
+                React.createElement("div", { style:{ fontSize:9, color:bmiInfo.c, fontWeight:700, marginTop:2 } }, bmiInfo.l)),
+            React.createElement("div", { style:{ width:1, height:36, background:C.dim } }),
+            React.createElement("div", { style:{ fontSize:11, color:C.sub, lineHeight:1.5 } },
+                React.createElement("div", { style:{ fontWeight:700, color:C.text } }, "BMI"),
+                "Body Mass Index based on",
+                React.createElement("br"), "your current weight & height")),
+
+        // Save button
+        React.createElement("button", { onClick:handleSave,
+            style:{ width:"100%", background:saved?C.green:C.accent, border:"none", borderRadius:10,
+                padding:"11px", fontSize:13, fontWeight:800, color:"#000", cursor:"pointer",
+                transition:"background 0.2s" } },
+            saved ? "✓ Saved" : "Save Profile Details"));
+}
+
+
 function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudge, updateNudge, resetNudge }) {
     const [profile, setProfile] = useState(() => {
         try {
@@ -8855,9 +8913,13 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
         if (onSave)
             onSave(p);
     };
+    const [basicsKey, setBasicsKey] = React.useState(0); // triggers re-render when basics saved
+    const handleBasicsSaved = () => setBasicsKey(k => k+1);
+
     // ── PAYWALL: calculator gated. Offer two paths: just calc ($5.99) or full upgrade ──
     if (!canUse) {
         return (React.createElement("div", { className: "tab-anim" },
+            React.createElement(ProfileBasicsEditor, { key: basicsKey, C: C, onSaved: handleBasicsSaved }),
             React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
                 React.createElement("div", { style: { fontSize: 36, marginBottom: 10 } }, "\uD83D\uDD12"),
                 React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, marginBottom: 8 } }, "Personalised Macro Calculator"),
@@ -8894,10 +8956,11 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
     // First-time: no profile saved (premium user)
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
-            React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
-                React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83E\uDDEE"),
-                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Your Macro Targets"),
-                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto 18px" } }, "Calculate from your body data, or set your own targets manually.")),
+            React.createElement(ProfileBasicsEditor, { key: "basics-noprofile", C: C, onSaved: handleBasicsSaved }),
+            React.createElement("div", { style: { textAlign: "center", marginBottom: 14 } },
+                React.createElement("div", { style: { fontSize: 32, marginBottom: 8 } }, "\uD83E\uDDEE"),
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 6 } }, "Set Your Macro Targets"),
+                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 300, margin: "0 auto 14px" } }, "Calculate from your saved profile data, or set targets manually.")),
             React.createElement("div", { style: { display: "flex", background: C.card2, borderRadius: 10, padding: 4, marginBottom: 20, border: "1px solid " + C.dim } },
                 React.createElement("button", { onClick: () => setInputMode("calc"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "calc" ? C.accent : "transparent", color: inputMode === "calc" ? "#000" : C.sub, transition: "all 0.2s" } }, "\uD83E\uDDEE Calculate"),
                 React.createElement("button", { onClick: () => setInputMode("manual"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "manual" ? C.accent : "transparent", color: inputMode === "manual" ? "#000" : C.sub, transition: "all 0.2s" } }, "\u270F\uFE0F Set Manually")),
@@ -8917,6 +8980,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
     const bmiInfo = bmiLabel((r === null || r === void 0 ? void 0 : r.bmi) || 0);
     const goalLabel = profile.goal === "lose" ? "Fat Loss" : profile.goal === "gain" ? "Muscle Gain" : "Maintenance";
     return (React.createElement("div", { className: "tab-anim" },
+        React.createElement(ProfileBasicsEditor, { key: "basics-saved", C: C, onSaved: handleBasicsSaved }),
         React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 } },
             React.createElement("div", null,
                 React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: C.text } },
@@ -9012,255 +9076,6 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
 }
 
 // ─── CALENDAR TAB ─────────────────────────────────────────────────────────
-function CalendarTab({ lunch, dinner, userEmail }) {
-    var todayObj = new Date();
-    const [calYear,  setCalYear]     = React.useState(todayObj.getFullYear());
-    const [calMonth, setCalMonth]    = React.useState(todayObj.getMonth());
-    const [selectedDay, setSelectedDay] = React.useState(null);
-    const [logBatchSize, setLogBatchSize] = React.useState(7);
-    const [batchLogs, setBatchLogs]  = React.useState(function(){
-        try{ return JSON.parse(localStorage.getItem("mp_cal_logs")||"[]"); }catch(e){ return []; }
-    });
-    const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
-    const WDAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
-    function toDS(y,m,d){ return y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"); }
-    var todayStr=toDS(todayObj.getFullYear(),todayObj.getMonth(),todayObj.getDate());
-    var batchMap={};
-    batchLogs.forEach(function(log){
-        var start=new Date(log.date+"T00:00:00");
-        var safeBatchSize = Math.min(Math.max(parseInt(log.batchSize)||7, 1), 30);
-        for(var i=0;i<safeBatchSize;i++){
-            var dd=new Date(start); dd.setDate(dd.getDate()+i);
-            var key=toDS(dd.getFullYear(),dd.getMonth(),dd.getDate());
-            batchMap[key]={ lunchId:log.lunchId, dinnerId:log.dinnerId, batchSize:safeBatchSize,
-                startDate:log.date, dayIndex:i, isStart:i===0, isEnd:i===safeBatchSize-1,
-                daysLeft:safeBatchSize-i,
-                isShopDay: i===safeBatchSize-2&&safeBatchSize>1,
-                isPrepDay: i===safeBatchSize-1 };
-        }
-    });
-    var firstDow=new Date(calYear,calMonth,1).getDay();
-    var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
-    var selectedStr=selectedDay?toDS(calYear,calMonth,selectedDay):null;
-    var selectedBatch=selectedStr?batchMap[selectedStr]:null;
-    var lrSel=selectedBatch?RECIPES.find(function(r){return r.id===selectedBatch.lunchId;}):null;
-    var drSel=selectedBatch?RECIPES.find(function(r){return r.id===selectedBatch.dinnerId;}):null;
-    var lrCur=lunch?RECIPES.find(function(r){return r.id===lunch;}):null;
-    var drCur=dinner?RECIPES.find(function(r){return r.id===dinner;}):null;
-    function prevMonth(){ if(calMonth===0){setCalMonth(11);setCalYear(function(y){return y-1;});}else setCalMonth(function(m){return m-1;}); }
-    function nextMonth(){ if(calMonth===11){setCalMonth(0);setCalYear(function(y){return y+1;});}else setCalMonth(function(m){return m+1;}); }
-    function logBatch(){
-        if(!selectedDay||!lunch||!dinner) return;
-        var key=toDS(calYear,calMonth,selectedDay);
-        var newLog={date:key,lunchId:lunch,dinnerId:dinner,batchSize:logBatchSize};
-        var newLogs=batchLogs.filter(function(l){return l.date!==key;}).concat([newLog]);
-        setBatchLogs(newLogs);
-        try{localStorage.setItem("mp_cal_logs",JSON.stringify(newLogs));}catch(e){}
-        saveMealLogToSupabase(newLog);
-        schedulePrepNotification(newLog, logBatchSize);
-    }
-    function schedulePrepNotification(log, batchSize) {
-        if (!("Notification" in window) || !navigator.serviceWorker) return;
-        if (Notification.permission !== "granted") return;
-        var parts = log.date.split("-");
-        var prepStart = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-        var shopDay = new Date(prepStart);
-        shopDay.setDate(prepStart.getDate() + batchSize - 2);
-        var nextPrep = new Date(prepStart);
-        nextPrep.setDate(prepStart.getDate() + batchSize - 1);
-        // Apply user-chosen times
-        var shopTimeParts = (localStorage.getItem("mp_shop_time") || "09:00").split(":");
-        var prepTimeParts = (localStorage.getItem("mp_prep_time") || "08:00").split(":");
-        shopDay.setHours(parseInt(shopTimeParts[0]), parseInt(shopTimeParts[1]), 0, 0);
-        nextPrep.setHours(parseInt(prepTimeParts[0]), parseInt(prepTimeParts[1]), 0, 0);
-        try { localStorage.setItem("mp_next_shop", shopDay.toISOString()); } catch(e2) {}
-        try { localStorage.setItem("mp_next_prep", nextPrep.toISOString()); } catch(e2) {}
-        // Store scheduled times \u2014 checked on mount/focus via checkDueNotifications
-        try { localStorage.setItem("mp_notif_shop", String(shopDay.getTime())); } catch(e2) {}
-        try { localStorage.setItem("mp_notif_prep", String(nextPrep.getTime())); } catch(e2) {}
-    }
-    function removeBatch(startDate){
-        var newLogs=batchLogs.filter(function(l){return l.date!==startDate;});
-        setBatchLogs(newLogs);
-        try{localStorage.setItem("mp_cal_logs",JSON.stringify(newLogs));}catch(e){}
-        removeMealLogFromSupabase(startDate);
-        setSelectedDay(null);
-    }
-    var prepDaysThisMonth=0;
-    for(var pd=1;pd<=daysInMonth;pd++){ if(batchMap[toDS(calYear,calMonth,pd)]&&batchMap[toDS(calYear,calMonth,pd)].isPrepDay) prepDaysThisMonth++; }
-    // ── Weekly stats from mp_cal_logs ──────────────────────────────────────
-    var weeklyStats=(function(){
-        if(batchLogs.length===0) return null;
-        var now=new Date(); var cutoff=new Date(now); cutoff.setDate(now.getDate()-28);
-        var recentLogs=batchLogs.filter(function(l){ var d=new Date(l.date); return d>=cutoff&&d<=now; });
-        if(recentLogs.length===0) return null;
-        var totalDays=0; recentLogs.forEach(function(l){ totalDays+=l.batchSize||7; });
-        var batchCount=recentLogs.length;
-        var avgBatch=Math.round(totalDays/batchCount);
-        var allLunchIds=[]; var allDinnerIds=[];
-        recentLogs.forEach(function(l){ if(l.lunchId) allLunchIds.push(l.lunchId); if(l.dinnerId) allDinnerIds.push(l.dinnerId); });
-        var favLunch=(function(ids){ var freq={}; var best=null,bestN=0; ids.forEach(function(id){ freq[id]=(freq[id]||0)+1; if(freq[id]>bestN){ bestN=freq[id]; best=id; } }); return best; })(allLunchIds);
-        var favDinner=(function(ids){ var freq={}; var best=null,bestN=0; ids.forEach(function(id){ freq[id]=(freq[id]||0)+1; if(freq[id]>bestN){ bestN=freq[id]; best=id; } }); return best; })(allDinnerIds);
-        var favLunchName=favLunch?(RECIPES.find(function(r){return r.id===favLunch;})||{name:"—"}).name:"—";
-        var favDinnerName=favDinner?(RECIPES.find(function(r){return r.id===favDinner;})||{name:"—"}).name:"—";
-        var streak=0; var checkDate=new Date(now);
-        while(true){
-            var ds=toDS(checkDate.getFullYear(),checkDate.getMonth(),checkDate.getDate());
-            if(batchMap[ds]){ streak++; } else { break; }
-            checkDate.setDate(checkDate.getDate()-1);
-            if(streak>90) break;
-        }
-        return { batchCount:batchCount, avgBatch:avgBatch, streak:streak, favLunchName:favLunchName, favDinnerName:favDinnerName };
-    })();
-    var cells=[];
-    for(var e=0;e<firstDow;e++) cells.push(null);
-    for(var dc=1;dc<=daysInMonth;dc++) cells.push(dc);
-    return React.createElement("div",{className:"tab-anim"},
-        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}},
-            React.createElement("button",{onClick:prevMonth,style:{background:C.card2,border:"1px solid "+C.dim,borderRadius:8,width:36,height:36,fontSize:20,cursor:"pointer",color:C.sub,display:"flex",alignItems:"center",justifyContent:"center"}},"‹"),
-            React.createElement("div",{style:{textAlign:"center"}},
-                React.createElement("div",{style:{fontSize:16,fontWeight:800,color:C.text}},MONTHS[calMonth]+" "+calYear),
-                prepDaysThisMonth>0&&React.createElement("div",{style:{fontSize:10,color:C.purple,fontWeight:700}},prepDaysThisMonth+" prep day"+(prepDaysThisMonth>1?"s":"")+" this month")),
-            React.createElement("button",{onClick:nextMonth,style:{background:C.card2,border:"1px solid "+C.dim,borderRadius:8,width:36,height:36,fontSize:20,cursor:"pointer",color:C.sub,display:"flex",alignItems:"center",justifyContent:"center"}},"›")),
-        weeklyStats&&React.createElement("div",{style:{background:C.card,border:"1px solid "+C.dim,borderRadius:14,padding:"14px 14px 10px",marginBottom:14}},
-            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.09em",marginBottom:10}},"LAST 4 WEEKS"),
-            React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}},
-                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
-                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:C.accent}},""+weeklyStats.batchCount),
-                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"BATCHES LOGGED")),
-                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
-                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:C.accent}},""+weeklyStats.avgBatch+"d"),
-                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"AVG BATCH SIZE")),
-                React.createElement("div",{style:{background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
-                    React.createElement("div",{style:{fontSize:20,fontWeight:800,color:weeklyStats.streak>0?C.green:C.muted}},""+weeklyStats.streak+"d"),
-                    React.createElement("div",{style:{fontSize:9,color:C.sub,marginTop:2,fontWeight:700,letterSpacing:"0.06em"}},"CURRENT STREAK"))),
-            weeklyStats.favLunchName!=="—"&&React.createElement("div",{style:{fontSize:11,color:C.sub,borderTop:"1px solid "+C.dim,paddingTop:8}},
-                React.createElement("span",{style:{color:C.muted,fontSize:10}},"Fav lunch: "),
-                React.createElement("span",{style:{color:C.text,fontWeight:600}},weeklyStats.favLunchName)),
-            weeklyStats.favDinnerName!=="—"&&React.createElement("div",{style:{fontSize:11,color:C.sub,marginTop:4}},
-                React.createElement("span",{style:{color:C.muted,fontSize:10}},"Fav dinner: "),
-                React.createElement("span",{style:{color:C.text,fontWeight:600}},weeklyStats.favDinnerName))),
-        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4}},
-            WDAYS.map(function(d){return React.createElement("div",{key:d,style:{textAlign:"center",fontSize:10,fontWeight:700,color:C.muted,padding:"3px 0"}},d);})),
-        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}},
-            cells.map(function(day,idx){
-                if(!day) return React.createElement("div",{key:"e"+idx,style:{aspectRatio:"1"}});
-                var dayStr=toDS(calYear,calMonth,day);
-                var batch=batchMap[dayStr];
-                var isToday=dayStr===todayStr;
-                var isSelected=dayStr===selectedStr;
-                var bg="transparent",textColor=C.text,fw=500,botIcon=null,topDot=null;
-                if(batch){
-                    var prog=batch.dayIndex/Math.max(1,batch.batchSize-1);
-                    var alpha=Math.round((0.28-prog*0.16)*100)/100;
-                    bg="rgba(184,74,31,"+alpha+")";
-                    if(batch.isStart){bg=C.accent;textColor="#000";fw=800;topDot="▶";}
-                    if(batch.isPrepDay){bg=C.purple;textColor="#fff";fw=800;botIcon="👨‍🍳";}
-                    else if(batch.isShopDay){botIcon="🛒";}
-                }
-                // Today: white pill box, accent text — distinct from prep start (terracotta fill)
-                var todayOverride = isToday && !batch;
-                if(todayOverride){ bg="#ffffff"; textColor=C.accent; fw=800; }
-                var borderStyle = isSelected ? "2px solid "+C.accent
-                    : isToday ? "2px solid "+C.accent
-                    : "1.5px solid transparent";
-                return React.createElement("div",{
-                    key:dayStr,
-                    onClick:function(theDay){ return function(){ setSelectedDay(selectedDay===theDay?null:theDay); }; }(day),
-                    style:{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",
-                        justifyContent:"center",borderRadius:8,background:bg,cursor:"pointer",
-                        border:borderStyle,
-                        boxShadow:isToday?"0 0 0 0px "+C.accent:"none"}},
-                    topDot&&React.createElement("div",{style:{fontSize:7,color:"rgba(0,0,0,0.5)",lineHeight:1,marginBottom:1}},topDot),
-                    React.createElement("div",{style:{fontSize:13,fontWeight:fw,color:textColor,lineHeight:1}},day),
-                    isToday&&React.createElement("div",{style:{fontSize:7,fontWeight:800,color:textColor,letterSpacing:"0.04em",lineHeight:1,marginTop:1}},"TODAY"),
-                    !isToday&&botIcon&&React.createElement("div",{style:{fontSize:9,lineHeight:1,marginTop:1}},botIcon),
-                    isToday&&botIcon&&React.createElement("div",{style:{fontSize:8,lineHeight:1,marginTop:1}},botIcon));
-            })),
-        React.createElement("div",{style:{display:"flex",gap:10,marginTop:10,flexWrap:"wrap"}},
-            [{box:"#ffffff",outline:C.accent,label:"Today"},{dot:C.accent,label:"Prep start"},{dot:"rgba(184,74,31,0.20)",label:"Active batch"},{dot:C.purple,label:"👨‍🍳 Prep again"},{text:"🛒",label:"Shop soon"}]
-            .map(function(item,i){return React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:4,fontSize:10,color:C.sub}},
-                item.box&&React.createElement("div",{style:{width:9,height:9,borderRadius:2,background:item.box,border:"1.5px solid "+(item.outline||C.dim),flexShrink:0}}),
-                item.dot&&React.createElement("div",{style:{width:9,height:9,borderRadius:2,background:item.dot,flexShrink:0}}),
-                item.text&&React.createElement("span",null,item.text),item.label);})),
-        selectedDay&&React.createElement("div",{style:{marginTop:14,background:C.card,border:"1px solid "+C.dim,borderRadius:16,overflow:"hidden"}},
-            React.createElement("div",{style:{padding:"12px 14px",borderBottom:"1px solid "+C.dim,display:"flex",justifyContent:"space-between",alignItems:"center"}},
-                React.createElement("div",{style:{fontSize:13,fontWeight:700,color:C.text}},
-                    new Date(calYear,calMonth,selectedDay).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})),
-                React.createElement("button",{onClick:function(){setSelectedDay(null);},style:{background:"none",border:"none",color:C.muted,fontSize:16,cursor:"pointer",lineHeight:1}},"✕")),
-            React.createElement("div",{style:{padding:"12px 14px"}},
-                selectedBatch?React.createElement("div",null,
-                    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
-                        React.createElement("div",{style:{fontSize:11,color:C.sub}},"Day "+(selectedBatch.dayIndex+1)+" of "+selectedBatch.batchSize+"-day batch"),
-                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:selectedBatch.daysLeft<=2?C.accent:C.green}},selectedBatch.daysLeft+" day"+(selectedBatch.daysLeft!==1?"s":"")+" left")),
-                    lrSel&&React.createElement("div",{style:{background:C.accentDim,border:"1px solid "+C.accentBorder,borderRadius:10,padding:"8px 12px",marginBottom:6}},
-                        React.createElement("div",{style:{fontSize:9,color:C.accent,fontWeight:700,letterSpacing:"0.07em",marginBottom:3}},"☀️ LUNCH"),
-                        React.createElement("div",{style:{fontSize:13,color:C.text,fontWeight:600}},lrSel.name),
-                        React.createElement("div",{style:{fontSize:10,color:C.sub,marginTop:2}},(lrSel.perPortion||{}).kcal+" kcal · "+(lrSel.perPortion||{}).protein+"g protein")),
-                    drSel&&React.createElement("div",{style:{background:"rgba(90,101,54,0.08)",border:"1px solid rgba(90,101,54,0.22)",borderRadius:10,padding:"8px 12px",marginBottom:12}},
-                        React.createElement("div",{style:{fontSize:9,color:C.green,fontWeight:700,letterSpacing:"0.07em",marginBottom:3}},"🌙 DINNER"),
-                        React.createElement("div",{style:{fontSize:13,color:C.text,fontWeight:600}},drSel.name),
-                        React.createElement("div",{style:{fontSize:10,color:C.sub,marginTop:2}},(drSel.perPortion||{}).kcal+" kcal · "+(drSel.perPortion||{}).protein+"g protein")),
-                    React.createElement("div",{style:{display:"flex",gap:6,marginBottom:10}},
-                        React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:8,padding:"8px",textAlign:"center"}},
-                            React.createElement("div",{style:{fontSize:10,color:C.muted,marginBottom:2}},"Prep again"),
-                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.purple}},(function(sB){return function(){var e=new Date(sB.startDate+"T00:00:00");e.setDate(e.getDate()+sB.batchSize-1);return e.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch))),
-                        React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:8,padding:"8px",textAlign:"center"}},
-                            React.createElement("div",{style:{fontSize:10,color:C.muted,marginBottom:2}},"Shop day"),
-                            React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.green}},(function(sB){return function(){var s=new Date(sB.startDate+"T00:00:00");s.setDate(s.getDate()+Math.max(0,sB.batchSize-2));return s.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});}();})(selectedBatch)))),
-                    React.createElement("button",{onClick:function(){removeBatch(selectedBatch.startDate);},style:{width:"100%",background:"none",border:"1px solid "+C.dim,borderRadius:10,padding:"9px",fontSize:12,color:C.muted,cursor:"pointer"}},"✕ Remove batch"))
-                :React.createElement("div",null,
-                    React.createElement("div",{style:{fontSize:12,color:C.sub,marginBottom:12}},"No batch logged here."),
-                    lunch&&dinner?React.createElement("div",null,
-                        React.createElement("div",{style:{background:C.card2,borderRadius:8,padding:"8px 10px",marginBottom:10,fontSize:11,color:C.sub}},
-                            "☀️ "+(lrCur?lrCur.name:lunch)+" · 🌙 "+(drCur?drCur.name:dinner)),
-                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.text,marginBottom:6}},"Batch size:"),
-                        React.createElement("div",{style:{display:"flex",gap:6,marginBottom:10}},
-                            [3,5,7].map(function(n){return React.createElement("button",{key:n,onClick:function(nn){return function(){setLogBatchSize(nn);};}(n),style:{flex:1,padding:"9px 0",fontSize:12,fontWeight:700,borderRadius:8,border:"none",background:logBatchSize===n?C.accent:C.card2,color:logBatchSize===n?"#000":C.sub,cursor:"pointer"}},n+" days");})),
-                        React.createElement("button",{onClick:logBatch,style:{width:"100%",background:C.accent,border:"none",borderRadius:10,padding:"11px",fontSize:13,fontWeight:800,color:"#000",cursor:"pointer"}},"📅 Log "+logBatchSize+"-day batch"))
-                    :React.createElement("div",{style:{fontSize:11,color:C.muted,fontStyle:"italic",lineHeight:1.6}},"Select lunch & dinner in the Meals tab first.")))),
-        React.createElement("div",{style:{marginTop:16}},
-            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:8}},"NEXT 14 DAYS"),
-            (function(){
-                var items=[];
-                for(var i=0;i<14;i++){
-                    var dd=new Date(); dd.setDate(dd.getDate()+i);
-                    var key=toDS(dd.getFullYear(),dd.getMonth(),dd.getDate());
-                    var b=batchMap[key];
-                    if(!b) continue;
-                    var lbl=dd.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
-                    var tag=b.isStart?"🥘 Prep start":b.isPrepDay?"👨‍🍳 Prep again!":b.isShopDay?"🛒 Shop day":"Day "+(b.dayIndex+1)+" / "+b.batchSize;
-                    var tagColor=b.isStart?C.accent:b.isPrepDay?C.purple:b.isShopDay?C.green:C.sub;
-                    items.push(React.createElement("div",{key:key,style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 12px",background:C.card,borderRadius:10,marginBottom:5}},
-                        React.createElement("div",{style:{fontSize:12,fontWeight:600,color:C.text}},lbl),
-                        React.createElement("div",{style:{fontSize:11,fontWeight:700,color:tagColor}},tag)));
-                }
-                if(items.length===0) return React.createElement("div",{style:{fontSize:11,color:C.muted,textAlign:"center",padding:"16px 0"}},"No batches logged yet — tap a day above to log your first prep.");
-                return React.createElement("div",null,items);
-            })()),
-        React.createElement("div",{style:{background:C.card,border:"1px solid "+C.dim,borderRadius:14,padding:"14px 16px",marginTop:16}},
-            React.createElement("div",{style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:10}},"\uD83D\uDD14 REMINDERS"),
-            React.createElement("div",{style:{fontSize:11,color:C.sub,lineHeight:1.6,marginBottom:12}},
-                "Get notified the day before your grocery run and on your prep day. Works even when the app is closed."),
-            (function(){
-                var shopDate=null,prepDate=null;
-                try{ var s=localStorage.getItem("mp_next_shop"); if(s) shopDate=new Date(s); }catch(e){}
-                try{ var p=localStorage.getItem("mp_next_prep"); if(p) prepDate=new Date(p); }catch(e){}
-                var now=new Date();
-                var shopLabel=shopDate&&shopDate>now?shopDate.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}):null;
-                var prepLabel=prepDate&&prepDate>now?prepDate.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}):null;
-                if(!shopLabel&&!prepLabel) return null;
-                return React.createElement("div",{style:{display:"flex",gap:8,marginBottom:12}},
-                    shopLabel&&React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
-                        React.createElement("div",{style:{fontSize:9,color:C.green,fontWeight:700,letterSpacing:"0.07em",marginBottom:4}},"\uD83D\uDED2 NEXT SHOP"),
-                        React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},shopLabel)),
-                    prepLabel&&React.createElement("div",{style:{flex:1,background:C.card2,borderRadius:10,padding:"10px 8px",textAlign:"center"}},
-                        React.createElement("div",{style:{fontSize:9,color:C.purple,fontWeight:700,letterSpacing:"0.07em",marginBottom:4}},"\uD83D\uDC68\u200D🍳 NEXT PREP"),
-                        React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},prepLabel)));
-            })(),
-            React.createElement(ReminderCard,{C:C,userEmail:userEmail||""})));
-}
-// ─── MACRO BALANCER ───────────────────────────────────────────────────────
 function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
     lunchScale, dinnerScale, bfScale, preScale, desScale,
     showBalance, setShowBalance,
@@ -9662,6 +9477,8 @@ function OnboardingSignup({ onDone }) {
             localStorage.setItem("mp_acc_name",       (name.trim()+" "+surname.trim()).trim());
             localStorage.setItem("sg_onboarded",      "registered");
             localStorage.removeItem("sg_skip_ts");
+            // Flag auth listener to upload local data instead of overwriting it
+            window._sg_upload_on_auth = true;
             setStatus("success");
             setTimeout(() => finishOnboarding("macros"), 1400);
         } catch(e) {
@@ -9789,17 +9606,30 @@ function OnboardingSignup({ onDone }) {
 // ── AdminPanel — promo code management (admin emails only) ───────────────────
 function AdminPanel({ C, currentUser, onClose }) {
     const TIERS = [
-        { value:"monthly",   label:"Monthly Pro",  color:"#22c55e" },
-        { value:"quarterly", label:"Quarterly Pro", color:"#22c55e" },
-        { value:"annual",    label:"Annual Pro",    color:"#3b82f6" },
-        { value:"lifetime",  label:"Lifetime",      color:"#f59e0b" },
+        { value:"monthly",   label:"Monthly Pro",   color:"#22c55e", days:30   },
+        { value:"quarterly", label:"Quarterly Pro",  color:"#22c55e", days:90   },
+        { value:"annual",    label:"Annual Pro",     color:"#3b82f6", days:365  },
+        { value:"lifetime",  label:"Lifetime",       color:"#f59e0b", days:null },
     ];
-    const [codes, setCodes] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
-    const [form, setForm] = React.useState({ code:"", tier:"quarterly", expires:"", label:"" });
-    const [creating, setCreating] = React.useState(false);
-    const [formErr, setFormErr] = React.useState("");
-    const [copied, setCopied] = React.useState(null);
+    const [codes, setCodes]           = React.useState([]);
+    const [loading, setLoading]       = React.useState(true);
+    const [recipEmail, setRecipEmail] = React.useState("");
+    const [tier, setTier]             = React.useState("quarterly");
+    const [creating, setCreating]     = React.useState(false);
+    const [formErr, setFormErr]       = React.useState("");
+    const [lastCode, setLastCode]     = React.useState(null);
+    const [copied, setCopied]         = React.useState(null);
+
+    function genCode() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let s = "SG-";
+        for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+        return s;
+    }
+
+    function tierLabel(v) { return TIERS.find(t => t.value === v)?.label || v; }
+    function tierDays(v)  { return TIERS.find(t => t.value === v)?.days ?? null; }
+    function tierColor(v) { return TIERS.find(t => t.value === v)?.color || C.muted; }
 
     async function loadCodes() {
         const sb = getSB(); if (!sb) return;
@@ -9810,129 +9640,132 @@ function AdminPanel({ C, currentUser, onClose }) {
         } catch(e) { console.warn("AdminPanel: loadCodes", e); }
         setLoading(false);
     }
-
     React.useEffect(() => { loadCodes(); }, []);
 
     async function createCode() {
-        const key = form.code.trim().toUpperCase().replace(/\s+/g,"-");
-        if (!key || key.length < 4) { setFormErr("Code must be at least 4 characters"); return; }
-        if (!/^[A-Z0-9\-]+$/.test(key)) { setFormErr("Letters, numbers and hyphens only"); return; }
-        if (!form.label.trim()) { setFormErr("Add a label so you remember who this is for"); return; }
+        const em = recipEmail.trim().toLowerCase();
+        if (!em || !em.includes("@")) { setFormErr("Enter the recipient\'s email address"); return; }
         setCreating(true); setFormErr("");
+        const code = genCode();
+        const days = tierDays(tier);
+        const redeemBy = new Date(); redeemBy.setDate(redeemBy.getDate() + 30);
         try {
             const sb = getSB();
             const { error } = await sb.from("promo_codes").insert({
-                code: key, tier: form.tier,
-                expires: form.expires || null,
-                label: form.label.trim(),
+                code, tier,
+                expires: redeemBy.toISOString().split("T")[0],
+                label: em,
+                duration_days: days,
                 created_by: currentUser.id,
+                active: true,
             });
             if (error) throw error;
-            setForm({ code:"", tier:"quarterly", expires:"", label:"" });
+            setLastCode({ code, tierLabel: tierLabel(tier), days });
+            setRecipEmail(""); setTier("quarterly");
             loadCodes();
         } catch(e) { setFormErr(e.message || "Failed to create code"); }
         setCreating(false);
     }
 
-    async function toggleActive(id, current) {
-        const sb = getSB(); if (!sb) return;
-        await sb.from("promo_codes").update({ active:!current }).eq("id", id);
-        loadCodes();
-    }
     async function deleteCode(id, code) {
-        if (!window.confirm("Delete code " + code + "? This cannot be undone.")) return;
+        if (!window.confirm("Delete " + code + "?")) return;
         const sb = getSB(); if (!sb) return;
         await sb.from("promo_codes").delete().eq("id", id);
+        if (lastCode?.code === code) setLastCode(null);
         loadCodes();
     }
 
-    function copyCode(code) {
-        navigator.clipboard.writeText(code).then(() => { setCopied(code); setTimeout(()=>setCopied(null),1800); }).catch(()=>{});
+    function copyText(txt) {
+        navigator.clipboard.writeText(txt)
+            .then(() => { setCopied(txt); setTimeout(() => setCopied(null), 2000); })
+            .catch(() => {});
     }
 
-    const overlay = { position:"fixed",top:0,right:0,bottom:0,left:0,zIndex:9000,background:"rgba(0,0,0,0.7)",
+    const overlay = { position:"fixed",top:0,right:0,bottom:0,left:0,zIndex:9000,background:"rgba(0,0,0,0.75)",
         display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end" };
-    const sheet = { background:C.bg,width:"100%",maxWidth:640,maxHeight:"88vh",overflowY:"auto",
-        borderRadius:"20px 20px 0 0",padding:"20px 16px max(24px,calc(env(safe-area-inset-bottom)+16px))" };
-    const inp = { width:"100%",background:C.card2,border:`1px solid ${C.dim}`,borderRadius:10,
-        padding:"11px 12px",fontSize:14,color:C.text,fontFamily:"inherit",outline:"none",boxSizing:"border-box" };
+    const sheet   = { background:C.bg,width:"100%",maxWidth:640,maxHeight:"88vh",overflowY:"auto",
+        borderRadius:"20px 20px 0 0",padding:"20px 16px max(28px,calc(env(safe-area-inset-bottom)+16px))" };
+    const inp     = { width:"100%",background:C.card2,border:"1px solid "+C.dim,borderRadius:10,
+        padding:"12px 14px",fontSize:14,color:C.text,fontFamily:"inherit",outline:"none",boxSizing:"border-box" };
 
     return React.createElement("div", { style:overlay, onClick:e=>{ if(e.target===e.currentTarget) onClose(); } },
         React.createElement("div", { style:sheet },
+
             // Header
             React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20} },
                 React.createElement("div", null,
-                    React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} }, "\uD83D\uDD11 Promo Code Admin"),
-                    React.createElement("div", { style:{fontSize:11,color:C.muted,marginTop:2} }, currentUser.email + " · " + codes.length + " codes")),
+                    React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} }, "🔑 Promo Codes"),
+                    React.createElement("div", { style:{fontSize:11,color:C.muted,marginTop:2} }, codes.length+" total codes issued")),
                 React.createElement("button", { onClick:onClose,
-                    style:{background:C.card2,border:"none",borderRadius:10,padding:"8px 14px",fontSize:13,color:C.muted,cursor:"pointer"} },
-                    "Close")),
+                    style:{background:C.card2,border:"none",borderRadius:10,padding:"8px 14px",fontSize:13,color:C.muted,cursor:"pointer"} }, "Close")),
 
-            // Create form
-            React.createElement("div", { style:{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:"16px",marginBottom:16} },
-                React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:12} }, "CREATE CODE"),
-                React.createElement("div", { style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10} },
-                    React.createElement("input", { value:form.code, onChange:e=>setForm(f=>({...f,code:e.target.value.toUpperCase()})),
-                        placeholder:"CODE-NAME", style:{...inp,fontFamily:"monospace",fontWeight:700,letterSpacing:"0.06em"} }),
-                    React.createElement("select", { value:form.tier, onChange:e=>setForm(f=>({...f,tier:e.target.value})),
-                        style:{...inp,cursor:"pointer"} },
-                        TIERS.map(t => React.createElement("option",{key:t.value,value:t.value},t.label)))),
-                React.createElement("div", { style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10} },
-                    React.createElement("input", { type:"date",value:form.expires,onChange:e=>setForm(f=>({...f,expires:e.target.value})),
-                        placeholder:"Expiry (optional)", style:{...inp,colorScheme:C.bg==="#FFFCF8"?"light":"dark"} }),
-                    React.createElement("input", { value:form.label, onChange:e=>setForm(f=>({...f,label:e.target.value})),
-                        placeholder:"Label / who is this for", style:inp })),
-                formErr && React.createElement("div",{ style:{fontSize:12,color:"#ef4444",marginBottom:8} }, "\u26A0 "+formErr),
-                React.createElement("button", { onClick:createCode, disabled:creating,
-                    style:{background:C.accent,border:"none",borderRadius:10,padding:"11px 20px",fontSize:13,
-                        fontWeight:800,color:"#000",cursor:"pointer",opacity:creating?0.6:1} },
-                    creating ? "Creating\u2026" : "+ Create Code")),
+            // Last generated — prominent display
+            lastCode && React.createElement("div", { style:{background:C.accentDim,border:"1px solid "+C.accentBorder,
+                borderRadius:14,padding:"16px",marginBottom:16,textAlign:"center"} },
+                React.createElement("div",{style:{fontSize:11,fontWeight:700,color:C.accent,letterSpacing:"0.1em",marginBottom:6}}, "CODE GENERATED"),
+                React.createElement("div",{style:{fontFamily:"monospace",fontSize:28,fontWeight:900,color:C.text,letterSpacing:"0.06em",marginBottom:4}}, lastCode.code),
+                React.createElement("div",{style:{fontSize:12,color:C.sub,marginBottom:12}},
+                    lastCode.tierLabel + (lastCode.days ? " · "+lastCode.days+" days after redemption" : " · Forever") + " · Must redeem within 30 days"),
+                React.createElement("button",{ onClick:()=>copyText(lastCode.code),
+                    style:{background:copied===lastCode.code?C.green:C.accent,border:"none",borderRadius:10,
+                        padding:"11px 32px",fontSize:14,fontWeight:800,color:"#000",cursor:"pointer",letterSpacing:"0.02em"} },
+                    copied===lastCode.code ? "✓ Copied!" : "Copy Code")),
 
-            // Code list
-            loading ? React.createElement("div",{ style:{textAlign:"center",padding:32,color:C.muted,fontSize:13} }, "Loading\u2026")
-            : codes.length === 0
-                ? React.createElement("div",{ style:{textAlign:"center",padding:32,color:C.muted,fontSize:13} }, "No codes yet")
-                : React.createElement(React.Fragment, null,
-                    React.createElement("div",{ style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:10} }, "ALL CODES"),
-                    codes.map(code => {
-                        const tier   = TIERS.find(t=>t.value===code.tier)||{label:code.tier,color:C.muted};
-                        const expired = code.expires && new Date(code.expires+"T23:59:59") < new Date();
-                        const status = !code.active ? "paused" : expired ? "expired" : "active";
-                        const redemCt = code.redemptions?.[0]?.count || 0;
-                        return React.createElement("div",{ key:code.id,
-                            style:{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,
-                                padding:"12px 14px",marginBottom:8,opacity:status!=="active"?0.65:1} },
-                            React.createElement("div",{ style:{display:"flex",alignItems:"flex-start",gap:10} },
-                                React.createElement("div",{ style:{flex:1,minWidth:0} },
-                                    React.createElement("div",{ style:{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:3} },
-                                        React.createElement("span",{ style:{fontFamily:"monospace",fontSize:14,fontWeight:800,color:C.text,letterSpacing:"0.04em"} }, code.code),
-                                        React.createElement("span",{ style:{fontSize:9,fontWeight:700,color:tier.color,background:`${tier.color}22`,
-                                            border:`1px solid ${tier.color}44`,borderRadius:4,padding:"2px 6px",letterSpacing:"0.06em"} }, tier.label.toUpperCase()),
-                                        React.createElement("span",{ style:{fontSize:9,fontWeight:700,
-                                            color:status==="active"?C.green:"#ef4444",
-                                            background:status==="active"?"rgba(154,168,106,0.12)":"rgba(239,68,68,0.10)",
-                                            border:`1px solid ${status==="active"?C.greenBorder:"rgba(239,68,68,0.3)"}`,
-                                            borderRadius:4,padding:"2px 6px",letterSpacing:"0.06em"} }, status.toUpperCase())),
-                                    React.createElement("div",{ style:{fontSize:11,color:C.sub,marginBottom:2} }, code.label),
-                                    React.createElement("div",{ style:{fontSize:10,color:C.muted} },
-                                        (redemCt || 0)+" redemption"+(redemCt===1?"":"s"),
-                                        code.expires ? " · Expires "+new Date(code.expires).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : " · No expiry")),
-                                React.createElement("div",{ style:{display:"flex",gap:6,flexShrink:0} },
-                                    React.createElement("button",{ onClick:()=>copyCode(code.code),
-                                        style:{background:copied===code.code?C.greenDim:C.accentDim,
-                                            border:`1px solid ${copied===code.code?C.greenBorder:C.accentBorder}`,
-                                            borderRadius:8,padding:"6px 10px",fontSize:11,fontWeight:700,
-                                            color:copied===code.code?C.green:C.accent,cursor:"pointer"} },
-                                        copied===code.code?"\u2713":"Copy"),
-                                    React.createElement("button",{ onClick:()=>toggleActive(code.id,code.active),
-                                        style:{background:C.card2,border:`1px solid ${C.dim}`,borderRadius:8,
-                                            padding:"6px 10px",fontSize:11,color:C.sub,cursor:"pointer"} },
-                                        code.active?"Pause":"Enable"),
-                                    React.createElement("button",{ onClick:()=>deleteCode(code.id,code.code),
-                                        style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,
-                                            padding:"6px 10px",fontSize:12,color:C.muted,cursor:"pointer"} }, "\u00D7"))))
+            // Issue form
+            React.createElement("div", { style:{background:C.card,border:"1px solid "+C.border,borderRadius:14,padding:"16px",marginBottom:16} },
+                React.createElement("div",{ style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:12} }, "ISSUE NEW CODE"),
+                React.createElement("input",{ value:recipEmail, onChange:e=>setRecipEmail(e.target.value),
+                    placeholder:"Recipient email address", type:"email",
+                    style:{...inp, marginBottom:10} }),
+                React.createElement("select",{ value:tier, onChange:e=>setTier(e.target.value),
+                    style:{...inp, cursor:"pointer", marginBottom:10} },
+                    TIERS.map(t => React.createElement("option",{key:t.value,value:t.value},
+                        t.label + (t.days ? " — "+t.days+" days" : " — Forever")))),
+                React.createElement("div",{ style:{fontSize:11,color:C.muted,marginBottom:12,lineHeight:1.5} },
+                    "A unique code is auto-generated and sent to you. After the user redeems it they get ",
+                    tierDays(tier) ? tierDays(tier)+" days of "+tierLabel(tier)+", then revert to free." : "lifetime access."),
+                formErr && React.createElement("div",{ style:{fontSize:12,color:"#ef4444",marginBottom:10} }, "⚠ "+formErr),
+                React.createElement("button",{ onClick:createCode, disabled:creating,
+                    style:{width:"100%",background:C.accent,border:"none",borderRadius:10,padding:"13px",
+                        fontSize:14,fontWeight:800,color:"#000",cursor:"pointer",opacity:creating?0.6:1,letterSpacing:"0.02em"} },
+                    creating ? "Generating…" : "Generate Code")),
+
+            // History
+            React.createElement("div",{ style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:10} }, "ISSUED CODES"),
+            loading
+                ? React.createElement("div",{ style:{textAlign:"center",padding:24,color:C.muted,fontSize:13} }, "Loading…")
+                : codes.length === 0
+                    ? React.createElement("div",{ style:{textAlign:"center",padding:24,color:C.muted,fontSize:13} }, "No codes yet")
+                    : codes.map(c => {
+                        const tc      = tierColor(c.tier);
+                        const tl      = tierLabel(c.tier);
+                        const expired = c.expires && new Date(c.expires+"T23:59:59") < new Date();
+                        const redemCt = c.redemptions?.[0]?.count || 0;
+                        const used    = redemCt > 0;
+                        const status  = !c.active ? "revoked" : used ? "used" : expired ? "expired" : "active";
+                        const sc      = status==="active" ? C.green : "#ef4444";
+                        return React.createElement("div",{ key:c.id,
+                            style:{background:C.card,border:"1px solid "+C.border,borderRadius:12,
+                                padding:"12px 14px",marginBottom:8,opacity:status!=="active"?0.6:1} },
+                            React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:4}},
+                                React.createElement("span",{style:{fontFamily:"monospace",fontSize:14,fontWeight:800,color:C.text,flex:1}}, c.code),
+                                React.createElement("span",{style:{fontSize:9,fontWeight:700,color:tc,background:tc+"22",
+                                    border:"1px solid "+tc+"44",borderRadius:4,padding:"2px 6px",letterSpacing:"0.06em"}}, tl.toUpperCase()),
+                                React.createElement("span",{style:{fontSize:9,fontWeight:700,color:sc,
+                                    background:sc+"18",border:"1px solid "+sc+"44",borderRadius:4,padding:"2px 6px",letterSpacing:"0.06em"}}, status.toUpperCase())),
+                            React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between"}},
+                                React.createElement("div",{style:{fontSize:11,color:C.sub}},
+                                    c.label,
+                                    c.expires ? " · Redeem by "+new Date(c.expires).toLocaleDateString("en-GB",{day:"numeric",month:"short"}) : ""),
+                                React.createElement("div",{style:{display:"flex",gap:6}},
+                                    status==="active" && React.createElement("button",{onClick:()=>copyText(c.code),
+                                        style:{background:"none",border:"1px solid "+C.dim,borderRadius:7,
+                                            padding:"4px 10px",fontSize:11,color:C.sub,cursor:"pointer"}},
+                                        copied===c.code ? "✓" : "Copy"),
+                                    React.createElement("button",{onClick:()=>deleteCode(c.id,c.code),
+                                        style:{background:"none",border:"1px solid "+C.dim,borderRadius:7,
+                                            padding:"4px 10px",fontSize:12,color:C.muted,cursor:"pointer"}}, "×"))))
                     })
-                )
         )
     );
 }
@@ -9996,6 +9829,7 @@ function App() {
     // ── Supabase auth state ────────────────────────────────────────────────
     const [currentUser, setCurrentUser] = React.useState(null);
     const [authReady,   setAuthReady]   = React.useState(false);
+    // Used below to prevent login-screen flash while session is being resolved
 
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
@@ -10273,8 +10107,15 @@ function App() {
                     setProfile(p);
                     try { localStorage.setItem("mp_profile", JSON.stringify(p)); } catch(_) {}
                     if (row.tier) {
-                        const isPaid = ["monthly","quarterly","annual","lifetime"].includes(row.tier);
-                        const unlockData = { tier:row.tier, via:row.tier_via||"account",
+                        // Check if promo/subscription tier has expired — if so, downgrade to free
+                        const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();
+                        const effectiveTier = tierExpired ? "free" : row.tier;
+                        if (tierExpired && row.tier !== "free") {
+                            // Silently downgrade on Supabase side
+                            try { getSB()?.from("profiles").update({ tier:"free", tier_expires:null }).eq("id", userId); } catch(_) {}
+                        }
+                        const isPaid = ["monthly","quarterly","annual","lifetime"].includes(effectiveTier);
+                        const unlockData = { tier:effectiveTier, via:row.tier_via||"account",
                             label:row.tier_label, expires:row.tier_expires,
                             calculator:isPaid, allRecipes:isPaid, recipes:[] };
                         setUnlocks(unlockData);
@@ -10307,8 +10148,15 @@ function App() {
         });
 
         const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
-            if (event === "SIGNED_IN" && session?.user) { setCurrentUser(session.user); loadUserData(session.user.id, session.user.email); }
-            else if (event === "SIGNED_OUT") { setCurrentUser(null); }
+            if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
+                setCurrentUser(session.user);
+                if (window._sg_upload_on_auth) {
+                    window._sg_upload_on_auth = false;
+                    uploadLocalDataToSupabase(session.user.id, session.user.email);
+                } else {
+                    loadUserData(session.user.id, session.user.email);
+                }
+            } else if (event === "SIGNED_OUT") { setCurrentUser(null); }
         });
         return () => subscription.unsubscribe();
     }, []);
@@ -10649,6 +10497,9 @@ function App() {
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
     const SW = 80;
+    // Prevent flash of onboarding screen while Supabase resolves the session
+    if (!authReady) return React.createElement("div", { style:{position:"fixed",inset:0,background:"#0F0D0A",display:"flex",alignItems:"center",justifyContent:"center"} },
+        React.createElement("div", { style:{width:40,height:40,border:"3px solid #2a2520",borderTopColor:"#e8d5b0",borderRadius:"50%",animation:"spin 0.8s linear infinite"} }));
     if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
     if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const tabMap = { macros: "profile", recipes: "recipes" }; const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(tabMap[dest] || dest); } setOnboardStep("app"); } });
 

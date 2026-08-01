@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <title>SoulGainz — Icon Circle</title>
-  <circle cx="256" cy="256" r="256" fill="#1A1612"/>
-  <g transform="translate(256,272) scale(8.6)">
-    <path fill="#E07B2A" d="M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z"/>
-  </g>
-</svg>
