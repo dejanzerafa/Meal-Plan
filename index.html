@@ -9610,6 +9610,19 @@ function OnboardingStory({ onNext }) {
                     fontWeight: 600, cursor: "pointer", letterSpacing: "0.05em" } }, "SKIP")));
 }
 
+// Convert Supabase/network errors to a human-readable string
+function sbErrMsg(e, fallback) {
+    const raw = e?.message;
+    if (!raw || raw === "{}" || raw === "[object Object]") return fallback;
+    if (typeof raw !== "string") return fallback;
+    // Friendly rewrites for common Supabase auth errors
+    if (raw.toLowerCase().includes("user already registered")) return "An account with this email already exists. Try signing in instead.";
+    if (raw.toLowerCase().includes("invalid login credentials")) return "Incorrect email or password. Please try again.";
+    if (raw.toLowerCase().includes("email not confirmed")) return "Please confirm your email before signing in.";
+    if (raw.toLowerCase().includes("password")) return raw;
+    return raw || fallback;
+}
+
 function OnboardingSignup({ onDone }) {
     const [mode, setMode] = React.useState("signup"); // signup | signin | forgot
     const [email, setEmail] = React.useState("");
@@ -9647,7 +9660,7 @@ function OnboardingSignup({ onDone }) {
             localStorage.removeItem("sg_skip_ts");
             setStatus("success");
             setTimeout(() => finishOnboarding("macros"), 1400);
-        } catch(e) { setStatus("error"); setErrMsg(e.message || "Sign-up failed. Please try again."); }
+        } catch(e) { setStatus("error"); setErrMsg(sbErrMsg(e, "Sign-up failed. Please try again.")); }
     }
 
     async function handleSignin() {
@@ -9663,7 +9676,7 @@ function OnboardingSignup({ onDone }) {
             localStorage.removeItem("sg_skip_ts");
             setStatus("success");
             setTimeout(() => finishOnboarding("meals"), 1000);
-        } catch(e) { setStatus("error"); setErrMsg(e.message || "Sign-in failed. Check your email and password."); }
+        } catch(e) { setStatus("error"); setErrMsg(sbErrMsg(e, "Sign-in failed. Check your email and password.")); }
     }
 
     async function handleForgot() {
@@ -9676,7 +9689,7 @@ function OnboardingSignup({ onDone }) {
                 { redirectTo: window.location.origin + "/" });
             if (error) throw error;
             setStatus("sent");
-        } catch(e) { setStatus("error"); setErrMsg(e.message || "Could not send reset email."); }
+        } catch(e) { setStatus("error"); setErrMsg(sbErrMsg(e, "Could not send reset email.")); }
     }
 
     const base = { position:"fixed",top:0,right:0,bottom:0,left:0,zIndex:10000,background:"#0F0D0A",
