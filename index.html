@@ -9645,13 +9645,17 @@ function OnboardingSignup({ onDone }) {
         const em = email.trim().toLowerCase();
         if (!em || !em.includes("@")) { setErrMsg("Enter a valid email"); return; }
         if (!password || password.length < 8) { setErrMsg("Password must be at least 8 characters"); return; }
-        if (password !== confirmPw) { setErrMsg("Passwords don\'t match"); return; }
+        if (password !== confirmPw) { setErrMsg("Passwords don't match"); return; }
         setStatus("loading"); setErrMsg("");
         try {
             const sb = getSB();
-            const { error } = await sb.auth.signUp({ email: em, password,
+            if (!sb) { setErrMsg("App not ready — please refresh and try again."); setStatus("error"); return; }
+            const { data, error } = await sb.auth.signUp({ email: em, password,
                 options: { data: { first_name: name.trim(), last_name: surname.trim() } } });
+            console.log("[SG signup]", { data, error });
             if (error) throw error;
+            // Supabase returns user=null when email already exists (confirmation mode) or other silent fail
+            if (!data?.user) { setErrMsg("Account may already exist — try signing in instead."); setStatus("error"); return; }
             localStorage.setItem("mp_acc_email",      em);
             localStorage.setItem("mp_acc_first_name", name.trim());
             localStorage.setItem("mp_acc_last_name",  surname.trim());
@@ -9660,7 +9664,11 @@ function OnboardingSignup({ onDone }) {
             localStorage.removeItem("sg_skip_ts");
             setStatus("success");
             setTimeout(() => finishOnboarding("macros"), 1400);
-        } catch(e) { setStatus("error"); setErrMsg(sbErrMsg(e, "Sign-up failed. Please try again.")); }
+        } catch(e) {
+            console.error("[SG signup error]", e);
+            setStatus("error");
+            setErrMsg(sbErrMsg(e, "Sign-up failed ("+( e?.status||e?.code||"unknown")+"). Please try again."));
+        }
     }
 
     async function handleSignin() {
