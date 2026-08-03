@@ -1,0 +1,21 @@
+# macOS duplicates (created by Finder copy operations)
+*[[:space:]]2.*
+* 2.html
+* 2.md
+* 2.jsx
+* 2.png
+* 2.jpg
+* 2.svg
+* 2.pdf
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Node
+node_modules/
+
+# Supabase local dev
+supabase/.temp/
