@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SoulGainz — Generate Icons</title>
+<style>
+  body { font-family: sans-serif; padding: 40px; background: #f3ece0; }
+  h2 { color: #0C0B0A; }
+  .preview { display: flex; flex-wrap: wrap; gap: 16px; margin: 24px 0; align-items: flex-end; }
+  canvas { border: 1px solid #ccc; background: white; }
+  button { background: #E07B2A; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 10px; cursor: pointer; margin-top: 16px; }
+  button:hover { background: #c56b1f; }
+  p { color: #555; }
+</style>
+</head>
+<body>
+<h2>🔥 SoulGainz Icon Generator</h2>
+<p>Click the button to render the SVG pixel-perfectly and download all icon sizes.</p>
+
+<div class="preview" id="preview"></div>
+<button onclick="generateAll()">⬇ Download All Icon Sizes</button>
+
+<img id="svgImg" src="/icon-stacked.svg" style="display:none" crossorigin="anonymous">
+
+<script>
+const SIZES = [16,32,48,72,96,120,128,144,152,167,180,192,256,384,512];
+
+function renderToCanvas(img, size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(img, 0, 0, size, size);
+  return canvas;
+}
+
+window.addEventListener('load', () => {
+  const img = document.getElementById('svgImg');
+  const preview = document.getElementById('preview');
+  const showSizes = [32, 96, 192, 512];
+  img.onload = () => {
+    showSizes.forEach(sz => {
+      const c = renderToCanvas(img, sz);
+      const label = document.createElement('div');
+      label.style.textAlign = 'center';
+      label.style.fontSize = '11px';
+      label.style.color = '#555';
+      const name = document.createElement('div');
+      name.textContent = sz + 'px';
+      label.appendChild(c);
+      label.appendChild(name);
+      preview.appendChild(label);
+    });
+  };
+  if (img.complete) img.onload();
+});
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function generateAll() {
+  const img = document.getElementById('svgImg');
+  for (const sz of SIZES) {
+    const canvas = renderToCanvas(img, sz);
+    const a = document.createElement('a');
+    a.download = `icon-${sz}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    await sleep(300);
+  }
+  alert('✅ All ' + SIZES.length + ' icon sizes downloaded!\n\nMove them into your MEAL PREP APP folder to replace the existing ones, then push to git.');
+}
+</script>
+</body>
+</html>
