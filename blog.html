@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal Prep Tips, Recipes &amp; Macro Guides | SoulGainz Blog</title>
+  <meta name="description" content="Practical meal prep guides, high-protein recipes, and honest macro advice. No fluff — just the stuff that actually works." />
+  <meta name="author" content="SoulGainz" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://soulgainz.app/blog.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://soulgainz.app/blog.html" />
+  <meta property="og:title" content="Meal Prep Tips, Recipes &amp; Macro Guides | SoulGainz Blog" />
+  <meta property="og:description" content="Practical meal prep guides, high-protein recipes, and honest macro advice." />
+  <meta property="og:site_name" content="SoulGainz" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#b84a1f" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:    #b84a1f;
+      --accent-dk: #963d19;
+      --bg:        #f3ece0;
+      --card:      #ebe2d3;
+      --card-dark: #e0d6c4;
+      --text:      #1a1612;
+      --sub:       #4a3f33;
+      --border:    rgba(26,22,18,0.12);
+      --shadow:    0 2px 16px rgba(26,22,18,0.08);
+      --shadow-lg: 0 8px 40px rgba(26,22,18,0.13);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.25s ease, box-shadow 0.25s ease, padding 0.25s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(243,236,224,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+      padding: 12px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--sub);
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn-nav {
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .btn-nav:hover { background: var(--accent-dk); transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .blog-hero {
+      padding: 140px 0 72px;
+      text-align: center;
+    }
+
+    .blog-hero-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .blog-hero h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(38px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .blog-hero p {
+      font-size: 19px;
+      color: var(--sub);
+      line-height: 1.6;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── Blog grid ── */
+    .blog-grid-section {
+      padding: 0 0 100px;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .blog-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .blog-card:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-category {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(184,74,31,0.1);
+      color: var(--accent);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-readtime {
+      font-size: 12px;
+      color: var(--sub);
+      opacity: 0.75;
+    }
+
+    .blog-card h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .blog-card:first-child h2 {
+      font-size: 28px;
+    }
+
+    .blog-card p {
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      transition: gap 0.15s;
+      margin-top: 4px;
+    }
+
+    .card-link:hover { gap: 8px; }
+
+    /* ── Footer ── */
+    .footer {
+      background: #1a1612;
+      color: #f3ece0;
+      padding: 60px 0 36px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(243,236,224,0.1);
+    }
+
+    .footer-brand .footer-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    .footer-brand .footer-logo span { color: var(--accent); }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: rgba(243,236,224,0.55);
+      line-height: 1.5;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-group h4 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(243,236,224,0.4);
+      margin-bottom: 14px;
+    }
+
+    .footer-nav-group ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-nav-group ul a {
+      font-size: 14px;
+      color: rgba(243,236,224,0.7);
+      transition: color 0.15s;
+    }
+
+    .footer-nav-group ul a:hover { color: #f3ece0; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 28px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(243,236,224,0.35);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-card:first-child { grid-column: 1; }
+      .blog-card:first-child h2 { font-size: 22px; }
+      .nav-links { display: none; }
+      .footer-nav { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html?utm_source=blog&utm_medium=organic&utm_content=blog-index" class="nav-logo">Soul<span>Gainz</span></a>
+        <ul class="nav-links">
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="index.html#recipes">Recipes</a></li>
+          <li><a href="calculator.html">Calculator</a></li>
+          <li><a href="index.html?utm_source=blog&utm_medium=organic&utm_content=blog-index" class="btn-nav">Open App</a></li>
+        </ul>
+        <a href="index.html?utm_source=blog&utm_medium=organic&utm_content=blog-index" class="btn-nav" style="display:none" id="mobile-cta">Open App</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="blog-hero">
+    <div class="container">
+      <span class="blog-hero-label">The SoulGainz Blog</span>
+      <h1>Guides, recipes, and the<br><em style="font-style:italic;color:var(--accent)">honest truth</em> about eating<br>for your goals.</h1>
+      <p>No filler, no content farm copy. Just practical advice from people who actually prep meals and track macros.</p>
+    </div>
+  </section>
+
+  <!-- Blog grid -->
+  <section class="blog-grid-section">
+    <div class="container">
+      <div class="blog-grid">
+
+        <!-- Card 1 — featured/wide -->
+        <a href="blog-how-to-meal-prep.html" class="blog-card">
+          <div class="card-meta">
+            <span class="card-category">Meal Prep</span>
+            <span class="card-readtime">12 min read</span>
+          </div>
+          <h2>How to Meal Prep for the Week (The Complete Guide)</h2>
+          <p>One prep session, seven days of food sorted — here's the exact method we use, from choosing recipes to labelling containers.</p>
+          <span class="card-link">Read → </span>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="blog-high-protein-recipes.html" class="blog-card">
+          <div class="card-meta">
+            <span class="card-category">Recipes</span>
+            <span class="card-readtime">8 min read</span>
+          </div>
+          <h2>The Best High-Protein Meal Prep Recipes for 2025</h2>
+          <p>Forty grams of protein per serve, easy to batch, and actually good enough to eat five days in a row.</p>
+          <span class="card-link">Read →</span>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="blog-meal-prep-muscle.html" class="blog-card">
+          <div class="card-meta">
+            <span class="card-category">Muscle Gain</span>
+            <span class="card-readtime">9 min read</span>
+          </div>
+          <h2>Meal Prep for Muscle Building: What to Eat and Why</h2>
+          <p>Hitting a protein target every single day is the most consistent thing you can do for muscle — here's how to make it automatic.</p>
+          <span class="card-link">Read →</span>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="blog-meal-prep-fat-loss.html" class="blog-card">
+          <div class="card-meta">
+            <span class="card-category">Fat Loss</span>
+            <span class="card-readtime">10 min read</span>
+          </div>
+          <h2>Meal Prep for Fat Loss: How to Hit a Deficit Without Hunger</h2>
+          <p>The real reason diets fail isn't willpower — it's not having the right food ready. Meal prep fixes all three of the big failure points.</p>
+          <span class="card-link">Read →</span>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="blog-30-days.html" class="blog-card">
+          <div class="card-meta">
+            <span class="card-category">Personal Experiment</span>
+            <span class="card-readtime">7 min read</span>
+          </div>
+          <h2>I Ate the Same 2 Meals for 30 Days — Here's Exactly What Happened</h2>
+          <p>Bodyweight, energy, boredom levels, and whether I'd do it again — the honest numbers from a month of rigid meal prep.</p>
+          <span class="card-link">Read →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">Soul<span>Gainz</span></div>
+          <p class="footer-tagline">Feed Your Soul · Fuel Your Gainz</p>
+        </div>
+        <nav class="footer-nav">
+          <div class="footer-nav-group">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="index.html?utm_source=blog&utm_medium=organic&utm_content=blog-index">Meal Planner</a></li>
+              <li><a href="calculator.html">Macro Calculator</a></li>
+              <li><a href="index.html#recipes">Recipes</a></li>
+            </ul>
+          </div>
+          <div class="footer-nav-group">
+            <h4>Blog</h4>
+            <ul>
+              <li><a href="blog.html">All Posts</a></li>
+              <li><a href="blog-how-to-meal-prep.html">Meal Prep Guide</a></li>
+              <li><a href="blog-meal-prep-muscle.html">Muscle Building</a></li>
+              <li><a href="blog-meal-prep-fat-loss.html">Fat Loss</a></li>
+            </ul>
+          </div>
+          <div class="footer-nav-group">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="terms.html">Terms</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2025 SoulGainz. All rights reserved.</p>
+        <p class="footer-copy"><a href="https://soulgainz.app" style="color:rgba(243,236,224,0.35)">soulgainz.app</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Show mobile CTA, hide links
+    if (window.innerWidth <= 700) {
+      document.getElementById('mobile-cta').style.display = 'inline-block';
+    }
+    // Scrolled nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+  </script>
+
+</body>
+</html>

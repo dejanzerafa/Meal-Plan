@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Don't index the app shell, admin, or function paths
+# / now redirects to /landing.html (301) so bots follow the redirect fine.
+Disallow: /index.html
+Disallow: /admin.html
+Disallow: /.netlify/
+Disallow: /success.html
+Disallow: /offline.html
+
+Sitemap: https://soulgainz.app/sitemap.xml

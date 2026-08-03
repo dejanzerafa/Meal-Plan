@@ -1,0 +1,32 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Black rounded square background -->
+  <rect width="512" height="512" rx="108" ry="108" fill="#1a1612"/>
+  <!-- Flame: scale 8.6, centered at (256, 315) -->
+  <g transform="translate(256, 315) scale(8.6)">
+    <path
+      fill-rule="evenodd"
+      fill="#E07B2A"
+      d="M0,-32
+         C0,-32 -12,-20 -12,-8
+         C-12,4 -6,12 0,12
+         C6,12 12,4 12,-8
+         C12,-14 8,-20 4,-24
+         C6,-18 6,-12 6,-8
+         C6,-2 4,4 0,4
+         C-4,4 -6,-2 -6,-8
+         C-6,-18 0,-32 0,-32
+         Z"
+    />
+  </g>
+  <!-- Tagline -->
+  <text
+    x="256"
+    y="452"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="19"
+    font-weight="400"
+    fill="#b8a890"
+    letter-spacing="1.5"
+  >feed your soul · fuel your gainz</text>
+</svg>

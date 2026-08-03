@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High-Protein Meal Prep Recipes with Verified Macros | SoulGainz</title>
+  <meta name="description" content="Browse 94 high-protein meal prep recipes with verified macros. Filter by protein source, goal, and dietary preference. Batch-cook friendly." />
+  <link rel="canonical" href="https://soulgainz.app/recipes-preview.html" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #b84a1f;
+      --bg: #f3ece0;
+      --card: #ebe2d3;
+      --text: #1a1612;
+      --sub: #4a3f33;
+      --border: rgba(26,22,18,0.12);
+      --shadow: 0 2px 16px rgba(26,22,18,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+    }
+
+    nav.scrolled {
+      background: rgba(243,236,224,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 9px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 120px 24px 56px;
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(184,74,31,0.08);
+      border: 1px solid rgba(184,74,31,0.2);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--sub);
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 36px;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .filter-pill {
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--sub);
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'Instrument Sans', sans-serif;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── RECIPE GRID ── */
+    .grid-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .recipe-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 580px) {
+      .recipe-grid { grid-template-columns: 1fr; }
+      nav { padding: 0 20px; }
+    }
+
+    /* ── RECIPE CARD ── */
+    .recipe-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(26,22,18,0.12);
+    }
+
+    .recipe-card[data-hidden="true"] {
+      display: none;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-emoji {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .badge.free {
+      background: rgba(45,106,79,0.1);
+      color: #2d6a4f;
+      border: 1px solid rgba(45,106,79,0.25);
+    }
+
+    .badge.premium {
+      background: rgba(26,22,18,0.06);
+      color: var(--sub);
+      border: 1px solid var(--border);
+    }
+
+    .card-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .macro-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .macro-pill {
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding: 3px 9px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--sub);
+    }
+
+    .macro-pill.kcal { color: var(--accent); border-color: rgba(184,74,31,0.22); background: rgba(184,74,31,0.06); }
+    .macro-pill.p { color: #2d6a4f; border-color: rgba(45,106,79,0.22); background: rgba(45,106,79,0.06); }
+    .macro-pill.c { color: #6d4c1e; border-color: rgba(109,76,30,0.22); background: rgba(109,76,30,0.06); }
+    .macro-pill.f { color: #5c4a8a; border-color: rgba(92,74,138,0.22); background: rgba(92,74,138,0.06); }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--sub);
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .card-btn {
+      display: block;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 10px 0;
+      border-radius: 9px;
+      text-decoration: none;
+      transition: all 0.18s;
+      margin-top: auto;
+    }
+
+    .card-btn.btn-free {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .card-btn.btn-free:hover { background: #2d2622; }
+
+    .card-btn.btn-premium {
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+
+    .card-btn.btn-premium:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: var(--text);
+      border-radius: 20px;
+      padding: 56px 36px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 24px 80px;
+    }
+
+    @media (min-width: 1248px) {
+      .cta-banner { margin: 0 auto 80px; }
+    }
+
+    .cta-banner h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .cta-banner p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 28px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-banner-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .cta-feature-pill {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .cta-banner a {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .cta-banner a:hover { opacity: 0.88; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1a1612;
+      color: #fff;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .footer-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-tagline {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em;
+    }
+
+    /* Results count */
+    .results-count {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--sub);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="site-nav">
+    <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="nav-logo">Soul<span>Gainz</span></a>
+    <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="nav-cta">Open App</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="hero-eyebrow">94 Recipes &mdash; Every Macro Verified</span>
+    <h1>High-Protein Meal Prep.<br /><span>Built around your targets.</span></h1>
+    <p>
+      Browse the full SoulGainz recipe library. All macros are calculated from lab-grade nutritional data
+      — not estimates from user-submitted databases — so what you see is what you actually eat.
+    </p>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="filter-section">
+    <div class="filter-bar" role="group" aria-label="Filter recipes by category">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="breakfast">Breakfast</button>
+      <button class="filter-pill" data-filter="mains">Mains</button>
+      <button class="filter-pill" data-filter="preworkout">Pre-Workout</button>
+      <button class="filter-pill" data-filter="dessert">Dessert</button>
+      <button class="filter-pill" data-filter="snacks">Snacks</button>
+      <button class="filter-pill" data-filter="smoothies">Smoothies</button>
+    </div>
+  </section>
+
+  <!-- RECIPE GRID -->
+  <section class="grid-section">
+    <p class="results-count" id="results-count">Showing 20 recipes</p>
+    <div class="recipe-grid" id="recipe-grid">
+
+      <!-- FREE RECIPES -->
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="1">
+        <div class="card-top">
+          <span class="card-emoji">🍗</span>
+          <span class="badge free">Free</span>
+        </div>
+        <h2 class="card-name">Chicken &amp; Rice Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">450 kcal</span>
+          <span class="macro-pill p">48g P</span>
+          <span class="macro-pill c">45g C</span>
+          <span class="macro-pill f">6g F</span>
+        </div>
+        <p class="card-desc">The gold standard of high-protein meal prep. Baked chicken breast, long-grain white rice, and seasoned broccoli — scales to 8 portions in under an hour.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-free">View Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="breakfast" data-recipe-id="2">
+        <div class="card-top">
+          <span class="card-emoji">🥣</span>
+          <span class="badge free">Free</span>
+        </div>
+        <h2 class="card-name">Egg White Oats</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">350 kcal</span>
+          <span class="macro-pill p">35g P</span>
+          <span class="macro-pill c">48g C</span>
+          <span class="macro-pill f">4g F</span>
+        </div>
+        <p class="card-desc">Rolled oats cooked with liquid egg whites — they disappear into the texture while doubling the protein. Top with banana and honey.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-free">View Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="breakfast" data-recipe-id="3">
+        <div class="card-top">
+          <span class="card-emoji">🥗</span>
+          <span class="badge free">Free</span>
+        </div>
+        <h2 class="card-name">Greek Yogurt Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">310 kcal</span>
+          <span class="macro-pill p">30g P</span>
+          <span class="macro-pill c">38g C</span>
+          <span class="macro-pill f">5g F</span>
+        </div>
+        <p class="card-desc">Full-fat Greek yogurt with frozen berries, oats, and a scoop of unflavoured protein powder stirred through. Ready in 2 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-free">View Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="snacks" data-recipe-id="4">
+        <div class="card-top">
+          <span class="card-emoji">🫙</span>
+          <span class="badge free">Free</span>
+        </div>
+        <h2 class="card-name">Cottage Cheese Fruit Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">280 kcal</span>
+          <span class="macro-pill p">28g P</span>
+          <span class="macro-pill c">32g C</span>
+          <span class="macro-pill f">4g F</span>
+        </div>
+        <p class="card-desc">Low-fat cottage cheese with mixed berries, banana, and a granola sprinkle. No cooking, 28g protein, and ready in under 2 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-free">View Recipe &rarr;</a>
+      </article>
+
+      <!-- PREMIUM RECIPES -->
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="5">
+        <div class="card-top">
+          <span class="card-emoji">🐟</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Salmon &amp; Sweet Potato</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">420 kcal</span>
+          <span class="macro-pill p">38g P</span>
+          <span class="macro-pill c">40g C</span>
+          <span class="macro-pill f">10g F</span>
+        </div>
+        <p class="card-desc">Baked salmon fillet with roasted sweet potato wedges and lemon. Quality omega-3 fats with a slow-releasing carb ideal for training days.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="6">
+        <div class="card-top">
+          <span class="card-emoji">🍝</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Turkey Bolognese</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">380 kcal</span>
+          <span class="macro-pill p">42g P</span>
+          <span class="macro-pill c">28g C</span>
+          <span class="macro-pill f">8g F</span>
+        </div>
+        <p class="card-desc">Lean turkey mince in a rich passata and herb sauce. Gets better on day two — and freezes perfectly for a full week of batch cooking.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="7">
+        <div class="card-top">
+          <span class="card-emoji">🥩</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Lean Beef Stir Fry</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">410 kcal</span>
+          <span class="macro-pill p">44g P</span>
+          <span class="macro-pill c">22g C</span>
+          <span class="macro-pill f">14g F</span>
+        </div>
+        <p class="card-desc">5% fat beef mince with peppers, broccoli, and pak choi in a soy-ginger sauce. Lower carb, high satiety — ideal for rest days.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="8">
+        <div class="card-top">
+          <span class="card-emoji">🐟</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Baked Cod &amp; Quinoa</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">360 kcal</span>
+          <span class="macro-pill p">40g P</span>
+          <span class="macro-pill c">38g C</span>
+          <span class="macro-pill f">5g F</span>
+        </div>
+        <p class="card-desc">One of the leanest protein combos available. Cod with smoked paprika and lemon over quinoa — which adds another 8g of complete protein per cup.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="preworkout" data-recipe-id="9">
+        <div class="card-top">
+          <span class="card-emoji">🥞</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Preworkout Protein Pancakes</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">380 kcal</span>
+          <span class="macro-pill p">36g P</span>
+          <span class="macro-pill c">42g C</span>
+          <span class="macro-pill f">8g F</span>
+        </div>
+        <p class="card-desc">Oat-based pancakes with whey protein and banana — carb-forward with strong protein. Batch-prep the batter Sunday, cook fresh in 8 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="10">
+        <div class="card-top">
+          <span class="card-emoji">🐟</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Tuna &amp; Brown Rice</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">340 kcal</span>
+          <span class="macro-pill p">38g P</span>
+          <span class="macro-pill c">36g C</span>
+          <span class="macro-pill f">4g F</span>
+        </div>
+        <p class="card-desc">Lowest-fat meal in the library. Tuna in spring water with brown rice, cucumber, and a light lemon-herb dressing. Meal prep in 15 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="11">
+        <div class="card-top">
+          <span class="card-emoji">🌯</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Chicken Caesar Wrap</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">420 kcal</span>
+          <span class="macro-pill p">40g P</span>
+          <span class="macro-pill c">35g C</span>
+          <span class="macro-pill f">12g F</span>
+        </div>
+        <p class="card-desc">Shredded chicken breast, romaine, parmesan, and a light Greek yogurt Caesar dressing in a high-protein wrap. Ready to grab and go.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="12">
+        <div class="card-top">
+          <span class="card-emoji">🥙</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Lamb Kofta &amp; Tzatziki</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">460 kcal</span>
+          <span class="macro-pill p">42g P</span>
+          <span class="macro-pill c">20g C</span>
+          <span class="macro-pill f">22g F</span>
+        </div>
+        <p class="card-desc">The highest-fat premium option. Spiced lamb kofta with a full Greek yogurt tzatziki and flatbread. Higher calorie, exceptional satiety.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="13">
+        <div class="card-top">
+          <span class="card-emoji">🍳</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Shrimp Fried Rice</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">390 kcal</span>
+          <span class="macro-pill p">34g P</span>
+          <span class="macro-pill c">48g C</span>
+          <span class="macro-pill f">8g F</span>
+        </div>
+        <p class="card-desc">Day-old rice, prawns, egg whites, and mixed veg in a tamari and sesame sauce. Higher in carbs — works well on training days when you want more fuel.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="breakfast" data-recipe-id="14">
+        <div class="card-top">
+          <span class="card-emoji">🫙</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Overnight Protein Oats</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">360 kcal</span>
+          <span class="macro-pill p">32g P</span>
+          <span class="macro-pill c">44g C</span>
+          <span class="macro-pill f">6g F</span>
+        </div>
+        <p class="card-desc">Rolled oats with casein protein, chia seeds, and almond milk — assembled in 3 minutes the night before. Grab from fridge and eat cold.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="15">
+        <div class="card-top">
+          <span class="card-emoji">🍛</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Chicken Tikka &amp; Rice</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">440 kcal</span>
+          <span class="macro-pill p">46g P</span>
+          <span class="macro-pill c">42g C</span>
+          <span class="macro-pill f">8g F</span>
+        </div>
+        <p class="card-desc">Marinated chicken breast in a yogurt-and-spice tikka mix, baked and served over basmati. One of the highest-protein main meals in the library.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="16">
+        <div class="card-top">
+          <span class="card-emoji">🌶️</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Peri Peri Chicken Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">430 kcal</span>
+          <span class="macro-pill p">48g P</span>
+          <span class="macro-pill c">38g C</span>
+          <span class="macro-pill f">8g F</span>
+        </div>
+        <p class="card-desc">Highest protein main in the library. Spicy peri peri marinated chicken thigh over jasmine rice and charred corn — bold flavour, outstanding macros.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="17">
+        <div class="card-top">
+          <span class="card-emoji">🍱</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Spicy Tuna Rice Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">370 kcal</span>
+          <span class="macro-pill p">38g P</span>
+          <span class="macro-pill c">40g C</span>
+          <span class="macro-pill f">6g F</span>
+        </div>
+        <p class="card-desc">Sushi-grade tuna with sriracha mayo (lightened with Greek yogurt), avocado, and sushi rice. Tastes like a restaurant order. Preps in 10 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="18">
+        <div class="card-top">
+          <span class="card-emoji">🌮</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Ground Turkey Tacos</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">400 kcal</span>
+          <span class="macro-pill p">44g P</span>
+          <span class="macro-pill c">28g C</span>
+          <span class="macro-pill f">10g F</span>
+        </div>
+        <p class="card-desc">Spiced turkey mince in corn tortillas with black beans, salsa, and low-fat sour cream. Meal prep the filling — assemble tacos fresh in 2 minutes.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="mains" data-recipe-id="19">
+        <div class="card-top">
+          <span class="card-emoji">🍣</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Teriyaki Salmon Bowl</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">450 kcal</span>
+          <span class="macro-pill p">40g P</span>
+          <span class="macro-pill c">44g C</span>
+          <span class="macro-pill f">12g F</span>
+        </div>
+        <p class="card-desc">Salmon in a reduced-sugar teriyaki glaze over jasmine rice with edamame and sesame. One of the most-saved recipes in the SoulGainz library.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+      <article class="recipe-card" data-category="dessert" data-recipe-id="20">
+        <div class="card-top">
+          <span class="card-emoji">🍌</span>
+          <span class="badge premium">🔒 Premium</span>
+        </div>
+        <h2 class="card-name">Protein Banana Bread</h2>
+        <div class="macro-pills">
+          <span class="macro-pill kcal">320 kcal</span>
+          <span class="macro-pill p">28g P</span>
+          <span class="macro-pill c">38g C</span>
+          <span class="macro-pill f">6g F</span>
+        </div>
+        <p class="card-desc">Oat flour, ripe bananas, Greek yogurt, and whey protein. Dense, moist, and genuinely high in protein — batch bake Sunday, slice through the week.</p>
+        <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes" class="card-btn btn-premium">Unlock Recipe &rarr;</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <h2>Unlock all 94 recipes + get your personalised shopping list</h2>
+    <p>Every recipe has verified macros, step-by-step instructions, and a batch-cook timeline. Your shopping list builds automatically from your weekly plan.</p>
+    <div class="cta-banner-pills">
+      <span class="cta-feature-pill">94 verified recipes</span>
+      <span class="cta-feature-pill">Auto shopping list</span>
+      <span class="cta-feature-pill">Macro tracking</span>
+      <span class="cta-feature-pill">Batch-cook planner</span>
+    </div>
+    <a href="index.html?utm_source=recipes-preview&utm_medium=organic&utm_content=recipes">Get started &rarr;</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Soul<span>Gainz</span></div>
+    <p class="footer-tagline">Feed Your Soul &middot; Fuel Your Gainz</p>
+  </footer>
+
+  <!-- JSON-LD: Recipe Schema for all 20 recipes -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Chicken & Rice Bowl",
+      "description": "The gold standard of high-protein meal prep. Baked chicken breast, long-grain white rice, and seasoned broccoli.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "450 kcal",
+        "proteinContent": "48g",
+        "carbohydrateContent": "45g",
+        "fatContent": "6g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Egg White Oats",
+      "description": "Rolled oats cooked with liquid egg whites, topped with banana and honey.",
+      "recipeCategory": "Breakfast",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "350 kcal",
+        "proteinContent": "35g",
+        "carbohydrateContent": "48g",
+        "fatContent": "4g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Greek Yogurt Bowl",
+      "description": "Full-fat Greek yogurt with frozen berries, oats, and unflavoured protein powder.",
+      "recipeCategory": "Breakfast",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "310 kcal",
+        "proteinContent": "30g",
+        "carbohydrateContent": "38g",
+        "fatContent": "5g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Cottage Cheese Fruit Bowl",
+      "description": "Low-fat cottage cheese with mixed berries, banana, and granola.",
+      "recipeCategory": "Snacks",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "280 kcal",
+        "proteinContent": "28g",
+        "carbohydrateContent": "32g",
+        "fatContent": "4g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Salmon & Sweet Potato",
+      "description": "Baked salmon fillet with roasted sweet potato wedges, lemon, and spinach.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "420 kcal",
+        "proteinContent": "38g",
+        "carbohydrateContent": "40g",
+        "fatContent": "10g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Turkey Bolognese",
+      "description": "Lean turkey mince in a rich passata and herb sauce — better on day two.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "380 kcal",
+        "proteinContent": "42g",
+        "carbohydrateContent": "28g",
+        "fatContent": "8g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Lean Beef Stir Fry",
+      "description": "5% fat beef mince with peppers, broccoli, and pak choi in a soy-ginger sauce.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "410 kcal",
+        "proteinContent": "44g",
+        "carbohydrateContent": "22g",
+        "fatContent": "14g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Baked Cod & Quinoa",
+      "description": "Lean baked cod with smoked paprika and lemon over protein-rich quinoa.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "360 kcal",
+        "proteinContent": "40g",
+        "carbohydrateContent": "38g",
+        "fatContent": "5g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Preworkout Protein Pancakes",
+      "description": "Oat-based pancakes with whey protein and banana — carb-forward with strong protein.",
+      "recipeCategory": "Pre-Workout",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "380 kcal",
+        "proteinContent": "36g",
+        "carbohydrateContent": "42g",
+        "fatContent": "8g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Tuna & Brown Rice",
+      "description": "Tuna in spring water with brown rice, cucumber, and lemon-herb dressing.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "340 kcal",
+        "proteinContent": "38g",
+        "carbohydrateContent": "36g",
+        "fatContent": "4g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Chicken Caesar Wrap",
+      "description": "Shredded chicken, romaine, parmesan, and Greek yogurt Caesar dressing in a high-protein wrap.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "420 kcal",
+        "proteinContent": "40g",
+        "carbohydrateContent": "35g",
+        "fatContent": "12g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Lamb Kofta & Tzatziki",
+      "description": "Spiced lamb kofta with full Greek yogurt tzatziki and flatbread.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "460 kcal",
+        "proteinContent": "42g",
+        "carbohydrateContent": "20g",
+        "fatContent": "22g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Shrimp Fried Rice",
+      "description": "Day-old rice, prawns, egg whites, and mixed veg in a tamari and sesame sauce.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "390 kcal",
+        "proteinContent": "34g",
+        "carbohydrateContent": "48g",
+        "fatContent": "8g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Overnight Protein Oats",
+      "description": "Rolled oats with casein protein, chia seeds, and almond milk — assembled the night before.",
+      "recipeCategory": "Breakfast",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "360 kcal",
+        "proteinContent": "32g",
+        "carbohydrateContent": "44g",
+        "fatContent": "6g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Chicken Tikka & Rice",
+      "description": "Marinated chicken breast in yogurt-and-spice tikka mix, baked and served over basmati.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "440 kcal",
+        "proteinContent": "46g",
+        "carbohydrateContent": "42g",
+        "fatContent": "8g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Peri Peri Chicken Bowl",
+      "description": "Spicy peri peri marinated chicken thigh over jasmine rice and charred corn.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "430 kcal",
+        "proteinContent": "48g",
+        "carbohydrateContent": "38g",
+        "fatContent": "8g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Spicy Tuna Rice Bowl",
+      "description": "Sushi-grade tuna with sriracha-yogurt mayo, avocado, and sushi rice.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "370 kcal",
+        "proteinContent": "38g",
+        "carbohydrateContent": "40g",
+        "fatContent": "6g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Ground Turkey Tacos",
+      "description": "Spiced turkey mince in corn tortillas with black beans, salsa, and low-fat sour cream.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "400 kcal",
+        "proteinContent": "44g",
+        "carbohydrateContent": "28g",
+        "fatContent": "10g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Teriyaki Salmon Bowl",
+      "description": "Salmon in a reduced-sugar teriyaki glaze over jasmine rice with edamame and sesame.",
+      "recipeCategory": "Mains",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "450 kcal",
+        "proteinContent": "40g",
+        "carbohydrateContent": "44g",
+        "fatContent": "12g"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "name": "Protein Banana Bread",
+      "description": "Oat flour, ripe bananas, Greek yogurt, and whey protein — dense, moist, and high in protein.",
+      "recipeCategory": "Dessert",
+      "author": { "@type": "Organization", "name": "SoulGainz" },
+      "publisher": { "@type": "Organization", "name": "SoulGainz", "url": "https://soulgainz.app" },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "320 kcal",
+        "proteinContent": "28g",
+        "carbohydrateContent": "38g",
+        "fatContent": "6g"
+      }
+    }
+  ]
+  </script>
+
+  <script>
+    // Nav scroll state
+    const nav = document.getElementById('site-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Filter logic
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const recipeCards = document.querySelectorAll('.recipe-card');
+    const resultsCount = document.getElementById('results-count');
+
+    function updateCount() {
+      const visible = document.querySelectorAll('.recipe-card:not([data-hidden="true"])').length;
+      resultsCount.textContent = `Showing ${visible} recipe${visible !== 1 ? 's' : ''}`;
+    }
+
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const filter = pill.dataset.filter;
+
+        recipeCards.forEach(card => {
+          if (filter === 'all') {
+            card.removeAttribute('data-hidden');
+          } else {
+            const match = card.dataset.category === filter;
+            card.setAttribute('data-hidden', match ? 'false' : 'true');
+            if (match) {
+              card.removeAttribute('data-hidden');
+            } else {
+              card.setAttribute('data-hidden', 'true');
+            }
+          }
+        });
+
+        updateCount();
+      });
+    });
+
+    updateCount();
+  </script>
+
+</body>
+</html>

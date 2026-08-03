@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Macro Calculator — Find Your Daily Targets | SoulGainz</title>
+  <meta name="description" content="Calculate your TDEE and daily macro targets for free. Enter your stats, pick your goal, and get your exact protein, carbs, and fat targets — science-backed and personalised to you." />
+  <meta name="author" content="SoulGainz" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://soulgainz.app/calculator.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://soulgainz.app/calculator.html" />
+  <meta property="og:title" content="Free Macro Calculator — Find Your Daily Targets | SoulGainz" />
+  <meta property="og:description" content="Calculate your TDEE and daily macro targets for free. Science-backed formula, personalised to your body, activity level, and goal." />
+  <meta property="og:site_name" content="SoulGainz" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#b84a1f" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://soulgainz.app/calculator.html",
+        "url": "https://soulgainz.app/calculator.html",
+        "name": "Free Macro Calculator — Find Your Daily Targets | SoulGainz",
+        "description": "Calculate your TDEE and daily macro targets for free. Science-backed Mifflin-St Jeor formula personalised to your body, activity level, and goal.",
+        "isPartOf": {
+          "@id": "https://soulgainz.app/#website"
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://soulgainz.app/"},
+            {"@type": "ListItem", "position": 2, "name": "Macro Calculator", "item": "https://soulgainz.app/calculator.html"}
+          ]
+        }
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Calculate Your Daily Macros",
+        "description": "Use the Mifflin-St Jeor formula to find your TDEE and set personalised macro targets for your fitness goal.",
+        "totalTime": "PT2M",
+        "supply": [],
+        "tool": [],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Enter your stats",
+            "text": "Input your age, biological sex, height, and current weight."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Choose your activity level",
+            "text": "Select how often you exercise each week — from sedentary to very active."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Set your goal",
+            "text": "Choose whether you want to lose fat, maintain your weight, or gain muscle."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Get your results",
+            "text": "Receive your TDEE, goal calories, and exact protein, carbs, and fat targets in grams."
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ── Reset & Base ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:    #b84a1f;
+      --accent-dk: #963d19;
+      --bg:        #f3ece0;
+      --card:      #ebe2d3;
+      --card-dark: #e0d6c4;
+      --text:      #1a1612;
+      --sub:       #4a3f33;
+      --border:    rgba(26,22,18,0.12);
+      --shadow:    0 2px 16px rgba(26,22,18,0.08);
+      --shadow-lg: 0 8px 40px rgba(26,22,18,0.13);
+      --error:     #c0392b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .serif { font-family: "Fraunces", Georgia, serif; }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .container-narrow {
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section { padding: 80px 0; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--sub);
+      line-height: 1.65;
+      max-width: 540px;
+    }
+
+    /* ── Buttons ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 26px;
+      border-radius: 10px;
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(184,74,31,0.32);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dk);
+      box-shadow: 0 6px 22px rgba(184,74,31,0.38);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card);
+      border-color: rgba(26,22,18,0.2);
+    }
+
+    .btn-lg {
+      padding: 17px 34px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.25s ease, box-shadow 0.25s ease, padding 0.25s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(243,236,224,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+      padding: 12px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-cta {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      padding-top: 130px;
+      padding-bottom: 60px;
+      text-align: center;
+    }
+
+    .hero-headline {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(38px, 6vw, 60px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--sub);
+      line-height: 1.65;
+      margin: 0 auto 28px;
+      max-width: 500px;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sub);
+    }
+
+    .hero-chip-check {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ── Calculator Section ─────────────────────────────────── */
+    .calc-section {
+      padding-top: 0;
+      padding-bottom: 80px;
+    }
+
+    .calc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ── Form Elements ──────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .form-label-sub {
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: none;
+      color: var(--sub);
+      letter-spacing: 0;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(184,74,31,0.1);
+    }
+
+    .form-input.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    }
+
+    .form-error-msg {
+      font-size: 12px;
+      color: var(--error);
+      font-weight: 500;
+      display: none;
+    }
+
+    .form-error-msg.visible {
+      display: block;
+    }
+
+    /* ── Radio pills ────────────────────────────────────────── */
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .radio-pill {
+      position: relative;
+    }
+
+    .radio-pill input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-pill label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--sub);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      user-select: none;
+    }
+
+    .radio-pill input[type="radio"]:checked + label {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .radio-pill label:hover {
+      border-color: rgba(184,74,31,0.4);
+    }
+
+    /* ── Unit toggle ────────────────────────────────────────── */
+    .unit-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unit-toggle-wrap .form-input {
+      flex: 1;
+    }
+
+    .unit-btn-group {
+      display: flex;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .unit-btn {
+      padding: 8px 13px;
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg);
+      border: none;
+      color: var(--sub);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.03em;
+    }
+
+    .unit-btn + .unit-btn {
+      border-left: 1.5px solid var(--border);
+    }
+
+    .unit-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Height ft/in pair */
+    .height-pair {
+      display: none;
+      gap: 8px;
+    }
+
+    .height-pair.visible {
+      display: flex;
+    }
+
+    .height-pair .form-input {
+      flex: 1;
+    }
+
+    /* ── Activity & Goal grids ──────────────────────────────── */
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .option-card {
+      position: relative;
+    }
+
+    .option-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .option-card label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 10px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .option-card input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      background: rgba(184,74,31,0.06);
+    }
+
+    .option-card label:hover {
+      border-color: rgba(184,74,31,0.3);
+    }
+
+    .option-card-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .option-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .option-card-sub {
+      font-size: 10px;
+      color: var(--sub);
+      line-height: 1.3;
+    }
+
+    .goal-card label {
+      padding: 20px 14px;
+    }
+
+    .goal-card-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .goal-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .goal-card-sub {
+      font-size: 11px;
+      color: var(--sub);
+    }
+
+    /* ── Divider ────────────────────────────────────────────── */
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    .form-section-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    /* ── Submit ─────────────────────────────────────────────── */
+    .calc-submit-wrap {
+      margin-top: 36px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .calc-submit {
+      flex-shrink: 0;
+    }
+
+    .calc-submit-note {
+      font-size: 13px;
+      color: var(--sub);
+    }
+
+    /* ── Results ────────────────────────────────────────────── */
+    #results {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      display: none;
+    }
+
+    #results.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      display: block;
+    }
+
+    .results-section {
+      padding-top: 0;
+    }
+
+    .results-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .results-header {
+      background: var(--text);
+      padding: 32px 40px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .results-header-left .section-label {
+      color: rgba(243,236,224,0.6);
+    }
+
+    .results-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #f3ece0;
+      margin-bottom: 4px;
+    }
+
+    .results-goal-label {
+      font-size: 14px;
+      color: rgba(243,236,224,0.6);
+    }
+
+    .results-tdee-box {
+      text-align: right;
+    }
+
+    .results-tdee-val {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: #f3ece0;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .results-tdee-unit {
+      font-size: 14px;
+      color: rgba(243,236,224,0.6);
+      margin-top: 4px;
+    }
+
+    .results-body {
+      padding: 40px;
+    }
+
+    /* Macro ring + stats */
+    .results-macro-layout {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    /* SVG ring */
+    .macro-ring-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .macro-ring-wrap svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+    }
+
+    .macro-ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 2px;
+    }
+
+    .macro-ring-kcal {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .macro-ring-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Macro bars */
+    .macro-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .macro-stat-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .macro-stat-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .macro-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .macro-dot-p { background: var(--accent); }
+    .macro-dot-c { background: #c4921f; }
+    .macro-dot-f { background: #8a7a66; }
+
+    .macro-stat-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sub);
+    }
+
+    .macro-stat-bar-track {
+      height: 8px;
+      background: var(--card-dark);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .macro-stat-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .macro-stat-bar-fill-p { background: var(--accent); }
+    .macro-stat-bar-fill-c { background: #c4921f; }
+    .macro-stat-bar-fill-f { background: #8a7a66; }
+
+    .macro-stat-val {
+      text-align: right;
+    }
+
+    .macro-stat-grams {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .macro-stat-pct {
+      font-size: 11px;
+      color: var(--sub);
+    }
+
+    /* Summary blurb */
+    .results-blurb {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    .results-blurb strong {
+      color: var(--text);
+    }
+
+    /* Calorie summary row */
+    .calorie-split {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .calorie-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+
+    .calorie-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sub);
+      margin-bottom: 6px;
+    }
+
+    .calorie-box-val {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .calorie-box-val span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--sub);
+      letter-spacing: 0;
+    }
+
+    .calorie-box-note {
+      font-size: 12px;
+      color: var(--sub);
+      margin-top: 4px;
+    }
+
+    .calorie-box.featured {
+      border-color: var(--accent);
+      background: rgba(184,74,31,0.04);
+    }
+
+    .calorie-box.featured .calorie-box-label {
+      color: var(--accent);
+    }
+
+    /* ── CTA after results ──────────────────────────────────── */
+    .cta-after-results {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cta-after-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .cta-after-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(184,74,31,0.1);
+      border: 1px solid rgba(184,74,31,0.2);
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* ── FAQ ────────────────────────────────────────────────── */
+    .faq-section {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-item summary {
+      list-style: none;
+      padding: 20px 0;
+      cursor: pointer;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      user-select: none;
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--sub);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .faq-item[open] .faq-chevron {
+      transform: rotate(180deg);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .faq-answer {
+      padding: 0 0 20px;
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.75;
+    }
+
+    /* ── Educational section ────────────────────────────────── */
+    .edu-section {
+      padding: 80px 0;
+    }
+
+    .edu-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .edu-stat-row {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .edu-stat {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .edu-stat-num {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 60px;
+    }
+
+    .edu-stat-text {
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.6;
+      padding-top: 4px;
+    }
+
+    .edu-stat-text strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .edu-right {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .edu-right-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .edu-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .edu-checklist li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      color: var(--sub);
+      line-height: 1.55;
+    }
+
+    .edu-check {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .footer {
+      background: var(--text);
+      padding: 56px 0 40px;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: #f3ece0;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: rgba(243,236,224,0.5);
+      font-style: italic;
+      margin-top: -12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(243,236,224,0.6);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: #f3ece0; }
+
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(243,236,224,0.35);
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .calc-card {
+        padding: 32px 28px;
+      }
+
+      .activity-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .results-header {
+        grid-template-columns: 1fr;
+        padding: 28px;
+        gap: 16px;
+      }
+
+      .results-tdee-box {
+        text-align: left;
+      }
+
+      .results-body {
+        padding: 28px;
+      }
+
+      .results-macro-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .macro-ring-wrap {
+        margin: 0 auto;
+      }
+
+      .calorie-split {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-after-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .edu-inner {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .macro-stat-row {
+        grid-template-columns: 70px 1fr auto;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      section { padding: 56px 0; }
+      .hero { padding-top: 100px; }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full-width {
+        grid-column: 1;
+      }
+
+      .activity-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .goal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .goal-card label {
+        flex-direction: row;
+        text-align: left;
+        gap: 14px;
+      }
+
+      .goal-card-icon {
+        font-size: 22px;
+      }
+
+      .calc-card {
+        padding: 24px 20px;
+      }
+
+      .results-tdee-val {
+        font-size: 38px;
+      }
+
+      .section-heading {
+        font-size: clamp(24px, 7vw, 36px);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .activity-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo serif">
+          Soul<span>Gainz</span>
+        </a>
+        <a href="index.html?utm_source=calculator&utm_medium=nav&utm_content=header" class="btn btn-primary nav-cta cta-app-link">Open App →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container-narrow">
+      <p class="section-label">Free Macro Calculator</p>
+      <h1 class="hero-headline">
+        Find your macros.<br>
+        <em>Build your plate.</em>
+      </h1>
+      <p class="hero-sub">
+        Enter your stats below and get your personalised TDEE and daily macro targets — science-backed, free, and ready in seconds.
+      </p>
+      <div class="hero-chips">
+        <span class="hero-chip"><span class="hero-chip-check">✓</span> Mifflin-St Jeor formula</span>
+        <span class="hero-chip"><span class="hero-chip-check">✓</span> No sign-up required</span>
+        <span class="hero-chip"><span class="hero-chip-check">✓</span> 100% free</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CALCULATOR ───────────────────────────────────────────────── -->
+  <section class="calc-section">
+    <div class="container-narrow">
+      <div class="calc-card">
+        <form id="calc-form" novalidate>
+
+          <!-- Step 1: Your stats -->
+          <div class="form-section-title">Your stats</div>
+          <div class="form-grid">
+
+            <!-- Age -->
+            <div class="form-group">
+              <label class="form-label" for="age">Age</label>
+              <input
+                class="form-input"
+                type="number"
+                id="age"
+                name="age"
+                min="15"
+                max="80"
+                placeholder="e.g. 28"
+                inputmode="numeric"
+              />
+              <span class="form-error-msg" id="age-error">Please enter an age between 15 and 80.</span>
+            </div>
+
+            <!-- Sex -->
+            <div class="form-group">
+              <label class="form-label">Biological sex</label>
+              <div class="radio-group">
+                <div class="radio-pill">
+                  <input type="radio" id="sex-male" name="sex" value="male" checked />
+                  <label for="sex-male">♂ Male</label>
+                </div>
+                <div class="radio-pill">
+                  <input type="radio" id="sex-female" name="sex" value="female" />
+                  <label for="sex-female">♀ Female</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Height -->
+            <div class="form-group">
+              <label class="form-label">
+                Height
+                <span class="form-label-sub" id="height-sub">in centimetres</span>
+              </label>
+              <div class="unit-toggle-wrap">
+                <!-- cm input -->
+                <input
+                  class="form-input"
+                  type="number"
+                  id="height-cm"
+                  name="height-cm"
+                  min="100"
+                  max="250"
+                  placeholder="e.g. 178"
+                  inputmode="numeric"
+                />
+                <!-- ft/in pair (hidden) -->
+                <div class="height-pair" id="height-pair">
+                  <input class="form-input" type="number" id="height-ft" placeholder="ft" min="3" max="8" inputmode="numeric" />
+                  <input class="form-input" type="number" id="height-in" placeholder="in" min="0" max="11" inputmode="numeric" />
+                </div>
+                <div class="unit-btn-group" id="height-unit-group">
+                  <button type="button" class="unit-btn active" data-unit="cm" onclick="setHeightUnit('cm')">cm</button>
+                  <button type="button" class="unit-btn" data-unit="imperial" onclick="setHeightUnit('imperial')">ft</button>
+                </div>
+              </div>
+              <span class="form-error-msg" id="height-error">Please enter a valid height.</span>
+            </div>
+
+            <!-- Weight -->
+            <div class="form-group">
+              <label class="form-label">
+                Weight
+                <span class="form-label-sub" id="weight-sub">in kilograms</span>
+              </label>
+              <div class="unit-toggle-wrap">
+                <input
+                  class="form-input"
+                  type="number"
+                  id="weight-kg"
+                  name="weight-kg"
+                  min="30"
+                  max="300"
+                  placeholder="e.g. 80"
+                  inputmode="numeric"
+                />
+                <div class="unit-btn-group">
+                  <button type="button" class="unit-btn active" data-unit="kg" onclick="setWeightUnit('kg')">kg</button>
+                  <button type="button" class="unit-btn" data-unit="lbs" onclick="setWeightUnit('lbs')">lbs</button>
+                </div>
+              </div>
+              <span class="form-error-msg" id="weight-error">Please enter a valid weight.</span>
+            </div>
+
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Step 2: Activity level -->
+          <div class="form-section-title">Activity level</div>
+          <div class="activity-grid" role="radiogroup" aria-label="Activity level">
+
+            <div class="option-card">
+              <input type="radio" id="act-sed" name="activity" value="1.2" checked />
+              <label for="act-sed">
+                <span class="option-card-icon">🪑</span>
+                <span class="option-card-title">Sedentary</span>
+                <span class="option-card-sub">Little or no exercise</span>
+              </label>
+            </div>
+
+            <div class="option-card">
+              <input type="radio" id="act-light" name="activity" value="1.375" />
+              <label for="act-light">
+                <span class="option-card-icon">🚶</span>
+                <span class="option-card-title">Light</span>
+                <span class="option-card-sub">1–3×/week</span>
+              </label>
+            </div>
+
+            <div class="option-card">
+              <input type="radio" id="act-mod" name="activity" value="1.55" />
+              <label for="act-mod">
+                <span class="option-card-icon">🏃</span>
+                <span class="option-card-title">Moderate</span>
+                <span class="option-card-sub">3–5×/week</span>
+              </label>
+            </div>
+
+            <div class="option-card">
+              <input type="radio" id="act-active" name="activity" value="1.725" />
+              <label for="act-active">
+                <span class="option-card-icon">🏋️</span>
+                <span class="option-card-title">Active</span>
+                <span class="option-card-sub">6–7×/week</span>
+              </label>
+            </div>
+
+            <div class="option-card">
+              <input type="radio" id="act-very" name="activity" value="1.9" />
+              <label for="act-very">
+                <span class="option-card-icon">🔥</span>
+                <span class="option-card-title">Very Active</span>
+                <span class="option-card-sub">2× per day</span>
+              </label>
+            </div>
+
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Step 3: Goal -->
+          <div class="form-section-title">Your goal</div>
+          <div class="goal-grid" role="radiogroup" aria-label="Goal">
+
+            <div class="option-card goal-card">
+              <input type="radio" id="goal-lose" name="goal" value="-0.20" />
+              <label for="goal-lose">
+                <span class="goal-card-icon">📉</span>
+                <span class="goal-card-title">Lose Fat</span>
+                <span class="goal-card-sub">−20% calories</span>
+              </label>
+            </div>
+
+            <div class="option-card goal-card">
+              <input type="radio" id="goal-maintain" name="goal" value="0" checked />
+              <label for="goal-maintain">
+                <span class="goal-card-icon">⚖️</span>
+                <span class="goal-card-title">Maintain</span>
+                <span class="goal-card-sub">Hold current weight</span>
+              </label>
+            </div>
+
+            <div class="option-card goal-card">
+              <input type="radio" id="goal-gain" name="goal" value="0.10" />
+              <label for="goal-gain">
+                <span class="goal-card-icon">📈</span>
+                <span class="goal-card-title">Gain Muscle</span>
+                <span class="goal-card-sub">+10% calories</span>
+              </label>
+            </div>
+
+          </div>
+
+          <!-- Submit -->
+          <div class="calc-submit-wrap">
+            <button type="submit" class="btn btn-primary btn-lg calc-submit">
+              Calculate my macros →
+            </button>
+            <span class="calc-submit-note">Free. Instant. No account needed.</span>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ──────────────────────────────────────────────────── -->
+  <div id="results">
+    <section class="results-section">
+      <div class="container-narrow">
+        <div class="results-card">
+
+          <!-- Header -->
+          <div class="results-header">
+            <div class="results-header-left">
+              <p class="section-label">Your Results</p>
+              <div class="results-title" id="result-headline">Your Daily Targets</div>
+              <div class="results-goal-label" id="result-goal-label">Maintenance · Mifflin-St Jeor</div>
+            </div>
+            <div class="results-tdee-box">
+              <div class="results-tdee-val" id="result-tdee-val">—</div>
+              <div class="results-tdee-unit">TDEE · kcal/day</div>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="results-body">
+
+            <!-- Calorie split -->
+            <div class="calorie-split">
+              <div class="calorie-box">
+                <div class="calorie-box-label">TDEE (Maintenance)</div>
+                <div class="calorie-box-val">
+                  <span id="result-tdee-box">—</span> <span>kcal</span>
+                </div>
+                <div class="calorie-box-note">Your total daily energy expenditure</div>
+              </div>
+              <div class="calorie-box featured">
+                <div class="calorie-box-label" id="result-goal-box-label">Goal Calories</div>
+                <div class="calorie-box-val">
+                  <span id="result-goal-kcal">—</span> <span>kcal</span>
+                </div>
+                <div class="calorie-box-note" id="result-goal-note">Adjusted for your goal</div>
+              </div>
+            </div>
+
+            <!-- Macro ring + bars -->
+            <div class="results-macro-layout">
+
+              <!-- SVG ring -->
+              <div class="macro-ring-wrap">
+                <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="80" cy="80" r="66" fill="none" stroke="#e0d6c4" stroke-width="18"/>
+                  <circle id="ring-protein" cx="80" cy="80" r="66" fill="none" stroke="#b84a1f" stroke-width="18" stroke-dasharray="0 415" stroke-linecap="butt"/>
+                  <circle id="ring-carbs"   cx="80" cy="80" r="66" fill="none" stroke="#c4921f" stroke-width="18" stroke-dasharray="0 415" stroke-linecap="butt"/>
+                  <circle id="ring-fat"     cx="80" cy="80" r="66" fill="none" stroke="#8a7a66" stroke-width="18" stroke-dasharray="0 415" stroke-linecap="butt"/>
+                </svg>
+                <div class="macro-ring-center">
+                  <span class="macro-ring-kcal" id="ring-kcal-center">—</span>
+                  <span class="macro-ring-lbl">kcal/day</span>
+                </div>
+              </div>
+
+              <!-- Macro bars -->
+              <div class="macro-stats">
+
+                <div class="macro-stat-row">
+                  <div class="macro-stat-label">
+                    <span class="macro-dot macro-dot-p"></span>
+                    <span class="macro-stat-name">Protein</span>
+                  </div>
+                  <div class="macro-stat-bar-track">
+                    <div class="macro-stat-bar-fill macro-stat-bar-fill-p" id="bar-protein" style="width:0%"></div>
+                  </div>
+                  <div class="macro-stat-val">
+                    <div class="macro-stat-grams" id="val-protein">—</div>
+                    <div class="macro-stat-pct" id="pct-protein">—%</div>
+                  </div>
+                </div>
+
+                <div class="macro-stat-row">
+                  <div class="macro-stat-label">
+                    <span class="macro-dot macro-dot-c"></span>
+                    <span class="macro-stat-name">Carbs</span>
+                  </div>
+                  <div class="macro-stat-bar-track">
+                    <div class="macro-stat-bar-fill macro-stat-bar-fill-c" id="bar-carbs" style="width:0%"></div>
+                  </div>
+                  <div class="macro-stat-val">
+                    <div class="macro-stat-grams" id="val-carbs">—</div>
+                    <div class="macro-stat-pct" id="pct-carbs">—%</div>
+                  </div>
+                </div>
+
+                <div class="macro-stat-row">
+                  <div class="macro-stat-label">
+                    <span class="macro-dot macro-dot-f"></span>
+                    <span class="macro-stat-name">Fat</span>
+                  </div>
+                  <div class="macro-stat-bar-track">
+                    <div class="macro-stat-bar-fill macro-stat-bar-fill-f" id="bar-fat" style="width:0%"></div>
+                  </div>
+                  <div class="macro-stat-val">
+                    <div class="macro-stat-grams" id="val-fat">—</div>
+                    <div class="macro-stat-pct" id="pct-fat">—%</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Summary blurb -->
+            <div class="results-blurb" id="result-blurb">
+              Your body needs <strong id="blurb-protein">—g</strong> of protein per day.
+              Here's how to hit it: spread it across 3–5 meals, prioritising lean meats, eggs, and dairy.
+              SoulGainz recipes are built around these exact targets — each meal is weighed and verified.
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Email capture after results ─────────────────────────── -->
+    <section id="email-capture-section" style="display:none;background:var(--card);border-top:1px solid var(--dim);padding:36px 0;">
+      <div class="container">
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:10px;">SAVE YOUR RESULTS</div>
+          <h3 class="display" style="font-size:22px;color:var(--text);margin:0 0 8px;">Email me these macros</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.6;margin:0 0 20px;">We'll send your targets to your inbox — free. No spam, no pressure.</p>
+          <form id="email-capture-form" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+            <input id="capture-email" type="email" placeholder="your@email.com"
+              style="flex:1;min-width:200px;padding:13px 16px;border-radius:10px;border:1.5px solid var(--dim);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;outline:none;"
+              required>
+            <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Send my macros</button>
+          </form>
+          <div id="email-capture-msg" style="margin-top:12px;font-size:13px;min-height:18px;"></div>
+          <p style="font-size:11px;color:var(--muted);margin:14px 0 0;">We'll also send one follow-up if you'd like to try the app. Unsubscribe any time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA after results ────────────────────────────────────── -->
+    <section class="cta-after-results">
+      <div class="container">
+        <div class="cta-after-inner">
+          <div>
+            <div class="cta-after-badge">✦ Built around your exact macros</div>
+            <h2 class="section-heading" style="max-width: 460px;">Get recipes built around these exact macros.</h2>
+            <p class="section-sub">
+              SoulGainz has 94 high-protein meal prep recipes with verified macros. Pick your meals, get your grocery list, and batch cook a full week — every gram accounted for.
+            </p>
+          </div>
+          <div>
+            <a href="index.html?utm_source=calculator&utm_medium=cta&utm_content=results" class="btn btn-primary btn-lg cta-app-link">
+              Start with my macros →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── FAQ ─────────────────────────────────────────────────────── -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="faq-header">
+        <p class="section-label">Common questions</p>
+        <h2 class="section-heading">FAQ</h2>
+      </div>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary>
+            What is TDEE and why does it matter?
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>TDEE stands for Total Daily Energy Expenditure — the total number of calories your body burns in a day. It accounts for your basal metabolic rate (the calories you burn at rest) plus the energy used during physical activity. Knowing your TDEE is the foundation of any nutrition plan: eat at TDEE to maintain weight, below it to lose fat, or above it to gain muscle. Without this number, you're guessing.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            How are my macros calculated?
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>This calculator uses the <strong>Mifflin-St Jeor equation</strong> — the most accurate BMR formula validated in clinical research. Your BMR is multiplied by an activity factor to give your TDEE, then adjusted up or down based on your goal. Macros are then set as follows:</p>
+            <p style="margin-top: 12px;"><strong>Protein:</strong> 2.0 g per kg of bodyweight — the evidence-based range for supporting muscle retention and growth.<br>
+            <strong>Fat:</strong> 0.8 g per kg — the minimum required for healthy hormone production and fat-soluble vitamin absorption.<br>
+            <strong>Carbs:</strong> All remaining calories (after protein and fat are accounted for) divided by 4 calories per gram.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            How much protein do I actually need?
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>For most people pursuing fat loss or muscle gain, the research consistently points to <strong>1.6–2.2 g of protein per kg of bodyweight</strong> per day. This calculator uses 2.0 g/kg — the upper-middle of that range — because it provides a comfortable buffer to protect muscle during a calorie deficit, and to maximise muscle protein synthesis when eating at maintenance or above.</p>
+            <p style="margin-top: 10px;">The old recommendation of 0.8 g/kg is for sedentary individuals with no body composition goals. If you're training, you need significantly more.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            Why might these numbers differ from other calculators?
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Different calculators use different BMR formulas. The two most common are <strong>Harris-Benedict</strong> (1919, revised 1984) and <strong>Mifflin-St Jeor</strong> (1990). Multiple studies comparing the two have found Mifflin-St Jeor to be more accurate for the general population — which is why this calculator uses it.</p>
+            <p style="margin-top: 10px;">Macro allocations also vary. Some calculators use fixed percentage splits (e.g. 30/40/30). We set protein first based on bodyweight, fat second as a minimum floor, then fill carbs with the remainder — which is more aligned with how sports dietitians actually prescribe macros for body composition goals.</p>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EDUCATIONAL SECTION ──────────────────────────────────────── -->
+  <section class="edu-section">
+    <div class="container">
+      <div class="edu-inner">
+        <div>
+          <p class="section-label">Why it matters</p>
+          <h2 class="section-heading">Knowing your macros changes everything.</h2>
+          <p class="section-sub">
+            Most people track calories loosely and wonder why progress stalls. Verified macros — especially protein — make the difference between spinning your wheels and actually building the body you're after.
+          </p>
+          <div class="edu-stat-row">
+            <div class="edu-stat">
+              <span class="edu-stat-num">2×</span>
+              <span class="edu-stat-text"><strong>More muscle retained</strong> during a calorie deficit when protein is held at 2g/kg vs. the RDA of 0.8g/kg.</span>
+            </div>
+            <div class="edu-stat">
+              <span class="edu-stat-num">94</span>
+              <span class="edu-stat-text"><strong>Recipes in SoulGainz</strong> — each with weighed, verified macros so hitting your targets doesn't require a calculator every mealtime.</span>
+            </div>
+            <div class="edu-stat">
+              <span class="edu-stat-num">1×</span>
+              <span class="edu-stat-text"><strong>Prep session per week</strong> — batch cook on Sunday, hit your macros every day without thinking about it.</span>
+            </div>
+          </div>
+        </div>
+        <div class="edu-right">
+          <div class="edu-right-title">What SoulGainz gives you</div>
+          <ul class="edu-checklist">
+            <li>
+              <span class="edu-check">✓</span>
+              <span><strong>94 high-protein recipes</strong> built to hit real macro targets — not just "healthy eating."</span>
+            </li>
+            <li>
+              <span class="edu-check">✓</span>
+              <span><strong>Verified macros</strong> on every recipe. No estimates, no database guesswork — weighed and tested.</span>
+            </li>
+            <li>
+              <span class="edu-check">✓</span>
+              <span><strong>Automatic grocery list</strong> scaled to your batch size — 3, 5, or 7 days.</span>
+            </li>
+            <li>
+              <span class="edu-check">✓</span>
+              <span><strong>One prep session</strong> gives you a full week of food in the fridge, ready to eat.</span>
+            </li>
+            <li>
+              <span class="edu-check">✓</span>
+              <span><strong>New recipe drops</strong> added regularly — all included in your plan.</span>
+            </li>
+          </ul>
+          <a href="index.html?utm_source=calculator&utm_medium=cta&utm_content=bottom" class="btn btn-primary cta-app-link" style="margin-top: 24px; width: 100%; justify-content: center;">
+            Start for free →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo serif">
+          Soul<span>Gainz</span>
+        </div>
+        <p class="footer-tagline">Feed Your Soul · Fuel Your Gainz</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="#">Blog</a>
+          <a href="#">Recipes</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+        <p class="footer-copy">© 2025 SoulGainz. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── JS ──────────────────────────────────────────────────────── -->
+  <script>
+    /* ── Nav scroll ─────────────────────────────────── */
+    (function () {
+      var nav = document.getElementById('nav');
+      function onScroll() {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    /* ── Unit toggles ───────────────────────────────── */
+    var heightUnit = 'cm';
+    var weightUnit = 'kg';
+
+    function setHeightUnit(unit) {
+      heightUnit = unit;
+      var cmInput   = document.getElementById('height-cm');
+      var pairEl    = document.getElementById('height-pair');
+      var sub       = document.getElementById('height-sub');
+      var btns      = document.querySelectorAll('#height-unit-group .unit-btn');
+
+      btns.forEach(function(b) { b.classList.toggle('active', b.dataset.unit === unit); });
+
+      if (unit === 'cm') {
+        cmInput.style.display = '';
+        pairEl.classList.remove('visible');
+        sub.textContent = 'in centimetres';
+        // convert ft+in → cm
+        var ft = parseFloat(document.getElementById('height-ft').value) || 0;
+        var inches = parseFloat(document.getElementById('height-in').value) || 0;
+        if (ft > 0 || inches > 0) {
+          cmInput.value = Math.round((ft * 30.48) + (inches * 2.54));
+        }
+      } else {
+        cmInput.style.display = 'none';
+        pairEl.classList.add('visible');
+        sub.textContent = 'in feet & inches';
+        // convert cm → ft+in
+        var cm = parseFloat(cmInput.value) || 0;
+        if (cm > 0) {
+          var totalInches = cm / 2.54;
+          document.getElementById('height-ft').value = Math.floor(totalInches / 12);
+          document.getElementById('height-in').value = Math.round(totalInches % 12);
+        }
+      }
+      clearError('height');
+    }
+
+    function setWeightUnit(unit) {
+      weightUnit = unit;
+      var input = document.getElementById('weight-kg');
+      var sub   = document.getElementById('weight-sub');
+      var btns  = document.querySelectorAll('[data-unit="kg"], [data-unit="lbs"]');
+
+      btns.forEach(function(b) { b.classList.toggle('active', b.dataset.unit === unit); });
+
+      var currentVal = parseFloat(input.value) || 0;
+
+      if (unit === 'kg') {
+        sub.textContent = 'in kilograms';
+        input.placeholder = 'e.g. 80';
+        input.min = '30';
+        input.max = '300';
+        if (currentVal > 0) {
+          input.value = Math.round(currentVal / 2.20462);
+        }
+      } else {
+        sub.textContent = 'in pounds';
+        input.placeholder = 'e.g. 176';
+        input.min = '66';
+        input.max = '660';
+        if (currentVal > 0) {
+          input.value = Math.round(currentVal * 2.20462);
+        }
+      }
+      clearError('weight');
+    }
+
+    /* ── Validation helpers ─────────────────────────── */
+    function showError(field, msg) {
+      var input = document.getElementById(field === 'height' ? 'height-cm' : field === 'weight' ? 'weight-kg' : field);
+      var err   = document.getElementById(field + '-error');
+      if (input) input.classList.add('error');
+      if (err) {
+        if (msg) err.textContent = msg;
+        err.classList.add('visible');
+      }
+    }
+
+    function clearError(field) {
+      var input = document.getElementById(field === 'height' ? 'height-cm' : field === 'weight' ? 'weight-kg' : field);
+      var err   = document.getElementById(field + '-error');
+      if (input) input.classList.remove('error');
+      if (err) err.classList.remove('visible');
+    }
+
+    function validateForm() {
+      var valid = true;
+
+      // Age
+      var age = parseInt(document.getElementById('age').value, 10);
+      if (!age || age < 15 || age > 80) {
+        showError('age');
+        valid = false;
+      } else {
+        clearError('age');
+      }
+
+      // Height
+      var heightCm = getHeightInCm();
+      if (!heightCm || heightCm < 100 || heightCm > 250) {
+        showError('height', 'Please enter a valid height (100–250 cm / 3\'4"–8\'2").');
+        valid = false;
+      } else {
+        clearError('height');
+      }
+
+      // Weight
+      var weightKg = getWeightInKg();
+      if (!weightKg || weightKg < 30 || weightKg > 300) {
+        showError('weight', 'Please enter a valid weight.');
+        valid = false;
+      } else {
+        clearError('weight');
+      }
+
+      return valid;
+    }
+
+    function getHeightInCm() {
+      if (heightUnit === 'cm') {
+        return parseFloat(document.getElementById('height-cm').value) || 0;
+      } else {
+        var ft = parseFloat(document.getElementById('height-ft').value) || 0;
+        var inches = parseFloat(document.getElementById('height-in').value) || 0;
+        return (ft * 30.48) + (inches * 2.54);
+      }
+    }
+
+    function getWeightInKg() {
+      var val = parseFloat(document.getElementById('weight-kg').value) || 0;
+      if (weightUnit === 'lbs') return val / 2.20462;
+      return val;
+    }
+
+    /* ── SVG Ring helpers ───────────────────────────── */
+    var CIRCUMFERENCE = 2 * Math.PI * 66; // ≈ 414.69
+
+    function setRingSegment(id, pct, offset) {
+      var el = document.getElementById(id);
+      var dashLen = CIRCUMFERENCE * pct;
+      el.style.strokeDasharray  = dashLen + ' ' + (CIRCUMFERENCE - dashLen);
+      el.style.strokeDashoffset = -offset;
+    }
+
+    /* ── Main calculation ───────────────────────────── */
+    document.getElementById('calc-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      var age      = parseInt(document.getElementById('age').value, 10);
+      var sex      = document.querySelector('input[name="sex"]:checked').value;
+      var heightCm = getHeightInCm();
+      var weightKg = getWeightInKg();
+      var activity = parseFloat(document.querySelector('input[name="activity"]:checked').value);
+      var goalAdj  = parseFloat(document.querySelector('input[name="goal"]:checked').value);
+
+      // Mifflin-St Jeor BMR
+      var bmr;
+      if (sex === 'male') {
+        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+      } else {
+        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+      }
+
+      var tdee       = Math.round(bmr * activity);
+      var goalKcal   = Math.round(tdee * (1 + goalAdj));
+
+      // Macros
+      var proteinG   = Math.ceil(weightKg * 2.0);
+      var fatG       = Math.ceil(weightKg * 0.8);
+      var proteinKcal = proteinG * 4;
+      var fatKcal     = fatG * 9;
+      var carbsKcal   = Math.max(goalKcal - proteinKcal - fatKcal, 0);
+      var carbsG      = Math.round(carbsKcal / 4);
+
+      // Percentages of total goal kcal
+      var totalMacroKcal = (proteinG * 4) + (carbsG * 4) + (fatG * 9);
+      var pctP = proteinKcal / totalMacroKcal;
+      var pctC = (carbsG * 4) / totalMacroKcal;
+      var pctF = fatKcal / totalMacroKcal;
+
+      // Goal label
+      var goalLabels = { '-0.2': 'Lose Fat', '0': 'Maintain', '0.1': 'Gain Muscle' };
+      var goalNotes  = { '-0.2': '−20% below TDEE', '0': 'At TDEE', '0.1': '+10% above TDEE' };
+      var goalKey    = String(goalAdj);
+      var goalName   = goalLabels[goalKey] || 'Custom Goal';
+      var goalNote   = goalNotes[goalKey] || '';
+
+      // Update DOM
+      document.getElementById('result-headline').textContent   = 'Your ' + goalName + ' Targets';
+      document.getElementById('result-goal-label').textContent = goalName + ' · Mifflin-St Jeor';
+      document.getElementById('result-tdee-val').textContent   = tdee.toLocaleString();
+      document.getElementById('result-tdee-box').textContent   = tdee.toLocaleString();
+      document.getElementById('result-goal-kcal').textContent  = goalKcal.toLocaleString();
+      document.getElementById('result-goal-box-label').textContent = goalName + ' Calories';
+      document.getElementById('result-goal-note').textContent  = goalNote;
+      document.getElementById('ring-kcal-center').textContent  = goalKcal.toLocaleString();
+
+      document.getElementById('val-protein').textContent = proteinG + 'g';
+      document.getElementById('val-carbs').textContent   = carbsG + 'g';
+      document.getElementById('val-fat').textContent     = fatG + 'g';
+
+      document.getElementById('pct-protein').textContent = Math.round(pctP * 100) + '% of kcal';
+      document.getElementById('pct-carbs').textContent   = Math.round(pctC * 100) + '% of kcal';
+      document.getElementById('pct-fat').textContent     = Math.round(pctF * 100) + '% of kcal';
+
+      // Bars (relative to largest macro %)
+      var maxPct = Math.max(pctP, pctC, pctF);
+      document.getElementById('bar-protein').style.width = (pctP / maxPct * 100) + '%';
+      document.getElementById('bar-carbs').style.width   = (pctC / maxPct * 100) + '%';
+      document.getElementById('bar-fat').style.width     = (pctF / maxPct * 100) + '%';
+
+      // SVG ring — protein starts at top (0), carbs follows, fat last
+      var offsetP = 0;
+      var offsetC = CIRCUMFERENCE * pctP;
+      var offsetF = CIRCUMFERENCE * (pctP + pctC);
+      setRingSegment('ring-protein', pctP, offsetP);
+      setRingSegment('ring-carbs',   pctC, offsetC);
+      setRingSegment('ring-fat',     pctF, offsetF);
+
+      // Blurb
+      document.getElementById('blurb-protein').textContent = proteinG + 'g';
+
+      // ── Store results in localStorage for app bridge ──
+      var calcResults = { kcal: goalKcal, p: proteinG, c: carbsG, f: fatG,
+        weightKg: weightKg, goal: goalName, storedAt: Date.now() };
+      try { localStorage.setItem('sg_calc_results', JSON.stringify(calcResults)); } catch(e) {}
+
+      // ── Track calc_complete funnel event ──
+      sgTrackEvent('calc_complete', { goal: goalName, kcal: goalKcal });
+
+      // ── Build macro-passthrough URL for app CTA ──
+      var appUrl = 'index.html?setMacros=1&kcal=' + goalKcal + '&p=' + proteinG + '&c=' + carbsG + '&f=' + fatG
+        + '&utm_source=calculator&utm_medium=cta&utm_content=results';
+      document.querySelectorAll('.cta-app-link').forEach(function(el) { el.href = appUrl; });
+
+      // Show results
+      var resultsEl = document.getElementById('results');
+      resultsEl.style.display = 'block';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          resultsEl.classList.add('visible');
+          // Scroll to results
+          setTimeout(function() {
+            var top = resultsEl.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }, 80);
+        });
+      });
+    });
+
+    /* ── Show email capture section with results ───── */
+    document.getElementById('email-capture-section').style.display = 'block';
+
+    /* ── Email capture form ──────────────────────── */
+    document.getElementById('email-capture-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('capture-email').value.trim();
+      var msg = document.getElementById('email-capture-msg');
+      if (!email || !email.includes('@')) { msg.style.color = '#c0392b'; msg.textContent = 'Enter a valid email.'; return; }
+      msg.style.color = 'var(--sub)'; msg.textContent = 'Sending…';
+
+      // Read latest calc results from localStorage
+      var cr = {};
+      try { cr = JSON.parse(localStorage.getItem('sg_calc_results') || '{}'); } catch(e) {}
+
+      // Track email capture funnel event
+      sgTrackEvent('calc_email_captured', { goal: cr.goal });
+
+      fetch('/.netlify/functions/send-calc-followup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, kcal: cr.kcal, protein: cr.p, carbs: cr.c, fat: cr.f, goal: cr.goal })
+      })
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function() {
+        msg.style.color = 'var(--accent)'; msg.textContent = '✓ Sent! Check your inbox.';
+        document.getElementById('capture-email').value = '';
+        // Store email so app can link it on signup
+        try { localStorage.setItem('sg_calc_email', email); } catch(e) {}
+      })
+      .catch(function() {
+        // Still save email locally even if network fails
+        try { localStorage.setItem('sg_calc_email', email); } catch(e) {}
+        msg.style.color = 'var(--accent)'; msg.textContent = '✓ Saved! We\'ll follow up when you sign up.';
+      });
+    });
+
+    /* ── Funnel event tracker ───────────────────────── */
+    function sgTrackEvent(name, props) {
+      try {
+        fetch('/.netlify/functions/track-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_name: name, properties: props || {} })
+        }).catch(function() {});
+      } catch(e) {}
+    }
+
+    /* ── Track calc_app_opened when user clicks any CTA into the app ──── */
+    document.addEventListener('click', function(e) {
+      var el = e.target && e.target.closest ? e.target.closest('.cta-app-link') : null;
+      if (el) {
+        var cr = {};
+        try { cr = JSON.parse(localStorage.getItem('sg_calc_results') || '{}'); } catch(_) {}
+        sgTrackEvent('calc_app_opened', { goal: cr.goal, kcal: cr.kcal });
+      }
+    });
+
+    /* ── Clear errors on input ──────────────────────── */
+    document.getElementById('age').addEventListener('input', function() { clearError('age'); });
+    document.getElementById('height-cm').addEventListener('input', function() { clearError('height'); });
+    document.getElementById('height-ft').addEventListener('input', function() { clearError('height'); });
+    document.getElementById('height-in').addEventListener('input', function() { clearError('height'); });
+    document.getElementById('weight-kg').addEventListener('input', function() { clearError('weight'); });
+  </script>
+
+</body>
+</html>

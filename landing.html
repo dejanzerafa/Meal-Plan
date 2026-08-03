@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoulGainz — Cook Once. Eat All Week.</title>
+  <meta name="description" content="High-protein meal prep with verified macros. Browse 94 recipes, get your grocery list, and batch cook 7 days of food in one session. Free to start." />
+  <meta name="author" content="SoulGainz" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://soulgainz.app/landing.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://soulgainz.app/landing.html" />
+  <meta property="og:title" content="SoulGainz — Cook Once. Eat All Week." />
+  <meta property="og:description" content="High-protein meal prep with verified macros. 94 recipes, auto grocery list, batch cook 7 days in one session." />
+  <meta property="og:site_name" content="SoulGainz" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#b84a1f" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & Base ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:    #b84a1f;
+      --accent-dk: #963d19;
+      --bg:        #f3ece0;
+      --card:      #ebe2d3;
+      --card-dark: #e0d6c4;
+      --text:      #1a1612;
+      --sub:       #4a3f33;
+      --border:    rgba(26,22,18,0.12);
+      --shadow:    0 2px 16px rgba(26,22,18,0.08);
+      --shadow-lg: 0 8px 40px rgba(26,22,18,0.13);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .serif {
+      font-family: "Fraunces", Georgia, serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Layout helpers ─────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section { padding: 80px 0; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--sub);
+      line-height: 1.65;
+      max-width: 540px;
+    }
+
+    /* ── Buttons ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 26px;
+      border-radius: 10px;
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(184,74,31,0.32);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dk);
+      box-shadow: 0 6px 22px rgba(184,74,31,0.38);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card);
+      border-color: rgba(26,22,18,0.2);
+    }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.25s ease, box-shadow 0.25s ease, padding 0.25s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(243,236,224,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+      padding: 12px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-cta {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      padding-top: 130px;
+      padding-bottom: 80px;
+      overflow: hidden;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-headline {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(40px, 6vw, 68px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--sub);
+      line-height: 1.65;
+      margin-bottom: 32px;
+      max-width: 420px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .trust-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sub);
+    }
+
+    .trust-chip-check {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* ── Recipe card grid (hero visual) ────────────────────── */
+    .hero-visual {
+      position: relative;
+    }
+
+    .recipe-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .recipe-mini-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .recipe-mini-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .recipe-mini-emoji {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .recipe-mini-name {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(26,22,18,0.1);
+    }
+
+    .recipe-mini-name-short {
+      width: 65%;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(26,22,18,0.07);
+      margin-top: 2px;
+    }
+
+    .recipe-mini-macros {
+      width: 100%;
+      display: flex;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .recipe-mini-macro-bar {
+      height: 4px;
+      border-radius: 2px;
+      flex: 1;
+    }
+
+    .macro-p { background: var(--accent); }
+    .macro-c { background: #c4921f; }
+    .macro-f { background: #8a7a66; }
+
+    .hero-visual-label {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--sub);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-visual-badge {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 12px rgba(184,74,31,0.3);
+    }
+
+    /* ── How it works ───────────────────────────────────────── */
+    .how {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .how-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .step-desc {
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.65;
+    }
+
+    .steps-connector {
+      display: none;
+    }
+
+    /* ── Recipe showcase ────────────────────────────────────── */
+    .recipes-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .recipe-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .recipe-card-emoji-wrap {
+      background: var(--card-dark);
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      line-height: 1;
+      position: relative;
+    }
+
+    .recipe-method-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 100px;
+      background: rgba(26,22,18,0.08);
+      color: var(--sub);
+    }
+
+    .recipe-card-body {
+      padding: 16px;
+    }
+
+    .recipe-card-name {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+
+    .macro-strip {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .macro-item {
+      flex: 1;
+      padding: 7px 4px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .macro-item:last-child { border-right: none; }
+
+    .macro-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .macro-lbl {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sub);
+      margin-top: 2px;
+    }
+
+    .macro-item.kcal .macro-val { color: var(--accent); }
+
+    /* ── Macro calculator teaser ────────────────────────────── */
+    .macro-teaser {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .macro-teaser-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .macro-teaser-visual {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .macro-bar-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .macro-bar-fill {
+      width: 36px;
+      border-radius: 6px 6px 0 0;
+      position: relative;
+    }
+
+    .macro-bar-fill.bar-p {
+      height: 90px;
+      background: linear-gradient(to top, var(--accent), #e07040);
+    }
+
+    .macro-bar-fill.bar-c {
+      height: 60px;
+      background: linear-gradient(to top, #c4921f, #daa83a);
+    }
+
+    .macro-bar-fill.bar-f {
+      height: 40px;
+      background: linear-gradient(to top, #8a7a66, #a89882);
+    }
+
+    .macro-bar-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--sub);
+    }
+
+    .macro-bar-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── Pricing ────────────────────────────────────────────── */
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 820px;
+      margin: 0 auto 28px;
+    }
+
+    .pricing-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 8px 32px rgba(184,74,31,0.15);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 100px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .pricing-tier {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .pricing-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .pricing-amount {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .pricing-period {
+      font-size: 14px;
+      color: var(--sub);
+      font-weight: 500;
+    }
+
+    .pricing-desc {
+      font-size: 14px;
+      color: var(--sub);
+      line-height: 1.5;
+    }
+
+    .pricing-cta {
+      margin-top: auto;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .pricing-footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .pricing-footer-sep {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--sub);
+      opacity: 0.4;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: var(--sub);
+      font-style: italic;
+      margin-top: -12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--sub);
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--sub);
+      opacity: 0.7;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero-headline {
+        font-size: clamp(36px, 8vw, 56px);
+      }
+
+      .hero-sub { max-width: 100%; }
+
+      .hero-visual {
+        max-width: 360px;
+        margin: 0 auto;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .recipes-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .macro-teaser-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .macro-teaser-visual {
+        justify-content: center;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      section { padding: 56px 0; }
+
+      .hero { padding-top: 100px; }
+
+      .hero-ctas {
+        flex-direction: column;
+      }
+
+      .hero-ctas .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .trust-chips {
+        gap: 8px;
+      }
+
+      .recipe-card-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .recipe-mini-emoji { font-size: 22px; }
+
+      .recipes-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .recipe-card-emoji-wrap {
+        padding: 20px;
+        font-size: 38px;
+      }
+
+      .section-heading {
+        font-size: clamp(24px, 7vw, 36px);
+      }
+
+      .how-header,
+      .recipes-header,
+      .pricing-header {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .recipes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo serif">
+          <span>SOUL</span>GAINZ
+        </a>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <a href="calculator.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Calculator</a>
+          <a href="blog.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Blog</a>
+          <a href="/?utm_source=landing&utm_medium=nav&utm_content=header" class="btn btn-primary nav-cta">Open App →</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+
+        <!-- Left: copy -->
+        <div class="hero-copy">
+          <p class="section-label">Feed Your Soul · Fuel Your Gainz</p>
+          <h1 class="hero-headline">
+            Cook once.<br>
+            <em>Eat all week.</em>
+          </h1>
+          <p class="hero-sub">
+            High-protein meal prep with verified macros — batch cook 7 days of food in one session.
+          </p>
+          <div class="hero-ctas">
+            <a href="/?utm_source=landing&utm_medium=hero&utm_content=cta" class="btn btn-primary">Start for free →</a>
+            <a href="#recipes" class="btn btn-secondary">See recipes ↓</a>
+          </div>
+          <div class="trust-chips">
+            <span class="trust-chip">
+              <span class="trust-chip-check">✓</span> 94 recipes
+            </span>
+            <span class="trust-chip">
+              <span class="trust-chip-check">✓</span> Verified macros
+            </span>
+            <span class="trust-chip">
+              <span class="trust-chip-check">✓</span> Free to start
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: visual -->
+        <div class="hero-visual">
+          <span class="hero-visual-badge">94 recipes</span>
+          <div class="recipe-card-grid">
+
+            <!-- Card 1 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🍗</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🥩</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🫙</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🍳</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🐟</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="recipe-mini-card">
+              <div class="recipe-mini-emoji">🥗</div>
+              <div class="recipe-mini-name"></div>
+              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-macros">
+                <div class="recipe-mini-macro-bar macro-p"></div>
+                <div class="recipe-mini-macro-bar macro-c"></div>
+                <div class="recipe-mini-macro-bar macro-f"></div>
+              </div>
+            </div>
+
+          </div>
+          <p class="hero-visual-label">All recipes · Verified macros · Free to start</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ─────────────────────────────────────────────── -->
+  <section class="how">
+    <div class="container">
+      <div class="how-header">
+        <p class="section-label">How it works</p>
+        <h2 class="section-heading">Three steps to a full week of food.</h2>
+      </div>
+      <div class="steps-grid">
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <div>
+            <div class="step-title">Pick your recipes</div>
+            <p class="step-desc">Browse 94 high-protein meals. Assign your breakfast, lunch, and dinner for the week — mix and match freely.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div>
+            <div class="step-title">Get your grocery list</div>
+            <p class="step-desc">The app auto-generates your full shopping list, scaled to your batch size — 3, 5, or 7 days. No guesswork.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div>
+            <div class="step-title">Cook once, eat all week</div>
+            <p class="step-desc">One prep session. Containers in the fridge. Hit your macros every single day without thinking about it.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RECIPE SHOWCASE ──────────────────────────────────────────── -->
+  <section id="recipes">
+    <div class="container">
+      <div class="recipes-header">
+        <p class="section-label">Recipe showcase</p>
+        <h2 class="section-heading">Real food. Real macros.</h2>
+        <p class="section-sub" style="margin: 0 auto;">Every recipe is built for flavour and function — high protein, measured macros, and genuinely worth eating every day of the week.</p>
+      </div>
+      <div class="recipes-grid">
+
+        <!-- Honey Garlic Chicken -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🍗
+            <span class="recipe-method-badge">Stovetop</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Honey Garlic Chicken</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">620</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">52g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">58g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">14g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smash Burger Bowl -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🥩
+            <span class="recipe-method-badge">Stovetop</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Smash Burger Bowl</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">680</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">48g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">54g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">22g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beef Bolognese -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🫙
+            <span class="recipe-method-badge">Stovetop</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Beef Bolognese</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">590</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">44g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">62g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">16g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Protein French Toast -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🍳
+            <span class="recipe-method-badge">Stovetop</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Protein French Toast</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">480</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">38g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">50g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">12g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teriyaki Salmon Bowl -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🐟
+            <span class="recipe-method-badge">Oven</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Teriyaki Salmon Bowl</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">610</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">46g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">52g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">18g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Greek Chicken Salad -->
+        <div class="recipe-card">
+          <div class="recipe-card-emoji-wrap">
+            🥗
+            <span class="recipe-method-badge">Air Fryer</span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-name">Greek Chicken Salad</div>
+            <div class="macro-strip">
+              <div class="macro-item kcal">
+                <div class="macro-val">520</div>
+                <div class="macro-lbl">kcal</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">44g</div>
+                <div class="macro-lbl">protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">28g</div>
+                <div class="macro-lbl">carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val">24g</div>
+                <div class="macro-lbl">fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MACRO CALCULATOR TEASER ─────────────────────────────────── -->
+  <section class="macro-teaser">
+    <div class="container">
+      <div class="macro-teaser-inner">
+
+        <div class="macro-teaser-copy">
+          <p class="section-label">Macro Calculator</p>
+          <h2 class="section-heading">Know your macros<br>before you cook.</h2>
+          <p class="section-sub" style="margin-bottom: 28px;">
+            The built-in macro calculator gives you your daily targets based on your body, goals, and activity level — so every recipe is scaled to you.
+          </p>
+          <a href="/?utm_source=landing&utm_medium=calculator&utm_content=cta" class="btn btn-primary">Calculate my macros →</a>
+        </div>
+
+        <div class="macro-teaser-visual">
+          <div class="macro-bar-visual">
+            <div class="macro-bar-val">180g</div>
+            <div class="macro-bar-fill bar-p"></div>
+            <div class="macro-bar-lbl">Protein</div>
+          </div>
+          <div class="macro-bar-visual">
+            <div class="macro-bar-val">220g</div>
+            <div class="macro-bar-fill bar-c"></div>
+            <div class="macro-bar-lbl">Carbs</div>
+          </div>
+          <div class="macro-bar-visual">
+            <div class="macro-bar-val">70g</div>
+            <div class="macro-bar-fill bar-f"></div>
+            <div class="macro-bar-lbl">Fat</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ─────────────────────────────────────────────────── -->
+  <section id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <p class="section-label">Pricing</p>
+        <h2 class="section-heading">Simple, honest pricing.</h2>
+        <p class="section-sub" style="margin: 0 auto;">Less than a single meal delivery. All 94 recipes, macros, grocery lists, and every new drop.</p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- Monthly -->
+        <div class="pricing-card">
+          <div class="pricing-tier">Monthly</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">$14.99</span>
+            <span class="pricing-period">/mo</span>
+          </div>
+          <div class="pricing-desc">All recipes, cancel anytime</div>
+          <a href="/?utm_source=landing&utm_medium=pricing&utm_content=monthly" class="btn btn-secondary pricing-cta">Get started →</a>
+        </div>
+
+        <!-- Quarterly -->
+        <div class="pricing-card featured">
+          <span class="pricing-badge">Save 11%</span>
+          <div class="pricing-tier">Quarterly</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">$39.99</span>
+            <span class="pricing-period">/3mo</span>
+          </div>
+          <div class="pricing-desc">All recipes + new drops</div>
+          <a href="/?utm_source=landing&utm_medium=pricing&utm_content=quarterly" class="btn btn-primary pricing-cta">Get started →</a>
+        </div>
+
+        <!-- Lifetime -->
+        <div class="pricing-card">
+          <span class="pricing-badge" style="background: var(--text);">⭐ Best value</span>
+          <div class="pricing-tier">Lifetime</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">$149.99</span>
+          </div>
+          <div class="pricing-desc">Everything forever</div>
+          <a href="/?utm_source=landing&utm_medium=pricing&utm_content=lifetime" class="btn btn-secondary pricing-cta">Get started →</a>
+        </div>
+
+      </div>
+
+      <div class="pricing-footer">
+        <span>Secure payments via Stripe</span>
+        <span class="pricing-footer-sep"></span>
+        <span>30-day money-back guarantee</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo serif">
+          <span>SOUL</span>GAINZ
+        </div>
+        <p class="footer-tagline">Feed Your Soul · Fuel Your Gainz</p>
+        <div class="footer-links">
+          <a href="calculator.html">Macro Calculator</a>
+          <a href="blog.html">Blog</a>
+          <a href="recipes-preview.html">Recipes</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="mailto:admin@soulgainz.app">Contact</a>
+        </div>
+        <p class="footer-copy">© 2025 SoulGainz. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── JS: nav scroll + smooth scroll ────────────────────────── -->
+  <script>
+    // Nav scroll transparency
+    (function () {
+      var nav = document.getElementById('nav');
+      function onScroll() {
+        if (window.scrollY > 40) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          var offset = 70;
+          var top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

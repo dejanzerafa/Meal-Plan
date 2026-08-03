@@ -1,0 +1,81 @@
+# Netlify configuration for Meal Prep app
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+  command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && echo 'React vendor files OK'" 
+
+# ── Secrets scanning ─────────────────────────────────────────────────────────
+# VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).
+# Tell Netlify not to block deploys because of it.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VAPID_PUBLIC_KEY"
+
+[functions]
+  node_bundler = "esbuild"
+
+# ── Scheduled functions ──────────────────────────────────────────────────────
+# ⚠️  ALL scheduled functions below require the Netlify Pro / Team plan.
+#    On the free plan every schedule entry is silently ignored — no error, no run.
+#    Alternative: use Supabase Edge Functions + pg_cron (free tier supports it).
+#    renewal-reminder already has a Supabase Edge Function in
+#    supabase/functions/renewal-reminder/ — see its index.ts for the pg_cron SQL.
+# To test any function manually: POST /.netlify/functions/<name> (body may be empty)
+
+[functions."birthday-emails"]
+  schedule = "0 8 * * *"      # Daily at 08:00 UTC — check + send birthday emails
+
+[functions."holiday-emails"]
+  schedule = "0 7 * * *"      # Daily at 07:00 UTC — check + send holiday emails
+
+[functions."renewal-reminder"]
+  schedule = "0 9 * * *"      # Daily at 09:00 UTC — send 7-day renewal reminders
+
+# Custom redirects (PWA-friendly)
+
+# Root → landing page (SEO: bare domain shows marketing page, not app shell)
+[[redirects]]
+  from = "/"
+  to = "/landing.html"
+  status = 301
+
+[[redirects]]
+  from = "/portal"
+  to = "/.netlify/functions/customer-portal"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+# ── Security headers ──────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent clickjacking — only allow in same-origin iframes
+    X-Frame-Options = "SAMEORIGIN"
+    # Stop browsers from MIME-sniffing scripts/styles
+    X-Content-Type-Options = "nosniff"
+    # Limit referrer info sent to third parties
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Force HTTPS for 1 year (including subdomains). Remove includeSubDomains if it causes issues.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Restrict browser feature access — no mic/camera/geo unless the app explicitly requests
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self), usb=()"
+    # Basic XSS protection for older browsers
+    X-XSS-Protection = "1; mode=block"
+
+# ── Netlify function CORS pre-flight ─────────────────────────────────────────
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://soulgainz.app"
+    Access-Control-Allow-Methods = "POST, GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Max-Age = "86400"

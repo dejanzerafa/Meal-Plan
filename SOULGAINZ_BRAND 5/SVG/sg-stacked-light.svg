@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="450" viewBox="0 0 900 450">
+  <title>SoulGainz — Stacked Light</title>
+  <defs><style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,700&amp;display=swap');
+    .soul { font-family:'Lora','Hoefler Text','Palatino Linotype',Palatino,Georgia,serif; font-style:italic; font-weight:700; font-size:110px; fill:#E07B2A; }
+    .gainz{ font-family:'Lora','Hoefler Text','Palatino Linotype',Palatino,Georgia,serif; font-style:normal; font-weight:700; font-size:110px; fill:#2D1E0F; }
+    .tag  { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:300; fill:#9C8A7A; letter-spacing:4px; }
+  </style></defs>
+  <rect width="900" height="450" fill="#FCF9F3"/>
+  <!-- flame centered, base at y=230 -->
+  <g transform="translate(450,230) scale(5.2)">
+    <path fill="#E07B2A" d="M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z"/>
+  </g>
+  <text text-anchor="middle" y="360">
+    <tspan class="soul" x="450">Soul</tspan><tspan class="gainz" dx="6">Gainz</tspan>
+  </text>
+  <text class="tag" text-anchor="middle" x="450" y="400">FEED YOUR SOUL  ·  FUEL YOUR GAINZ</text>
+</svg>

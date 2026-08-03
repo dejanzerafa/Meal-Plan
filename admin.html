@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoulGainz · Promo Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f0d0a;color:#f3ece0;min-height:100vh}
+  input,select{font-family:inherit;font-size:14px}
+  ::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:#1a1612} ::-webkit-scrollbar-thumb{background:#3a2f24;border-radius:3px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const { useState, useEffect, useRef } = React;
+
+// ── Config ── Change this password before deploying ──────────────────────────
+const ADMIN_PASSWORD = "soulgainz2025";
+
+const C = {
+  bg:"#0f0d0a", card:"#1c1712", card2:"#241e18", dim:"#3a2f24",
+  accent:"#E07B2A", accentDim:"rgba(224,123,42,0.12)", accentBorder:"rgba(224,123,42,0.3)",
+  text:"#f3ece0", sub:"#b8a890", muted:"#7a6d5e", green:"#9aa86a",
+  greenDim:"rgba(154,168,106,0.12)", greenBorder:"rgba(154,168,106,0.3)",
+  red:"#ef4444", redDim:"rgba(239,68,68,0.10)", border:"#2e261d"
+};
+
+const TIER_OPTIONS = [
+  { value:"monthly",   label:"Monthly Pro",   color:"#22c55e" },
+  { value:"quarterly", label:"Quarterly Pro",  color:"#22c55e" },
+  { value:"annual",    label:"Annual Pro",     color:"#3b82f6" },
+  { value:"lifetime",  label:"Lifetime",       color:"#f59e0b" },
+];
+
+const STORAGE_KEY = "sg_admin_codes_v1";
+
+function loadCodes() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch(e) { return {}; }
+}
+function saveCodes(codes) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(codes));
+}
+
+// ── Login Screen ──────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }) {
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState(false);
+  const inputRef = useRef(null);
+  useEffect(() => { inputRef.current && inputRef.current.focus(); }, []);
+
+  function attempt() {
+    if (pw === ADMIN_PASSWORD) { onLogin(); }
+    else { setErr(true); setPw(""); setTimeout(() => setErr(false), 1800); }
+  }
+
+  return React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:24} },
+    React.createElement("div", { style:{width:"100%",maxWidth:360,textAlign:"center"} },
+      React.createElement("div", { style:{fontSize:32,marginBottom:8} }, "🔥"),
+      React.createElement("div", { style:{fontSize:20,fontWeight:800,color:C.text,marginBottom:4} }, "SoulGainz Admin"),
+      React.createElement("div", { style:{fontSize:12,color:C.muted,marginBottom:28} }, "Promo Code Manager"),
+      React.createElement("input", {
+        ref: inputRef, type:"password", value:pw, placeholder:"Password",
+        onChange:e=>setPw(e.target.value),
+        onKeyDown:e=>e.key==="Enter"&&attempt(),
+        style:{width:"100%",background:C.card,border:`1.5px solid ${err?"#ef4444":C.dim}`,borderRadius:12,
+          padding:"12px 16px",fontSize:15,color:C.text,marginBottom:12,outline:"none",
+          transition:"border-color 0.2s"}
+      }),
+      React.createElement("button", {
+        onClick:attempt,
+        style:{width:"100%",background:C.accent,border:"none",borderRadius:12,padding:"13px",
+          fontSize:14,fontWeight:800,color:"#000",cursor:"pointer"}
+      }, "Enter"),
+      err && React.createElement("div", { style:{color:C.red,fontSize:12,marginTop:10} }, "Incorrect password")
+    )
+  );
+}
+
+// ── Create Code Form ──────────────────────────────────────────────────────────
+function CreateForm({ onCreate }) {
+  const [code, setCode] = useState("");
+  const [tier, setTier] = useState("quarterly");
+  const [expires, setExpires] = useState("");
+  const [label, setLabel] = useState("");
+  const [err, setErr] = useState("");
+
+  function submit() {
+    const key = code.trim().toUpperCase().replace(/\s+/g, "-");
+    if (!key) { setErr("Enter a code"); return; }
+    if (!/^[A-Z0-9\-]+$/.test(key)) { setErr("Letters, numbers and hyphens only"); return; }
+    if (key.length < 4) { setErr("Code must be at least 4 characters"); return; }
+    if (!label.trim()) { setErr("Enter a label so you remember who this is for"); return; }
+    onCreate({ key, tier, expires: expires || null, label: label.trim(), created: new Date().toISOString(), active: true });
+    setCode(""); setLabel(""); setExpires(""); setErr("");
+  }
+
+  const inputStyle = { width:"100%",background:C.card2,border:`1px solid ${C.dim}`,borderRadius:10,
+    padding:"10px 12px",fontSize:14,color:C.text,outline:"none" };
+  const labelStyle = { fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:6,display:"block" };
+
+  return React.createElement("div", { style:{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:"20px 20px 16px",marginBottom:20} },
+    React.createElement("div", { style:{fontSize:13,fontWeight:800,color:C.text,marginBottom:16,letterSpacing:"-0.01em"} }, "Create New Code"),
+
+    React.createElement("div", { style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12} },
+      React.createElement("div", null,
+        React.createElement("label", { style:labelStyle }, "CODE"),
+        React.createElement("input", { value:code, onChange:e=>setCode(e.target.value.toUpperCase()),
+          placeholder:"e.g. SARAH-VIP", style:{...inputStyle,fontFamily:"monospace",letterSpacing:"0.06em",fontWeight:700} })
+      ),
+      React.createElement("div", null,
+        React.createElement("label", { style:labelStyle }, "TIER"),
+        React.createElement("select", { value:tier, onChange:e=>setTier(e.target.value),
+          style:{...inputStyle,cursor:"pointer"} },
+          TIER_OPTIONS.map(t=>React.createElement("option",{key:t.value,value:t.value},t.label))
+        )
+      )
+    ),
+
+    React.createElement("div", { style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12} },
+      React.createElement("div", null,
+        React.createElement("label", { style:labelStyle }, "EXPIRY DATE (optional)"),
+        React.createElement("input", { type:"date",value:expires,onChange:e=>setExpires(e.target.value),
+          style:{...inputStyle,colorScheme:"dark"} })
+      ),
+      React.createElement("div", null,
+        React.createElement("label", { style:labelStyle }, "LABEL / WHO IS THIS FOR"),
+        React.createElement("input", { value:label, onChange:e=>setLabel(e.target.value),
+          placeholder:"e.g. Beta Tester - Sarah", style:inputStyle })
+      )
+    ),
+
+    err && React.createElement("div", { style:{fontSize:12,color:C.red,marginBottom:10} }, "⚠ "+err),
+
+    React.createElement("button", { onClick:submit,
+      style:{background:C.accent,border:"none",borderRadius:10,padding:"11px 20px",fontSize:13,
+        fontWeight:800,color:"#000",cursor:"pointer"} }, "＋ Create Code")
+  );
+}
+
+// ── Code Row ──────────────────────────────────────────────────────────────────
+function CodeRow({ codeKey, data, onToggle, onDelete }) {
+  const [copied, setCopied] = useState(false);
+  const tier = TIER_OPTIONS.find(t=>t.value===data.tier) || { label:data.tier, color:C.muted };
+  const expired = data.expires && new Date(data.expires+"T23:59:59") < new Date();
+  const status = !data.active ? "disabled" : expired ? "expired" : "active";
+  const statusColor = status==="active" ? C.green : C.red;
+  const statusBg = status==="active" ? C.greenDim : C.redDim;
+
+  function copy() {
+    navigator.clipboard.writeText(codeKey).then(()=>{
+      setCopied(true); setTimeout(()=>setCopied(false), 1800);
+    });
+  }
+
+  return React.createElement("div", { style:{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,
+    padding:"14px 16px",marginBottom:8,opacity:status!=="active"?0.65:1,transition:"opacity 0.2s"} },
+    React.createElement("div", { style:{display:"flex",alignItems:"flex-start",gap:12} },
+      React.createElement("div", { style:{flex:1,minWidth:0} },
+        React.createElement("div", { style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:4} },
+          React.createElement("span", { style:{fontFamily:"monospace",fontSize:15,fontWeight:800,color:C.text,letterSpacing:"0.04em"} }, codeKey),
+          React.createElement("span", { style:{fontSize:10,fontWeight:700,color:tier.color,background:`${tier.color}22`,
+            border:`1px solid ${tier.color}44`,borderRadius:4,padding:"2px 8px",letterSpacing:"0.06em"} }, tier.label.toUpperCase()),
+          React.createElement("span", { style:{fontSize:10,fontWeight:700,color:statusColor,background:statusBg,
+            border:`1px solid ${statusColor}44`,borderRadius:4,padding:"2px 8px",letterSpacing:"0.06em"} }, status.toUpperCase())
+        ),
+        React.createElement("div", { style:{fontSize:12,color:C.sub,marginBottom:2} }, data.label),
+        React.createElement("div", { style:{fontSize:11,color:C.muted} },
+          "Created " + new Date(data.created).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),
+          data.expires ? " · Expires " + new Date(data.expires).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : " · No expiry"
+        )
+      ),
+      React.createElement("div", { style:{display:"flex",gap:6,flexShrink:0} },
+        React.createElement("button", { onClick:copy,
+          style:{background:copied?C.greenDim:C.accentDim,border:`1px solid ${copied?C.greenBorder:C.accentBorder}`,
+            borderRadius:8,padding:"7px 12px",fontSize:11,fontWeight:700,
+            color:copied?C.green:C.accent,cursor:"pointer",whiteSpace:"nowrap"} },
+          copied ? "✓ Copied!" : "📋 Copy"),
+        React.createElement("button", { onClick:()=>onToggle(codeKey),
+          style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:8,padding:"7px 10px",
+            fontSize:11,fontWeight:700,color:C.sub,cursor:"pointer"} },
+          data.active ? "Pause" : "Enable"),
+        React.createElement("button", { onClick:()=>onDelete(codeKey),
+          style:{background:"transparent",border:`1px solid ${C.dim}`,borderRadius:8,padding:"7px 10px",
+            fontSize:12,color:C.muted,cursor:"pointer"} }, "✕")
+      )
+    )
+  );
+}
+
+// ── Main App ──────────────────────────────────────────────────────────────────
+function AdminApp() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem("sg_admin_authed")==="1");
+  const [codes, setCodes] = useState(loadCodes);
+  const [exportMsg, setExportMsg] = useState("");
+  const [importErr, setImportErr] = useState("");
+  const fileRef = useRef(null);
+
+  function login() { sessionStorage.setItem("sg_admin_authed","1"); setAuthed(true); }
+
+  function updateCodes(next) { setCodes(next); saveCodes(next); }
+
+  function onCreate(entry) {
+    const next = { ...codes, [entry.key]: { tier:entry.tier, expires:entry.expires, label:entry.label, created:entry.created, active:true } };
+    updateCodes(next);
+  }
+  function onToggle(key) {
+    const next = { ...codes, [key]: { ...codes[key], active: !codes[key].active } };
+    updateCodes(next);
+  }
+  function onDelete(key) {
+    if (!confirm(`Delete code "${key}"? This cannot be undone.`)) return;
+    const next = { ...codes };
+    delete next[key];
+    updateCodes(next);
+  }
+
+  function exportJSON() {
+    // Build promo-codes.json — only active, non-expired entries
+    const out = {};
+    Object.entries(codes).forEach(([k, v]) => {
+      if (!v.active) return;
+      out[k] = { tier:v.tier, expires:v.expires, label:v.label };
+    });
+    const blob = new Blob([JSON.stringify(out, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "promo-codes.json"; a.click();
+    URL.revokeObjectURL(url);
+    setExportMsg("Downloaded! Upload this file to your Netlify site root.");
+    setTimeout(()=>setExportMsg(""), 5000);
+  }
+
+  function importJSON(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        // Merge: existing admin codes + imported
+        const merged = { ...codes };
+        Object.entries(data).forEach(([k, v]) => {
+          if (!merged[k]) merged[k] = { ...v, created: new Date().toISOString(), active: true };
+        });
+        updateCodes(merged);
+        setImportErr("");
+      } catch(err) { setImportErr("Invalid JSON file"); }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  }
+
+  const sortedCodes = Object.entries(codes).sort((a,b)=>b[1].created.localeCompare(a[1].created));
+  const activeCt = sortedCodes.filter(([,v])=>v.active).length;
+
+  if (!authed) return React.createElement(LoginScreen, { onLogin:login });
+
+  return React.createElement("div", { style:{maxWidth:720,margin:"0 auto",padding:"32px 20px 64px"} },
+
+    // Header
+    React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:32} },
+      React.createElement("div", null,
+        React.createElement("div", { style:{fontSize:22,fontWeight:900,color:C.text,letterSpacing:"-0.02em"} }, "🔥 SoulGainz Admin"),
+        React.createElement("div", { style:{fontSize:12,color:C.muted,marginTop:2} }, "Promo Code Manager · " + sortedCodes.length + " codes, " + activeCt + " active")
+      ),
+      React.createElement("button", { onClick:()=>{sessionStorage.removeItem("sg_admin_authed");setAuthed(false);},
+        style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"7px 14px",
+          fontSize:12,color:C.muted,cursor:"pointer"} }, "Sign out")
+    ),
+
+    // Create form
+    React.createElement(CreateForm, { onCreate }),
+
+    // Export / Import row
+    React.createElement("div", { style:{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"} },
+      React.createElement("button", { onClick:exportJSON,
+        style:{flex:1,minWidth:180,background:C.accent,border:"none",borderRadius:10,padding:"11px 16px",
+          fontSize:13,fontWeight:800,color:"#000",cursor:"pointer"} },
+        "⬇ Download promo-codes.json"),
+      React.createElement("button", { onClick:()=>fileRef.current.click(),
+        style:{flex:1,minWidth:180,background:C.card,border:`1px solid ${C.dim}`,borderRadius:10,
+          padding:"11px 16px",fontSize:13,fontWeight:700,color:C.sub,cursor:"pointer"} },
+        "⬆ Import JSON"),
+      React.createElement("input", { ref:fileRef,type:"file",accept:".json",onChange:importJSON,style:{display:"none"} })
+    ),
+    exportMsg && React.createElement("div", { style:{background:C.greenDim,border:`1px solid ${C.greenBorder}`,borderRadius:10,
+      padding:"10px 14px",fontSize:12,color:C.green,marginBottom:16} },
+      "✓ "+exportMsg),
+    importErr && React.createElement("div", { style:{background:C.redDim,border:`1px solid rgba(239,68,68,0.3)`,borderRadius:10,
+      padding:"10px 14px",fontSize:12,color:C.red,marginBottom:16} }, "⚠ "+importErr),
+
+    // Deploy instructions
+    React.createElement("div", { style:{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,
+      padding:"14px 16px",marginBottom:24} },
+      React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:8} }, "HOW TO DEPLOY"),
+      React.createElement("ol", { style:{paddingLeft:18,fontSize:12,color:C.muted,lineHeight:2} },
+        React.createElement("li", null, "Create your codes above"),
+        React.createElement("li", null, React.createElement("b", {style:{color:C.text}}, "Download promo-codes.json")),
+        React.createElement("li", null, "Go to your Netlify site → Deploys → Drag & drop the file into the site root"),
+        React.createElement("li", null, "Done — codes are live instantly, no code editing needed")
+      )
+    ),
+
+    // Code list
+    React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:12} },
+      sortedCodes.length ? "ALL CODES" : "NO CODES YET"),
+    sortedCodes.length === 0 && React.createElement("div", { style:{textAlign:"center",padding:"40px 20px",color:C.muted,fontSize:13} },
+      "Create your first code above"),
+    sortedCodes.map(([key, data]) =>
+      React.createElement(CodeRow, { key, codeKey:key, data, onToggle, onDelete })
+    )
+  );
+}
+
+ReactDOM.render(React.createElement(AdminApp), document.getElementById("root"));
+</script>
+</body>
+</html>

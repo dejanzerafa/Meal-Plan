@@ -1,0 +1,12 @@
+{
+  "name": "meal-prep-functions",
+  "version": "1.0.0",
+  "description": "Server-side functions for Meal Prep app — Stripe + Supabase + Resend",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "acorn": "^8.18.0",
+    "stripe": "^14.21.0",
+    "web-push": "^3.6.7"
+  }
+}
