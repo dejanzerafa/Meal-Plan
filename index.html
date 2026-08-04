@@ -313,7 +313,7 @@ const TARGETS = { kcal: 2500, protein: 205, carbs: 300, fat: 55 };
 // ── Push notification VAPID key ──────────────────────────────────────────────
 // Split to avoid static secret scanners (this is a PUBLIC key — safe in client code)
 const PUSH_SERVER_KEY = ["BH-K2j5NA-i4RgFrBVr","quPx2xoC1y1VIlYOy_QHgSHgxcsBzMudTZ4Nv","3zKFHjSzB2TvHAdIDflNe-1mnTUeO_s"].join("");
-const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Fruits", "Aromatics", "Sauces", "Liquids", "Fats", "Fat"];
+const CAT_ORDER = ["Protein", "Carbs", "Dairy", "Vegetables", "Fruits", "Aromatics", "Sauces", "Liquids", "Fats"];
 const CAT_ICON = { Protein: "🥩", Carbs: "🌾", Dairy: "🧀", Vegetables: "🥦", Fruits: "🍓", Aromatics: "🧄", Sauces: "🍶", Liquids: "💧", Fats: "🫒", Fat: "🫒", Baking: "🧂", Spices: "🌶️", Legumes: "🫘", Supplements: "💊", Oils: "🫒", Condiments: "🍶", Herbs: "🌿" };
 // ─── FIXED MEALS ───────────────────────────────────────────────────────────
 const BREAKFAST = {
@@ -646,6 +646,8 @@ const ING_FLAT = [
   {id:333, name:"Whole Milk (fresh)", cat:"Dairy & Eggs", kcal:61, p:3.2, c:4.8, f:3.3, unitG:240},
   {id:334, name:"Papaya", cat:"Fruits", kcal:43, p:0.5, c:11, f:0.3},
 ];
+// O(1) ingredient lookup by id — built once at module load
+const ING_MAP = new Map(ING_FLAT.map(i => [i.id, i]));
 // ─── RECIPE BANK ─────────────────────────────────────────────────────────
 // perPortion: includes ½ tbsp olive oil.
 // batchItems: same key across recipes → quantities merge in shopping list.
@@ -673,7 +675,7 @@ const RECIPES = [
             { key: "hol10_onion",   label: "Yellow onion (large)",       qty: 1,    unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
         ],
         steps: [
-            "Cook jasmine rice: rinse dry rice with water. Cook in pot or rice cooker until fluffy. Season with salt.",
+            "Cook brown rice: rinse dry rice with water. Cook in pot or rice cooker until fluffy (approx 35–40 min). Season with salt.",
             "Dice onion and bell peppers. Mince garlic cloves.",
             "Brown beef mince in a large oven-safe skillet or pot with olive oil over medium-high heat. Season with salt, pepper, onion powder, garlic powder, and paprika. Drain any excess fat.",
             "Add onion and bell peppers to the beef. Cook 5 min until softened. Add minced garlic and cook 1 min.",
@@ -780,7 +782,7 @@ const RECIPES = [
             { key: "chipotle_peppers_adobo", label: "Chipotle peppers in adobo", qty: 100, unit: "g", cat: "Sauces" , ingId: 200 , role: "fixed", baseQty: 28.29},
             { key: "lime", label: "Lime", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.14},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 18, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 18, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Cook jasmine rice.",
             "Brown beef mince. Season well. Drain ALL excess fat — critical for macro accuracy.",
@@ -801,7 +803,7 @@ const RECIPES = [
             { key: "bell_pepper_red", label: "Red bell peppers", qty: 700, unit: "g", cat: "Vegetables" , ingId: 104 , role: "veg", baseQty: 100},
             { key: "zucchini", label: "Zucchini", qty: 700, unit: "g", cat: "Vegetables" , ingId: 103 , role: "veg", baseQty: 100},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 14, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 14, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Cube potatoes evenly. Season with salt, pepper, rosemary. Spray with PAM only. Roast 200°C for 35–40 min, turn halfway.",
             "Brown beef mince in a pan. Season well. Drain all excess fat before portioning.",
@@ -824,7 +826,7 @@ const RECIPES = [
             { key: "mustard_yellow", label: "Yellow mustard", qty: 14, unit: "g", cat: "Sauces" , ingId: 183 , role: "fixed", baseQty: 2},
             { key: "sweet_relish", label: "Sweet relish", qty: 105, unit: "g", cat: "Sauces" , ingId: 278 , role: "fixed", baseQty: 15},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m02_spinach", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
             { key: "m02_pickles", label: "Dill pickles / gherkins (sliced)", qty: 210, unit: "g", cat: "Vegetables", ingId: 203, role: "veg", baseQty: 30 },
         ],
@@ -882,7 +884,7 @@ const RECIPES = [
             { key: "hot_sauce", label: "Frank's Red Hot Wings Sauce", qty: 166, unit: "mL", cat: "Sauces" , ingId: 199 , role: "fixed", baseQty: 23.71},
             { key: "ranch_dressing", label: "Hidden Valley Fat-Free Ranch", qty: 166, unit: "mL", cat: "Sauces" , ingId: 204 , role: "fixed", baseQty: 23.71},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m09_celery", label: "Celery (diced)", qty: 560, unit: "g", cat: "Vegetables", ingId: 118, role: "veg", baseQty: 80 },
             { key: "m09_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
         ],
@@ -986,7 +988,7 @@ const RECIPES = [
             { key: "alfredo_sauce", label: "Alfredo sauce — Prego (1 jar)", qty: 624, unit: "g", cat: "Sauces" , ingId: 290 , role: "fixed", baseQty: 89.14},
             { key: "italian_sauce", label: "Italian tomato sauce — Prego (1 jar)", qty: 680, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 97.14},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m14_spin", label: "Baby spinach", qty: 700, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 100 },
             { key: "m14_brocc", label: "Broccoli florets", qty: 1400, unit: "g", cat: "Vegetables", ingId: 100, role: "veg", baseQty: 200 },
             { key: "m14_mush", label: "Mushrooms (sliced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 120 },
@@ -1016,7 +1018,7 @@ const RECIPES = [
             { key: "bell_pepper_orange", label: "Orange bell peppers", qty: 2, unit: "whole", cat: "Vegetables" , ingId: 134 , role: "veg", baseQty: 0.29},
             { key: "onion", label: "Onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Sauté diced peppers and onion. Add to slow cooker with chicken, buffalo sauce and seasonings. Cook HIGH 2hr.",
             "Blend cottage cheese, cream cheese, Président Light mozzarella, parmesan, milk and honey for 4–5 min until smooth.",
@@ -1097,7 +1099,7 @@ const RECIPES = [
             { key: "lime", label: "Lime", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.14},
             { key: "chicken_broth", label: "Chicken stock (2 Knorr cubes + 1L water)", qty: 1000, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 18},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 12, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 12, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m07_beans", label: "Black beans (canned, drained)", qty: 560, unit: "g", cat: "Carbs", ingId: 94, role: "veg", baseQty: 200 },
         ],
         steps: [
@@ -1179,7 +1181,7 @@ const RECIPES = [
             { key: "m21_chk", label: "Ground chicken (formed into balls)", qty: 840, unit: "g", cat: "Protein" , ingId: 3 , role: "protein", share: 1},
             { key: "m21_egg", label: "Large eggs", qty: 6, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 1},
             { key: "m21_corn", label: "Corn Flakes (crushed, sugar-free)", qty: 130, unit: "g", cat: "Carbs" , ingId: 266 , role: "carbs", share: 1},
-            { key: "m21_spray", label: "Cooking oil spray", qty: 10, unit: "g", cat: "Fat" , ingId: 172 , role: "fixed", baseQty: 2.14},
+            { key: "m21_spray", label: "Cooking oil spray", qty: 10, unit: "g", cat: "Fats" , ingId: 172 , role: "fixed", baseQty: 2.14},
         ],
         steps: [
             "Form the ground chicken into equal-sized balls. Season with salt, pepper, paprika, and garlic powder.",
@@ -1235,7 +1237,7 @@ const RECIPES = [
             { key: "dijon_mustard", label: "Dijon mustard", qty: 15, unit: "g", cat: "Sauces" , ingId: 184 , role: "fixed", baseQty: 2.14},
             { key: "beef_broth", label: "Beef stock (1 Knorr cube + 750mL water)", qty: 750, unit: "mL", cat: "Liquids" , ingId: 208 , role: "fixed", baseQty: 142.86},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m05_mush", label: "Mushrooms (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
             { key: "m05_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
             { key: "m05_thyme", label: "Fresh thyme", qty: 21, unit: "g", cat: "Aromatics", ingId: 235, role: "veg", baseQty: 3 },
@@ -1264,7 +1266,7 @@ const RECIPES = [
             { key: "milk_ff", label: "Baladna skimmed milk", qty: 166, unit: "mL", cat: "Dairy" , ingId: 50 , role: "protein", share: 1},
             { key: "garlic", label: "Minced garlic", qty: 28, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 17, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 17, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Add chicken, cream cheese, cottage cheese, Président Light mozzarella, garlic and milk to slow cooker. Cook HIGH 3hr.",
             "Cook pasta al dente. Steam broccoli separately.",
@@ -1370,7 +1372,7 @@ const RECIPES = [
             { key: "pasta_sauce_tom", label: "Tomato spaghetti sauce (jar)", qty: 400, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 57.14},
             { key: "chicken_broth", label: "Chicken stock (½ Knorr cube + 126mL water)", qty: 126, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 18},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 28, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 28, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Add chicken and both pasta sauces to slow cooker. Cook HIGH 3hr.",
             "Sauté diced peppers and onion in butter and stock until golden. Add to slow cooker.",
@@ -1818,7 +1820,7 @@ const RECIPES = [
             { key: "honey", label: "Raw honey", qty: 42, unit: "g", cat: "Sauces" , ingId: 195 , role: "fixed", baseQty: 6},
             { key: "garlic", label: "Garlic cloves", qty: 20, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m06_beans", label: "Black beans (canned, drained)", qty: 560, unit: "g", cat: "Carbs", ingId: 94, role: "veg", baseQty: 200 },
             { key: "m06_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
         ],
@@ -2002,7 +2004,7 @@ const RECIPES = [
             { key: "garlic", label: "Minced garlic", qty: 25, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
             { key: "beef_broth", label: "Beef stock (1 Knorr cube + 1L water)", qty: 1000, unit: "mL", cat: "Liquids" , ingId: 208 , role: "fixed", baseQty: 142.86},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
             { key: "m08_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
             { key: "m08_mush", label: "Mushrooms (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 150 },
             { key: "m08_pepper", label: "Bell pepper (diced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 105, role: "veg", baseQty: 120 },
@@ -2120,7 +2122,7 @@ const RECIPES = [
             { key: "garlic", label: "Minced garlic", qty: 25, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
             { key: "chicken_stock", label: "Chicken stock (1 Knorr cube + 280mL water)", qty: 280, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 40},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.",
             "Cook jasmine rice. Stir in peas, carrots and spinach off heat.",
@@ -2148,7 +2150,7 @@ const RECIPES = [
             { key: "garlic", label: "Minced garlic", qty: 25, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
             { key: "chicken_stock", label: "Chicken stock (1 Knorr cube + 280mL water)", qty: 280, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 40},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.",
             "Cook pasta separately. Mix in peas and carrots last 2 min. Fold in spinach off heat.",
@@ -2968,7 +2970,7 @@ const RECIPES = [
             { key: "bf6_bacon", label: "Beef bacon slices", qty: 7, unit: "whole", cat: "Protein" , ingId: 283 , role: "protein", share: 1},
             { key: "bf6_cheese", label: "Shredded Italian cheese blend", qty: 196, unit: "g", cat: "Dairy" , ingId: 44 , role: "protein", share: 0.199},
             { key: "bf6_tort", label: "High-fiber 12-inch tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 72 , role: "carbs", share: 1},
-            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fat" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
         
             { key: "bf6_spin", label: "Baby spinach", qty: 420, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 60 },
             { key: "bf6_pepper", label: "Bell pepper (diced)", qty: 700, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 100 },
@@ -4948,7 +4950,7 @@ function logHistory(lunchId, dinnerId) {
             hist.unshift(entry);
         localStorage.setItem("mp_history", JSON.stringify(hist.slice(0, 56)));
     }
-    catch (e) { }
+    catch (e) { console.warn("logHistory failed:", e); }
 }
 function generateShoppingText(lr, dr, portions, effectiveTargets, lunchScale, dinnerScale, bfr, prer, desr, bfSkipped, preSkipped, bfScale, preScale, desScale, profileScale) {
     if (!lr || !dr) return "";
@@ -5027,13 +5029,6 @@ function validateRecipes() {
 }
 // Run validator on next tick so it doesn't block render
 setTimeout(validateRecipes, 0);
-// roundIngQty: floor gram/mL quantities to nearest 5 (conservative macro protection).
-// Whole units always round up. Minimum 5g for any ingredient.
-function roundIngQty(rawQty, unit) {
-    // Rounding removed — show raw quantities so users buy the exact amount
-    return rawQty;
-}
-
 // normKey: strips recipe-specific prefixes so the same ingredient merges
 // across recipes regardless of whether it was keyed as "m31_chk" or "chicken_breast".
 function normKey(key, label) {
@@ -5095,7 +5090,7 @@ function normKey(key, label) {
 //   3. Ingredients with the same ingId across any two slots are summed into one line.
 //
 // No slot-fraction splitting, no macro-driven scaling — pure proportional × batch.
-function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, _lScale, _dScale, profileScale, effectiveTargets, bfScale, preScale, desScale) {
+function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped, lunchScale, dinnerScale, profileScale, effectiveTargets, bfScale, preScale, desScale) {
     try {
     const p  = portions || 7;
     const gl = profileScale || 1;
@@ -5193,8 +5188,6 @@ const INGREDIENT_MACROS = {
   "bf1-mozz": {kcal:160,p:36.0,c:4.0,f:0.0},
   "bf1-rice": {kcal:370.0, p:8.0, c:77.0, f:2.9},
   "bf1-bacon": {kcal:230.0, p:14.0, c:1.0, f:18.0, unitG:28.0},
-  "bf1-cheddar": {kcal:163.0, p:36.0, c:3.0, f:0.5},
-  "bf1-eggs": {kcal:143.0, p:12.6, c:0.7, f:9.5, unitG:60.0},
   "bf1-hash": {kcal:77.0, p:2.0, c:17.0, f:0.1},
   "bf2-bagels": {kcal:263.0, p:9.8, c:49.0, f:3.0, unitG:105.0},
   "bf2-butter": {kcal:717.0, p:0.9, c:0.1, f:81.0, unitG:14.0},
@@ -6083,7 +6076,7 @@ function computeIngredientQtys(recipe, slotMacros, portions) {
     var sm = slotMacros || {};
 
     function findIng(ingId) {
-        return ingId ? ING_FLAT.find(function(i) { return i.id === ingId; }) : null;
+        return ingId ? (ING_MAP.get(ingId) || null) : null;
     }
 
     // Running per-portion macro budget consumed so far
@@ -6271,7 +6264,7 @@ function getIngMacros(item, scaledQty) {
     if (grams <= 0) return null;
     // Prefer ING_FLAT via ingId for most accurate per-100g values;
     // fall back to INGREDIENT_MACROS values if no ingId set.
-    var ing = item.ingId ? ING_FLAT.find(function(i) { return i.id === item.ingId; }) : null;
+    var ing = item.ingId ? (ING_MAP.get(item.ingId) || null) : null;
     var kcal100 = ing ? ing.kcal : (md ? md.kcal : null);
     var p100    = ing ? ing.p    : (md ? md.p    : null);
     var c100    = ing ? ing.c    : (md ? md.c    : null);
@@ -10686,9 +10679,12 @@ function App() {
         return function() { mq.removeEventListener ? mq.removeEventListener("change", handler) : mq.removeListener(handler); };
     }, []);
     const resolvedTheme = theme === "system" ? (systemDark ? "dark" : "light") : theme;
-    // Mutate global C for this render cycle (all children see updated values)
+    // Mutate global C in a layout effect so it is decoupled from the render path
     Object.assign(C, resolvedTheme === "light" ? LIGHT_C : DARK_C);
-    document.body.style.background = C.bg;
+    React.useLayoutEffect(() => {
+        Object.assign(C, resolvedTheme === "light" ? LIGHT_C : DARK_C);
+        document.body.style.background = C.bg;
+    }, [resolvedTheme]);
     // ── Portions scaler ────────────────────────────────────────────────────────
     const [portions, setPortionsState] = useState(() => { const p = parseInt(localStorage.getItem("mp_portions") || "7"); return [3,5,7].includes(p) ? p : 7; });
     const setPortions = n => { setPortionsState(n); localStorage.setItem("mp_portions", String(n)); };
@@ -11269,7 +11265,7 @@ function App() {
         if (recipeCat !== "main")
             return true;
         const f = FILTER_MAP[filter];
-        return f ? r.badge.includes(f) : true;
+        return f ? (r.badge || "").includes(f) : true;
     }).sort((a, b) => {
         // Active (selected) recipes float to top, then unlocked A-Z, then locked A-Z.
         const activeIds = [lunch, dinner, breakfastRecipe, dessert, preRecipe].filter(Boolean);
@@ -11280,7 +11276,7 @@ function App() {
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
         return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
-    }), [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, portions, favourites, allRecipes]);
+    }), [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes]);
     const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -11456,7 +11452,7 @@ function App() {
                     (function() {
                         var hour = new Date().getHours();
                         var greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-                        var firstName = (profile && profile.name) ? profile.name.split(" ")[0] : null;
+                        var firstName = (profile && profile.firstName) ? profile.firstName : null;
                         var greetLine = firstName ? greeting + ", " + firstName : greeting;
                         var dayPct = effectiveTargets.kcal > 0 ? Math.min(1, total.kcal / effectiveTargets.kcal) : 0;
                         var protPct = effectiveTargets.protein > 0 ? Math.min(1, total.protein / effectiveTargets.protein) : 0;
