@@ -704,7 +704,7 @@ const RECIPES = [
         steps: [
             "Preheat oven to 200°C. Mix olive oil, minced garlic, lemon juice, rosemary, salt, and pepper in a bowl.",
             "Toss halved baby potatoes in half the herb oil. Spread on a baking tray. Roast 20 min.",
-            "Coat chicken thighs in remaining herb oil. Nestle around potatoes. Roast a further 25 min until thighs reach 74°C internally.",
+            "Coat chicken breasts in remaining herb oil. Nestle around potatoes. Roast a further 25 min until breasts reach 74°C internally.",
             "Steam or blanch green beans 4 min. Season with salt and pepper.",
             "Weigh cooked chicken, divide equally. Portion thighs, potatoes, and green beans into containers.",
         ],
@@ -758,11 +758,12 @@ const RECIPES = [
             { key:"hol6_cumin", label:"Cumin", qty:3, unit:"g", cat:"Spices", ingId:222, role:"flavour", baseQty:3 },
             { key:"hol6_spap", label:"Smoked Paprika", qty:3, unit:"g", cat:"Spices", ingId:238, role:"flavour", baseQty:3 },
             { key:"hol6_onpow", label:"Onion Powder", qty:2, unit:"g", cat:"Spices", ingId:225, role:"flavour", baseQty:2 },
+            { key:"hol6_dill", label:"Dried dill", qty:3, unit:"g", cat:"Spices", ingId:233, role:"flavour", baseQty:1 },
         ],
         steps: [
             "Marinate chicken breasts in BBQ sauce and garlic powder for at least 30 min (overnight is better).",
             "Preheat oven to 200°C. Bake marinated chicken on a lined tray for 25–28 min until cooked through.",
-            "Cook jasmine rice: rinse dry rice with water in a pot or rice cooker. Season with salt.",
+            "Cook brown rice: rinse dry rice with water in a pot or rice cooker. Season with salt.",
             "Drain corn and black beans. Mix with diced tomatoes, cumin, smoked paprika, salt, and a squeeze of lime.",
             "Make high-protein ranch: mix Greek yogurt with garlic powder, onion powder, dried dill, salt, and pepper.",
             "Rest chicken 5 min, then slice. Weigh and divide equally across containers.",
@@ -788,7 +789,7 @@ const RECIPES = [
         
             { key: "cooking_oil", label: "Cooking oil", qty: 18, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
-            "Cook jasmine rice.",
+            "Cook brown rice.",
             "Brown beef mince. Season well. Drain ALL excess fat — critical for macro accuracy.",
             "Sauté diced bell peppers and add to beef.",
             "Blend sour cream, Greek yogurt, cottage cheese, Président Light mozzarella, chipotle peppers and lime juice until smooth.",
@@ -807,7 +808,9 @@ const RECIPES = [
             { key: "bell_pepper_red", label: "Red bell peppers", qty: 700, unit: "g", cat: "Vegetables" , ingId: 104 , role: "veg", baseQty: 100},
             { key: "zucchini", label: "Zucchini", qty: 700, unit: "g", cat: "Vegetables" , ingId: 103 , role: "veg", baseQty: 100},
         
-            { key: "cooking_oil", label: "Cooking oil", qty: 14, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
+            { key: "cooking_oil", label: "Cooking oil", qty: 14, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},
+            { key: "m04_rosemary", label: "Rosemary (dried)", qty: 3, unit: "g", cat: "Spices", ingId: 234, role: "flavour", baseQty: 1 },
+        ],
         steps: [
             "Cube potatoes evenly. Season with salt, pepper, rosemary. Spray with PAM only. Roast 200°C for 35–40 min, turn halfway.",
             "Brown beef mince in a pan. Season well. Drain all excess fat before portioning.",
@@ -865,6 +868,8 @@ const RECIPES = [
         
             { key:"hol4_cumin", label:"Cumin", qty:5, unit:"g", cat:"Spices", ingId:222, role:"flavour", baseQty:5 },
             { key:"hol4_spap", label:"Smoked Paprika", qty:3, unit:"g", cat:"Spices", ingId:238, role:"flavour", baseQty:3 },
+            { key:"hol4_lime", label:"Lime juice", qty:30, unit:"ml", cat:"Sauces", ingId:151, role:"flavour", baseQty:5 },
+            { key:"hol4_onion", label:"Onion", qty:100, unit:"g", cat:"Vegetables", ingId:106, role:"veg", share:1 },
         ],
         steps: [
             "Dice chicken breast into 2cm cubes. Season with chipotle chilli powder, cumin, smoked paprika, salt, and pepper.",
@@ -918,6 +923,7 @@ const RECIPES = [
             { key: "m1-mayo", label: "Light mayonnaise", qty: 210, unit: "g", cat: "Sauces" , ingId: 274 , role: "fixed", baseQty: 30},
             { key: "m1-ketchup", label: "Ketchup", qty: 40, unit: "g", cat: "Sauces" , ingId: 182 , role: "fixed", baseQty: 5.71},
             { key: "m1-mustard", label: "Yellow mustard", qty: 18, unit: "g", cat: "Sauces" , ingId: 183 , role: "fixed", baseQty: 2.57},
+            { key: "m28_pickle", label: "Pickle (gherkin sliced)", qty: 30, unit: "g", cat: "Sauces", ingId: 203, role: "flavour", baseQty: 6 },
         ],
         steps: [
             "Season beef with onion powder, paprika, and garlic powder. Cook in a large skillet until fully browned.",
@@ -1100,7 +1106,7 @@ const RECIPES = [
             { key: "parmesan", label: "Parmesan (optional topping)", qty: 12, unit: "g", cat: "Dairy" , ingId: 46 , role: "protein", share: 0.043},
             { key: "sour_cream_light", label: "Light sour cream", qty: 184, unit: "g", cat: "Dairy" , ingId: 57 , role: "fat", share: 1},
             { key: "chipotle_peppers_adobo", label: "Chipotle peppers in adobo", qty: 298, unit: "g", cat: "Sauces" , ingId: 200 , role: "fixed", baseQty: 28.29},
-            { key: "corn_canned", label: "Canned sweet corn (drained)", qty: 368, unit: "g", cat: "Sauces" , ingId: 78 , role: "fixed", baseQty: 52.57},
+            { key: "corn_canned", label: "Canned sweet corn (drained)", qty: 368, unit: "g", cat: "Vegetables" , ingId: 78 , role: "fixed", baseQty: 52.57},
             { key: "pico_de_gallo", label: "Mild pico de gallo", qty: 84, unit: "g", cat: "Sauces" , ingId: 205 , role: "fixed", baseQty: 12},
             { key: "garlic", label: "Garlic cloves", qty: 45, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.57},
             { key: "lime", label: "Lime", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.14},
@@ -1136,7 +1142,7 @@ const RECIPES = [
             { key: "m31_parsley", label: "Fresh parsley (chopped)", qty: 70, unit: "g", cat: "Aromatics", ingId: 229, role: "veg", baseQty: 10 },
         ],
         steps: [
-            "Cook jasmine rice: rinse, then cook dry rice with water in rice cooker or pot until tender. Season with salt.",
+            "Cook brown rice: rinse, then cook dry rice with water in rice cooker or pot until tender. Season with salt.",
             "Preheat oven to 200°C. Line two baking sheets with parchment.",
             "Slice chicken breasts to even portions. Season with garlic powder, salt, paprika, and a squeeze of lemon.",
             "Toss broccoli florets with olive oil, salt, pepper, and minced garlic.",
@@ -1218,7 +1224,7 @@ const RECIPES = [
             { key: "m43_onion", label: "Yellow onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 106 , role: "fixed", baseQty: 0.14},
             { key: "m43_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m43_oil", label: "Olive oil", qty: 21, unit: "g", cat: "Fats" , ingId: 160 , role: "fat", share: 0.4},
-            { key: "m43_feta", label: "Fat-free cottage cheese", qty: 150, unit: "g", cat: "Dairy" , ingId: 42 , role: "protein", share: 0.6},
+            { key: "m43_feta", label: "Feta cheese", qty: 150, unit: "g", cat: "Dairy" , ingId: 53 , role: "fat", share: 0.6},
         ],
         steps: [
             "Preheat oven to 190°C. Toss halved baby potatoes with oil, salt, pepper, and garlic. Roast 25–30 min until golden.",
@@ -1329,6 +1335,7 @@ const RECIPES = [
             { key: "m46_lem", label: "Lemons", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 150 , role: "fixed", baseQty: 0.29},
             { key: "m46_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m46_oil", label: "Olive oil", qty: 21, unit: "g", cat: "Fats" , ingId: 160 , role: "fat", share: 0.294},
+            { key: "m46_oregano", label: "Dried oregano", qty: 6, unit: "g", cat: "Spices", ingId: 223, role: "flavour", baseQty: 1.5 },
         ],
         steps: [
             "Marinate chicken in olive oil, lemon juice, minced garlic, dried oregano, salt, and pepper for at least 30 min.",
@@ -1415,6 +1422,7 @@ const RECIPES = [
         
             { key:"hol9_worc", label:"Worcestershire Sauce", qty:20, unit:"g", cat:"Sauces", ingId:185, role:"flavour", baseQty:20 },
             { key:"hol9_spap", label:"Smoked Paprika", qty:3, unit:"g", cat:"Spices", ingId:238, role:"flavour", baseQty:3 },
+            { key:"hol9_dijon", label:"Dijon mustard", qty:15, unit:"g", cat:"Sauces", ingId:184, role:"flavour", baseQty:4 },
         ],
         steps: [
             "Preheat oven to 200°C. Pierce sweet potatoes and bake whole for 45–55 min until fully soft.",
@@ -1443,9 +1451,13 @@ const RECIPES = [
             { key: "m39_onion", label: "Red onion", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 107 , role: "fixed", baseQty: 0.14},
             { key: "m39_garl", label: "Garlic cloves", qty: 4, unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.57},
             { key: "m39_lime", label: "Limes", qty: 2, unit: "whole", cat: "Aromatics" , ingId: 151 , role: "fixed", baseQty: 0.29},
+            { key: "m39_oil", label: "Olive oil", qty: 35, unit: "g", cat: "Fats", ingId: 160, role: "fat", share: 1 },
+            { key: "m39_cumin", label: "Cumin (ground)", qty: 5, unit: "g", cat: "Spices", ingId: 222, role: "flavour", baseQty: 1 },
+            { key: "m39_paprika", label: "Smoked paprika", qty: 5, unit: "g", cat: "Spices", ingId: 238, role: "flavour", baseQty: 1 },
+            { key: "m39_gpow", label: "Garlic powder", qty: 5, unit: "g", cat: "Spices", ingId: 224, role: "flavour", baseQty: 1 },
         ],
         steps: [
-            "Cook jasmine rice in rice cooker.",
+            "Cook brown rice in rice cooker.",
             "Dice onion, bell peppers, and mince garlic.",
             "Brown turkey mince in a large pan over medium-high heat — 8–10 min. Season with cumin, chilli powder, garlic powder, paprika, and salt.",
             "Add onion, garlic, and peppers. Cook 5 min.",
@@ -1473,6 +1485,7 @@ const RECIPES = [
             { key: "hol3_oil",     label: "Olive oil",                   qty: 15,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 0.543},
             { key: "hol3_mint",    label: "Fresh mint leaves",           qty: 15,   unit: "g",  cat: "Aromatics"  , ingId: 232 , role: "fixed", baseQty: 2.14},
             { key: "hol3_garlic",  label: "Garlic cloves",               qty: 6,    unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.86},
+            { key: "hol3_rosemary", label: "Rosemary (dried)", qty: 3, unit: "g", cat: "Spices", ingId: 234, role: "flavour", baseQty: 1 },
         ],
         steps: [
             "Score lamb leg and push garlic slivers into the cuts. Rub with olive oil, rosemary, salt, pepper, and lemon zest.",
@@ -1504,9 +1517,10 @@ const RECIPES = [
         
             { key: "m51_zucc", label: "Zucchini (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 103, role: "veg", baseQty: 150 },
             { key: "m51_mush", label: "Mushrooms (sliced)", qty: 840, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 120 },
+            { key: "m51_lime", label: "Lime juice", qty: 30, unit: "ml", cat: "Sauces", ingId: 151, role: "flavour", baseQty: 6 },
         ],
         steps: [
-            "Cook jasmine rice the night before and refrigerate — cold rice is essential for fried rice.",
+            "Cook brown rice the night before and refrigerate — cold rice is essential for fried rice.",
             "Cut steak into bite-sized cubes. Season with salt, pepper, and a splash of soy sauce. Set aside.",
             "Heat a large skillet over high heat. Add sesame oil, then cold rice, frozen vegetables, and diced onion. Stir-fry for 5-10 mins. Add soy sauce and toss to coat.",
             "Push rice to the edges. Crack eggs into the centre and scramble until cooked, then mix into the rice.",
@@ -1737,7 +1751,7 @@ const RECIPES = [
             { key: "m60_herbs",  label: "Italian herb seasoning",         qty: 10,   unit: "g",     cat: "Aromatics", ingId: 300, role: "fixed",   baseQty: 2   },
         
             { key: "m60_tomato",  label: "Cherry tomatoes",           qty: 250,  unit: "g", cat: "Vegetables", ingId: 110, role: "veg",   baseQty: 50  },
-            { key: "m60_pepper",  label: "Red bell pepper (sliced)",   qty: 300,  unit: "g", cat: "Vegetables", ingId: 105, role: "veg",   baseQty: 60  },
+            { key: "m60_pepper",  label: "Red bell pepper (sliced)",   qty: 300,  unit: "g", cat: "Vegetables", ingId: 104, role: "veg",   baseQty: 60  },
             { key: "m60_chilli",  label: "Chili flakes",               qty: 5,    unit: "g", cat: "Aromatics",  ingId: 227, role: "fixed", baseQty: 1   },        ],
         steps: [
             "Rinse quinoa well. Add to pot with 700mL water. Bring to boil, reduce to low, cover and simmer 15 min. Fluff with fork and set aside.",
@@ -1848,7 +1862,7 @@ const RECIPES = [
         steps: [
             "Slow cooker: add chicken, chipotle peppers, honey and seasonings. Cook HIGH 3hr.",
             "Blend fat-free cottage cheese, Président Light mozzarella, parmesan, tomato sauce, garlic, milk and remaining honey until smooth.",
-            "Cook jasmine rice.",
+            "Cook brown rice.",
             "Shred chicken. Pour blended sauce in and mix well.",
             "Divide rice equally into bowls. Top with chicken mix. Add olive oil.",
         ],
@@ -1873,6 +1887,8 @@ const RECIPES = [
         
             { key: "m16_pepper", label: "Bell pepper (sliced)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", baseQty: 150 },
             { key: "m16_spin", label: "Baby spinach", qty: 560, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", baseQty: 80 },
+            { key: "m16_garlicsalt", label: "Garlic salt", qty: 5, unit: "g", cat: "Spices", ingId: 224, role: "flavour", baseQty: 1 },
+            { key: "m16_opow", label: "Onion powder", qty: 5, unit: "g", cat: "Spices", ingId: 225, role: "flavour", baseQty: 1 },
         ],
         steps: [
             "In a crockpot, add raw chicken, chipotle peppers in adobo sauce, honey, garlic salt and onion powder. Stir to coat.",
@@ -1904,6 +1920,8 @@ const RECIPES = [
             { key: "hol8_honey",    label: "Honey",                      qty: 42,   unit: "g",  cat: "Sauces"     , ingId: 195 , role: "fixed", baseQty: 6},
             { key: "hol8_oil",      label: "Olive oil",                  qty: 28,   unit: "g",  cat: "Fats"       , ingId: 160 , role: "fat", share: 0.444},
             { key: "hol8_garlic",   label: "Garlic cloves",              qty: 3,    unit: "whole", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 0.43},
+            { key: "hol8_thyme", label: "Thyme (dried)", qty: 3, unit: "g", cat: "Spices", ingId: 235, role: "flavour", baseQty: 1 },
+            { key: "hol8_lemon", label: "Lemon juice", qty: 30, unit: "ml", cat: "Sauces", ingId: 150, role: "flavour", baseQty: 8 },
         ],
         steps: [
             "Whisk honey, garlic powder, a pinch of thyme, salt, and pepper into a marinade. Coat chicken breasts and marinate 30+ min.",
@@ -1930,6 +1948,9 @@ const RECIPES = [
             { key: "m22_oil", label: "Olive oil", qty: 15, unit: "mL", cat: "Oils" , ingId: 160 , role: "fixed", baseQty: 3.75},
             { key: "m22_garl", label: "Minced garlic", qty: 15, unit: "g", cat: "Aromatics" , ingId: 108 , role: "fixed", baseQty: 3.75},
             { key: "m22_tpaste", label: "Tomato paste", qty: 15, unit: "g", cat: "Sauces" , ingId: 186 , role: "fixed", baseQty: 3.75},
+            { key: "m22_paprika", label: "Smoked paprika", qty: 6, unit: "g", cat: "Spices", ingId: 238, role: "flavour", baseQty: 2 },
+            { key: "m22_gpow", label: "Garlic powder", qty: 5, unit: "g", cat: "Spices", ingId: 224, role: "flavour", baseQty: 1 },
+            { key: "m22_opow", label: "Onion powder", qty: 5, unit: "g", cat: "Spices", ingId: 225, role: "flavour", baseQty: 1 },
         ],
         steps: [
             "Preheat oven to 200°C (400°F). Cube sweet potatoes and quarter brussels sprouts.",
@@ -1982,12 +2003,12 @@ const RECIPES = [
             { key: "m44_mush", label: "Mushrooms (sliced)", qty: 700, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", baseQty: 100 },
         ],
         steps: [
-            "Cook jasmine rice in rice cooker.",
+            "Cook brown rice in rice cooker.",
             "Blanch broccoli in boiling water 3 min until just tender-crisp. Drain and set aside.",
             "Brown ground beef in a large wok or pan over high heat, breaking it up, 8–10 min. Drain excess fat.",
             "Add garlic and ginger, cook 1 min. Add soy sauce, oyster sauce, and sesame oil. Toss to coat.",
             "Add broccoli to the wok and toss everything together over high heat for 2 min.",
-            "Weigh beef-broccoli mixture, divide equally. Portion with jasmine rice into containers.",
+            "Weigh beef-broccoli mixture, divide equally. Portion with brown rice into containers.",
         ],
     },
     {
@@ -1997,7 +2018,7 @@ const RECIPES = [
         badge: "⚡ Instant Pot", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:545, protein:67.9, carbs:31.2, fat:16.3},
         batchItems: [
-            { key: "m15_beef", label: "Lean beef eye of round (raw)", qty: 2000, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
+            { key: "m15_beef", label: "Lean ground beef (5% fat)", qty: 2000, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m15_pot", label: "Red potatoes (quartered)", qty: 950, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 1},
             { key: "m15_carr", label: "Baby carrots", qty: 450, unit: "g", cat: "Vegetables" , ingId: 117 , role: "veg", baseQty: 64.29},
             { key: "m15_onion", label: "Yellow onion (diced)", qty: 1, unit: "whole", cat: "Vegetables" , ingId: 106 , role: "veg", baseQty: 0.14},
@@ -2088,7 +2109,7 @@ const RECIPES = [
             { key: "m33_jalap", label: "Jalapeño (optional, sliced)", qty: 105, unit: "g", cat: "Vegetables", ingId: 127, role: "veg", baseQty: 15 },
         ],
         steps: [
-            "Cook jasmine rice in rice cooker with water and a pinch of salt.",
+            "Cook brown rice in rice cooker with water and a pinch of salt.",
             "Dice onion and bell peppers. Mince garlic.",
             "Heat a large non-stick pan over medium-high. Spray oil. Brown turkey mince, breaking it up — 8–10 min. Season with cumin, paprika, garlic powder, chilli flakes.",
             "Add onion, garlic, and bell peppers. Cook 5 min until softened.",
@@ -2148,7 +2169,7 @@ const RECIPES = [
             { key: "cooking_oil", label: "Cooking oil", qty: 15, unit: "g", cat: "Fats" , ingId: 160 , role: "fixed", baseQty: 2.14},],
         steps: [
             "Add chicken, mushrooms, onion, garlic, sun-dried tomatoes, stock and seasonings to slow cooker. Cook LOW 4hr / HIGH 2.5hr.",
-            "Cook jasmine rice. Stir in peas, carrots and spinach off heat.",
+            "Cook brown rice. Stir in peas, carrots and spinach off heat.",
             "Blend fat-free cottage cheese, Greek yogurt, parmesan and sauce seasonings until smooth.",
             "Shred chicken in pot. Add blended sauce. Mix well.",
             "Combine chicken mix with rice-veg mix. Divide into containers. Add olive oil per portion.",
@@ -2231,7 +2252,7 @@ const RECIPES = [
             { key: "m41_tomato", label: "Cherry tomatoes", qty: 1050, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", baseQty: 150 },
         ],
         steps: [
-            "Preheat oven to 200°C. Cook jasmine rice in rice cooker.",
+            "Preheat oven to 200°C. Cook brown rice in rice cooker.",
             "Pat pork tenderloins dry. Mix Dijon mustard, minced garlic, lemon juice, salt, pepper, and dried thyme. Rub all over pork.",
             "Heat olive oil in an oven-safe skillet over high heat. Sear pork 2–3 min per side until browned.",
             "Transfer skillet to oven. Roast 18–22 min until internal temp reaches 63°C. Rest 5–10 min before slicing.",
@@ -2257,7 +2278,7 @@ const RECIPES = [
             { key: "m49_cil", label: "Fresh cilantro", qty: 30, unit: "g", cat: "Aromatics" , ingId: 230 , role: "fixed", baseQty: 4.29},
         ],
         steps: [
-            "Cook jasmine rice in rice cooker.",
+            "Cook brown rice in rice cooker.",
             "Make dressing: mix lime juice, finely minced chilli, garlic, a pinch of salt, and chopped cilantro.",
             "Pat prawns dry. Cook in a hot pan with garlic spray for 2 min per side until pink. Toss with half the dressing.",
             "Dice mango and slice avocado. Toss gently with remaining lime juice to prevent browning.",
@@ -2367,6 +2388,7 @@ const RECIPES = [
             { key: "m19_tort", label: "Whole wheat wrap", qty: 1, unit: "whole", cat: "Carbs" , ingId: 88 , role: "carbs", share: 1},
             { key: "m19_yog", label: "Low-fat Greek yogurt", qty: 100, unit: "g", cat: "Dairy" , ingId: 48 , role: "protein", share: 0.31},
             { key: "m19_lem", label: "Lemon (juice of half)", qty: 0.5, unit: "whole", cat: "Sauces" , ingId: 150 , role: "fixed", baseQty: 0.5},
+            { key: "m19_oil", label: "Olive oil", qty: 42, unit: "g", cat: "Fats", ingId: 160, role: "fat", share: 1 },
         ],
         steps: [
             "Cut salmon into cubes. Season with salt, pepper, garlic powder.",
@@ -2472,6 +2494,8 @@ const RECIPES = [
             { key: "m24_cap", label: "Red capsicum (bell pepper)", qty: 100, unit: "g", cat: "Vegetables" , ingId: 104 , role: "veg", baseQty: 20},
             { key: "m24_ging", label: "Crushed ginger", qty: 100, unit: "g", cat: "Aromatics" , ingId: 228 , role: "fixed", baseQty: 20},
             { key: "m24_stock", label: "Chicken stock", qty: 100, unit: "mL", cat: "Liquids" , ingId: 207 , role: "fixed", baseQty: 20},
+            { key: "m24_onion", label: "Onion", qty: 100, unit: "g", cat: "Vegetables", ingId: 106, role: "veg", share: 1 },
+            { key: "m24_spring", label: "Spring onion", qty: 20, unit: "g", cat: "Vegetables", ingId: 132, role: "veg", share: 1 },
         ],
         steps: [
             "Add chicken breast to slow cooker.",
@@ -2511,7 +2535,7 @@ const RECIPES = [
             "In a slow cooker, add chicken breasts, broth, passata, onion, garlic, smoked paprika, cumin, garlic powder, and chilli powder.",
             "Cook on Low 6–8 hours or High 3–4 hours until chicken shreds easily.",
             "Remove chicken and shred with two forks. Return to the cooker and mix with the sauce.",
-            "Cook jasmine rice in rice cooker. Steam or bake sweet potato cubes separately.",
+            "Cook brown rice in rice cooker. Steam or bake sweet potato cubes separately.",
             "Weigh pulled chicken mixture, divide equally. Portion with rice and sweet potato into containers.",
         ],
     },
@@ -2629,7 +2653,7 @@ const RECIPES = [
             { key: "m47_bokchoy", label: "Bok choy (halved)", qty: 1050, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", baseQty: 150 },
         ],
         steps: [
-            "Cook jasmine rice in rice cooker. Cook edamame in boiling water 4 min, drain.",
+            "Cook brown rice in rice cooker. Cook edamame in boiling water 4 min, drain.",
             "Slice chicken into strips. Season with salt and pepper.",
             "Make teriyaki sauce: combine soy sauce, honey, garlic, ginger, and cornstarch mixed with cold water.",
             "Cook chicken in a non-stick pan over medium-high heat until cooked through — 6–8 min. Set aside.",
@@ -2656,7 +2680,7 @@ const RECIPES = [
         ],
         steps: [
             "Press tofu for at least 30 min (or overnight wrapped in a towel with a heavy pan on top). Cut into 2cm cubes.",
-            "Cook jasmine rice according to package directions. Set aside.",
+            "Cook brown rice according to package directions. Set aside.",
             "Heat sesame oil in a large non-stick pan over high heat. Add tofu cubes — do not move them for 3–4 min until a golden crust forms. Flip and brown all sides. Remove from pan.",
             "In the same pan, sauté garlic 1 min. Add broccoli florets and stir-fry 4 min until bright green and tender-crisp.",
             "Add edamame and cook 2 min until heated through.",
@@ -2669,7 +2693,7 @@ const RECIPES = [
         name: "🐟 Tuna & Chickpea Power Bowl",
         subtitle: "Canned tuna · chickpeas · cucumber · tomato · lemon-olive oil",
         badge: "❄️ No Cook", carb: "🫘 Chickpea", portions: 7,
-        perPortion: {kcal:364, protein:48.6, carbs:28.6, fat:7.4},
+        perPortion: {kcal:269, protein:25.7, carbs:28.6, fat:6.4}, /* A1: corrected from computed batch quantities */
         locked: true,
         batchItems: [
             { key: "m36_tuna", label: "Tuna in spring water (480g)", qty: 480, unit: "g", cat: "Protein" , ingId: 21 , role: "protein", share: 1},
@@ -2834,7 +2858,7 @@ const RECIPES = [
         steps: [
             "Preheat oven to 200°C. Cube sweet potato into 2cm pieces. Toss with olive oil, cumin, paprika, salt, and pepper.",
             "Spread sweet potato on a lined baking tray. Roast 25–30 min, flipping halfway, until caramelised.",
-            "Cook jasmine rice: rinse, simmer in salted water 12–14 min. Fluff and cool.",
+            "Cook brown rice: rinse, simmer in salted water 12–14 min. Fluff and cool.",
             "Drain and rinse black beans and corn. Dice red onion and halve cherry tomatoes.",
             "In a large bowl, combine black beans, corn, cherry tomatoes, red onion, minced garlic, lime juice, salt, and pepper. Mix well.",
             "Assemble: divide rice into containers. Top with roasted sweet potato, black bean salsa mix.",
@@ -2859,7 +2883,7 @@ const RECIPES = [
             { key: "m42_jalapeno", label: "Jalapeño (optional)", qty: 1, unit: "whole", cat: "Aromatics" , ingId: 127 , role: "fixed", baseQty: 0.14},
         ],
         steps: [
-            "Cook jasmine rice in rice cooker.",
+            "Cook brown rice in rice cooker.",
             "Make mango salsa: dice mangoes, cucumber, red onion, and jalapeño. Mix with lime juice, chopped cilantro, salt, and pepper. Refrigerate.",
             "Preheat oven to 200°C. Season tilapia with cumin, garlic powder, lime zest, salt, and pepper.",
             "Bake tilapia on a lined tray 12–14 min until it flakes easily.",
@@ -4269,6 +4293,8 @@ const RECIPES = [
             { key: "m64_oil", label: "Olive oil (extra virgin)", qty: 30, unit: "ml", cat: "Fats", ingId: 160, role: "fats", share: 1},
         
             { key:"m64_basil", label:"Fresh Basil", qty:30, unit:"g", cat:"Spices", ingId:231, role:"flavour", baseQty:30 },
+            { key:"m64_garlic", label:"Garlic", qty:12, unit:"g", cat:"Vegetables", ingId:108, role:"flavour", share:1 },
+            { key:"m64_lemon", label:"Lemon juice", qty:30, unit:"ml", cat:"Sauces", ingId:150, role:"flavour", baseQty:8 },
         ],
         steps: [
             "Blanch kale 2 min in boiling water, then cool in ice bath.",
@@ -4292,6 +4318,7 @@ const RECIPES = [
             { key: "m65_spinach", label: "Baby spinach", qty: 80, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", share: 1},
             { key: "m65_sesame", label: "Sesame oil", qty: 15, unit: "ml", cat: "Fats", ingId: 171, role: "fats", share: 1},
             { key: "m65_garlic", label: "Garlic", qty: 20, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1},
+            { key: "m65_spring", label: "Spring onion", qty: 30, unit: "g", cat: "Vegetables", ingId: 132, role: "veg", share: 1 },
         ],
         steps: [
             "Cook pasta al dente, reserve 1 cup pasta water.",
@@ -4316,6 +4343,8 @@ const RECIPES = [
             { key: "m66_tomato", label: "Cherry tomatoes", qty: 80, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", share: 1},
             { key: "m66_lime", label: "Lime (juice)", qty: 30, unit: "ml", cat: "Fruits", ingId: 151, role: "flavour", share: 1},
             { key: "m66_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
+            { key: "m66_fish", label: "Fish sauce", qty: 20, unit: "ml", cat: "Sauces", ingId: 193, role: "flavour", baseQty: 10 },
+            { key: "m66_garlic", label: "Garlic", qty: 10, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
         ],
         steps: [
             "Cook soba noodles per package, rinse cold.",
@@ -4340,6 +4369,8 @@ const RECIPES = [
             { key: "m67_onion", label: "Onion", qty: 60, unit: "g", cat: "Vegetables", ingId: 106, role: "veg", share: 1},
             { key: "m67_yogurt", label: "Greek yogurt (0% fat)", qty: 80, unit: "g", cat: "Dairy", ingId: 47, role: "protein", share: 1},
             { key: "m67_lemon", label: "Lemon (juice)", qty: 15, unit: "ml", cat: "Fruits", ingId: 150, role: "flavour", share: 1},
+            { key: "m67_garlic", label: "Garlic", qty: 6, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
+            { key: "m67_lettuce", label: "Lettuce (cos/romaine)", qty: 80, unit: "g", cat: "Vegetables", ingId: 112, role: "veg", share: 1 },
         ],
         steps: [
             "Grill or oven-bake chicken breast seasoned with salt, pepper, and garlic.",
@@ -4364,6 +4395,8 @@ const RECIPES = [
             { key: "m68_sesame", label: "Sesame oil", qty: 15, unit: "ml", cat: "Fats", ingId: 171, role: "fats", share: 1},
             { key: "m68_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
             { key: "m68_lime", label: "Lime (juice)", qty: 20, unit: "ml", cat: "Fruits", ingId: 151, role: "flavour", share: 1},
+            { key: "m68_vinegar", label: "Rice vinegar", qty: 15, unit: "ml", cat: "Sauces", ingId: 201, role: "flavour", baseQty: 7.5 },
+            { key: "m68_ginger", label: "Ginger (fresh)", qty: 10, unit: "g", cat: "Herbs", ingId: 228, role: "flavour", share: 1 },
         ],
         steps: [
             "Poach chicken breast in seasoned water 15 min. Cool and shred.",
@@ -4387,6 +4420,8 @@ const RECIPES = [
             { key: "m69_feta", label: "Feta cheese", qty: 40, unit: "g", cat: "Dairy", ingId: 53, role: "protein", share: 1},
             { key: "m69_seeds", label: "Pumpkin seeds", qty: 30, unit: "g", cat: "Fats", ingId: 177, role: "fats", share: 1},
             { key: "m69_tortilla", label: "Tortilla (flour, 25cm)", qty: 60, unit: "g", cat: "Carbs", ingId: 72, role: "carbs", share: 1},
+            { key: "m69_cumin", label: "Cumin (ground)", qty: 3, unit: "g", cat: "Spices", ingId: 222, role: "flavour", baseQty: 1.5 },
+            { key: "m69_lemon", label: "Lemon juice", qty: 15, unit: "ml", cat: "Sauces", ingId: 150, role: "flavour", baseQty: 7.5 },
         ],
         steps: [
             "Cube pumpkin and roast at 200°C with olive oil, cumin, and paprika for 25 min.",
@@ -4411,9 +4446,10 @@ const RECIPES = [
             { key: "m70_oil", label: "Olive oil (extra virgin)", qty: 12, unit: "ml", cat: "Fats", ingId: 160, role: "fats", share: 1},
         
             { key:"m70_but", label:"Butter", qty:14, unit:"g", cat:"Fats", ingId:162, role:"flavour", baseQty:14 },
+            { key:"m70_gbeans", label:"Green beans (fresh)", qty:80, unit:"g", cat:"Vegetables", ingId:115, role:"veg", share:1 },
         ],
         steps: [
-            "Boil or steam baby potatoes until tender, about 12 min.",
+            "Boil or steam sweet potato until tender, about 12 min.",
             "Trim green beans and asparagus, blanch 3 min.",
             "Season steak generously. Sear in very hot cast iron 3 min per side. Rest 5 min.",
             "Sauté blanched greens in butter and garlic.",
@@ -4463,6 +4499,7 @@ const RECIPES = [
             { key: "m72_garlic", label: "Garlic", qty: 10, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1},
         
             { key:"m72_turm", label:"Turmeric", qty:3, unit:"g", cat:"Spices", ingId:239, role:"flavour", baseQty:3 },
+            { key:"m72_sesoil", label:"Sesame oil", qty:5, unit:"g", cat:"Fats", ingId:171, role:"flavour", baseQty:5 },
         ],
         steps: [
             "Score barramundi skin. Season with salt, pepper, garlic, and turmeric.",
@@ -4486,6 +4523,7 @@ const RECIPES = [
             { key: "m73_almonds", label: "Almonds", qty: 40, unit: "g", cat: "Fats", ingId: 163, role: "fats", share: 1},
             { key: "m73_spinach", label: "Baby spinach", qty: 60, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", share: 1},
             { key: "m73_oil", label: "Olive oil (extra virgin)", qty: 20, unit: "ml", cat: "Fats", ingId: 160, role: "fats", share: 1},
+            { key: "m73_herb", label: "Mixed herbs (dried)", qty: 5, unit: "g", cat: "Spices", ingId: 300, role: "flavour", baseQty: 5 },
         ],
         steps: [
             "Cook rice. Once done, stir through blanched and pureed spinach + herbs to make green rice.",
@@ -4509,6 +4547,9 @@ const RECIPES = [
             { key: "m74_soy", label: "Soy sauce (low sodium)", qty: 30, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
             { key: "m74_cashew", label: "Cashews", qty: 40, unit: "g", cat: "Fats", ingId: 165, role: "fats", share: 1},
             { key: "m74_bokchoy", label: "Bok choy", qty: 150, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", share: 1},
+            { key: "m74_ginger", label: "Ginger (fresh)", qty: 10, unit: "g", cat: "Herbs", ingId: 228, role: "flavour", share: 1 },
+            { key: "m74_garlic", label: "Garlic", qty: 8, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
+            { key: "m74_sesoil", label: "Sesame oil", qty: 5, unit: "g", cat: "Fats", ingId: 171, role: "flavour", baseQty: 2.5 },
         ],
         steps: [
             "Whisk honey, soy sauce, ginger, and garlic for glaze.",
@@ -4529,11 +4570,12 @@ const RECIPES = [
             { key: "m75_beef", label: "95/5 lean ground beef (raw)", qty: 350, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.88},
             { key: "m75_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
             { key: "m75_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 1},
-            { key: "m75_beans", label: "Asparagus", qty: 100, unit: "g", cat: "Vegetables", ingId: 114, role: "veg", share: 1},
+            { key: "m75_beans", label: "Green beans (fresh)", qty: 100, unit: "g", cat: "Vegetables", ingId: 115, role: "veg", share: 1},
             { key: "m75_tomato", label: "Cherry tomatoes", qty: 100, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", share: 1},
             { key: "m75_soy", label: "Soy sauce (low sodium)", qty: 25, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
         
             { key:"m75_basil", label:"Fresh Basil", qty:20, unit:"g", cat:"Spices", ingId:231, role:"flavour", baseQty:20 },
+            { key:"m75_oyster", label:"Oyster sauce", qty:30, unit:"g", cat:"Sauces", ingId:192, role:"flavour", baseQty:15 },
         ],
         steps: [
             "Cook rice per package.",
@@ -4557,6 +4599,7 @@ const RECIPES = [
             { key: "m76_bokchoy", label: "Bok choy", qty: 100, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", share: 1},
             { key: "m76_soy", label: "Soy sauce (low sodium)", qty: 25, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
             { key: "m76_sesame", label: "Sesame oil", qty: 10, unit: "ml", cat: "Fats", ingId: 171, role: "fats", share: 1},
+            { key: "m76_garlic", label: "Garlic", qty: 10, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
         ],
         steps: [
             "Cook rice day before — cold cooked rice works best for fried rice.",
@@ -4580,6 +4623,9 @@ const RECIPES = [
             { key: "m77_edamame", label: "Edamame (shelled)", qty: 100, unit: "g", cat: "Protein", ingId: 96, role: "protein", share: 1},
             { key: "m77_tahini", label: "Tahini", qty: 30, unit: "g", cat: "Fats", ingId: 320, role: "fats", share: 1},
             { key: "m77_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
+            { key: "m77_sesoil", label: "Sesame oil", qty: 5, unit: "g", cat: "Fats", ingId: 171, role: "flavour", baseQty: 2.5 },
+            { key: "m77_bokchoy", label: "Bok choy", qty: 200, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", share: 1 },
+            { key: "m77_lime", label: "Lime juice", qty: 15, unit: "ml", cat: "Sauces", ingId: 151, role: "flavour", baseQty: 7.5 },
         ],
         steps: [
             "Press and cube tofu. Slice tempeh.",
@@ -4604,6 +4650,8 @@ const RECIPES = [
             { key: "m78_pepper", label: "Bell pepper (red)", qty: 120, unit: "g", cat: "Vegetables", ingId: 104, role: "veg", share: 1},
             { key: "m78_garlic", label: "Garlic", qty: 15, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1},
             { key: "m78_seeds", label: "Sunflower seeds", qty: 20, unit: "g", cat: "Fats", ingId: 170, role: "fats", share: 1},
+            { key: "m78_lemon", label: "Lemon juice", qty: 30, unit: "ml", cat: "Sauces", ingId: 150, role: "flavour", baseQty: 15 },
+            { key: "m78_corn", label: "Sweetcorn (kernels)", qty: 100, unit: "g", cat: "Vegetables", ingId: 78, role: "veg", share: 1 },
         ],
         steps: [
             "Marinate chicken thighs in peri peri sauce, garlic, and lemon overnight or 30 min.",
@@ -4627,6 +4675,9 @@ const RECIPES = [
             { key: "m79_coconut", label: "Coconut milk (canned, full-fat)", qty: 80, unit: "ml", cat: "Fats", ingId: 263, role: "fats", share: 1},
             { key: "m79_cabbage", label: "Cabbage (white)", qty: 120, unit: "g", cat: "Vegetables", ingId: 125, role: "veg", share: 1},
             { key: "m79_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
+            { key: "m79_garlic", label: "Garlic", qty: 10, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
+            { key: "m79_ginger", label: "Ginger (fresh)", qty: 10, unit: "g", cat: "Herbs", ingId: 228, role: "flavour", share: 1 },
+            { key: "m79_lime", label: "Lime juice", qty: 15, unit: "ml", cat: "Sauces", ingId: 151, role: "flavour", baseQty: 7.5 },
         ],
         steps: [
             "Blend lemongrass, garlic, ginger, soy sauce, and coconut milk into marinade.",
@@ -4674,6 +4725,9 @@ const RECIPES = [
             { key: "m81_avocado", label: "Avocado (½)", qty: 60, unit: "g", cat: "Fats", ingId: 149, role: "fats", share: 1},
             { key: "m81_tomato", label: "Cherry tomatoes", qty: 50, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", share: 1},
             { key: "m81_yogurt", label: "Greek yogurt (0% fat)", qty: 30, unit: "g", cat: "Dairy", ingId: 47, role: "protein", share: 1},
+            { key: "m81_lemon", label: "Lemon juice", qty: 20, unit: "ml", cat: "Sauces", ingId: 150, role: "flavour", baseQty: 20 },
+            { key: "m81_garlic", label: "Garlic", qty: 5, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
+            { key: "m81_lettuce", label: "Lettuce (cos/romaine)", qty: 40, unit: "g", cat: "Vegetables", ingId: 112, role: "veg", share: 1 },
         ],
         steps: [
             "Pound chicken breast flat for even cooking.",
@@ -4708,7 +4762,7 @@ const RECIPES = [
     },
     {
         category: "main", id: "m83",
-        name: "🥓 Chicken BLT Toastie",
+        name: "🍗 Chicken Club Toastie",
         subtitle: "Stovetop · 15 min",
         badge: "🍳 Stovetop", carb: "🍞 Brioche",
         portions: 1,
@@ -4745,6 +4799,7 @@ const RECIPES = [
             { key: "m84_tomato", label: "Cherry tomatoes", qty: 80, unit: "g", cat: "Vegetables", ingId: 110, role: "veg", share: 1},
             { key: "m84_potato", label: "Sweet potato (baked / air-fried)", qty: 100, unit: "g", cat: "Carbs", ingId: 302, role: "carbs", share: 1},
             { key: "m84_yogurt", label: "Greek yogurt (0% fat)", qty: 50, unit: "g", cat: "Dairy", ingId: 47, role: "protein", share: 1},
+            { key: "m84_garlic", label: "Garlic", qty: 5, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
         ],
         steps: [
             "Grill chicken breast until cooked through. Slice.",
@@ -4824,6 +4879,8 @@ const RECIPES = [
             { key: "m85_cream",   label: "Light cream cheese (⅓ fat)", qty: 50, unit: "g",     cat: "Dairy",   ingId: 54,  role: "fat",    share: 1},
             { key: "m85_parm",    label: "Pecorino Romano / Parmesan", qty: 50, unit: "g",     cat: "Dairy",   ingId: 46,  role: "protein", share: 0.03},
             { key: "m85_milk",    label: "Silk Protein Milk (skim)", qty: 300,  unit: "mL",     cat: "Dairy",   ingId: 50,  role: "fixed", baseQty: 30},
+            { key: "m85_gpow", label: "Garlic powder", qty: 5, unit: "g", cat: "Spices", ingId: 224, role: "flavour", baseQty: 0.5 },
+            { key: "m85_opow", label: "Onion powder", qty: 5, unit: "g", cat: "Spices", ingId: 225, role: "flavour", baseQty: 0.5 },
         ],
         steps: [
             "Cook beef bacon in a large non-stick pan over medium-high heat until crispy. Remove, chop into pieces, and set aside. Keep the drippings.",
@@ -4852,6 +4909,7 @@ const RECIPES = [
             { key: "m86_paste",  label: "Tomato paste",                  qty: 20,   unit: "g", cat: "Sauces",  ingId: 186, role: "flavour", baseQty: 4},
             { key: "m86_broth",  label: "Beef bone broth",               qty: 250,  unit: "mL", cat: "Liquids", ingId: 208, role: "fixed", baseQty: 50},
             { key: "m86_garlic", label: "Garlic paste",                  qty: 5,    unit: "g", cat: "Aromatics", ingId: 108, role: "flavour", baseQty: 1},
+            { key: "m86_seasoning", label: "Mexican/taco seasoning", qty: 15, unit: "g", cat: "Spices", ingId: 301, role: "flavour", baseQty: 3 },
         ],
         steps: [
             "Dice onion and cook in a dry non-stick pan over medium-high heat 5 min until golden.",
@@ -4899,6 +4957,8 @@ const RECIPES = [
             { key: "bf33_oil",     label: "Olive oil",                     qty: 27,  unit: "mL",     cat: "Fats",       ingId: 160, role: "fat",     share: 1},
             { key: "bf33_muffin",  label: "English muffin (whole grain)",  qty: 10,  unit: "whole",  cat: "Carbs",      ingId: 335, role: "carbs",   share: 1},
             { key: "bf33_cheese",  label: "Light cheese slice",            qty: 10,  unit: "slices", cat: "Dairy",      ingId: 295, role: "protein", share: 0.13},
+            { key: "bf33_gpow", label: "Garlic powder", qty: 5, unit: "g", cat: "Spices", ingId: 224, role: "flavour", baseQty: 0.5 },
+            { key: "bf33_opow", label: "Onion powder", qty: 5, unit: "g", cat: "Spices", ingId: 225, role: "flavour", baseQty: 0.5 },
         ],
         steps: [
             "EGG BAKE — Preheat oven to 175°C (350°F). Whisk 12 eggs with 227g cottage cheese, salt, and pepper.",
@@ -4996,6 +5056,7 @@ const RECIPES = [
             { key: "bf34_maple",  label: "Maple syrup (sugar-free optional)", qty: 7, unit: "g", cat: "Baking", ingId: 196, role: "fixed",   baseQty: 7 },
             { key: "bf34_bp",     label: "Baking powder",             qty: 3,   unit: "g",  cat: "Baking",      ingId: 250, role: "fixed",   baseQty: 3 },
             { key: "bf34_choc",   label: "Dark chocolate 85% (topping)", qty: 10, unit: "g", cat: "Baking",    ingId: 255, role: "fixed",   baseQty: 10 },
+            { key: "bf34_cinn", label: "Cinnamon (ground)", qty: 2, unit: "g", cat: "Spices", ingId: 220, role: "flavour", baseQty: 2 },
         ],
         steps: [
             "Preheat oven to 180°C (350°F).",
@@ -5023,6 +5084,8 @@ const RECIPES = [
             { key: "bf35_eggs",   label: "Large eggs",                   qty: 2,   unit: "whole", cat: "Protein",  ingId: 40,  role: "protein", share: 1 },
             { key: "bf35_yogurt", label: "Greek yogurt (2% fat)",        qty: 60,  unit: "g",  cat: "Dairy",       ingId: 48,  role: "protein", share: 1 },
             { key: "bf35_milk",   label: "Unsweetened almond milk",      qty: 180, unit: "ml", cat: "Dairy",       ingId: 58,  role: "fixed",   baseQty: 45 },
+            { key: "bf35_cinn", label: "Cinnamon (ground)", qty: 4, unit: "g", cat: "Spices", ingId: 220, role: "flavour", baseQty: 1 },
+            { key: "bf35_van", label: "Vanilla extract", qty: 4, unit: "ml", cat: "Baking", ingId: 252, role: "flavour", baseQty: 1 },
         ],
         steps: [
             "MIX DRY: In a bowl combine oat flour, protein powder, coconut flour, cinnamon, baking powder, and a pinch of salt.",
@@ -6580,6 +6643,72 @@ const INGREDIENT_MACROS = {
   "sn7_spap": {kcal:282, p:14.1, c:54, f:13},
   "ds5_honey": {kcal:304, p:0.3, c:82, f:0},
   "ds5_bak": {kcal:53, p:0, c:27.7, f:0},
+  /* ── NEW ENTRIES FROM RECIPE AUDIT FIX ── */
+  /* Group B fixes */
+  "m70_gbeans": {kcal:31, p:1.8, c:7, f:0.1},
+  "m75_oyster": {kcal:91, p:3.5, c:18, f:0.3},
+  "m85_gpow": {kcal:331, p:16.6, c:73, f:0.7},
+  "m85_opow": {kcal:341, p:10.4, c:79.1, f:1},
+  /* Group D fixes */
+  "hol3_rosemary": {kcal:131, p:3.3, c:20.7, f:5.9},
+  "hol4_lime": {kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
+  "hol4_onion": {kcal:40, p:1.1, c:9.3, f:0.1, unitG:150},
+  "hol6_dill": {kcal:43, p:3.5, c:7, f:1.1},
+  "hol8_thyme": {kcal:101, p:5.6, c:24.4, f:1.7},
+  "hol8_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
+  "hol9_dijon": {kcal:66, p:3.8, c:5.1, f:4},
+  "m04_rosemary": {kcal:131, p:3.3, c:20.7, f:5.9},
+  "m16_garlicsalt": {kcal:331, p:16.6, c:73, f:0.7},
+  "m16_opow": {kcal:341, p:10.4, c:79.1, f:1},
+  "m19_oil": {kcal:884, p:0, c:0, f:100},
+  "m22_paprika": {kcal:282, p:14.1, c:54, f:13},
+  "m22_gpow": {kcal:331, p:16.6, c:73, f:0.7},
+  "m22_opow": {kcal:341, p:10.4, c:79.1, f:1},
+  "m24_onion": {kcal:40, p:1.1, c:9.3, f:0.1, unitG:150},
+  "m24_spring": {kcal:32, p:1.8, c:7.3, f:0.2, unitG:150},
+  "m28_pickle": {kcal:11, p:0.3, c:2.3, f:0.2},
+  "m39_oil": {kcal:884, p:0, c:0, f:100},
+  "m39_cumin": {kcal:375, p:17.8, c:44, f:22},
+  "m39_paprika": {kcal:282, p:14.1, c:54, f:13},
+  "m39_gpow": {kcal:331, p:16.6, c:73, f:0.7},
+  "m46_oregano": {kcal:265, p:9, c:69, f:4.3},
+  "m51_lime": {kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
+  "m64_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m64_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
+  "m65_spring": {kcal:32, p:1.8, c:7.3, f:0.2, unitG:150},
+  "m66_fish": {kcal:35, p:5, c:3.6, f:0},
+  "m66_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m67_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m67_lettuce": {kcal:17, p:1.2, c:3.3, f:0.3},
+  "m68_vinegar": {kcal:18, p:0, c:0.7, f:0},
+  "m68_ginger": {kcal:80, p:1.8, c:18, f:0.8},
+  "m69_cumin": {kcal:375, p:17.8, c:44, f:22},
+  "m69_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
+  "m72_sesoil": {kcal:884, p:0, c:0, f:100},
+  "m73_herb": {kcal:265, p:13, c:44, f:7},
+  "m74_ginger": {kcal:80, p:1.8, c:18, f:0.8},
+  "m74_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m74_sesoil": {kcal:884, p:0, c:0, f:100},
+  "m76_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m77_sesoil": {kcal:884, p:0, c:0, f:100},
+  "m77_bokchoy": {kcal:13, p:1.5, c:2.2, f:0.2},
+  "m77_lime": {kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
+  "m78_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
+  "m78_corn": {kcal:86, p:3.2, c:19, f:1.2},
+  "m79_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m79_ginger": {kcal:80, p:1.8, c:18, f:0.8},
+  "m79_lime": {kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
+  "m81_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
+  "m81_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m81_lettuce": {kcal:17, p:1.2, c:3.3, f:0.3},
+  "m84_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
+  "m86_seasoning": {kcal:285, p:11, c:49, f:8},
+  "bf33_gpow": {kcal:331, p:16.6, c:73, f:0.7},
+  "bf33_opow": {kcal:341, p:10.4, c:79.1, f:1},
+  "bf34_cinn": {kcal:247, p:4, c:81, f:1.2},
+  "bf35_cinn": {kcal:247, p:4, c:81, f:1.2},
+  "bf35_van": {kcal:288, p:0.1, c:12.5, f:0.1, unitG:5},
+
 };
 
 
