@@ -1,0 +1,9 @@
+# Capacitor platform projects (regeneratable via npx cap add ios/android)
+ios/
+android/
+
+# Synced webapp output (regeneratable via npm run sync)
+www/
+
+# Node
+node_modules/
