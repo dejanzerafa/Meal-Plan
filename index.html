@@ -10921,7 +10921,7 @@ function SupplementsTab({ C, currentUser, isPremium }) {
             setSyncing(true);
             await sb.from("user_supplements").delete().eq("user_id", currentUser.id);
             if (list.length) {
-                await sb.from("user_supplements").insert(list.filter(s=>s.active).map(s => ({
+                await sb.from("user_supplements").insert(list.map(s => ({
                     user_id: currentUser.id, name: s.name, dose: s.dose, unit: s.unit,
                     times: s.times, notes: s.notes, active: s.active
                 })));
@@ -11618,7 +11618,7 @@ function App() {
     function clearSessionState() {
         // Keys that hold user-generated content not synced to Supabase — preserve across sign-out
         // so users don't lose custom recipes, recipe notes, or step checks when logging out.
-        const PRESERVE_PREFIXES = ["sg_custom_recipes", "mp_note_", "mp_steps_", "sg_calc_results", "sg_calc_email"];
+        const PRESERVE_PREFIXES = ["sg_custom_recipes", "mp_note_", "mp_steps_", "sg_calc_results", "sg_calc_email", "sg_supplements", "sg_supp_disc", "sg_supp_reminders", "sg_supp_last_fired"];
         try {
             const keysToRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
