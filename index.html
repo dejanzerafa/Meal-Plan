@@ -8062,6 +8062,8 @@ async function _checkDevCode(input) {
     return DEV_TIER_HASHES[hash] || null;
 }
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isQuarterlyDrop, isAnnualExclusive, isSeasonal }) {
+    const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot"];
+    const isCookingMethodBadge = r.badge && COOKING_METHOD_BADGES.includes(r.badge);
     var tierLabel = isAnnualExclusive
         ? React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#b45309", background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "⭐ ANNUAL ONLY")
         : isQuarterlyDrop
@@ -9766,7 +9768,7 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
 }
 
 
-function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudge, updateNudge, resetNudge, tier }) {
+function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudge, updateNudge, resetNudge, tier, profileData }) {
     const [profile, setProfile] = useState(() => {
         try {
             return JSON.parse(localStorage.getItem("mp_profile") || "null");
@@ -9775,6 +9777,12 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             return null;
         }
     });
+    // Sync app-level profile (restored from Supabase after sign-in) into local state
+    React.useEffect(() => {
+        if (profileData && !profile) {
+            setProfile(profileData);
+        }
+    }, [profileData]);
     const [recalcMode, setRecalcMode] = useState(false);
     const [inputMode, setInputMode] = React.useState("calc"); // "calc" | "manual"
     const fullReset = () => {
@@ -11618,7 +11626,26 @@ function App() {
     function clearSessionState() {
         // Keys that hold user-generated content not synced to Supabase — preserve across sign-out
         // so users don't lose custom recipes, recipe notes, or step checks when logging out.
-        const PRESERVE_PREFIXES = ["sg_custom_recipes", "mp_note_", "mp_steps_", "sg_calc_results", "sg_calc_email", "sg_supplements", "sg_supp_disc", "sg_supp_reminders", "sg_supp_last_fired"];
+        const PRESERVE_PREFIXES = [
+            // Custom content
+            "sg_custom_recipes", "mp_note_", "mp_steps_",
+            // Calculator
+            "sg_calc_results", "sg_calc_email",
+            // Supplements
+            "sg_supplements", "sg_supp_disc", "sg_supp_reminders", "sg_supp_last_fired",
+            // Meal selections — not in Supabase, device-level, must survive sign-out
+            "mp_lunch", "mp_dinner", "mp_breakfast", "mp_dessert", "mp_preworkout",
+            "mp_pre_skip", "mp_bfast_skip", "mp_portions",
+            // Macro adjustments
+            "mp_macro_nudge",
+            // Body stats (not security-sensitive, avoids blank ME tab while Supabase loads)
+            "mp_basics",
+            // App preferences
+            "mp_lang", "mp_theme", "mp_onboarded", "mp_pwa_ok",
+            "mp_daily_time", "mp_notif_daily", "mp_notif_prep", "mp_notif_shop",
+            "mp_next_prep", "mp_next_shop",
+            "mp_sunday_dismissed", "mp_last_milestone",
+        ];
         try {
             const keysToRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
@@ -12536,7 +12563,7 @@ function App() {
                             React.createElement("div", { style: { display: "flex", gap: 4 } }, dayDots));
                     })(),
                     // ── Macro calculator ────────────────────────────────────
-                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator"), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free" }),
+                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator"), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free", profileData: profile }),
                     // ── More ────────────────────────────────────────────────
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "MORE"),
