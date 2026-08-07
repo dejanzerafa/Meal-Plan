@@ -8668,14 +8668,16 @@ function getProteinType(r) {
 
 // ── PrepCalendar ─────────────────────────────────────────────────────────────
 // Monthly prep log — marks days user logged a meal prep session
-function PrepCalendar({ C }) {
+function PrepCalendar({ C, logs: logsProp, onLogsChange }) {
     const today = new Date();
     const [viewYear,  setViewYear]  = React.useState(today.getFullYear());
     const [viewMonth, setViewMonth] = React.useState(today.getMonth()); // 0-indexed
-    const [logs, setLogs] = React.useState(() => {
+    // Use app-level logs prop if provided (so Supabase restores are reflected immediately),
+    // otherwise fall back to own local state for standalone usage.
+    const [localLogs, setLocalLogs] = React.useState(() => {
         try { return JSON.parse(localStorage.getItem("mp_cal_logs") || "[]"); } catch(e) { return []; }
     });
-
+    const logs = logsProp !== undefined ? logsProp : localLogs;
 
     const todayStr = [today.getFullYear(), String(today.getMonth()+1).padStart(2,"0"), String(today.getDate()).padStart(2,"0")].join("-");
 
@@ -8693,8 +8695,8 @@ function PrepCalendar({ C }) {
             newLogs = [...logs, { date: dateStr, loggedAt: new Date().toISOString() }];
         }
         newLogs.sort((a,b) => a.date > b.date ? -1 : 1);
-        setLogs(newLogs);
-        localStorage.setItem("mp_cal_logs", JSON.stringify(newLogs));
+        if (onLogsChange) { onLogsChange(newLogs); }
+        else { setLocalLogs(newLogs); localStorage.setItem("mp_cal_logs", JSON.stringify(newLogs)); }
     };
 
     const monthName = new Date(viewYear, viewMonth, 1).toLocaleString("default", { month: "long" });
@@ -9777,9 +9779,11 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             return null;
         }
     });
-    // Sync app-level profile (restored from Supabase after sign-in) into local state
+    // Sync app-level profile (restored from Supabase after sign-in) into local state.
+    // Always prefer the Supabase copy if it is fresher than what's in local state.
     React.useEffect(() => {
-        if (profileData && !profile) {
+        if (!profileData) return;
+        if (!profile || (profileData.savedAt && profileData.savedAt > (profile.savedAt || ""))) {
             setProfile(profileData);
         }
     }, [profileData]);
@@ -11274,6 +11278,14 @@ function App() {
             return next;
         });
     };
+    // ── Calendar prep logs — lifted to app level so loadUserData can push Supabase data in ──
+    const [calLogs, setCalLogsState] = useState(() => {
+        try { return JSON.parse(localStorage.getItem("mp_cal_logs") || "[]"); } catch(e) { return []; }
+    });
+    const setCalLogs = (newLogs) => {
+        setCalLogsState(newLogs);
+        try { localStorage.setItem("mp_cal_logs", JSON.stringify(newLogs)); } catch(e) {}
+    };
     // ── Recipe builder modal ────────────────────────────────────────────────
     const [showRecipeBuilder, setShowRecipeBuilder] = useState(false);
     const [favourites, setFavouritesState] = useState(() => {
@@ -11544,6 +11556,17 @@ function App() {
                     const p = sbRowToProfile(row);
                     setProfile(p);
                     try { localStorage.setItem("mp_profile", JSON.stringify(p)); } catch(_) {}
+                    // Restore name keys so ProfileBasicsEditor and greeting show correctly
+                    try {
+                        const first = row.first_name || "";
+                        const last  = row.last_name  || "";
+                        const full  = (first + " " + last).trim();
+                        if (full) {
+                            localStorage.setItem("mp_acc_first_name", first);
+                            localStorage.setItem("mp_acc_last_name",  last);
+                            localStorage.setItem("mp_acc_name",       full);
+                        }
+                    } catch(_) {}
                     if (row.tier) {
                         // Check if promo/subscription tier has expired — if so, downgrade to free
                         const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();
@@ -11571,6 +11594,7 @@ function App() {
                 const { data: logs } = await sb.from("meal_logs").select("*").eq("user_id", userId).order("date", { ascending:false });
                 if (logs && logs.length) {
                     const fmt = logs.map(l => ({ date:l.date, lunchId:l.lunch_id, dinnerId:l.dinner_id, batchSize:l.batch_size||7 }));
+                    setCalLogsState(fmt);
                     try { localStorage.setItem("mp_cal_logs", JSON.stringify(fmt)); } catch(_) {}
                 }
                 const { data: favs } = await sb.from("favourites").select("recipe_id").eq("user_id", userId);
@@ -11640,6 +11664,16 @@ function App() {
             "mp_macro_nudge",
             // Body stats (not security-sensitive, avoids blank ME tab while Supabase loads)
             "mp_basics",
+            // Account name — restored by loadUserData but also preserved to avoid blank flash
+            "mp_acc_name", "mp_acc_first_name", "mp_acc_last_name",
+            // Pantry — user-generated, not synced to Supabase, permanent data loss if wiped
+            "sg_pantry",
+            // Promo anti-reuse guard — prevents re-redemption on same device after sign-out
+            "mp_redeemed_promos",
+            // Onboarding state — prevents forcing returning users through signup again
+            "sg_onboarded", "sg_skip_ts",
+            // Calendar logs — also restored from Supabase but preserve locally for instant load
+            "mp_cal_logs",
             // App preferences
             "mp_lang", "mp_theme", "mp_onboarded", "mp_pwa_ok",
             "mp_daily_time", "mp_notif_daily", "mp_notif_prep", "mp_notif_shop",
@@ -12290,7 +12324,7 @@ function App() {
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Today tab to generate your shopping list."))) :
                 (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale, pantry: pantry }))),
                 
-                    tab === "log" && React.createElement(PrepCalendar, { C: C }),
+                    tab === "log" && React.createElement(PrepCalendar, { C: C, logs: calLogs, onLogsChange: setCalLogs }),
                     tab === "supplements" && React.createElement(SupplementsTab, {
                         C: C,
                         currentUser: currentUser,
