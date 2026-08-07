@@ -3793,7 +3793,7 @@ const RECIPES = [
     },
     {
         category: "preworkout", id: "sn6",
-        name: "🌿 Minced Chicken Thai Herb Salad",
+        name: "🍗 Minced Chicken Thai Herb Salad",
         subtitle: "Stovetop · 15 min",
         badge: "🌶 Spicy", carb: "—",
         portions: 1,
@@ -4511,7 +4511,7 @@ const RECIPES = [
     },
     {
         category: "main", id: "m73",
-        name: "🌿 Herb Green Rice Chicken Bowl",
+        name: "🍗 Herb Green Rice Chicken Bowl",
         subtitle: "Grill · 25 min",
         badge: "🌿 Clean", carb: "🍚 Rice",
         portions: 2,
@@ -4663,7 +4663,7 @@ const RECIPES = [
     },
     {
         category: "main", id: "m79",
-        name: "🌿 Lemongrass Chicken Coconut Bowl",
+        name: "🍗 Lemongrass Chicken Coconut Bowl",
         subtitle: "Stovetop · 30 min",
         badge: "🌿 Clean", carb: "🍚 Rice",
         portions: 2,
@@ -7556,7 +7556,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
     React.useEffect(() => {
         try {
-            const shopKeys = Object.keys(localStorage).filter(k => k.startsWith('mp_shop_'));
+            const shopKeys = Object.keys(localStorage).filter(k => k.startsWith('mp_shop_')).sort();
             if (shopKeys.length > 10) {
                 shopKeys.slice(0, shopKeys.length - 10).forEach(k => localStorage.removeItem(k));
             }
@@ -7796,7 +7796,7 @@ function IngredientBrowser() {
 }
 
 // ─── APP ───────────────────────────────────────────────────────────────────
-const FILTERS = ["All", "🍳 Stovetop", "🌬️ Oven", "🥘 Crockpot", "💨 Air Fryer", "⚡ Instant Pot"];
+// Cooking method filter removed per user request
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
 const FREE_IDS = new Set(["m01", "bf9", "d1"]);
 // ── Analytics ──────────────────────────────────────────────────────────────────
@@ -8004,7 +8004,7 @@ async function uploadLocalDataToSupabase(userId, userEmail) {
         const supps = JSON.parse(localStorage.getItem("sg_supplements") || "[]");
         if (supps.length) {
             await sb.from("user_supplements").upsert(
-                supps.filter(s=>s.active).map(s => ({ user_id:userId, name:s.name, dose:s.dose,
+                supps.map(s => ({ user_id:userId, name:s.name, dose:s.dose,
                     unit:s.unit||"mg", times:s.times||[], notes:s.notes||"", active:s.active!==false })),
                 { onConflict:"user_id,name", ignoreDuplicates:true }
             );
@@ -8273,7 +8273,6 @@ function FeedbackModal({ onClose, currentTab }) {
         else if (ua.indexOf("Macintosh") > -1) { device = "Mac"; }
         else if (ua.indexOf("Windows") > -1) { device = "Windows"; }
         var tab = currentTab || "unknown";
-        try { if (typeof activeTab !== "undefined" && activeTab) { tab = activeTab; } } catch(_) {}
         fetch("/.netlify/functions/send-feedback", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -8647,22 +8646,40 @@ function DevModal({ onClose, onApplyTier }) {
                 React.createElement("button", { onClick: resetAll, style: { width: "100%", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, padding: "9px", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", marginBottom: 8 } }, "\uD83C\uDD95 First-Time User \u2014 Clear Everything"),
                 React.createElement("button", { onClick: resetOnboarding, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
-const FILTER_MAP = { "All": null, "🍳 Stovetop": "Stovetop", "🌬️ Oven": "Oven", "🥘 Crockpot": "Crockpot", "💨 Air Fryer": "Air Fryer", "⚡ Instant Pot": "Instant Pot" };
+const FILTER_MAP = {}; // Cooking method filter removed
 const PROTEIN_FILTERS = ["All", "🍗 Chicken", "🥩 Beef", "🐟 Fish", "🦃 Turkey", "🐷 Pork", "🦐 Shrimp", "🌱 Veg", "🥚 Eggs", "🌙 Lamb"];
 function getProteinType(r) {
     const n = r.name || "";
-    const s = (r.subtitle || "").toLowerCase();
-    const t = n.toLowerCase() + " " + s;
-    if (n.startsWith("🍳") || (t.includes("egg") && !t.includes("eggplant"))) return "Eggs";
-    if (n.startsWith("🍳") || t.includes("shakshuka") || t.includes("frittata")) return "Eggs";
-    if (n.startsWith("🐗") || t.includes("pork") || t.includes("tenderloin")) return "Pork";
-    if (n.startsWith("🦐") || t.includes("shrimp") || t.includes("prawn")) return "Shrimp";
-    if (n.startsWith("🦃") || t.includes(" turkey") || t.includes("turkey ")) return "Turkey";
-    if (n.startsWith("🐟") || n.startsWith("❤") || n.startsWith("🥑") || t.includes("salmon") || t.includes(" cod") || t.includes("tuna") || t.includes(" fish") || t.includes("fish ") || t.includes("tilapia") || t.includes("trout")) return "Fish";
-    if (n.startsWith("🌙") || n.startsWith("🐣") || t.includes(" lamb") || t.includes("lamb ")) return "Lamb";
-    if (n.startsWith("🥩") || t.includes("beef") || t.includes("steak") || t.includes("sirloin") || t.includes("mince") || t.includes("brisket")) return "Beef";
-    if (n.startsWith("🐗️") || n.startsWith("🍗") || t.includes("chicken") || t.includes("pulled chicken") || t.includes("buffalo")) return "Chicken";
-    if (n.startsWith("🌿") || n.startsWith("🦴") || n.startsWith("🧀") || n.startsWith("🪴") || n.startsWith("🍛") || n.startsWith("🥦") || n.startsWith("🥢") || t.includes("tofu") || t.includes("chickpea") || t.includes("lentil") || t.includes("bean") || t.includes("paneer") || t.includes("veggie") || t.includes("vegan") || t.includes("couscous") || t.includes("edamame")) return "Veg";
+    // Check NAME emoji first — most reliable signal (avoids false positives from subtitle secondary ingredients)
+    if (n.startsWith("🥩")) return "Beef";
+    if (n.startsWith("🍗") || n.startsWith("🐗️")) return "Chicken";
+    if (n.startsWith("🐟") || n.startsWith("❤️") || n.startsWith("❤")) return "Fish";
+    if (n.startsWith("🦃")) return "Turkey";
+    if (n.startsWith("🦐")) return "Shrimp";
+    if (n.startsWith("🌙") || n.startsWith("🐣")) return "Lamb";
+    if (n.startsWith("🥚") || n.startsWith("🍳")) return "Eggs";
+    if (n.startsWith("🥓")) return "Pork";
+    // Check NAME keywords (not subtitle — subtitles list secondary ingredients and cause false positives)
+    const nm = n.toLowerCase();
+    if (nm.includes("beef") || nm.includes("steak") || nm.includes("sirloin") || nm.includes("brisket") || nm.includes("minced beef") || nm.includes("ground beef")) return "Beef";
+    if (nm.includes("chicken") || nm.includes("buffalo")) return "Chicken";
+    if (nm.includes("salmon") || nm.includes("tuna") || nm.includes("cod") || nm.includes("tilapia") || nm.includes("trout") || nm.includes(" fish") || nm.includes("fish ")) return "Fish";
+    if (nm.includes("turkey")) return "Turkey";
+    if (nm.includes("shrimp") || nm.includes("prawn")) return "Shrimp";
+    if (nm.includes("lamb")) return "Lamb";
+    if (nm.includes("pork") || nm.includes("bacon") || nm.includes("tenderloin")) return "Pork";
+    if (nm.includes("mince") || nm.includes("shakshuka") || nm.includes("frittata")) return "Eggs";
+    if (nm.includes("egg") && !nm.includes("eggplant")) return "Eggs";
+    // Veg / plant-based catch-all — covers smoothies, bowls, yogurt, oats, desserts, etc.
+    const VEG_STARTERS = ["🌿","🦴","🧀","🪴","🍛","🥦","🥢","🥬","🍄","🎃","🫙","🥛","🍫","🫐","🍓","🥭","☕","💜","🍉","🫓","🍌","🥞","🥯","📅","🥥","🍎","🌞","🌯","🌶","🥑","🫘","🧆","🍕"];
+    if (VEG_STARTERS.some(e => n.startsWith(e))) return "Veg";
+    const t = nm + " " + (r.subtitle || "").toLowerCase();
+    if (t.includes("tofu") || t.includes("chickpea") || t.includes("lentil") || t.includes("bean") ||
+        t.includes("paneer") || t.includes("veggie") || t.includes("vegan") || t.includes("couscous") ||
+        t.includes("edamame") || t.includes("mushroom") || t.includes("pumpkin") || t.includes("kale") ||
+        t.includes("yogurt") || t.includes("oat") || t.includes("smoothie") || t.includes("shake") ||
+        t.includes("banana") || t.includes("pancake") || t.includes("granola") || t.includes("bagel") ||
+        t.includes("eggplant")) return "Veg";
     return null;
 }
 
@@ -9786,7 +9803,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
         if (!profile || (profileData.savedAt && profileData.savedAt > (profile.savedAt || ""))) {
             setProfile(profileData);
         }
-    }, [profileData]);
+    }, [profileData, profile]);
     const [recalcMode, setRecalcMode] = useState(false);
     const [inputMode, setInputMode] = React.useState("calc"); // "calc" | "manual"
     const fullReset = () => {
@@ -10946,7 +10963,7 @@ function SupplementsTab({ C, currentUser, isPremium }) {
         const sb = getSB(); if (!sb) return;
         try {
             const { data } = await sb.from("user_supplements").select("*").eq("user_id", currentUser.id);
-            if (data && data.length) {
+            if (data) {
                 const list = data.map(r => ({ id:r.id, name:r.name, dose:r.dose, unit:r.unit||"mg",
                     times:r.times||[], notes:r.notes||"", active:r.active!==false, createdAt:r.created_at }));
                 setSupps(list); saveSuppList(list);
@@ -11364,7 +11381,7 @@ function App() {
         try { if (new URLSearchParams(window.location.search).get("recipe")) return "recipes"; } catch(_) {}
         return "meals";
     });
-    const [filter, setFilter] = useState("All");
+    const [filter, setFilter] = useState(null); // cooking method filter removed, kept for compat
     const [proteinFilter, setProteinFilter] = useState(null);
     const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "main");
     const [recipeQuery, setRecipeQuery] = useState(() => {
@@ -11381,7 +11398,7 @@ function App() {
     const [recipeView, setRecipeView] = useState(() => localStorage.getItem("mp_recipeView") || "recipes"); // "recipes" | "foods"
     React.useEffect(() => { localStorage.setItem("mp_recipeView", recipeView); }, [recipeView]);
     // Reset pagination when category/search changes
-    React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter]);
+    React.useEffect(() => { setRecipeShowCount(15); }, [recipeCat, recipeQuery, dietaryFilter, proteinFilter]);
     // Persist last-used recipe category
     React.useEffect(() => { try { localStorage.setItem("mp_recipeCat", recipeCat); } catch(e){} }, [recipeCat]);
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -11573,7 +11590,7 @@ function App() {
                         const effectiveTier = tierExpired ? "free" : row.tier;
                         if (tierExpired && row.tier !== "free") {
                             // Silently downgrade on Supabase side
-                            try { getSB()?.from("profiles").update({ tier:"free", tier_expires:null }).eq("id", userId); } catch(_) {}
+                            try { await getSB()?.from("profiles").update({ tier:"free", tier_expires:null }).eq("id", userId); } catch(_) {}
                         }
                         const isPaid = ["monthly","quarterly","annual"].includes(effectiveTier);
                         const unlockData = { tier:effectiveTier, via:row.tier_via||"account",
@@ -11592,10 +11609,19 @@ function App() {
                     setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: false, _serverVerified: true }));
                 }
                 const { data: logs } = await sb.from("meal_logs").select("*").eq("user_id", userId).order("date", { ascending:false });
-                if (logs && logs.length) {
-                    const fmt = logs.map(l => ({ date:l.date, lunchId:l.lunch_id, dinnerId:l.dinner_id, batchSize:l.batch_size||7 }));
-                    setCalLogsState(fmt);
-                    try { localStorage.setItem("mp_cal_logs", JSON.stringify(fmt)); } catch(_) {}
+                if (logs !== null) {
+                    // Merge Supabase meal_logs with any local-only prep sessions (no lunchId/dinnerId)
+                    // to avoid wiping manually-toggled calendar entries on sign-in.
+                    const sbFmt = logs.map(l => ({ date:l.date, lunchId:l.lunch_id, dinnerId:l.dinner_id, batchSize:l.batch_size||7 }));
+                    const sbDates = new Set(sbFmt.map(l => l.date));
+                    let localOnly = [];
+                    try {
+                        const localLogs = JSON.parse(localStorage.getItem("mp_cal_logs") || "[]");
+                        localOnly = localLogs.filter(l => l.date && !sbDates.has(l.date));
+                    } catch(_) {}
+                    const merged = [...sbFmt, ...localOnly].sort((a,b) => a.date > b.date ? -1 : 1);
+                    setCalLogsState(merged);
+                    try { localStorage.setItem("mp_cal_logs", JSON.stringify(merged)); } catch(_) {}
                 }
                 const { data: favs } = await sb.from("favourites").select("recipe_id").eq("user_id", userId);
                 if (favs && favs.length) {
@@ -11679,6 +11705,14 @@ function App() {
             "mp_daily_time", "mp_notif_daily", "mp_notif_prep", "mp_notif_shop",
             "mp_next_prep", "mp_next_shop",
             "mp_sunday_dismissed", "mp_last_milestone",
+            // Email — needed for server calc check + analytics after sign-out
+            "mp_acc_email", "mp_calc_used_email",
+            // Recipe history — device-level, not in Supabase, permanent loss if wiped
+            "mp_history", "mp_last_",
+            // Recipe UI preferences — cosmetic but prevents reset on sign-out
+            "mp_recipeCat", "mp_recipeView",
+            // Unlock state (promo/local) + welcome modal trigger
+            "mp_unlocks", "mp_new_unlock",
         ];
         try {
             const keysToRemove = [];
@@ -11733,7 +11767,7 @@ function App() {
     }
     async function syncCooked(recipeId) {
         if (!currentUser || !getSB()) return;
-        try { await getSB().from("cooked_it").insert({ user_id:currentUser.id, recipe_id:recipeId }); }
+        try { await getSB().from("cooked_it").upsert({ user_id:currentUser.id, recipe_id:recipeId }, { onConflict:"user_id,recipe_id", ignoreDuplicates:true }); }
         catch(e) { console.warn("SG: cooked sync", e); }
     }
 
@@ -11882,8 +11916,7 @@ function App() {
         // or dev-tier override. This check MUST come before allRecipes to prevent bypass —
         // all paid tiers have allRecipes:true but that does NOT include seasonal content.
         if (SOULFOOD_RECIPE_IDS.includes(id)) {
-            return (unlocks.tier === "seasonal" && unlocks.seasonalPriceId === STRIPE_PRICES.seasonal)
-                || unlocks.tier === "dev";
+            return unlocks.tier === "seasonal" || unlocks.tier === "dev";
         }
         // Standard catalog — any allRecipes unlock (monthly, quarterly, annual).
         // For authenticated users: require _serverVerified to prevent localStorage spoofing.
@@ -12025,8 +12058,7 @@ function App() {
             return false;
         if (recipeCat !== "main")
             return true;
-        const f = FILTER_MAP[filter];
-        return f ? (r.badge || "").includes(f) : true;
+        return true;
     }).sort((a, b) => {
         // Active (selected) recipes float to top, then unlocked A-Z, then locked A-Z.
         const activeIds = [lunch, dinner, breakfastRecipe, dessert, preRecipe].filter(Boolean);
@@ -12037,7 +12069,7 @@ function App() {
         const bLocked = canView(b.id) ? 0 : 1;
         if (aLocked !== bLocked) return aLocked - bLocked;
         return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
-    }), [recipeCat, recipeQuery, dietaryFilter, filter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes]);
+    }), [recipeCat, recipeQuery, dietaryFilter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes, unlocks]);
     const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -12192,11 +12224,6 @@ function App() {
                                     color: active ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em",
                                     minHeight: 36, WebkitTapHighlightColor: "transparent" } }, p);
                         })),
-                    recipeCat === "main" && (React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap" } }, FILTERS.map(f => (React.createElement("button", { key: f, onClick: () => setFilter(f), style: { flex: 1, minWidth: 50, padding: "8px 6px", fontSize: 11, fontWeight: 700,
-                            borderRadius: 8, border: "none", cursor: "pointer", letterSpacing: "0.03em",
-                            minHeight: 36, WebkitTapHighlightColor: "transparent",
-                            background: filter === f ? C.accent : C.card2,
-                            color: filter === f ? C.bg : C.sub } }, f))))),
                 ))
                 ,
                 sundayBanner && (React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 10,
@@ -12376,7 +12403,7 @@ function App() {
                     filteredRecipes.length === 0 && (function() {
                         const hasSearch = !!recipeQuery;
                         const hasFilters = filter !== "All" || dietaryFilter !== null || proteinFilter !== null;
-                        const clearAll = () => { setRecipeQuery(""); setFilter("All"); setDietaryFilter(null); setProteinFilter(null); };
+                        const clearAll = () => { setRecipeQuery(""); setDietaryFilter(null); setProteinFilter(null); };
                         return React.createElement("div", { style: { textAlign: "center", padding: "40px 20px", color: C.sub } },
                             React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83D\uDD0D"),
                             React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 6 } }, "No recipes match"),
