@@ -11401,12 +11401,13 @@ function PlansDrawer({ C, savedPlans, allRecipes, onLoad, onDelete, onClose }) {
 }
 
 // ── PrepItFlow — 3-step guided Sunday prep modal ──────────────────────────────
-function PrepItFlow({ C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets, onGotoRecipes, onGotoShopping, onClose }) {
+function PrepItFlow({ C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets, breakfastSkipped, preSkipped, onGotoRecipes, onGotoShopping, onClose }) {
     const [step, setStep] = React.useState(1);
     const lr = lunch ? allRecipes.find(r=>r.id===lunch) : null;
     const dr = dinner ? allRecipes.find(r=>r.id===dinner) : null;
-    const bfr = breakfastRecipe ? allRecipes.find(r=>r.id===breakfastRecipe) : null;
-    const prer = preRecipe ? allRecipes.find(r=>r.id===preRecipe) : null;
+    // Respect skipped flags so PrepItFlow matches what TODAY tab shows
+    const bfr = (!breakfastSkipped && breakfastRecipe) ? allRecipes.find(r=>r.id===breakfastRecipe) : null;
+    const prer = (!preSkipped && preRecipe) ? allRecipes.find(r=>r.id===preRecipe) : null;
     const [reminderSet, setReminderSet] = React.useState(false);
     const [reminderTime, setReminderTime] = React.useState("09:00");
     const hasMeals = lr || dr;
@@ -13068,7 +13069,8 @@ function App() {
             onSwap: id => { if (swapSlot==="lunch") setLunch(id); else setDinner(id); setSwapSlot(null); },
             onClose: () => setSwapSlot(null) }),
         showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets,
-            onGotoRecipes:(slot)=>{ setPendingSlot(slot); setRecipeCat(slot==="main"?"main":slot); setRecipeQuery(""); setTab("recipes"); },
+            breakfastSkipped, preSkipped,
+            onGotoRecipes:(slot)=>{ if(slot==="breakfast") setBreakfastSkipped(false); if(slot==="preworkout") setPreSkipped(false); setPendingSlot(slot); setRecipeCat(slot==="main"?"main":slot); setRecipeQuery(""); setTab("recipes"); },
             onGotoShopping:()=>setTab("shopping"), onClose:()=>setShowPrepFlow(false) }),
         showSavePlanModal && React.createElement(SavePlanModal, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, onSave:savePlan, onClose:()=>setShowSavePlanModal(false) }),
         showPlansDrawer && React.createElement(PlansDrawer, { C, savedPlans, allRecipes, onLoad:loadPlan, onDelete:deletePlan, onClose:()=>setShowPlansDrawer(false) }),
