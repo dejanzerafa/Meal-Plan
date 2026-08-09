@@ -9860,46 +9860,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
     const [basicsKey, setBasicsKey] = React.useState(0); // triggers re-render when basics saved
     const handleBasicsSaved = () => setBasicsKey(k => k+1);
 
-    // ── PAYWALL: calculator gated. Offer two paths: just calc ($5.99) or full upgrade ──
-    if (!canUse) {
-        return (React.createElement("div", { className: "tab-anim" },
-            React.createElement(ProfileBasicsEditor, { key: basicsKey, C: C, onSaved: handleBasicsSaved, tier: tier }),
-            React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
-                React.createElement("div", { style: { fontSize: 36, marginBottom: 10 } }, "\uD83D\uDD12"),
-                React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, marginBottom: 8 } }, "Personalised Macro Calculator"),
-                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 320, margin: "0 auto 24px" } }, "Get your exact daily calorie and macro targets \u2014 calculated from your body, lifestyle, and goal. Auto-syncs with your meal plan.")),
-            React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
-                    padding: "18px 20px", marginBottom: 14 } },
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 14 } }, "WHAT YOU GET"),
-                [
-                    ["📊", "BMR, BMI & TDEE", "Calculated from your body data"],
-                    ["🎯", "Daily calorie target", "Personalised to lose, maintain or gain"],
-                    ["🥩", "Macro breakdown", "Exact protein, carbs, fat in grams"],
-                    ["🔄", "Auto-syncs with app", "Updates meal totals everywhere"],
-                    ["💾", "Save & recalculate", "Update weight monthly, identity stays"],
-                ].map(([icon, title, desc], i) => (React.createElement("div", { key: i, style: { display: "flex", alignItems: "flex-start", gap: 12,
-                        padding: "10px 0", borderBottom: i < 4 ? `1px solid ${C.dim}` : "none" } },
-                    React.createElement("span", { style: { fontSize: 18, flexShrink: 0 } }, icon),
-                    React.createElement("div", { style: { flex: 1 } },
-                        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.text } }, title),
-                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, desc)),
-                    React.createElement("span", { style: { fontSize: 14, color: C.green, fontWeight: 700 } }, "\u2713"))))),
-            React.createElement("div", { style: { background: C.accentDim, border: `1px solid ${C.accentBorder}`,
-                    borderRadius: 14, padding: "18px 20px", marginBottom: 14, textAlign: "center" } },
-                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.1em", marginBottom: 6 } }, "CALCULATOR ONLY"),
-                React.createElement("div", { className: "display", style: { fontSize: 42, color: C.accent, lineHeight: 1, marginBottom: 4 } }, "$5.99"),
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "One-time \u00B7 Just the macro calculator")),
-            React.createElement("button", { onClick: onUnlockCalc, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
-                    padding: "15px", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer",
-                    letterSpacing: "0.02em", marginBottom: 10 } }, "\uD83D\uDD13 Unlock Calculator \u2014 $5.99"),
-            React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, borderRadius: 12,
-                    padding: "12px", fontSize: 13, fontWeight: 600, color: C.sub, cursor: "pointer",
-                    letterSpacing: "0.02em", marginBottom: 8 } }, "Or unlock everything (recipes + calculator) \u2192"),
-            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted, marginBottom: 16 } }, "Full app from $16.99/mo \u00B7 $150/yr"),
-            React.createElement("div", { style: { textAlign: "center", paddingTop: 12, borderTop: `1px solid ${C.dim}` } },
-                React.createElement("div", { style: { fontSize: 11, color: C.muted, marginBottom: 6 } }, "Not ready to commit? Try first:"),
-                React.createElement("a", { href: "calculator.html", style: { fontSize: 13, color: C.accent, fontWeight: 600, textDecoration: "none" } }, "\uD83E\uDDEE Use our free macro calculator \u2192"))));
-    }
+    // Calculator is free for all users — no paywall needed
     // First-time: no profile saved (premium user)
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
@@ -10657,14 +10618,12 @@ function OnboardingSignup({ onDone }) {
 function AdminPanel({ C, currentUser, onClose }) {
     const TIERS = [
         { value:"monthly",   label:"Monthly Pro",   color:"#22c55e", days:30   },
-        { value:"quarterly", label:"Quarterly Pro",  color:"#22c55e", days:90   },
         { value:"annual",    label:"Annual Pro",     color:"#3b82f6", days:365  },
-        
     ];
     const [codes, setCodes]           = React.useState([]);
     const [loading, setLoading]       = React.useState(true);
     const [recipEmail, setRecipEmail] = React.useState("");
-    const [tier, setTier]             = React.useState("quarterly");
+    const [tier, setTier]             = React.useState("monthly");
     const [creating, setCreating]     = React.useState(false);
     const [formErr, setFormErr]       = React.useState("");
     const [lastCode, setLastCode]     = React.useState(null);
@@ -11337,10 +11296,12 @@ function SuppModal({ C, data, mode, onSave, onClose }) {
 
 
 // ── SwapModal — show 3 macro-similar alternatives ────────────────────────────
-function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwap, onClose }) {
+function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwap, onClose, canView }) {
     const currentProtein = getProteinType(currentRecipe);
     const currentKcal = currentRecipe.kcal || 0;
     const currentProt = currentRecipe.protein || 0;
+    // Only show recipes the user can actually access — prevents free users swapping to locked recipes
+    var viewableRecipes = canView ? allRecipes.filter(function(r) { return canView(r.id); }) : allRecipes;
 
     // Find similar: same cat, similar macros. If not enough, relax cat constraint.
     function dist(r) {
@@ -11349,12 +11310,12 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
         return dk * 0.5 + dp * 0.5;
     }
     var cat = currentRecipe.cat;
-    var candidates = allRecipes.filter(function(r) {
+    var candidates = viewableRecipes.filter(function(r) {
         return r.id !== currentRecipe.id && r.cat === cat && !r.fixed;
     }).sort(function(a,b){ return dist(a)-dist(b); });
     // If fewer than 3, relax to same protein type
     if (candidates.length < 3) {
-        var extra = allRecipes.filter(function(r) {
+        var extra = viewableRecipes.filter(function(r) {
             return r.id !== currentRecipe.id && !r.fixed && !candidates.find(function(c){return c.id===r.id;}) && getProteinType(r) === currentProtein;
         }).sort(function(a,b){ return dist(a)-dist(b); });
         candidates = candidates.concat(extra);
@@ -12084,6 +12045,10 @@ function App() {
             // Profile + macros — backed up to Supabase on sign-in but preserve locally
             // so same-device sign-out/sign-in doesn't lose data if Supabase is unavailable
             "mp_profile",
+            // Saved meal plan templates — user-generated, not synced to Supabase, permanent loss if wiped
+            "mp_saved_plans",
+            // Prep reminder time preference — device-level setting
+            "mp_prep_reminder",
         ];
         try {
             const keysToRemove = [];
@@ -12282,7 +12247,7 @@ function App() {
         const newRecipes = unlocks.recipes.includes(id) ? unlocks.recipes : [...unlocks.recipes, id];
         setUnlocks(Object.assign(Object.assign({}, unlocks), { recipes: newRecipes, _serverVerified: true }));
     };
-    // Calculator-only unlock — $5.99 tier
+    // Calculator unlock helper (legacy promo path — calculator now free for all via canUseCalculator)
     const unlockCalculator = () => setUnlocks(Object.assign(Object.assign({}, unlocks), { calculator: true, _serverVerified: true }));
     // canView — recipe access check
     const canView = id => {
@@ -13099,7 +13064,7 @@ function App() {
                     // ── Legal (collapsed) ───────────────────────────────────
                     React.createElement(LegalAccordion, { C: C })),
         ))),
-        swapSlot && (swapSlot==="lunch" ? lr : dr) && React.createElement(SwapModal, { C, currentRecipe: swapSlot==="lunch" ? lr : dr, slot: swapSlot, allRecipes, effectiveTargets,
+        swapSlot && (swapSlot==="lunch" ? lr : dr) && React.createElement(SwapModal, { C, currentRecipe: swapSlot==="lunch" ? lr : dr, slot: swapSlot, allRecipes, effectiveTargets, canView,
             onSwap: id => { if (swapSlot==="lunch") setLunch(id); else setDinner(id); setSwapSlot(null); },
             onClose: () => setSwapSlot(null) }),
         showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets,
