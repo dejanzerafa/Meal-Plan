@@ -8519,41 +8519,28 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, "Choose your access"),
             React.createElement("div", { style: { fontSize: 12, color: C.sub, textAlign: "center", lineHeight: 1.5, marginBottom: 20,
                     fontStyle: "italic" } }, "94 high-protein recipes. Verified macros. Clean ingredients."),
-            React.createElement("div", { onClick: () => startCheckout("quarterly"), style: { background: C.greenDim, border: `1.5px solid ${C.greenBorder}`, borderRadius: 14,
-                    padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
-                React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.green,
-                        borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
-                        letterSpacing: "0.05em" } }, "SAVE 11%"),
-                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
-                    React.createElement("div", { style: { flex: 1 } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.green, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "QUARTERLY \u00B7 3 MONTHS"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + quarterly drops + seasonal bundles included"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$13.33/mo effective \u00B7 Seasonal recipe bundle auto-included each drop")),
-                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
-                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.green, lineHeight: 1 } }, "$39.99"),
-                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/3 months")))),
-            React.createElement("div", { onClick: () => startCheckout("annual"), style: { background: C.card, border: `1.5px solid ${C.blueBorder}`, borderRadius: 14,
+            React.createElement("div", { onClick: () => startCheckout("annual"), style: { background: C.card, border: `1px solid ${C.blue}`, borderRadius: 14,
                     padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
                 React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.accent,
                         borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
-                        letterSpacing: "0.05em" } }, "SAVE 50%"),
+                        letterSpacing: "0.05em" } }, "SAVE 26%"),
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.blue, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "ANNUAL · 12 MONTHS"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All recipes + every quarterly drop for the year"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$7.50/mo effective · Every 2025 drop included · Best value subscription")),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All 94 recipes + 11 annual exclusive recipes"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$12.50/mo effective · 2 months free vs monthly · Best value")),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
-                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.blue, lineHeight: 1 } }, "$89.99"),
+                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.blue, lineHeight: 1 } }, "$150"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/year")))),
             React.createElement("div", { onClick: () => startCheckout("monthly"), style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                     padding: "14px 16px", marginBottom: 18, cursor: "pointer" } },
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "MONTHLY \u00B7 CANCEL ANYTIME"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All 75 current recipes — no new quarterly drops"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Most flexible \u00B7 Upgrade any time to unlock quarterly drops")),
+                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All 94 recipes — full access from day one"),
+                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Most flexible \u00B7 Cancel anytime")),
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
-                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, lineHeight: 1 } }, "$14.99"),
+                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, lineHeight: 1 } }, "$16.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/month")))),
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
                     marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
@@ -8562,12 +8549,7 @@ function UpgradeModal({ onClose }) {
                         padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
                     React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
                     React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one")),
-                React.createElement("div", { onClick: () => startCheckout("calculator"), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
-                        padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
-                    React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$5.99"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "CALCULATOR"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Macros only"))),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one"))),
             showSingleHint && React.createElement("div", { style: {
                 background: "rgba(184,74,31,0.08)", border: "1px solid rgba(184,74,31,0.28)",
                 borderRadius: 10, padding: "12px 14px", marginBottom: 14, fontSize: 13,
@@ -8578,13 +8560,13 @@ function UpgradeModal({ onClose }) {
                 React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } },
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.06em", marginBottom: 10 } }, "FREE"),
-                        [["\u2713", "3 preview recipes"], ["\u2713", "Macro calculator (1 use)"], ["\u2713", "Prep calendar"], ["\u2717", "No shopping list"], ["\u2717", "No new drops"]].map(([icon, text]) =>
+                        [["\u2713", "3 preview recipes"], ["\u2713", "Macro calculator"], ["\u2713", "Prep calendar"], ["\u2717", "No shopping list"], ["\u2717", "No new drops"]].map(([icon, text]) =>
                             React.createElement("div", { key: text, style: { display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 7, fontSize: 11, color: C.sub } },
                                 React.createElement("span", { style: { color: icon === "\u2717" ? C.muted : C.green, fontWeight: 700 } }, icon),
                                 React.createElement("span", { style: { color: icon === "\u2717" ? C.muted : C.sub } }, text)))),
                     React.createElement("div", { style: { background: C.accentDim, border: `1.5px solid ${C.accentBorder}`, borderRadius: 12, padding: "12px 14px" } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.accent, letterSpacing: "0.06em", marginBottom: 10 } }, "PAID"),
-                        [["\u2713", "75+ current recipes unlocked"], ["\u2713", "Shopping list"], ["\u2713", "Unlimited macro recalcs"], ["\u2B50", "Quarterly+ get new drops"], ["\u2B50", "Annual members get 11 exclusive recipes"]].map(([icon, text]) =>
+                        [["\u2713", "94 recipes unlocked"], ["\u2713", "Shopping list"], ["\u2713", "Macro calculator"], ["\u2B50", "Annual: 11 exclusive recipes"]].map(([icon, text]) =>
                             React.createElement("div", { key: text, style: { display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 7, fontSize: 11, color: C.text } },
                                 React.createElement("span", { style: { color: C.accent, fontWeight: 700 } }, icon),
                                 React.createElement("span", null, text)))))),
@@ -8640,10 +8622,10 @@ function DevModal({ onClose, onApplyTier }) {
                 React.createElement("button", { onClick: submit, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8, padding: "9px", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "Apply")),
             React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 14, marginBottom: 10 } },
                 React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 8 } }, "TIER PREVIEW"),
-                ["free","monthly","quarterly","annual","dev"].map(t =>
+                ["free","monthly","annual","dev"].map(t =>
                     React.createElement("div", { key: t, style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 0", fontSize: 11 } },
                         React.createElement("span", { style: { color: TIER_COLORS[t] || C.sub, fontWeight: 600, textTransform: "capitalize" } }, t),
-                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "Limited recipes" : t === "monthly" ? "All recipes" : t === "quarterly" ? "All + Q drops" : t === "annual" ? "All + priority" : "Full dev access")))),
+                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "Limited recipes" : t === "monthly" ? "All recipes" : t === "annual" ? "All + priority" : "Full dev access")))),
             React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 14 } },
                 React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 10 } }, "\uD83E\uDDEA TESTING RESETS"),
                 React.createElement("button", { onClick: resetAll, style: { width: "100%", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, padding: "9px", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", marginBottom: 8 } }, "\uD83C\uDD95 First-Time User \u2014 Clear Everything"),
@@ -9516,7 +9498,7 @@ function GuideAccordion({ C }) {
         { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From TODAY, tap '+ Add Food' to assign meals. Add breakfast, pre-workout and dessert slots too.", tip: null },
         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to SHOP. The app builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: null },
         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
-        { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library. Monthly from $14.99, or go Annual for $89.99.", tip: null },
+        { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library. Monthly from $16.99, or go Annual for $150.", tip: null },
     ];
     return React.createElement("div", null,
         React.createElement("button", { onClick: function() { setOpen(function(o) { return !o; }); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: "1px solid " + C.dim, textAlign: "left", cursor: "pointer", marginBottom: open ? 8 : 0 } },
@@ -9913,7 +9895,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, borderRadius: 12,
                     padding: "12px", fontSize: 13, fontWeight: 600, color: C.sub, cursor: "pointer",
                     letterSpacing: "0.02em", marginBottom: 8 } }, "Or unlock everything (recipes + calculator) \u2192"),
-            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted, marginBottom: 16 } }, "Full app from $14.99/mo \u00B7 $89.99/yr"),
+            React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: C.muted, marginBottom: 16 } }, "Full app from $16.99/mo \u00B7 $150/yr"),
             React.createElement("div", { style: { textAlign: "center", paddingTop: 12, borderTop: `1px solid ${C.dim}` } },
                 React.createElement("div", { style: { fontSize: 11, color: C.muted, marginBottom: 6 } }, "Not ready to commit? Try first:"),
                 React.createElement("a", { href: "calculator.html", style: { fontSize: 13, color: C.accent, fontWeight: 600, textDecoration: "none" } }, "\uD83E\uDDEE Use our free macro calculator \u2192"))));
@@ -10021,6 +10003,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
     setBreakfastSkipped, setPreSkipped, setDessert, profileScale }) {
     const [splitMode, setSplitMode] = useState(null);
     const [customPcts, setCustomPcts] = useState({ bf: 25, pre: 10, l: 30, d: 30, ds: 5 });
+    const [showTips, setShowTips] = useState(false);
     if (!allSet) return null;
     const excess = total.kcal - targets.kcal;
     const mealCount = 2 + (bfActive ? 1 : 0) + (preActive ? 1 : 0) + (desActive ? 1 : 0);
@@ -10033,6 +10016,16 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
     const dsNat = desActive && (desScale || 1) > 0 ? DS.kcal   / (desScale || 1) : 0;
     const totalNat = lNat + dNat + bfNat + preNat + dsNat;
     const tKcal = (targets.kcal || total.kcal) || 2000;
+    // ── One-tap Auto-Balance: scale ALL active slots by the same factor to hit kcal target ──
+    function applyAutoBalance() {
+        if (total.kcal === 0 || tKcal === 0) return;
+        var s = tKcal / total.kcal;
+        if (lNat   > 0) setLunchScale( +(lunchScale  * s).toFixed(3));
+        if (dNat   > 0) setDinnerScale(+(dinnerScale * s).toFixed(3));
+        if (bfNat  > 0) setBfScale(    +(bfScale     * s).toFixed(3));
+        if (preNat > 0) setPreScale(   +(preScale    * s).toFixed(3));
+        if (dsNat  > 0) setDesScale(   +(desScale    * s).toFixed(3));
+    }
     function applyPcts(pcts) {
         if (pcts.l   !== undefined && lNat   > 0) setLunchScale(  +((pcts.l   / 100 * tKcal) / lNat).toFixed(3));
         if (pcts.d   !== undefined && dNat   > 0) setDinnerScale( +((pcts.d   / 100 * tKcal) / dNat).toFixed(3));
@@ -10085,15 +10078,38 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
         }
         setCustomPcts(newP);
     }
+    // ── Macro diff helper ────────────────────────────────────────────────────
+    function macroDiff(val, target) {
+        var d = val - target;
+        var sign = d > 0 ? "+" : "";
+        var color = Math.abs(d) < 5 ? C.green : (d > 0 ? "#ef4444" : "#f59e0b");
+        return { text: sign + Math.round(d), color: color };
+    }
+    var tProtein = targets.protein || 0;
+    var tCarbs   = targets.carbs   || 0;
+    var tFat     = targets.fat     || 0;
+    var pDiff = tProtein > 0 ? macroDiff(total.protein, tProtein) : null;
+    var cDiff = tCarbs   > 0 ? macroDiff(total.carbs,   tCarbs)   : null;
+    var fDiff = tFat     > 0 ? macroDiff(total.fat,     tFat)     : null;
+    // ── Collapsed state ──────────────────────────────────────────────────────
     if (!showBalance) {
+        var needsBalance = Math.abs(excess) > 50;
+        var onTarget = Math.abs(excess) <= 20;
         return React.createElement("div", { style: { background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: 14, padding: "14px 16px", marginTop: 10 } },
-            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
-                React.createElement("div", null,
-                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.purple, marginBottom: 2 } }, "⚖️ " + mealCount + " meals active"),
-                    React.createElement("div", { style: { fontSize: 11, color: C.sub } }, excess === 0 ? "✅ Macros on track" : statusText + " · Tap to adjust"),
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: needsBalance ? 10 : 0 } },
+                React.createElement("div", { style: { flex: 1 } },
+                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.purple, marginBottom: 2 } }, "⚖️ " + mealCount + " meals · Macro Split"),
+                    React.createElement("div", { style: { fontSize: 11, color: onTarget ? C.green : (excess > 0 ? "#ef4444" : "#f59e0b"), marginBottom: 3, fontWeight: 600 } },
+                        onTarget ? "✅ On target — perfect!" : (excess > 0 ? "⚠️ " : "📉 ") + statusText),
+                    (pDiff || cDiff || fDiff) && React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 2 } },
+                        pDiff && React.createElement("span", { style: { fontSize: 10, color: pDiff.color } }, "P " + total.protein + "g" + (tProtein > 0 ? " / " + tProtein + "g" : "")),
+                        cDiff && React.createElement("span", { style: { fontSize: 10, color: cDiff.color } }, "C " + total.carbs + "g" + (tCarbs > 0 ? " / " + tCarbs + "g" : "")),
+                        fDiff && React.createElement("span", { style: { fontSize: 10, color: fDiff.color } }, "F " + total.fat + "g" + (tFat > 0 ? " / " + tFat + "g" : ""))),
                     (profileScale && Math.abs(profileScale-1) > 0.05) && React.createElement("div", { style: { fontSize: 10, color: C.purple, marginTop: 2 } }, "📊 Scaled to " + Math.round((profileScale||1)*100) + "% · " + targets.kcal + " kcal")),
-                    !(profileScale && Math.abs(profileScale-1) > 0.05) && React.createElement("span", null),
-                React.createElement("button", { onClick: function() { setShowBalance(true); }, style: { background: C.purple, border: "none", borderRadius: 9, padding: "9px 14px", fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer" } }, "Adjust →")));
+                React.createElement("button", { onClick: function() { setShowBalance(true); }, style: { background: C.purple, border: "none", borderRadius: 9, padding: "9px 14px", fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer", flexShrink: 0, marginLeft: 10 } }, "Adjust →")),
+            needsBalance && React.createElement("button", { onClick: function(){ applyAutoBalance(); },
+                style: { width: "100%", padding: "10px 0", background: "linear-gradient(135deg,rgba(124,58,237,0.9),rgba(139,92,246,0.9))", border: "none", borderRadius: 10, fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer", letterSpacing: "0.03em" } },
+                "🎯 Auto-balance to hit " + tKcal + " kcal target"));
     }
     // ── Mode button helper ──────────────────────────────────────────────────
     var modeBtn = function(id, icon, label) {
@@ -10115,7 +10131,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
     var splitPanel = null;
     if (splitMode === "auto") {
         splitPanel = React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "10px 12px", marginBottom: 12 } },
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 8 } }, "Scales each slot proportional to its recipe's natural calorie weight — no fixed percentages."),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 8 } }, "Keeps each recipe's natural calorie ratio, then scales all meals up or down together to hit your daily kcal target. Protein, carbs and fat scale with the food."),
             slotRows.map(function(s) {
                 var pct = totalNat > 0 ? Math.round(s.nat/totalNat*100) : 0;
                 var tkc = Math.round(s.nat/totalNat*tKcal);
@@ -10126,7 +10142,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
             React.createElement("button", { onClick: function(){ applyAuto(); setSplitMode(null); setShowBalance(false); }, style: { width: "100%", marginTop: 8, padding: "9px 0", fontSize: 12, fontWeight: 700, background: C.purple, color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" } }, "✓ Apply Auto Split"));
     } else if (splitMode === "balanced") {
         splitPanel = React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "10px 12px", marginBottom: 12 } },
-            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 8 } }, "Fixed splits: BF 25·PW 10·Lunch 30·Dinner 30·Dessert 5 — normalised across active slots."),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 8 } }, "Uses sports nutrition defaults — BF 25% · Pre-Workout 10% · Lunch 30% · Dinner 30% · Dessert 5%. Redistributed across your active meal slots."),
             slotRows.map(function(s) {
                 var dp = def[s.key] || 0;
                 var np = balSum > 0 ? Math.round(dp/balSum*100) : 0;
@@ -10140,7 +10156,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
         var canApply = Math.abs(customSum - 100) < 2;
         splitPanel = React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "10px 12px", marginBottom: 12 } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } },
-                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Drag sliders — other slots auto-adjust."),
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Set your own split. Other slots auto-adjust to keep total at 100%."),
                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: canApply ? C.green : "#ef4444" } }, customSum + "% / 100%")),
             slotRows.map(function(s) {
                 var pct = Math.round(customPcts[s.key] || 0);
@@ -10158,7 +10174,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
                 style: { width: "100%", marginTop: 4, padding: "9px 0", fontSize: 12, fontWeight: 700, background: canApply ? C.purple : C.card2, color: canApply ? "#fff" : C.muted, border: "none", borderRadius: 8, cursor: canApply ? "pointer" : "not-allowed" } },
                 "✓ Apply Custom Split"));
     }
-    // ── Quick adjustments (existing) ────────────────────────────────────────
+    // ── Quick adjustments ────────────────────────────────────────────────────
     const suggest = [];
     if (bfActive && BF.kcal > 0) {
         if (excess > 0) { const cut=Math.min(excess,BF.kcal*0.5); const pct=Math.round(cut/BF.kcal*100); if(pct>=5) suggest.push({ label: "🌅 Reduce Breakfast "+pct+"%", saves: Math.round(cut), action: function(){ setBfScale(+(bfScale*(BF.kcal-cut)/BF.kcal).toFixed(2)); } }); }
@@ -10180,13 +10196,57 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
     }
     const anyAdjusted = lunchScale!==1||dinnerScale!==1||bfScale!==1||preScale!==1||desScale!==1;
     return React.createElement("div", { style: { background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: 14, padding: "14px 16px", marginTop: 10 } },
-        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
+        // ── Header ──
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } },
             React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.purple } }, "⚖️ Macro Split"),
-            React.createElement("button", { onClick: function(){ setShowBalance(false); setSplitMode(null); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); }, style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕")),
-        React.createElement("div", { style: { fontSize: 11, color: excess > 0 ? "#ef4444" : C.sub, marginBottom: 10, fontWeight: excess > 0 ? 600 : 400 } },
-            excess > 0 ? ("⚠️ " + statusText) : ("✅ " + statusText),
-            (profileScale && Math.abs(profileScale-1) > 0.05) ? (" · Scaled to " + Math.round((profileScale||1)*100) + "%") : ""),
-        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } },
+            React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
+                React.createElement("button", { onClick: function(){ setShowTips(function(v){ return !v; }); }, style: { background: "none", border: "1px solid " + C.dim, borderRadius: 6, padding: "3px 8px", fontSize: 10, color: C.sub, cursor: "pointer" } }, showTips ? "Hide tips" : "💡 Tips"),
+                React.createElement("button", { onClick: function(){ setShowBalance(false); setSplitMode(null); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); }, style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕"))),
+        // ── Tips panel ──
+        showTips && React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "12px 14px", marginBottom: 12, borderLeft: "3px solid " + C.purple } },
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 8 } }, "What is Macro Split?"),
+            React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6, marginBottom: 10 } }, "Macro split distributes your daily calorie and macro targets (protein, carbs, fat) across your chosen meals. Instead of guessing how much to eat, the app scales each meal's portion so you hit your goal exactly — no under-eating or over-eating."),
+            React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 6 } }, "Why it matters:"),
+            [
+                ["🍗 Protein timing", "Spreading protein evenly (30-40g per meal) maximises muscle protein synthesis. Your body can't store excess protein — it gets converted to energy."],
+                ["⚡ Pre-workout carbs", "Higher carbs before training = more fuel. Your pre-workout meal should be carb-heavier; dinner can be lower-carb and higher-fat."],
+                ["🌙 Evening meals", "Dinner doesn't need to be small — muscle repairs overnight. Keep protein high, adjust carbs based on how active your day was."],
+                ["⚖️ Auto mode", "Respects your recipes' natural calorie ratios. Best when your meals are already balanced."],
+                ["📊 Balanced mode", "Uses sports nutrition defaults (BF 25% · Lunch 30% · Dinner 30%). Good starting point for most people."],
+                ["🎛️ Custom mode", "Set your own percentages. Great for intermittent fasting, 16:8, or specific training windows."],
+            ].map(function(tip, i) {
+                return React.createElement("div", { key: i, style: { display: "flex", gap: 8, marginBottom: 7 } },
+                    React.createElement("span", { style: { fontSize: 11, flexShrink: 0, width: 20 } }, ""),
+                    React.createElement("div", null,
+                        React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: C.text } }, tip[0] + ": "),
+                        React.createElement("span", { style: { fontSize: 11, color: C.sub } }, tip[1])));
+            })),
+        // ── Current totals vs target ──
+        React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "10px 12px", marginBottom: 10 } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
+                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Today's totals"),
+                React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: excess === 0 ? C.green : (excess > 0 ? "#ef4444" : "#f59e0b") } },
+                    total.kcal + " / " + tKcal + " kcal " + (excess === 0 ? "✅" : (excess > 0 ? "▲" : "▼") + " " + Math.abs(excess)))),
+            (pDiff || cDiff || fDiff) && React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginTop: 6 } },
+                pDiff && React.createElement("div", { style: { textAlign: "center", background: C.card2, borderRadius: 7, padding: "6px 4px" } },
+                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: pDiff.color } }, total.protein + "g"),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.06em" } }, "PROTEIN"),
+                    tProtein > 0 && React.createElement("div", { style: { fontSize: 9, color: pDiff.color } }, pDiff.text + "g vs target")),
+                cDiff && React.createElement("div", { style: { textAlign: "center", background: C.card2, borderRadius: 7, padding: "6px 4px" } },
+                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: cDiff.color } }, total.carbs + "g"),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.06em" } }, "CARBS"),
+                    tCarbs > 0 && React.createElement("div", { style: { fontSize: 9, color: cDiff.color } }, cDiff.text + "g vs target")),
+                fDiff && React.createElement("div", { style: { textAlign: "center", background: C.card2, borderRadius: 7, padding: "6px 4px" } },
+                    React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: fDiff.color } }, total.fat + "g"),
+                    React.createElement("div", { style: { fontSize: 9, color: C.muted, letterSpacing: "0.06em" } }, "FAT"),
+                    tFat > 0 && React.createElement("div", { style: { fontSize: 9, color: fDiff.color } }, fDiff.text + "g vs target")))),
+        // ── One-tap Auto-Balance ──
+        Math.abs(excess) > 20 && React.createElement("button", { onClick: function(){ applyAutoBalance(); },
+            style: { width: "100%", marginBottom: 12, padding: "11px 0", background: "linear-gradient(135deg,rgba(124,58,237,0.9),rgba(139,92,246,0.9))", border: "none", borderRadius: 10, fontSize: 12, fontWeight: 700, color: "#fff", cursor: "pointer", letterSpacing: "0.03em" } },
+            "🎯 Auto-balance all meals → hit " + tKcal + " kcal exactly"),
+        // ── Split mode selector ──
+        React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 10 } },
+            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", display: "flex", alignItems: "center", marginRight: 2 } }, "SPLIT:"),
             modeBtn("auto",     "⚡",         "Auto"),
             modeBtn("balanced", "⚖️",   "Balanced"),
             modeBtn("custom",   "🎛️", "Custom")),
@@ -10201,11 +10261,11 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
             })),
         anyAdjusted && React.createElement("div", { style: { marginTop: 8, padding: "8px 10px", background: C.card, borderRadius: 8, fontSize: 11, color: C.sub } },
             React.createElement("div", { style: { fontWeight: 700, marginBottom: 4, color: C.text } }, "Active adjustments:"),
-            bfScale !==1 && React.createElement("div", null, "🌅 Breakfast at "   +Math.round(bfScale *100)+"% · "+BF.kcal   +" kcal"),
-            preScale!==1 && React.createElement("div", null, "⚡ Pre-Workout at "        +Math.round(preScale*100)+"% · "+PRE_M.kcal+" kcal"),
-            lunchScale!==1&&React.createElement("div", null, "☀️ Lunch at "        +Math.round(lunchScale*100)+"% · "+L.kcal   +" kcal"),
-            dinnerScale!==1&&React.createElement("div",null, "🌙 Dinner at "       +Math.round(dinnerScale*100)+"% · "+D.kcal  +" kcal"),
-            desScale!==1 && React.createElement("div", null, "🍰 Dessert at "      +Math.round(desScale*100)+"% · "+DS.kcal   +" kcal")));
+            bfScale !==1 && React.createElement("div", null, "🌅 Breakfast at "   +Math.round(bfScale *100)+"% · "+BF.kcal   +" kcal · "+BF.protein+"g P"),
+            preScale!==1 && React.createElement("div", null, "⚡ Pre-Workout at "  +Math.round(preScale*100)+"% · "+PRE_M.kcal+" kcal · "+PRE_M.protein+"g P"),
+            lunchScale!==1&&React.createElement("div", null, "☀️ Lunch at "        +Math.round(lunchScale*100)+"% · "+L.kcal   +" kcal · "+L.protein+"g P"),
+            dinnerScale!==1&&React.createElement("div",null, "🌙 Dinner at "       +Math.round(dinnerScale*100)+"% · "+D.kcal  +" kcal · "+D.protein+"g P"),
+            desScale!==1 && React.createElement("div", null, "🍰 Dessert at "      +Math.round(desScale*100)+"% · "+DS.kcal   +" kcal · "+DS.protein+"g P")));
 }
 // ─── ONBOARDING FLOW ──────────────────────────────────────────────────────
 // Shown only on first visit: Story → Sign-up → Loader → App
@@ -11122,7 +11182,7 @@ function SupplementsTab({ C, currentUser, isPremium }) {
                     React.createElement("div", { style:{fontSize:11,color:C.sub,marginTop:1} }, desc))))),
         React.createElement("div", { style:{background:C.accentDim,border:"1px solid "+C.accentBorder,borderRadius:12,
                 padding:"14px 16px",textAlign:"center",fontSize:12,color:C.sub} },
-            "Unlock with any SoulGainz plan starting at $14.99/mo → ME tab"));
+            "Unlock with any SoulGainz plan starting at $16.99/mo → ME tab"));
 
     // ── Disclaimer (first time) ────────────────────────────────────────────────
     if (!disclaimerSeen) return React.createElement("div", { className:"tab-anim", style:{padding:"20px 0"} },
@@ -11909,6 +11969,12 @@ function App() {
                 } else {
                     // No profile row yet — treat as free tier, but mark server-verified
                     setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: false, _serverVerified: true }));
+                    // Restore profile from localStorage if available (same-device sign-out/sign-in
+                    // while Supabase profile hasn't synced yet)
+                    try {
+                        const local = JSON.parse(localStorage.getItem("mp_profile") || "null");
+                        if (local) { setProfile(local); }
+                    } catch(_) {}
                 }
                 const { data: logs } = await sb.from("meal_logs").select("*").eq("user_id", userId).order("date", { ascending:false });
                 if (logs !== null) {
@@ -12015,6 +12081,9 @@ function App() {
             "mp_recipeCat", "mp_recipeView",
             // Unlock state (promo/local) + welcome modal trigger
             "mp_unlocks", "mp_new_unlock",
+            // Profile + macros — backed up to Supabase on sign-in but preserve locally
+            // so same-device sign-out/sign-in doesn't lose data if Supabase is unavailable
+            "mp_profile",
         ];
         try {
             const keysToRemove = [];
@@ -12036,6 +12105,9 @@ function App() {
     }
     async function signOut() {
         const sb = getSB();
+        // Flush latest profile to Supabase before signing out so cross-device sign-in
+        // picks it up — silent failure is fine here, localStorage preserve covers same-device
+        if (profile) { try { await saveProfileToSupabase(profile); } catch(_) {} }
         if (sb) await sb.auth.signOut();
         clearSessionState();
     }
@@ -12248,16 +12320,8 @@ function App() {
             .catch(function() {});
     }, []);
     const canUseCalculator = () => {
-        if (unlocks.calculator || unlocks.allRecipes) return true;
-        if (serverCalcUsed) return false;
-        try {
-            const profileExists = !!localStorage.getItem("mp_profile");
-            if (profileExists) return false; // already used free calc, needs payment
-            const currentEmail = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim();
-            const usedEmail = (localStorage.getItem("mp_calc_used_email") || "").toLowerCase().trim();
-            // Free only if this email hasn't already used the calculator
-            return !usedEmail || usedEmail !== currentEmail;
-        } catch(e) { return false; }
+        // Calculator is free for all users
+        return true;
     };
     // ── Sunday reminder banner ─────────────────────────────────────────────────
     const [sundayBanner, setSundayBanner] = useState(() => {
@@ -12830,7 +12894,7 @@ function App() {
                         { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
                         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: "Batch size scales every ingredient quantity automatically." },
                         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
-                        { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library. Monthly from $14.99/mo or annual for $89.99 — every recipe, every future drop.", tip: null },
+                        { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library. Monthly from $16.99/mo or annual for $150 — every recipe, every future drop.", tip: null },
                     ].map((s) => React.createElement("div", { key: s.num, style: { display: "flex", gap: 14, marginBottom: 14, padding: "14px", background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14 } },
                         React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 36 } },
                             React.createElement("div", { style: { fontSize: 22, lineHeight: 1 } }, s.icon),
