@@ -31,9 +31,7 @@ const C = {
 
 const TIER_OPTIONS = [
   { value:"monthly",   label:"Monthly Pro",   color:"#22c55e" },
-  { value:"quarterly", label:"Quarterly Pro",  color:"#22c55e" },
   { value:"annual",    label:"Annual Pro",     color:"#3b82f6" },
-  { value:"lifetime",  label:"Lifetime",       color:"#f59e0b" },
 ];
 
 const STORAGE_KEY = "sg_admin_codes_v1";
@@ -83,7 +81,7 @@ function LoginScreen({ onLogin }) {
 // ── Create Code Form ──────────────────────────────────────────────────────────
 function CreateForm({ onCreate }) {
   const [code, setCode] = useState("");
-  const [tier, setTier] = useState("quarterly");
+  const [tier, setTier] = useState("monthly");
   const [expires, setExpires] = useState("");
   const [label, setLabel] = useState("");
   const [err, setErr] = useState("");
