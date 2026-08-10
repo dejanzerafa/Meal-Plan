@@ -3,7 +3,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-  command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && echo 'React vendor files OK'" 
+  command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && curl --fail -L 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js' -o vendor/supabase.min.js && curl --fail -L 'https://browser.sentry-cdn.com/7.119.0/bundle.min.js' -o vendor/sentry.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && test -s vendor/supabase.min.js && test -s vendor/sentry.min.js && echo 'Vendor files OK'" 
 
 # ── Secrets scanning ─────────────────────────────────────────────────────────
 # VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).
