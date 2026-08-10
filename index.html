@@ -7797,8 +7797,6 @@ function track(eventName, properties) {
 const STRIPE_ENABLED = true;
 const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2NxM0oYR46xTbBmFCdAqXkpyE9H6fieIuWZ24ZHWZIww7v00AV7lCr12";
 const STRIPE_PRICES = {
-    // lifetime removed — max tier is annual
-    quarterly: "price_1TU81SGjmPEqu9q9UVg827sE",
     annual: "price_1TXc8dGjmPEqu9q9sIA4RenP",
     monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
     calculator: "price_1TU824GjmPEqu9q90xWZDozk",
@@ -7809,8 +7807,7 @@ const STRIPE_PRICES = {
 // SoulFood seasonal recipe bundle — populate these IDs when the bundle launches.
 // Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
 const SOULFOOD_RECIPE_IDS = ["hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10"];
-// Q3 2025 recipe drop — accessible to quarterly and annual tiers only.
-// Monthly subscribers get the original catalog; drops require a higher commitment tier.
+// Q3 2025 recipe drop — accessible to all paid tiers (monthly and annual).
 const QUARTERLY_DROP_IDS = new Set(["m65","m66","m67","m68","m69","m70","m71","m72","m73","m74","m75","bf28","bf29","bf30","bf31","bf32","sm8","sm9","sn7","sn8"]);
 // Annual-exclusive recipes — bonus content for the biggest commitment.
 const LIFETIME_EXCLUSIVE_IDS = new Set(["m76","m77","m78","m79","m80","m81","m82","m83","m84","v8","v9"]);
@@ -8021,7 +8018,6 @@ async function startCheckout(tier, recipeId) {
 const DEV_TIER_HASHES = {
     "837488f6d1011054c23e6147534de79e373151605d212653d898fe4cfa49a7c8": { tier: "free",      allRecipes: false, label: "Free Tier" },
     "00608339aac4da4d44e9a472ba7e892e3040c014c961fedbb3d2254ef70ee6bd": { tier: "monthly",   allRecipes: true,  label: "Monthly" },
-    "dc5f6f6ff5c067a577f7b4f11fbf77c29e83326ee53cfdce3200930daa541722": { tier: "quarterly", allRecipes: true,  label: "Quarterly" },
     "f18c8961def0319ca9c09998402637311dde8b944e0eca16c9e9b2dc54a71208": { tier: "annual",    allRecipes: true,  label: "Annual" },
 
     "097aa9f4e905a098fcc389d95a1d50f504e69f4788345b9500aa45df24e05a99": { tier: "dev",       allRecipes: true,  label: "Dev Master" },
@@ -8034,13 +8030,11 @@ async function _checkDevCode(input) {
     const hash = await _hashInput(input);
     return DEV_TIER_HASHES[hash] || null;
 }
-function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isQuarterlyDrop, isAnnualExclusive, isSeasonal }) {
+function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isAnnualExclusive, isSeasonal }) {
     const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot"];
     const isCookingMethodBadge = r.badge && COOKING_METHOD_BADGES.includes(r.badge);
     var tierLabel = isAnnualExclusive
         ? React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#b45309", background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "⭐ ANNUAL ONLY")
-        : isQuarterlyDrop
-        ? React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#0369a1", background: "rgba(3,105,161,0.10)", border: "1px solid rgba(3,105,161,0.25)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "\uD83C\uDF1F QUARTERLY+")
         : null;
     return React.createElement("div", { style: { background: C.card, border: `1.5px solid ${C.dim}`, borderRadius: 14, boxShadow: C.cardShadow,
             overflow: "hidden", marginBottom: 10, position: "relative" } },
@@ -8063,10 +8057,8 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isQua
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "10px 12px 12px", borderTop: `1px solid ${C.dim}` } },
             isAnnualExclusive
                 ? React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#b45309", cursor: "pointer" } }, "\u2B50 Annual plan \u2192")
-                : isQuarterlyDrop
-                ? React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: "rgba(3,105,161,0.10)", border: "1px solid rgba(3,105,161,0.25)", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#0369a1", cursor: "pointer" } }, "\uD83C\uDF1F Upgrade to Quarterly+ \u2192")
                 : React.createElement("button", { onClick: () => onUnlockSingle && onUnlockSingle(r.id, r.name), style: { flex: 1, background: "none", border: `1px solid ${C.dim}`, borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83D\uDCB3 $1.99 this recipe"),
-            !isAnnualExclusive && !isQuarterlyDrop && React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Unlock All \u2192")));
+            !isAnnualExclusive && React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Unlock All \u2192")));
 }
 // ─── SOULFOOD SEASONAL BUNDLE POPUP ───────────────────────────────────────────
 function SeasonalPopup({ show, onClose, onBuy }) {
@@ -8350,7 +8342,7 @@ function OnboardingModal({ onClose }) {
 }
 // ── Promo Code Redeemer ──────────────────────────────────────────────────────
 // Global tier label map — shared across PromoCodeInput, MeHeader, and any future component
-const TIER_LABELS = { monthly: "Monthly Pro", quarterly: "Quarterly Pro", annual: "Annual Pro", dev: "Dev Access", free: "Free" };
+const TIER_LABELS = { monthly: "Monthly Pro", annual: "Annual Pro", dev: "Dev Access", free: "Free" };
 
 function PromoCodeInput({ C, onRedeemed }) {
     const [open, setOpen] = React.useState(false);
@@ -8569,7 +8561,7 @@ function DevModal({ onClose, onApplyTier }) {
         ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k));
         window.location.reload();
     };
-    const TIER_COLORS = { free: C.sub, monthly: "#60a5fa", quarterly: "#a78bfa", annual: C.accent, dev: "#f59e0b" };
+    const TIER_COLORS = { free: C.sub, monthly: "#60a5fa", annual: C.accent, dev: "#f59e0b" };
     return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
             display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" } },
         React.createElement("div", { style: { background: C.card, borderRadius: 16, padding: "24px 20px", maxWidth: 300, width: "100%" } },
@@ -9567,12 +9559,11 @@ function MeHeader({ C, tier: tierProp }) {
     const tierMap = {
 
         annual:    { label: "ANNUAL PRO",      color: "#22c55e", bg: "rgba(34,197,94,0.1)",  border: "rgba(34,197,94,0.3)" },
-        quarterly: { label: "QUARTERLY PRO",   color: "#22c55e", bg: "rgba(34,197,94,0.1)",  border: "rgba(34,197,94,0.3)" },
         monthly:   { label: "PRO",             color: "#22c55e", bg: "rgba(34,197,94,0.1)",  border: "rgba(34,197,94,0.3)" },
         dev:       { label: "DEV",             color: "#818cf8", bg: "rgba(129,140,248,0.1)", border: "rgba(129,140,248,0.3)" },
     };
     const ti = tierMap[tier] || { label: "FREE", color: C.muted, bg: C.card2, border: C.dim };
-    const isSubscription = ["monthly","quarterly","annual"].includes(tier);
+    const isSubscription = ["monthly","annual"].includes(tier);
     const initials = name ? name.split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2) : null;
     const handleSave = async () => {
         if (!name.trim() || !email.trim()) return;
@@ -9687,7 +9678,7 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
         const htDisplay = form.heightUnit==="ft" ? `${form.ftFt||0}ft ${form.ftIn||0}in` : `${form.height||"—"}cm`;
         const wtDisplay = `${form.weight||"—"} ${form.weightUnit}`;
         const initials = name ? name.split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2) : null;
-        const tierMap = { annual:{label:"ANNUAL PRO",color:"#22c55e",bg:"rgba(34,197,94,0.1)",border:"rgba(34,197,94,0.3)"}, quarterly:{label:"QUARTERLY PRO",color:"#22c55e",bg:"rgba(34,197,94,0.1)",border:"rgba(34,197,94,0.3)"}, monthly:{label:"PRO",color:"#22c55e",bg:"rgba(34,197,94,0.1)",border:"rgba(34,197,94,0.3)"}, seasonal:{label:"SEASONAL",color:"#7c3aed",bg:"rgba(124,58,237,0.1)",border:"rgba(124,58,237,0.3)"}, dev:{label:"DEV",color:"#818cf8",bg:"rgba(129,140,248,0.1)",border:"rgba(129,140,248,0.3)"} };
+        const tierMap = { annual:{label:"ANNUAL PRO",color:"#22c55e",bg:"rgba(34,197,94,0.1)",border:"rgba(34,197,94,0.3)"}, monthly:{label:"PRO",color:"#22c55e",bg:"rgba(34,197,94,0.1)",border:"rgba(34,197,94,0.3)"}, seasonal:{label:"SEASONAL",color:"#7c3aed",bg:"rgba(124,58,237,0.1)",border:"rgba(124,58,237,0.3)"}, dev:{label:"DEV",color:"#818cf8",bg:"rgba(129,140,248,0.1)",border:"rgba(129,140,248,0.3)"} };
         const ti = tierMap[tier] || {label:"FREE",color:C.muted,bg:C.card2,border:C.dim};
         return React.createElement("div", { style:{ background:C.card, border:"1px solid "+C.dim, borderRadius:16, padding:"16px 16px 14px", marginBottom:14 } },
             // Avatar + name/email row
@@ -10640,7 +10631,7 @@ function AdminPanel({ C, currentUser, onClose }) {
             });
             if (error) throw error;
             setLastCode({ code, tierLabel: tierLabel(tier), days });
-            setRecipEmail(""); setTier("quarterly");
+            setRecipEmail(""); setTier("monthly");
             loadCodes();
         } catch(e) { setFormErr(e.message || "Failed to create code"); }
         setCreating(false);
@@ -11886,7 +11877,7 @@ function App() {
                             // Silently downgrade on Supabase side
                             try { await getSB()?.from("profiles").update({ tier:"free", tier_expires:null }).eq("id", userId); } catch(_) {}
                         }
-                        const isPaid = ["monthly","quarterly","annual"].includes(effectiveTier);
+                        const isPaid = ["monthly","annual"].includes(effectiveTier);
                         const unlockData = { tier:effectiveTier, via:row.tier_via||"account",
                             label:row.tier_label, expires:row.tier_expires,
                             calculator:isPaid, allRecipes:isPaid, recipes:[],
@@ -12097,9 +12088,7 @@ function App() {
                 const tier = unlock.tier;
                 const tierPerms = {
                     monthly:   { calculator: true, allRecipes: true,  recipes: [], tier: "monthly" },
-                    quarterly: { calculator: true, allRecipes: true,  recipes: [], tier: "quarterly" },
                     annual:    { calculator: true, allRecipes: true,  recipes: [], tier: "annual" },
-                    // lifetime tier removed
                 };
                 const perms = tierPerms[tier] || { calculator: true, allRecipes: false, recipes: [], tier: tier };
                 // Promo unlocks come from a server-validated Netlify function — mark as verified
@@ -12228,15 +12217,15 @@ function App() {
         if (FREE_IDS.has(id)) return true;
         // Annual-exclusive recipes — annual or dev tier
         if (LIFETIME_EXCLUSIVE_IDS.has(id)) return ["annual","dev"].includes(unlocks.tier);
-        // Quarterly drop recipes — quarterly, annual, or dev tier
-        if (QUARTERLY_DROP_IDS.has(id)) return ["quarterly","annual","dev"].includes(unlocks.tier);
+        // Former quarterly-drop recipes — now available to all paid tiers (monthly, annual, dev)
+        if (QUARTERLY_DROP_IDS.has(id)) return ["monthly","annual","dev"].includes(unlocks.tier);
         // SoulFood seasonal bundle — requires EXPLICIT purchase (seasonal tier + matching priceId)
         // or dev-tier override. This check MUST come before allRecipes to prevent bypass —
         // all paid tiers have allRecipes:true but that does NOT include seasonal content.
         if (SOULFOOD_RECIPE_IDS.includes(id)) {
             return unlocks.tier === "seasonal" || unlocks.tier === "dev";
         }
-        // Standard catalog — any allRecipes unlock (monthly, quarterly, annual).
+        // Standard catalog — any allRecipes unlock (monthly, annual).
         // For authenticated users: require _serverVerified to prevent localStorage spoofing.
         // Unauthenticated users (promo/dev unlock) are trusted as-is.
         const canTrustUnlocks = !currentUser || unlocks._serverVerified;
@@ -12657,8 +12646,8 @@ function App() {
                             : shopAlert ? "Shop day \u2014 your shopping list is ready"
                             : "Prep day \u2014 time to cook your new batch"),
                         React.createElement("button", { onClick: () => { setShopAlert(false); setPrepAlert(false); }, style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 15, padding: "0 2px", flexShrink: 0 } }, "\u2715")),
-                    // ── New-drop banner (quarterly/annual only) ────────────
-                    ["quarterly","annual"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
+                    // ── New-drop banner (annual only) ────────────
+                    ["annual"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83C\uDF1F"),
                         React.createElement("div", { style: { flex: 1 } },
                             React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Q3 Drop is live!"),
@@ -12745,10 +12734,10 @@ function App() {
                     tab === "supplements" && React.createElement(SupplementsTab, {
                         C: C,
                         currentUser: currentUser,
-                        isPremium: ["monthly","quarterly","annual","dev"].includes(unlocks?.tier),
+                        isPremium: ["monthly","annual","dev"].includes(unlocks?.tier),
                     }),
                     tab === "pantry" && (
-                        ["monthly","quarterly","annual","dev"].includes(unlocks?.tier)
+                        ["monthly","annual","dev"].includes(unlocks?.tier)
                             ? React.createElement(PantryTab, {
                                 C, pantry, setPantry, allRecipes,
                                 setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert,
@@ -12807,7 +12796,7 @@ function App() {
                                     fontSize: 12, fontWeight: 700, color: C.bg, cursor: "pointer" }
                             }, "Clear all filters"));
                     })(),
-                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id), onUnlockSeasonal: () => setShowSeasonalPopup(true), isQuarterlyDrop: QUARTERLY_DROP_IDS.has(r.id), isAnnualExclusive: LIFETIME_EXCLUSIVE_IDS.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
+                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id), onUnlockSeasonal: () => setShowSeasonalPopup(true), isAnnualExclusive: LIFETIME_EXCLUSIVE_IDS.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
                     filteredRecipes.length > recipeShowCount && React.createElement("button", { onClick: () => setRecipeShowCount(c => c + 15), style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", marginBottom: 10 } }, "Show more (" + (filteredRecipes.length - recipeShowCount) + " remaining)"),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
