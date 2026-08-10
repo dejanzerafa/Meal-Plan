@@ -4,9 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz</title>
+  <!-- Error monitoring — replace SENTRY_DSN with your project DSN from sentry.io -->
+  <!-- To disable: remove this script block. DSN is safe to expose in client code. -->
+  <script src="/vendor/sentry.min.js"></script>
+  <script>
+    (function() {
+      var SENTRY_DSN = "REPLACE_WITH_YOUR_SENTRY_DSN"; // e.g. https://abc123@o123.ingest.sentry.io/456
+      if (typeof Sentry !== "undefined" && SENTRY_DSN && SENTRY_DSN !== "REPLACE_WITH_YOUR_SENTRY_DSN") {
+        Sentry.init({
+          dsn: SENTRY_DSN,
+          release: "soulgainz@1.0.0",
+          environment: window.location.hostname === "soulgainz.app" ? "production" : "development",
+          tracesSampleRate: 0.2,           // 20% of sessions get performance traces
+          replaysOnErrorSampleRate: 1.0,   // Always capture replay on error
+          beforeSend: function(event) {
+            // Strip any PII from error breadcrumbs before sending
+            if (event.user) { delete event.user.email; }
+            return event;
+          }
+        });
+        // Tag every event with the app section the user is in
+        Sentry.setTag("app", "soulgainz-pwa");
+      }
+    })();
+  </script>
   <script src="/vendor/react.min.js"></script>
   <script src="/vendor/react-dom.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="/vendor/supabase.min.js"></script>
   <link rel="preconnect" href="https://checkout.stripe.com">
   <link rel="dns-prefetch" href="https://checkout.stripe.com">
   <!-- PWA / Home Screen -->
@@ -14,7 +38,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SoulGainz">
   <meta name="theme-color" content="#E07B2A">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://*.supabase.co https://api.resend.com https://fonts.googleapis.com; worker-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://*.supabase.co https://api.resend.com https://fonts.googleapis.com; worker-src 'self';">
   <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <link rel="apple-touch-icon" sizes="120x120" href="/icon-120.png">
@@ -145,69 +169,15 @@
 </head>
 <body>
   <!-- ── Loader — sits above #root, fades out after animations complete ── -->
-  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#1a1612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) 36px 36px;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
-
-    <!-- Loader content -->
-    <div style="position:relative;z-index:1;width:100%;max-width:320px;">
-
-      <!-- Logo: FlameWordmark -->
-      <div class="loader-title" style="display:flex;flex-direction:column;align-items:center;margin-bottom:10px;">
-        <!-- Flame + SOULGAINZ row -->
-        <div style="display:flex;flex-direction:row;align-items:center;gap:8px;">
-          <svg width="20" height="31" viewBox="-12 -32 24 44" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z" fill="#E07B2A"/>
-          </svg>
-          <div style="line-height:1;">
-            <span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#E07B2A;letter-spacing:0.09em;">SOUL</span><span style="font-family:Georgia,'Times New Roman',serif;font-size:36px;font-weight:700;color:#f3ece0;letter-spacing:0.09em;">GAINZ</span>
-          </div>
-        </div>
-        <!-- Tagline -->
-        <div style="font-size:8.5px;color:#9C8A7A;letter-spacing:0.22em;font-weight:500;margin-top:6px;text-align:center;">FEED YOUR SOUL · FUEL YOUR GAINZ</div>
+  <div id="mp-loader" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#2c2520;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <svg width="44" height="68" viewBox="-12 -32 24 44" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:16px;">
+        <path d="M0,-32 C0,-32 -12,-20 -12,-8 C-12,4 -6,12 0,12 C6,12 12,4 12,-8 C12,-14 8,-20 4,-24 C6,-18 6,-12 6,-8 C6,-2 4,4 0,4 C-4,4 -6,-2 -6,-8 C-6,-18 0,-32 0,-32 Z" fill="#E07B2A"/>
+      </svg>
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:700;letter-spacing:0.1em;margin-bottom:36px;"><span style="color:#E07B2A;">SOUL</span><span style="color:#f3ece0;">GAINZ</span></div>
+      <div style="width:120px;height:2px;background:#3d302a;border-radius:1px;overflow:hidden;">
+        <div style="height:100%;width:0;background:#E07B2A;border-radius:1px;animation:barFill 2.4s cubic-bezier(0.4,0,0.6,1) forwards;"></div>
       </div>
-
-      <div class="loader-sub" style="font-size:11px;font-weight:400;color:#7a6d5e;margin-bottom:38px;text-align:center;letter-spacing:0.04em;">High Protein · Batch Cooked · Real Food</div>
-
-      <div class="loader-bars">
-        <!-- Protein -->
-        <div style="margin-bottom:20px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#b84a1f;">● PROTEIN</span>
-            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
-          </div>
-          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
-            <div class="bar-p" style="height:100%;width:0;background:linear-gradient(90deg,#b84a1f,#d56a3c);border-radius:2px;"></div>
-          </div>
-        </div>
-        <!-- Carbs -->
-        <div style="margin-bottom:20px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#5a6536;">● CARBS</span>
-            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
-          </div>
-          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
-            <div class="bar-c" style="height:100%;width:0;background:linear-gradient(90deg,#5a6536,#9aa86a);border-radius:2px;"></div>
-          </div>
-        </div>
-        <!-- Fat -->
-        <div style="margin-bottom:48px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#8a3614;">● FAT</span>
-            <span style="font-size:10px;color:#7a6d5e;">Daily target</span>
-          </div>
-          <div style="height:3px;background:#3a2f24;border-radius:2px;overflow:hidden;">
-            <div class="bar-f" style="height:100%;width:0;background:linear-gradient(90deg,#8a3614,#b84a1f);border-radius:2px;"></div>
-          </div>
-        </div>
-
-        <!-- Cycling message + animated dots -->
-        <div style="font-size:9px;letter-spacing:0.12em;color:#7a6d5e;text-align:center;min-height:14px;">
-          <span id="mp-loader-text" class="loader-msg-text">PREPARING YOUR PLAN</span><span class="loader-dot-1">.</span><span class="loader-dot-2">.</span><span class="loader-dot-3">.</span>
-        </div>
-      </div>
-    </div>
-    <!-- Looping shimmer bar at the very bottom — always visible while loading -->
-    <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#2a221a;overflow:hidden;">
-      <div style="width:35%;height:100%;background:linear-gradient(90deg,transparent,#E07B2A,transparent);animation:wormSlide 1.8s cubic-bezier(0.4,0,0.6,1) infinite;"></div>
     </div>
   </div>
 
@@ -8570,7 +8540,7 @@ function UpgradeModal({ onClose }) {
                             React.createElement("div", { key: text, style: { display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 7, fontSize: 11, color: C.text } },
                                 React.createElement("span", { style: { color: C.accent, fontWeight: 700 } }, icon),
                                 React.createElement("span", null, text)))))),
-            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "🔒 Secure via Stripe · Cancel anytime · 30-day money-back guarantee" : "🔒 Payments launching soon — beta in progress"),
+            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "🔒 Secure via Stripe · Cancel anytime · All sales are final" : "🔒 Payments launching soon — beta in progress"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
                     fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
 }
@@ -9531,7 +9501,7 @@ function LegalAccordion({ C }) {
             intro: "These are the key terms governing your use of SoulGainz. By using the app you agree to these in full.",
             points: [
                 "Subscriptions are Monthly or Annual and renew automatically. We do not offer lifetime access.",
-                "New subscribers get a 30-day money-back guarantee — email support@soulgainz.com within 30 days of your first charge.",
+                "All purchases are final and non-refundable. Please review plan details before subscribing.",
                 "You may cancel anytime via ME tab → Manage Billing. Access continues until end of your paid period.",
                 "Price changes take effect at your next renewal with 30 days' notice. Cancel before then at no extra charge.",
                 "Recipe and nutritional content is for informational purposes only — not a substitute for professional medical advice.",
@@ -10568,7 +10538,7 @@ function OnboardingSignup({ onDone }) {
                         React.createElement("p", { style:{marginBottom:10} }, "By creating an account you agree to the full Terms of Service. Key points:"),
                         [
                             "Subscriptions are Monthly or Annual and renew automatically. We do not offer lifetime access.",
-                            "New subscribers get a 30-day money-back guarantee \u2014 just email support@soulgainz.com.",
+                            "All purchases are final and non-refundable. Please review plan details before subscribing.",
                             "You may cancel anytime. Access continues until the end of your paid period.",
                             "Prices may change with 30 days' notice. You may cancel before the new price applies.",
                             "Recipe and nutritional content is for informational purposes only \u2014 not medical advice.",
