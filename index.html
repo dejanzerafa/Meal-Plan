@@ -7268,8 +7268,8 @@ class AppErrorBoundary extends React.Component {
 function proteinQuality(kcal, protein) {
     if (!kcal || !protein) return null;
     const pct = (protein * 4 / kcal) * 100;
-    if (pct >= 35) return { dot: "#22c55e", tip: "High protein · " + Math.round(pct) + "% of kcal" };
-    if (pct >= 25) return { dot: "#f59e0b", tip: "Moderate protein · " + Math.round(pct) + "% of kcal" };
+    if (pct >= 30) return { dot: "#22c55e", tip: "High protein · " + Math.round(pct) + "% of kcal" };
+    if (pct >= 20) return { dot: "#f59e0b", tip: "Moderate protein · " + Math.round(pct) + "% of kcal" };
     return { dot: "#ef4444", tip: "Lower protein · " + Math.round(pct) + "% of kcal" };
 }
 
@@ -8617,7 +8617,7 @@ function getProteinType(r) {
     if (nm.includes("mince") || nm.includes("shakshuka") || nm.includes("frittata")) return "Eggs";
     if (nm.includes("egg") && !nm.includes("eggplant")) return "Eggs";
     // Veg / plant-based catch-all — covers smoothies, bowls, yogurt, oats, desserts, etc.
-    const VEG_STARTERS = ["🌿","🦴","🧀","🪴","🍛","🥦","🥢","🥬","🍄","🎃","🫙","🥛","🍫","🫐","🍓","🥭","☕","💜","🍉","🫓","🍌","🥞","🥯","📅","🥥","🍎","🌞","🌯","🌶","🥑","🫘","🧆","🍕"];
+    const VEG_STARTERS = ["🌿","🦴","🧀","🪴","🍛","🥦","🥢","🥬","🍄","🎃","🫙","🥛","🍫","🫐","🍓","🥭","☕","💜","🍉","🫓","🍌","🥞","🥯","📅","🥥","🍎","🌞","🌯","🌶","🥑","🫘","🧆","🍕","⚡","🥜"];
     if (VEG_STARTERS.some(e => n.startsWith(e))) return "Veg";
     const t = nm + " " + (r.subtitle || "").toLowerCase();
     if (t.includes("tofu") || t.includes("chickpea") || t.includes("lentil") || t.includes("bean") ||
@@ -11255,63 +11255,94 @@ function SuppModal({ C, data, mode, onSave, onClose }) {
 }
 
 
-// ── SwapModal — show 3 macro-similar alternatives ────────────────────────────
+// ── SwapModal — full recipe browser with category tabs + search ───────────────
 function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwap, onClose, canView }) {
-    const currentProtein = getProteinType(currentRecipe);
+    const [search, setSearch] = React.useState("");
+    const [activeTab, setActiveTab] = React.useState("all");
     const currentKcal = currentRecipe.kcal || 0;
     const currentProt = currentRecipe.protein || 0;
     // Only show recipes the user can actually access — prevents free users swapping to locked recipes
     var viewableRecipes = canView ? allRecipes.filter(function(r) { return canView(r.id); }) : allRecipes;
 
-    // Find similar: same cat, similar macros. If not enough, relax cat constraint.
+    // Macro distance for sorting (closer = better match)
     function dist(r) {
         var dk = currentKcal > 0 ? Math.abs((r.kcal||0) - currentKcal) / currentKcal : 0;
         var dp = currentProt > 0 ? Math.abs((r.protein||0) - currentProt) / currentProt : 0;
         return dk * 0.5 + dp * 0.5;
     }
-    var cat = currentRecipe.cat;
-    var candidates = viewableRecipes.filter(function(r) {
-        return r.id !== currentRecipe.id && r.cat === cat && !r.fixed;
+
+    var SWAP_CATS = [
+        ["all", "All"],
+        ["main", "🍽️ Mains"],
+        ["breakfast", "🌅 Breakfast"],
+        ["salad", "🥗 Salads"],
+        ["smoothie", "🥤 Smoothies"],
+        ["preworkout", "⚡ Pre-Workout"],
+        ["dessert", "🍰 Dessert"],
+    ];
+
+    var filtered = viewableRecipes.filter(function(r) {
+        if (r.id === currentRecipe.id) return false;
+        if (activeTab !== "all" && r.cat !== activeTab) return false;
+        if (search.trim()) {
+            var q = search.trim().toLowerCase();
+            return (r.name||"").toLowerCase().includes(q) || (r.subtitle||"").toLowerCase().includes(q);
+        }
+        return true;
     }).sort(function(a,b){ return dist(a)-dist(b); });
-    // If fewer than 3, relax to same protein type
-    if (candidates.length < 3) {
-        var extra = viewableRecipes.filter(function(r) {
-            return r.id !== currentRecipe.id && !r.fixed && !candidates.find(function(c){return c.id===r.id;}) && getProteinType(r) === currentProtein;
-        }).sort(function(a,b){ return dist(a)-dist(b); });
-        candidates = candidates.concat(extra);
-    }
-    var alts = candidates.slice(0,3);
 
     return React.createElement("div", { style:{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:8600,display:"flex",alignItems:"flex-end",justifyContent:"center"} },
-        React.createElement("div", { style:{background:C.bg,borderRadius:"20px 20px 0 0",padding:"20px 18px",paddingBottom:"max(28px,calc(env(safe-area-inset-bottom)+16px))",width:"100%",maxWidth:440,boxShadow:"0 -20px 60px rgba(0,0,0,0.5)"} },
-            React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6} },
-                React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text} }, "🔄 Swap Recipe"),
-                React.createElement("button", { onClick:onClose, style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
-            React.createElement("div", { style:{fontSize:11,color:C.sub,marginBottom:16} },
-                "Similar macros to ", React.createElement("b",{style:{color:C.text}},currentRecipe.name)),
-            !alts.length && React.createElement("div", { style:{textAlign:"center",padding:"24px",color:C.muted,fontSize:13} }, "No similar recipes found."),
-            alts.map(function(r) {
-                var kcalDiff = ((r.kcal||0) - currentKcal);
-                var protDiff = ((r.protein||0) - currentProt);
-                var diffColor = Math.abs(kcalDiff) < 80 ? C.green : C.accent;
-                return React.createElement("div", { key:r.id, style:{background:C.card,border:"1px solid "+C.dim,borderRadius:12,padding:"12px 14px",marginBottom:10} },
-                    React.createElement("div", { style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8} },
-                        React.createElement("div", { style:{flex:1,paddingRight:8} },
-                            React.createElement("div", { style:{fontSize:13,fontWeight:700,color:C.text,marginBottom:2} }, r.name),
-                            React.createElement("div", { style:{fontSize:11,color:C.sub} }, r.subtitle||"")),
-                        React.createElement("div", { style:{textAlign:"right",flexShrink:0} },
-                            React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.accent} }, (r.kcal||0)+" kcal"),
-                            React.createElement("div", { style:{fontSize:10,color:diffColor} }, (kcalDiff>=0?"+":"")+Math.round(kcalDiff)+" cal · "+(protDiff>=0?"+":"")+Math.round(protDiff)+"g P"))),
-                    React.createElement("div", { style:{display:"flex",gap:10,marginBottom:10} },
-                        [{label:"P",v:r.protein,c:C.prot},{label:"C",v:r.carbs,c:C.carb},{label:"F",v:r.fat,c:C.fat}].map(function(m){
-                            return React.createElement("div",{key:m.label,style:{flex:1,textAlign:"center",background:C.card2,borderRadius:6,padding:"5px 4px"}},
-                                React.createElement("div",{style:{fontSize:11,fontWeight:800,color:m.c}},Math.round(m.v||0)+"g"),
-                                React.createElement("div",{style:{fontSize:9,color:C.muted,letterSpacing:"0.05em"}},m.label));
-                        })),
-                    React.createElement("button", { onClick:()=>{ onSwap(r.id); onClose(); },
-                        style:{width:"100%",background:C.accent,border:"none",borderRadius:8,padding:"9px",fontSize:13,fontWeight:700,color:"#000",cursor:"pointer"} },
-                        "Swap to This →"));
-            })));
+        React.createElement("div", { style:{background:C.bg,borderRadius:"20px 20px 0 0",width:"100%",maxWidth:440,boxShadow:"0 -20px 60px rgba(0,0,0,0.5)",display:"flex",flexDirection:"column",maxHeight:"88vh"} },
+            // ── Header + controls ──
+            React.createElement("div", { style:{padding:"18px 18px 0",flexShrink:0} },
+                React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6} },
+                    React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text} }, "🔄 Swap Recipe"),
+                    React.createElement("button", { onClick:onClose, style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
+                React.createElement("div", { style:{fontSize:11,color:C.sub,marginBottom:10} },
+                    "Replacing: ", React.createElement("b",{style:{color:C.text}},currentRecipe.name)),
+                // Search bar
+                React.createElement("input", {
+                    value:search,
+                    onChange:function(e){setSearch(e.target.value);},
+                    placeholder:"Search any recipe…",
+                    style:{width:"100%",padding:"10px 14px",background:C.card2,border:"1.5px solid "+C.dim,borderRadius:10,color:C.text,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",marginBottom:10} }),
+                // Category tabs
+                React.createElement("div", { style:{display:"flex",gap:6,overflowX:"auto",paddingBottom:12,WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"} },
+                    SWAP_CATS.map(function(ct) {
+                        var isA = activeTab === ct[0];
+                        return React.createElement("button", { key:ct[0], onClick:function(){setActiveTab(ct[0]);},
+                            style:{flexShrink:0,padding:"6px 12px",borderRadius:20,border:"1.5px solid "+(isA?C.accent:C.dim),background:isA?C.accent:"transparent",color:isA?"#000":C.sub,fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"} },
+                            ct[1]);
+                    }))),
+            // ── Scrollable recipe list ──
+            React.createElement("div", { style:{overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"4px 18px",paddingBottom:"max(24px,calc(env(safe-area-inset-bottom)+16px))",flex:1} },
+                !filtered.length && React.createElement("div", { style:{textAlign:"center",padding:"32px 0",color:C.muted,fontSize:13} },
+                    search.trim() ? "No recipes match \""+search+"\"." : "No recipes available."),
+                filtered.map(function(r) {
+                    var kcalDiff = ((r.kcal||0) - currentKcal);
+                    var protDiff = ((r.protein||0) - currentProt);
+                    var diffColor = Math.abs(kcalDiff) < 80 ? C.green : C.accent;
+                    var pq = proteinQuality(r.kcal, r.protein);
+                    return React.createElement("div", { key:r.id, style:{background:C.card,border:"1px solid "+C.dim,borderRadius:12,padding:"12px 14px",marginBottom:10} },
+                        React.createElement("div", { style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8} },
+                            React.createElement("div", { style:{flex:1,paddingRight:8} },
+                                React.createElement("div", { style:{display:"flex",alignItems:"center",gap:6,marginBottom:2} },
+                                    pq && React.createElement("span",{style:{width:7,height:7,borderRadius:"50%",background:pq.dot,display:"inline-block",flexShrink:0},title:pq.tip}),
+                                    React.createElement("div", { style:{fontSize:13,fontWeight:700,color:C.text} }, r.name)),
+                                React.createElement("div", { style:{fontSize:11,color:C.sub} }, r.subtitle||"")),
+                            React.createElement("div", { style:{textAlign:"right",flexShrink:0} },
+                                React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.accent} }, (r.kcal||0)+" kcal"),
+                                React.createElement("div", { style:{fontSize:10,color:diffColor} }, (kcalDiff>=0?"+":"")+Math.round(kcalDiff)+" cal · "+(protDiff>=0?"+":"")+Math.round(protDiff)+"g P"))),
+                        React.createElement("div", { style:{display:"flex",gap:10,marginBottom:10} },
+                            [{label:"P",v:r.protein,c:C.prot},{label:"C",v:r.carbs,c:C.carb},{label:"F",v:r.fat,c:C.fat}].map(function(m){
+                                return React.createElement("div",{key:m.label,style:{flex:1,textAlign:"center",background:C.card2,borderRadius:6,padding:"5px 4px"}},
+                                    React.createElement("div",{style:{fontSize:11,fontWeight:800,color:m.c}},Math.round(m.v||0)+"g"),
+                                    React.createElement("div",{style:{fontSize:9,color:C.muted,letterSpacing:"0.05em"}},m.label));
+                            })),
+                        React.createElement("button", { onClick:function(){ onSwap(r.id); onClose(); },
+                            style:{width:"100%",background:C.accent,border:"none",borderRadius:8,padding:"9px",fontSize:13,fontWeight:700,color:"#000",cursor:"pointer"} },
+                            "Swap to This →"));
+                })));
 }
 
 // ── SavePlanModal ─────────────────────────────────────────────────────────────
