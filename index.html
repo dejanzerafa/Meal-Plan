@@ -10817,8 +10817,9 @@ function CustomRecipeBuilder({ C, onSave, onClose }) {
     const [notes, setNotes] = React.useState("");
     const [err, setErr]   = React.useState("");
 
-    const CATS = ["Mains", "Breakfast", "Snacks", "Desserts", "Pre-Workout"];
+    const CATS = ["Mains", "Breakfast", "Salads", "Smoothies", "Pre-Workout", "Desserts"];
 
+    const CAT_MAP = { "Mains":"main","Breakfast":"breakfast","Salads":"salad","Smoothies":"smoothie","Pre-Workout":"preworkout","Desserts":"dessert" };
     function handleSave() {
         if (!name.trim()) { setErr("Recipe name is required."); return; }
         if (!kcal || !p)  { setErr("At least kcal and protein are required."); return; }
@@ -10826,6 +10827,7 @@ function CustomRecipeBuilder({ C, onSave, onClose }) {
             id: "custom_" + Date.now(),
             name: name.trim(),
             cat,
+            category: CAT_MAP[cat] || "main",
             kcal: parseFloat(kcal)||0,
             p: parseFloat(p)||0,
             c: parseFloat(carb)||0,
@@ -11283,7 +11285,7 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
 
     var filtered = viewableRecipes.filter(function(r) {
         if (r.id === currentRecipe.id) return false;
-        if (activeTab !== "all" && r.cat !== activeTab) return false;
+        if (activeTab !== "all" && r.category !== activeTab) return false;
         if (search.trim()) {
             var q = search.trim().toLowerCase();
             return (r.name||"").toLowerCase().includes(q) || (r.subtitle||"").toLowerCase().includes(q);
@@ -11342,7 +11344,7 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
                         React.createElement("button", { onClick:function(){ onSwap(r.id); onClose(); },
                             style:{width:"100%",background:C.accent,border:"none",borderRadius:8,padding:"9px",fontSize:13,fontWeight:700,color:"#000",cursor:"pointer"} },
                             "Swap to This →"));
-                })));
+                }))))
 }
 
 // ── SavePlanModal ─────────────────────────────────────────────────────────────
