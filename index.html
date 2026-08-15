@@ -11174,10 +11174,46 @@ function SupplementsTab({ C, currentUser, isPremium }) {
     React.useEffect(() => { loadFromSupabase(); }, [currentUser?.id]);
 
     // ── Schedule supplement reminders ──────────────────────────────────────────
-    const scheduleReminders = (list) => {
+    // PWA: saves to localStorage, polled every 60s by checkDueNotifications
+    // Native (Capacitor): schedules OS-level daily LocalNotifications
+    const scheduleReminders = async (list) => {
         const active = list.filter(s => s.active && s.times && s.times.length);
         const reminders = active.flatMap(s => s.times.map(t => ({ name:s.name, dose:s.dose, unit:s.unit, time:t })));
+        // ── PWA fallback: keep localStorage path ─────────────────────────────
         try { localStorage.setItem("sg_supp_reminders", JSON.stringify(reminders)); } catch(_){}
+        // ── Native path: Capacitor LocalNotifications ─────────────────────────
+        const cap = window.Capacitor;
+        if (cap && cap.isNativePlatform && cap.isNativePlatform()) {
+            try {
+                const LN = cap.Plugins && cap.Plugins.LocalNotifications;
+                if (!LN) return;
+                const perm = await LN.requestPermissions();
+                if (perm.display !== 'granted') return;
+                // Cancel all existing supplement notifications (id range 1000–1999)
+                const { notifications: pending } = await LN.getPending();
+                const toCancel = (pending || []).filter(n => n.id >= 1000 && n.id < 2000);
+                if (toCancel.length) await LN.cancel({ notifications: toCancel });
+                // Schedule one daily notification per reminder slot
+                const notifications = reminders.map((r, i) => {
+                    const [hh, mm] = r.time.split(':').map(Number);
+                    const at = new Date();
+                    at.setSeconds(0, 0);
+                    at.setHours(hh, mm);
+                    if (at <= new Date()) at.setDate(at.getDate() + 1); // push to tomorrow if past
+                    return {
+                        id: 1000 + i,
+                        title: 'SoulGainz 💊',
+                        body: 'Time for ' + r.name + (r.dose ? ' — ' + r.dose + r.unit : ''),
+                        schedule: { at, repeats: true, every: 'day' },
+                        sound: undefined,
+                        attachments: undefined,
+                        actionTypeId: '',
+                        extra: null
+                    };
+                });
+                if (notifications.length) await LN.schedule({ notifications });
+            } catch(e) { console.warn('SG LocalNotifications:', e); }
+        }
     };
 
     const mutate = (newList) => { setSupps(newList); saveSuppList(newList); scheduleReminders(newList); syncToSupabase(newList); };
