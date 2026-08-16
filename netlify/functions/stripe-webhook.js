@@ -73,21 +73,12 @@ exports.handler = async (event) => {
 
         if (userErr) { console.error("User upsert error:", userErr); break; }
 
-        // 2. Record the purchase
-        if (tier === "single" && recipeId) {
-          const { error: unlockErr } = await supabase.from("recipe_unlocks").insert({
-            user_id: user.id,
-            recipe_id: recipeId,
-            stripe_session_id: session.id,
-            amount_paid: amount,
-          });
-          if (unlockErr && unlockErr.code !== "23505") {
-            console.error("Recipe unlock insert error:", unlockErr);
-          } else if (unlockErr?.code === "23505") {
-            console.log("Duplicate checkout.session.completed skipped:", session.id);
-            break;
-          }
-        } else {
+        // 2. Record the purchase — subscriptions only (monthly / annual)
+        if (!["monthly", "annual"].includes(tier)) {
+          console.warn(`Unexpected tier "${tier}" in checkout.session.completed — skipping`);
+          break;
+        }
+        {
           // Fetch real period end from Stripe subscription object
           let realPeriodEnd = null;
           if (session.subscription && tier !== "lifetime" && tier !== "seasonal") {
@@ -199,7 +190,7 @@ exports.handler = async (event) => {
         const prevStatus = stripeEvent.data.previous_attributes?.status;
 
         // Sync status + period to subscriptions table
-        await supabase
+        const { error: syncErr } = await supabase
           .from("subscriptions")
           .update({
             status: sub.status,
@@ -207,6 +198,7 @@ exports.handler = async (event) => {
             current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
           })
           .eq("stripe_subscription_id", sub.id);
+        if (syncErr) console.error("subscription.updated sync error:", syncErr);
 
         // If subscription just became past_due, also update profiles to flag it
         // (access stays on during grace period / retries — Stripe handles the retry schedule)
@@ -299,12 +291,20 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
   console.log(`Downgrading ${email} to free tier`);
 
   // Update subscriptions table (belt-and-suspenders in case status update above missed it)
-  await supabase
-    .from("subscriptions")
-    .update({ status: "canceled", at_risk: false })
-    .eq("user_id",
-      supabase.from("users").select("id").eq("email", email).single()
-    );
+  try {
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .single();
+    if (userRow?.id) {
+      const { error: subErr } = await supabase
+        .from("subscriptions")
+        .update({ status: "canceled", at_risk: false })
+        .eq("user_id", userRow.id);
+      if (subErr) console.error("Subscriptions cancel update error:", subErr);
+    }
+  } catch(e) { console.error("Subscriptions cancel lookup error:", e); }
 
   // Update profiles table — this is what the app reads on sign-in for tier verification
   const { error } = await supabase

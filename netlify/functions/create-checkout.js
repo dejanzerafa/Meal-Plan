@@ -18,8 +18,9 @@ const ALLOWED_ORIGINS = [
 ];
 
 // ── Known tier names — reject anything outside this list ─────────────────────
-const KNOWN_TIERS = ["monthly", "quarterly", "annual", "lifetime", "calculator", "single", "seasonal"];
-const SUBSCRIPTION_TIERS = ["monthly", "quarterly", "annual"];
+// Only monthly and annual subscriptions are sold. All other tiers removed.
+const KNOWN_TIERS = ["monthly", "annual"];
+const SUBSCRIPTION_TIERS = ["monthly", "annual"];
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {

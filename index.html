@@ -8762,7 +8762,6 @@ function PromoCodeInput({ C, onRedeemed }) {
 }
 
 function UpgradeModal({ onClose }) {
-    const [showSingleHint, setShowSingleHint] = React.useState(false);
     return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.72)", zIndex: 300,
             display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0",
             overflow: "auto" } },
@@ -8797,19 +8796,6 @@ function UpgradeModal({ onClose }) {
                     React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
                         React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, lineHeight: 1 } }, "$16.99"),
                         React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/month")))),
-            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em",
-                    marginBottom: 8, textAlign: "center" } }, "OR JUST WHAT YOU NEED"),
-            React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: showSingleHint ? 8 : 18 } },
-                React.createElement("div", { onClick: () => setShowSingleHint(s => !s), style: { flex: 1, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12,
-                        padding: "10px 12px", textAlign: "center", cursor: "pointer" } },
-                    React.createElement("div", { className: "display", style: { fontSize: 18, color: C.text, lineHeight: 1 } }, "$1.99"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.sub, marginTop: 3, fontWeight: 700, letterSpacing: "0.06em" } }, "SINGLE RECIPE"),
-                    React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "Pick any one"))),
-            showSingleHint && React.createElement("div", { style: {
-                background: "rgba(184,74,31,0.08)", border: "1px solid rgba(184,74,31,0.28)",
-                borderRadius: 10, padding: "12px 14px", marginBottom: 14, fontSize: 13,
-                color: C.text, lineHeight: 1.6
-            } }, "👉 Tap any locked recipe to purchase it individually for $1.99. Look for the 🔒 padlock icon on recipe cards."),
             React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 16, marginBottom: 16 } },
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", textAlign: "center", marginBottom: 12 } }, "WHAT YOU GET"),
                 React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } },
@@ -12672,7 +12658,6 @@ function App() {
     });
     const devUnlock = () => applyDevTier("dev", true); // legacy compat
     const devLock = () => setUnlocks({ calculator: false, allRecipes: false, recipes: [], tier: null });
-    // Per-recipe unlock — for $1.99 single-recipe purchases
     const unlockRecipe = (id) => {
         const newRecipes = unlocks.recipes.includes(id) ? unlocks.recipes : [...unlocks.recipes, id];
         setUnlocks(Object.assign(Object.assign({}, unlocks), { recipes: newRecipes, _serverVerified: true }));
