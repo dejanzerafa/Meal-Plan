@@ -11371,6 +11371,35 @@ function getSuppList() { try { return JSON.parse(localStorage.getItem("sg_supple
 function saveSuppList(list) { try { localStorage.setItem("sg_supplements", JSON.stringify(list)); } catch(_){} }
 function genSuppId() { return "s" + Date.now() + Math.random().toString(36).slice(2,7); }
 
+// ── Meal prep ending notification (module-level) ─────────────────────────────
+async function schedulePrepEndNotification(fireAt) {
+    // PWA fallback: store fire timestamp for polling
+    try { localStorage.setItem("sg_prep_notif_at", String(fireAt.getTime())); } catch(_) {}
+    // Native Capacitor path
+    const cap = window.Capacitor;
+    if (cap && cap.isNativePlatform && cap.isNativePlatform()) {
+        try {
+            const LN = cap.Plugins && cap.Plugins.LocalNotifications;
+            if (!LN) return;
+            const perm = await LN.requestPermissions();
+            if (perm.display !== "granted") return;
+            // Cancel existing prep notification (ID 2000)
+            const { notifications: pending } = await LN.getPending();
+            const existing = (pending || []).filter(n => n.id === 2000);
+            if (existing.length) await LN.cancel({ notifications: existing });
+            // Schedule only if fireAt is in the future
+            if (fireAt > new Date()) {
+                await LN.schedule({ notifications: [{
+                    id: 2000,
+                    title: "SoulGainz 🍽️",
+                    body: "Meal prep ends tomorrow — time to pick next week’s meals!",
+                    schedule: { at: fireAt, repeats: false },
+                    sound: undefined, attachments: undefined, actionTypeId: "", extra: null
+                }] });
+            }
+        } catch(e) { console.warn("SG prep notification:", e); }
+    }
+}
 // ── SupplementsTab ─────────────────────────────────────────────────────────────
 function SupplementsTab({ C, currentUser, isPremium }) {
     const [supps, setSupps] = React.useState(() => getSuppList());
@@ -12002,6 +12031,24 @@ function App() {
     const setCalLogs = (newLogs) => {
         setCalLogsState(newLogs);
         try { localStorage.setItem("mp_cal_logs", JSON.stringify(newLogs)); } catch(e) {}
+        // ── Prep ending reminder: detect newly added log date ─────────────────
+        try {
+            const prevDates = new Set((calLogs || []).map(function(l){ return l.date; }));
+            const addedDate = newLogs.map(function(l){ return l.date; }).find(function(d){ return !prevDates.has(d); });
+            if (addedDate) {
+                const bsz = parseInt(localStorage.getItem("mp_portions") || "7") || 7;
+                const prepStart = new Date(addedDate + "T00:00:00");
+                const prepEnd = new Date(prepStart);
+                prepEnd.setDate(prepEnd.getDate() + bsz);
+                // Write prep end date for the in-app banner (existing polling reads this)
+                localStorage.setItem("mp_next_prep", prepEnd.toISOString().slice(0, 10));
+                // Notification fires 1 day before prep ends at 9am
+                const notifAt = new Date(prepEnd);
+                notifAt.setDate(notifAt.getDate() - 1);
+                notifAt.setHours(9, 0, 0, 0);
+                schedulePrepEndNotification(notifAt);
+            }
+        } catch(_) {}
     };
     // ── Recipe builder modal ────────────────────────────────────────────────
     const [showRecipeBuilder, setShowRecipeBuilder] = useState(false);
@@ -12209,6 +12256,17 @@ function App() {
                         }
                     });
                     localStorage.setItem("sg_supp_last_fired", minuteKey);
+                }
+            }
+        } catch(_) {}
+        // Meal prep ending notification (PWA fallback)
+        try {
+            const prepNotifAt = localStorage.getItem("sg_prep_notif_at");
+            if (prepNotifAt && Notification.permission === "granted") {
+                const fireTime = parseInt(prepNotifAt);
+                if (!isNaN(fireTime) && Date.now() >= fireTime) {
+                    notify("SoulGainz 🍽️", "Meal prep ends tomorrow — time to pick next week’s meals!");
+                    localStorage.removeItem("sg_prep_notif_at");
                 }
             }
         } catch(_) {}
