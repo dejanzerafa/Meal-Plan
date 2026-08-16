@@ -8086,12 +8086,10 @@ function track(eventName, properties) {
 const STRIPE_ENABLED = true;
 const STRIPE_PUBLIC_KEY = "pk_test_51TU7NmGjmPEqu9q9PIs1UNrXATY3YuhjG5TJbmvR7G2NxM0oYR46xTbBmFCdAqXkpyE9H6fieIuWZ24ZHWZIww7v00AV7lCr12";
 const STRIPE_PRICES = {
-    annual: "price_1TXc8dGjmPEqu9q9sIA4RenP",
-    monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",
-    calculator: "price_1TU824GjmPEqu9q90xWZDozk",
-    single: "price_1TU82XGjmPEqu9q9EhfIpkFW",
-    // SoulFood seasonal bundle — $4.99 one-time. UI hidden until launch.
-    seasonal: "price_1TVTP1GjmPEqu9q9J81es0wu",
+    annual: "price_1U56lDGjmPEqu9q9xfEMKPAd",    // live $150/yr
+    monthly: "price_1U56lUGjmPEqu9q9Rgk9ZIDK",   // live $16.99/mo
+    // Calculator, single-recipe, and seasonal are all included in any paid plan.
+    // No standalone purchases — subscriptions only.
 };
 // SoulFood seasonal recipe bundle — populate these IDs when the bundle launches.
 // Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
@@ -8353,8 +8351,7 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isAnn
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "10px 12px 12px", borderTop: `1px solid ${C.dim}` } },
             isAnnualExclusive
                 ? React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#b45309", cursor: "pointer" } }, "\u2B50 Annual plan \u2192")
-                : React.createElement("button", { onClick: () => onUnlockSingle && onUnlockSingle(r.id, r.name), style: { flex: 1, background: "none", border: `1px solid ${C.dim}`, borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 700, color: C.sub, cursor: "pointer" } }, "\uD83D\uDCB3 $1.99 this recipe"),
-            !isAnnualExclusive && React.createElement("button", { onClick: onUnlock, style: { flex: 2, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Unlock All \u2192")));
+                : React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Unlock All \u2192")));
 }
 // ─── SOULFOOD SEASONAL BUNDLE POPUP ───────────────────────────────────────────
 function SeasonalPopup({ show, onClose, onBuy }) {
@@ -9282,7 +9279,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
             React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "📊"),
             React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, color: C.text, fontWeight: 700, marginBottom: 8 } }, "Recalculate Your Macros"),
-            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your first calculation was free. To update your targets as your body changes, unlock the calculator — included in any plan or as a standalone add-on."),
+            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your first calculation was free. To update your targets as your body changes, unlock the calculator — included with any plan."),
             React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 10 } }, "Unlock Recalculation →"),
             React.createElement("button", { onClick: () => setShowRecalcGate(false), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, color: C.muted, borderRadius: 12, padding: "12px", fontSize: 12, cursor: "pointer" } }, "I already have a plan — continue")));
     const [form, setForm] = useState(() => {
@@ -13267,7 +13264,7 @@ function App() {
                                     fontSize: 12, fontWeight: 700, color: C.bg, cursor: "pointer" }
                             }, "Clear all filters"));
                     })(),
-                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id), onUnlockSeasonal: () => setShowSeasonalPopup(true), isAnnualExclusive: RECIPE_TIER_ANNUAL.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
+                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: () => setShowUpgrade(true), onUnlockSeasonal: () => setShowUpgrade(true), isAnnualExclusive: RECIPE_TIER_ANNUAL.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
                     filteredRecipes.length > recipeShowCount && React.createElement("button", { onClick: () => setRecipeShowCount(c => c + 15), style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", marginBottom: 10 } }, "Show more (" + (filteredRecipes.length - recipeShowCount) + " remaining)"),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
@@ -13474,7 +13471,7 @@ function App() {
                             React.createElement("div", { style: { display: "flex", gap: 4 } }, dayDots));
                     })(),
                     // ── Macro calculator ────────────────────────────────────
-                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => startCheckout("calculator"), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free", profileData: profile }),
+                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => setShowUpgrade(true), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free", profileData: profile }),
                     // ── More ────────────────────────────────────────────────
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "MORE"),
@@ -13516,7 +13513,7 @@ function App() {
                     React.createElement("div", { style: { fontSize: 14, color: C.sub, lineHeight: 1.7, maxWidth: 300, margin: "0 auto" } }, "Your recipes are unlocked. Head to the Recipes tab and start building your first meal plan.")),
                 React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } },
                     React.createElement("button", { onClick: () => { try { localStorage.removeItem('mp_new_unlock'); } catch(_) {} setShowWelcomeUnlock(false); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Go to Recipes →")))),
-        React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); startCheckout("seasonal"); } }),
+        React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); setShowUpgrade(true); } }),
         showAdminPanel && currentUser && React.createElement(AdminPanel, { C:C, currentUser:currentUser, onClose:()=>setShowAdminPanel(false) }),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onApplyTier: applyDevTier }),
         (unlocks.tier && unlocks.tier !== null) && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
