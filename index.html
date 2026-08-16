@@ -7625,7 +7625,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                     React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 } },
                         displayBadge && React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                                 borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, displayBadge),
-                                                QUARTERLY_DROP_IDS.has(r.id) && React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#0369a1", background: "rgba(3,105,161,0.10)", border: "1px solid rgba(3,105,161,0.25)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "\uD83C\uDF1F Q3 Drop"),
+                                                NEWLY_RELEASED_IDS.has(r.id) && React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#b45309", background: "rgba(180,83,9,0.12)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "\uD83D\uDD25 NEW"),
                         isL && React.createElement("span", { style: { fontSize: 10, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`,
                                 borderRadius: 4, padding: "2px 7px" } }, "\u2600\uFE0F Lunch"),
                         isD && React.createElement("span", { style: { fontSize: 10, color: "#a78bfa", background: "rgba(167,139,250,0.10)", border: "1px solid rgba(167,139,250,0.25)",
@@ -8055,6 +8055,10 @@ const RECIPE_TIER_WAVE2   = new Set(["bf30", "bf31", "bf32", "bf33", "bf34", "bf
 // Convenience sets — what each cumulative tier can see
 const MONTHLY_VISIBLE = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY]);
 const ANNUAL_VISIBLE  = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY, ...RECIPE_TIER_ANNUAL]);
+// Newly released recipes — show 🔥 NEW badge for 60 days after release
+// To release wave2 recipes: move their IDs here + into RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL
+// Use recipe-release.html admin tool to manage releases
+const NEWLY_RELEASED_IDS = new Set([]); // populated by recipe-release.html patches
 // Legacy alias kept so any remaining references don't break
 const FREE_IDS = RECIPE_TIER_FREE;
 // ── Analytics ──────────────────────────────────────────────────────────────────
@@ -8303,11 +8307,16 @@ async function startCheckout(tier, recipeId) {
 }
 // Dev access — tiered codes, stored as SHA-256 hashes only, never plaintext in source
 const DEV_TIER_HASHES = {
-    "837488f6d1011054c23e6147534de79e373151605d212653d898fe4cfa49a7c8": { tier: "free",      allRecipes: false, label: "Free Tier" },
-    "00608339aac4da4d44e9a472ba7e892e3040c014c961fedbb3d2254ef70ee6bd": { tier: "monthly",   allRecipes: true,  label: "Monthly" },
-    "f18c8961def0319ca9c09998402637311dde8b944e0eca16c9e9b2dc54a71208": { tier: "annual",    allRecipes: true,  label: "Annual" },
-
-    "097aa9f4e905a098fcc389d95a1d50f504e69f4788345b9500aa45df24e05a99": { tier: "dev",       allRecipes: true,  label: "Dev Master" },
+    // ── Original codes (kept for backward compat) ──────────────────────────
+    "837488f6d1011054c23e6147534de79e373151605d212653d898fe4cfa49a7c8": { tier: "free",    allRecipes: false, label: "Free Tier" },
+    "00608339aac4da4d44e9a472ba7e892e3040c014c961fedbb3d2254ef70ee6bd": { tier: "monthly", allRecipes: true,  label: "Monthly" },
+    "f18c8961def0319ca9c09998402637311dde8b944e0eca16c9e9b2dc54a71208": { tier: "annual",  allRecipes: true,  label: "Annual" },
+    "097aa9f4e905a098fcc389d95a1d50f504e69f4788345b9500aa45df24e05a99": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
+    // ── Simple codes: SGFREE / SGMONTH / SGANNUAL / SGDEV ─────────────────
+    "b17ad9be1d0231ab3ea814be0afe3d88bb8d022e67b83411dc7588ecdb271b47": { tier: "free",    allRecipes: false, label: "Free Tier" },
+    "422e5f242ee9615dfe7a01d89faca3c7bec329c6a58df07340a6cedae28e88ce": { tier: "monthly", allRecipes: true,  label: "Monthly" },
+    "b2153f49bedf40adfcaa8bd993dcdeccead2d7fcc4820738db14cbbaa4a5474d": { tier: "annual",  allRecipes: true,  label: "Annual" },
+    "628988b0f35aa1223f24dd8a3517f8a320648af5d7acba11530b6e4da950fbb7": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
 };
 async function _hashInput(input) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.toUpperCase().trim()));
