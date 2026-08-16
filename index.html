@@ -185,7 +185,7 @@
         void loader.offsetHeight;
       }
       setTimeout(startLoaderMessages, 2700);
-      setTimeout(dismissLoader, 4500);
+      setTimeout(dismissLoader, 8000);
     };
 
     // ── Service Worker — enables full offline use ────────────────────────────
@@ -13445,8 +13445,8 @@ function dismissLoader() {
     stopLoaderMessages();
     var l = document.getElementById('mp-loader');
     if (!l) return;
-    l.style.animation = 'loaderOut 1.0s ease forwards';
-    setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 1000);
+    l.style.animation = 'loaderOut 5.0s ease forwards';
+    setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 5000);
 }
 // Global error catcher — shows errors on screen without needing DevTools
 function showOnScreenError(msg, src, line) {
@@ -13484,7 +13484,7 @@ try {
     }
     ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(AppErrorBoundary, null, React.createElement(App, null)));
     // Only auto-dismiss loader for returning users — first-timers go through onboarding
-    if (localStorage.getItem("sg_onboarded")) { setTimeout(dismissLoader, 4500); }
+    if (localStorage.getItem("sg_onboarded")) { setTimeout(dismissLoader, 8000); }
 } catch (err) {
     console.error('App mount error:', err);
     showOnScreenError(err.message);
@@ -13498,7 +13498,7 @@ try {
       var guard = setInterval(function() {
         var l = document.getElementById('mp-loader');
         if (!l) { clearInterval(guard); return; }
-        if (Date.now() - start > 7000) {
+        if (Date.now() - start > 20000) {
           l.style.animation = 'loaderOut 0.5s ease forwards';
           setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 500);
           clearInterval(guard);
