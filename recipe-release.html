@@ -3,414 +3,552 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SoulGainz · Recipe Release Tool</title>
+<title>SoulGainz · Recipe Release</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #1a1612; --card: #2c2520; --card2: #3a312a; --dim: rgba(255,255,255,0.1);
-    --text: #f0e8dc; --sub: #a89880; --muted: #6b5c4e; --accent: #b84a1f;
-    --accentDim: rgba(184,74,31,0.12); --accentBorder: rgba(184,74,31,0.35);
-    --green: #9aa86a; --greenDim: rgba(154,168,106,0.12); --greenBorder: rgba(154,168,106,0.3);
-    --blue: #60a5fa; --blueDim: rgba(96,165,250,0.12); --blueBorder: rgba(96,165,250,0.3);
-    --gold: #f59e0b;
-  }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #1a1612; --card: #2c2520; --card2: #3a312a; --dim: rgba(255,255,255,0.09);
+  --text: #f0e8dc; --sub: #a89880; --muted: #6b5c4e;
+  --accent: #b84a1f; --accentDim: rgba(184,74,31,0.14); --accentBorder: rgba(184,74,31,0.38);
+  --green: #9aa86a; --greenDim: rgba(154,168,106,0.14); --greenBorder: rgba(154,168,106,0.35);
+  --blue: #60a5fa; --blueDim: rgba(96,165,250,0.14); --blueBorder: rgba(96,165,250,0.35);
+  --gold: #f59e0b;
+}
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; padding-bottom: 120px; }
 
-  .header { padding: 20px 24px; border-bottom: 1px solid var(--dim); display: flex; align-items: center; justify-content: space-between; }
-  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
-  .header h1 span { color: var(--accent); }
-  .badge { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; background: var(--accentDim); border: 1px solid var(--accentBorder); color: var(--accent); padding: 3px 8px; border-radius: 20px; }
+/* ── Header ─────────────────────────────────────────────────── */
+.header { padding: 18px 24px; border-bottom: 1px solid var(--dim); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 50; }
+.logo { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+.logo span { color: var(--accent); }
+.admin-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; background: var(--accentDim); border: 1px solid var(--accentBorder); color: var(--accent); padding: 3px 9px; border-radius: 20px; }
 
-  .container { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
+/* ── Layout ─────────────────────────────────────────────────── */
+.container { max-width: 880px; margin: 0 auto; padding: 28px 20px; }
 
-  .info-bar { background: var(--card); border: 1px solid var(--dim); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; display: flex; gap: 24px; flex-wrap: wrap; }
-  .stat { text-align: center; }
-  .stat .num { font-size: 28px; font-weight: 800; line-height: 1; }
-  .stat .label { font-size: 10px; color: var(--sub); letter-spacing: 0.08em; margin-top: 3px; }
-  .stat.wave2 .num { color: var(--accent); }
-  .stat.selected .num { color: var(--gold); }
-  .stat.monthly .num { color: var(--blue); }
-  .stat.annual .num { color: var(--green); }
+/* ── Setup card ─────────────────────────────────────────────── */
+.setup-card { background: var(--card); border: 1px solid var(--dim); border-radius: 14px; padding: 20px 22px; margin-bottom: 28px; }
+.setup-card h2 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.setup-card p { font-size: 12px; color: var(--sub); margin-bottom: 14px; line-height: 1.5; }
+.token-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.token-input { flex: 1; min-width: 220px; background: var(--card2); border: 1px solid var(--dim); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 13px; font-family: "SF Mono", monospace; }
+.token-input:focus { outline: none; border-color: var(--accent); }
+.token-status { font-size: 11px; margin-top: 8px; }
+.token-status.ok { color: var(--green); }
+.token-status.err { color: #ef4444; }
 
-  .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-  .controls select, .controls input { background: var(--card); border: 1px solid var(--dim); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; font-family: inherit; }
-  .controls select:focus, .controls input:focus { outline: none; border-color: var(--accent); }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: opacity 0.15s; }
-  .btn:hover { opacity: 0.85; }
-  .btn-accent { background: var(--accent); color: #fff; }
-  .btn-ghost { background: var(--card); border: 1px solid var(--dim); color: var(--sub); }
-  .btn-green { background: var(--greenDim); border: 1px solid var(--greenBorder); color: var(--green); }
-  .btn-blue { background: var(--blueDim); border: 1px solid var(--blueBorder); color: var(--blue); }
+/* ── Stats bar ──────────────────────────────────────────────── */
+.stats { display: flex; gap: 16px; background: var(--card); border: 1px solid var(--dim); border-radius: 12px; padding: 14px 20px; margin-bottom: 24px; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat .n { font-size: 26px; font-weight: 800; line-height: 1; }
+.stat .l { font-size: 9px; color: var(--sub); letter-spacing: 0.1em; margin-top: 3px; }
+.stat.w .n { color: var(--accent); }
+.stat.sel .n { color: var(--gold); }
+.stat.m .n { color: var(--blue); }
+.stat.a .n { color: var(--green); }
 
-  .section-title { font-size: 11px; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .section-title .count { background: var(--card2); border-radius: 20px; padding: 2px 8px; font-size: 10px; color: var(--muted); }
+/* ── Toolbar ─────────────────────────────────────────────────── */
+.toolbar { display: flex; gap: 10px; margin-bottom: 22px; align-items: center; flex-wrap: wrap; }
+.tier-toggle { display: flex; border: 1px solid var(--dim); border-radius: 8px; overflow: hidden; }
+.tier-toggle button { padding: 8px 16px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; font-family: inherit; background: var(--card); color: var(--sub); transition: all 0.15s; }
+.tier-toggle button.active-m { background: var(--blueDim); color: var(--blue); border-right: 1px solid var(--dim); }
+.tier-toggle button.active-a { background: var(--greenDim); color: var(--green); }
+.spacer { flex: 1; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: opacity 0.15s; }
+.btn:hover:not(:disabled) { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost { background: var(--card); border: 1px solid var(--dim); color: var(--sub); }
+.btn-deploy { background: var(--accent); color: #fff; font-size: 14px; padding: 11px 22px; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 28px; }
+/* ── Category sections ──────────────────────────────────────── */
+.cat-block { margin-bottom: 28px; }
+.cat-heading { font-size: 11px; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; text-transform: uppercase; padding-bottom: 10px; border-bottom: 1px solid var(--dim); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.cat-heading .cnt { background: var(--card2); border-radius: 20px; padding: 2px 8px; font-size: 10px; color: var(--muted); }
+.cat-heading .sel-cnt { color: var(--gold); font-size: 10px; }
 
-  .recipe-card { background: var(--card); border: 1.5px solid var(--dim); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; }
-  .recipe-card:hover { border-color: var(--accent); }
-  .recipe-card.selected-monthly { border-color: var(--blue); background: var(--blueDim); }
-  .recipe-card.selected-annual { border-color: var(--green); background: var(--greenDim); }
-  .recipe-card .name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-  .recipe-card .id { font-size: 10px; color: var(--muted); font-family: monospace; }
-  .recipe-card .macros { font-size: 11px; color: var(--sub); margin-top: 6px; display: flex; gap: 8px; }
-  .recipe-card .tier-pill { position: absolute; top: 8px; right: 8px; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; border-radius: 4px; padding: 2px 6px; }
-  .recipe-card.selected-monthly .tier-pill { background: var(--blueDim); border: 1px solid var(--blueBorder); color: var(--blue); }
-  .recipe-card.selected-annual .tier-pill { background: var(--greenDim); border: 1px solid var(--greenBorder); color: var(--green); }
-  .recipe-card input[type=checkbox] { display: none; }
+/* ── Recipe cards ───────────────────────────────────────────── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.rcard { background: var(--card); border: 1.5px solid var(--dim); border-radius: 11px; padding: 11px 13px; cursor: pointer; transition: border-color 0.12s, background 0.12s; user-select: none; position: relative; }
+.rcard:hover { border-color: rgba(255,255,255,0.2); }
+.rcard.sel-m { border-color: var(--blue); background: var(--blueDim); }
+.rcard.sel-a { border-color: var(--green); background: var(--greenDim); }
+.rcard .rname { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; padding-right: 40px; }
+.rcard .rid { font-size: 10px; color: var(--muted); font-family: "SF Mono", monospace; }
+.rcard .rmacros { font-size: 11px; color: var(--sub); margin-top: 5px; display: flex; gap: 8px; }
+.rcard .tier-badge { position: absolute; top: 8px; right: 8px; font-size: 8px; font-weight: 700; border-radius: 4px; padding: 2px 6px; }
+.rcard.sel-m .tier-badge { background: var(--blueDim); border: 1px solid var(--blueBorder); color: var(--blue); }
+.rcard.sel-a .tier-badge { background: var(--greenDim); border: 1px solid var(--greenBorder); color: var(--green); }
 
-  .cat-section { margin-bottom: 28px; }
-  .cat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--dim); }
-  .cat-label { font-size: 13px; font-weight: 700; }
-  .cat-count { font-size: 10px; color: var(--muted); background: var(--card2); border-radius: 20px; padding: 2px 8px; }
+/* ── Deploy footer ──────────────────────────────────────────── */
+.deploy-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--dim); padding: 14px 24px; display: flex; align-items: center; gap: 16px; z-index: 100; }
+.deploy-summary { font-size: 12px; color: var(--sub); flex: 1; }
+.deploy-summary strong { color: var(--text); }
 
-  .output-panel { background: var(--card); border: 1px solid var(--dim); border-radius: 12px; padding: 20px; margin-top: 28px; }
-  .output-panel h3 { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
-  textarea { width: 100%; background: var(--card2); border: 1px solid var(--dim); border-radius: 8px; padding: 14px; color: var(--text); font-family: "SF Mono", "Fira Code", monospace; font-size: 11px; line-height: 1.6; resize: vertical; min-height: 200px; }
-  textarea:focus { outline: none; border-color: var(--accent); }
+/* ── Progress overlay ───────────────────────────────────────── */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.progress-card { background: var(--card); border: 1px solid var(--dim); border-radius: 16px; padding: 28px 32px; width: 360px; text-align: center; }
+.progress-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+.progress-card p { font-size: 13px; color: var(--sub); margin-bottom: 20px; }
+.progress-steps { text-align: left; }
+.step { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: var(--muted); transition: color 0.2s; }
+.step.done { color: var(--green); }
+.step.active { color: var(--text); }
+.step.err { color: #ef4444; }
+.step-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
 
-  .tip { background: rgba(184,74,31,0.08); border: 1px solid rgba(184,74,31,0.2); border-radius: 10px; padding: 12px 16px; font-size: 12px; color: var(--sub); line-height: 1.6; margin-bottom: 20px; }
-  .tip strong { color: var(--text); }
+/* ── History ─────────────────────────────────────────────────── */
+.history { margin-top: 36px; }
+.history h3 { font-size: 11px; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+.hist-item { background: var(--card); border: 1px solid var(--dim); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 12px; display: flex; gap: 14px; align-items: flex-start; }
+.hist-date { color: var(--muted); white-space: nowrap; min-width: 80px; font-size: 11px; }
+.hist-detail strong { color: var(--text); }
+.hist-detail .ids { color: var(--muted); margin-top: 3px; font-family: "SF Mono", monospace; font-size: 10px; }
+.hist-detail .commit { color: var(--accent); font-family: "SF Mono", monospace; font-size: 10px; margin-top: 2px; }
+.empty { color: var(--muted); font-size: 12px; text-align: center; padding: 20px 0; }
 
-  .history-panel { background: var(--card); border: 1px solid var(--dim); border-radius: 12px; padding: 20px; margin-top: 20px; }
-  .history-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--dim); font-size: 12px; }
-  .history-item:last-child { border-bottom: none; }
-  .history-item .date { color: var(--sub); font-size: 11px; }
-  .history-item .recipes-list { color: var(--muted); font-size: 11px; margin-top: 4px; }
-
-  .empty { color: var(--muted); font-size: 12px; text-align: center; padding: 20px; }
-
-  @media (max-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+  .tier-toggle button { padding: 8px 10px; font-size: 11px; }
+}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Soul<span>Gainz</span> · Recipe Release Tool</h1>
-  <span class="badge">ADMIN</span>
+  <div class="logo">Soul<span>Gainz</span> · Recipe Release</div>
+  <span class="admin-tag">ADMIN</span>
 </div>
 
 <div class="container">
 
-  <div class="tip">
-    <strong>How to use:</strong> Select wave2 recipes to release → choose Monthly or Annual tier → click <strong>Generate Code</strong> → copy the output into <code>index.html</code> to update the tier constants. The 🔥 NEW badge will automatically appear on released recipes for users.
+  <!-- ── GitHub Setup ─────────────────────────────────────── -->
+  <div class="setup-card" id="setupCard">
+    <h2>🔑 GitHub Token</h2>
+    <p>One-time setup. Your token is stored locally on this device only. Needs <code>repo</code> scope on <code>dejanzerafa/Meal-Plan</code>.</p>
+    <div class="token-row">
+      <input type="password" class="token-input" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+      <button class="btn btn-ghost" onclick="saveToken()">Save Token</button>
+      <button class="btn btn-ghost" onclick="clearToken()">Clear</button>
+    </div>
+    <div class="token-status" id="tokenStatus"></div>
   </div>
 
-  <div class="info-bar">
-    <div class="stat wave2">
-      <div class="num" id="wave2Count">0</div>
-      <div class="label">WAVE2 REMAINING</div>
-    </div>
-    <div class="stat selected">
-      <div class="num" id="selectedCount">0</div>
-      <div class="label">SELECTED</div>
-    </div>
-    <div class="stat monthly">
-      <div class="num" id="monthlyCount">0</div>
-      <div class="label">→ MONTHLY</div>
-    </div>
-    <div class="stat annual">
-      <div class="num" id="annualCount">0</div>
-      <div class="label">→ ANNUAL</div>
-    </div>
+  <!-- ── Stats ────────────────────────────────────────────── -->
+  <div class="stats">
+    <div class="stat w"><div class="n" id="stWave2">66</div><div class="l">WAVE2 LEFT</div></div>
+    <div class="stat sel"><div class="n" id="stSel">0</div><div class="l">SELECTED</div></div>
+    <div class="stat m"><div class="n" id="stM">0</div><div class="l">→ MONTHLY</div></div>
+    <div class="stat a"><div class="n" id="stA">0</div><div class="l">→ ANNUAL</div></div>
   </div>
 
-  <div class="controls">
-    <select id="filterCat">
-      <option value="">All Categories</option>
-      <option value="main">🍽️ Mains</option>
-      <option value="breakfast">🌅 Breakfast</option>
-      <option value="snack">🥜 Snacks</option>
-      <option value="smoothie">🥤 Smoothies</option>
-      <option value="preworkout">⚡ Pre-Workout</option>
-      <option value="dessert">🍰 Dessert</option>
-      <option value="veg">🥗 Veg/Other</option>
-    </select>
-    <select id="releaseToTier">
-      <option value="monthly">→ Monthly Tier</option>
-      <option value="annual">→ Annual Tier</option>
-    </select>
-    <button class="btn btn-ghost" onclick="selectAll()">Select All Visible</button>
-    <button class="btn btn-ghost" onclick="clearSelection()">Clear Selection</button>
-    <button class="btn btn-accent" onclick="generateCode()">⚡ Generate Code</button>
+  <!-- ── Toolbar ───────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="tier-toggle">
+      <button id="btnM" class="active-m" onclick="setActiveTier('monthly')">📘 Monthly</button>
+      <button id="btnA" onclick="setActiveTier('annual')">⭐ Annual</button>
+    </div>
+    <button class="btn btn-ghost" onclick="selectAllVisible()">Select all</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="spacer"></div>
   </div>
 
+  <!-- ── Recipe Grid ───────────────────────────────────────── -->
   <div id="recipeGrid"></div>
 
-  <div class="output-panel" id="outputPanel" style="display:none;">
-    <h3>📋 Generated Code Patches — Copy into <code>index.html</code></h3>
-    <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">Apply these 3 changes to <code>index.html</code> to release the selected recipes:</p>
-
-    <div style="margin-bottom:14px;">
-      <div class="section-title">1. New RECIPE_TIER_WAVE2 (remove released IDs)</div>
-      <textarea id="out1" rows="4"></textarea>
-    </div>
-
-    <div style="margin-bottom:14px;">
-      <div class="section-title">2. Updated RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL (add released IDs)</div>
-      <textarea id="out2" rows="4"></textarea>
-    </div>
-
-    <div style="margin-bottom:14px;">
-      <div class="section-title">3. NEWLY_RELEASED_IDS (for 🔥 NEW badge — clears automatically after 60 days)</div>
-      <textarea id="out3" rows="3"></textarea>
-    </div>
-
-    <button class="btn btn-accent" onclick="copyAll()" style="margin-top:4px;">📋 Copy All 3 Patches</button>
-    <button class="btn btn-ghost" onclick="saveToHistory()" style="margin-left:8px;">💾 Save to Release History</button>
-  </div>
-
-  <div class="history-panel" id="historyPanel">
-    <div class="section-title">Release History</div>
-    <div id="historyList"><div class="empty">No releases recorded yet.</div></div>
+  <!-- ── History ───────────────────────────────────────────── -->
+  <div class="history">
+    <h3>Release History</h3>
+    <div id="historyList"></div>
   </div>
 
 </div>
 
+<!-- ── Deploy Bar ──────────────────────────────────────────── -->
+<div class="deploy-bar">
+  <div class="deploy-summary" id="deploySummary">Select recipes above, then deploy.</div>
+  <button class="btn btn-deploy" id="deployBtn" onclick="deploy()" disabled>🚀 Deploy to App</button>
+</div>
+
+<!-- ── Progress Overlay ────────────────────────────────────── -->
+<div class="overlay" id="overlay" style="display:none;">
+  <div class="progress-card">
+    <h3 id="overlayTitle">Deploying…</h3>
+    <p id="overlaySubtitle">This takes about 5 seconds.</p>
+    <div class="progress-steps" id="steps"></div>
+  </div>
+</div>
+
 <script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const OWNER = "dejanzerafa";
+const REPO  = "Meal-Plan";
+const BRANCH = "main";
+const FILE_PATH = "index.html";
+
 // ── Wave2 recipe data ─────────────────────────────────────────────────────────
-const WAVE2_RECIPES = [
-  { id: "bf30", name: "🥚 Stuffed Veggie Power Omelette",    cat: "breakfast", kcal: 493, protein: 38 },
-  { id: "bf31", name: "🥚 Clean Egg White Omelette",          cat: "breakfast", kcal: 368, protein: 30 },
-  { id: "bf32", name: "🍚 Protein Chicken Congee",             cat: "breakfast", kcal: 597, protein: 47 },
-  { id: "bf33", name: "🥚 High Protein Breakfast Sandwiches", cat: "breakfast", kcal: 490, protein: 38 },
-  { id: "bf34", name: "🍌 Banana Bread Baked Oats",            cat: "breakfast", kcal: 268, protein: 23 },
-  { id: "bf35", name: "🥞 High Protein Banana Pancakes",       cat: "breakfast", kcal: 258, protein: 21 },
-  { id: "m01",  name: "🍗 Marry Me Chicken",                   cat: "main",      kcal: 819, protein: 85 },
-  { id: "m03",  name: "🍗 Marry Me Chicken — Pasta",           cat: "main",      kcal: 772, protein: 76 },
-  { id: "m06",  name: "🍗 Honey Chipotle Chicken Bowl",        cat: "main",      kcal: 831, protein: 89 },
-  { id: "m08",  name: "🥩 Lean Beef Hamburger Helper",         cat: "main",      kcal: 819, protein: 73 },
-  { id: "m15",  name: "🍗 Creamy Tuscan Chicken",              cat: "main",      kcal: 700, protein: 70 },
-  { id: "m16",  name: "🍗 Chicken Shawarma Rice Bowl",         cat: "main",      kcal: 756, protein: 68 },
-  { id: "m19",  name: "🍗 Lemon Herb Chicken with Couscous",  cat: "main",      kcal: 680, protein: 62 },
-  { id: "m20",  name: "🍗 Chicken Fajita Rice Bowl",           cat: "main",      kcal: 724, protein: 65 },
-  { id: "m22",  name: "🍗 Chicken & Sweet Potato Curry",       cat: "main",      kcal: 694, protein: 64 },
-  { id: "m23",  name: "🍗 Mediterranean Chicken Bowl",         cat: "main",      kcal: 680, protein: 63 },
-  { id: "m24",  name: "🍗 Chicken Burrito Bowl",               cat: "main",      kcal: 755, protein: 68 },
-  { id: "m25",  name: "🍗 Chicken & Mushroom Stir Fry",        cat: "main",      kcal: 647, protein: 61 },
-  { id: "m27",  name: "🍗 Chicken Caesar Salad Bowl",          cat: "main",      kcal: 578, protein: 58 },
-  { id: "m29",  name: "🥩 Ranch Beef Bowl",                    cat: "main",      kcal: 559, protein: 56 },
-  { id: "m30",  name: "🥩 Lean Taco Salad",                    cat: "main",      kcal: 631, protein: 66 },
-  { id: "m32",  name: "🥩 Sirloin Steak & Sweet Potato Salad",cat: "main",      kcal: 645, protein: 49 },
-  { id: "m33",  name: "🦃 Lean Turkey Mince Rice Bowl",        cat: "main",      kcal: 690, protein: 79 },
-  { id: "m34",  name: "🐟 Salmon & Quinoa with Asparagus",     cat: "main",      kcal: 713, protein: 47 },
-  { id: "m36",  name: "🐟 Tuna & Chickpea Power Bowl",         cat: "main",      kcal: 269, protein: 26 },
-  { id: "m41",  name: "🐷 Pork Tenderloin & Jasmine Rice",     cat: "main",      kcal: 667, protein: 65 },
-  { id: "m42",  name: "🐟 White Fish & Mango Salsa Rice",      cat: "main",      kcal: 578, protein: 58 },
-  { id: "m44",  name: "🥩 Lean Beef & Broccoli Rice Bowl",     cat: "main",      kcal: 733, protein: 72 },
-  { id: "m47",  name: "🍗 Thai Basil Chicken Rice",             cat: "main",      kcal: 710, protein: 67 },
-  { id: "m48",  name: "🍗 Chicken Tikka Masala Bowl",          cat: "main",      kcal: 725, protein: 68 },
-  { id: "m49",  name: "🍗 Lemon Pepper Chicken Pasta",         cat: "main",      kcal: 748, protein: 65 },
-  { id: "m50",  name: "🍗 Butter Chicken Rice Bowl",            cat: "main",      kcal: 760, protein: 69 },
-  { id: "m63",  name: "🍗 Chicken Poke Bowl",                  cat: "main",      kcal: 596, protein: 55 },
-  { id: "m64",  name: "🐟 Teriyaki Salmon Sushi Bowl",         cat: "main",      kcal: 620, protein: 48 },
-  { id: "m65",  name: "🍗 Chicken & Vegetable Stew",           cat: "main",      kcal: 582, protein: 57 },
-  { id: "m66",  name: "🥩 Korean Beef Rice Bowl",              cat: "main",      kcal: 715, protein: 62 },
-  { id: "m67",  name: "🍗 Greek Chicken Orzo",                  cat: "main",      kcal: 688, protein: 63 },
-  { id: "m68",  name: "🍗 Chicken Souvlaki Bowl",              cat: "main",      kcal: 671, protein: 65 },
-  { id: "m69",  name: "🥩 Beef & Lentil Stew",                 cat: "main",      kcal: 604, protein: 55 },
-  { id: "m70",  name: "🍗 Chicken Fried Rice",                  cat: "main",      kcal: 694, protein: 60 },
-  { id: "m71",  name: "🐟 Baked Lemon Herb Salmon",            cat: "main",      kcal: 581, protein: 52 },
-  { id: "m72",  name: "🍗 Chicken Enchilada Bowl",             cat: "main",      kcal: 714, protein: 66 },
-  { id: "m73",  name: "🥩 Beef Stir Fry Noodles",              cat: "main",      kcal: 726, protein: 58 },
-  { id: "m74",  name: "🍗 Chicken & Spinach Stuffed Peppers",  cat: "main",      kcal: 527, protein: 56 },
-  { id: "m75",  name: "🐟 Tuna Pasta Bake",                    cat: "main",      kcal: 668, protein: 54 },
-  { id: "m76",  name: "🍗 Chicken Katsu Curry Bowl",           cat: "main",      kcal: 792, protein: 67 },
-  { id: "m77",  name: "🥩 Beef Rendang Rice Bowl",             cat: "main",      kcal: 748, protein: 61 },
-  { id: "m78",  name: "🍗 Sticky Sesame Chicken Rice",          cat: "main",      kcal: 737, protein: 65 },
-  { id: "m79",  name: "🐟 Miso Glazed Salmon Bowl",            cat: "main",      kcal: 624, protein: 51 },
-  { id: "m80",  name: "🥩 Smash Burger Salad Bowl",            cat: "main",      kcal: 631, protein: 54 },
-  { id: "m81",  name: "🥩 Grilled Chicken Burger",             cat: "main",      kcal: 617, protein: 56 },
-  { id: "m82",  name: "🍗 Chicken Ramen Bowl",                  cat: "main",      kcal: 666, protein: 59 },
-  { id: "m83",  name: "🥩 Beef Bibimbap Bowl",                 cat: "main",      kcal: 724, protein: 58 },
-  { id: "m84",  name: "🍗 Moroccan Chicken Couscous",          cat: "main",      kcal: 691, protein: 63 },
-  { id: "m85",  name: "🐟 Coconut Fish Curry",                  cat: "main",      kcal: 634, protein: 49 },
-  { id: "m86",  name: "🥩 Garlic Butter Steak Bites & Rice",  cat: "main",      kcal: 752, protein: 62 },
-  { id: "pw1",  name: "⚡ Rice Cake & Peanut Butter",          cat: "preworkout",kcal: 320, protein: 12 },
-  { id: "pw7",  name: "⚡ Protein Waffle Stack",               cat: "preworkout",kcal: 398, protein: 30 },
-  { id: "sm7",  name: "🥤 Green Power Smoothie",               cat: "smoothie",  kcal: 310, protein: 28 },
-  { id: "sm8",  name: "🥤 Tropical Protein Smoothie",          cat: "smoothie",  kcal: 340, protein: 30 },
-  { id: "sm9",  name: "🥤 Peanut Butter Banana Smoothie",      cat: "smoothie",  kcal: 390, protein: 32 },
-  { id: "sn8",  name: "🥜 Protein Energy Balls",               cat: "snack",     kcal: 218, protein: 14 },
-  { id: "sn9",  name: "🐟 Tuna & Veg Plate",                   cat: "snack",     kcal: 524, protein: 89 },
-  { id: "v5",   name: "🥗 Lentil & Roasted Veg Bowl",          cat: "veg",       kcal: 480, protein: 22 },
-  { id: "v7",   name: "🥗 Tofu Stir Fry",                      cat: "veg",       kcal: 420, protein: 26 },
-  { id: "v8",   name: "🥗 Chickpea & Spinach Curry",           cat: "veg",       kcal: 395, protein: 20 },
+const WAVE2 = [
+  { id:"bf30", name:"🥚 Stuffed Veggie Power Omelette",    cat:"Breakfast",   kcal:493, prot:38 },
+  { id:"bf31", name:"🥚 Clean Egg White Omelette",          cat:"Breakfast",   kcal:368, prot:30 },
+  { id:"bf32", name:"🍚 Protein Chicken Congee",             cat:"Breakfast",   kcal:597, prot:47 },
+  { id:"bf33", name:"🥚 High Protein Breakfast Sandwiches", cat:"Breakfast",   kcal:490, prot:38 },
+  { id:"bf34", name:"🍌 Banana Bread Baked Oats",            cat:"Breakfast",   kcal:268, prot:23 },
+  { id:"bf35", name:"🥞 High Protein Banana Pancakes",       cat:"Breakfast",   kcal:258, prot:21 },
+  { id:"m01",  name:"🍗 Marry Me Chicken",                   cat:"Mains",       kcal:819, prot:85 },
+  { id:"m03",  name:"🍗 Marry Me Chicken — Pasta",           cat:"Mains",       kcal:772, prot:76 },
+  { id:"m06",  name:"🍗 Honey Chipotle Chicken Bowl",        cat:"Mains",       kcal:831, prot:89 },
+  { id:"m08",  name:"🥩 Lean Beef Hamburger Helper",         cat:"Mains",       kcal:819, prot:73 },
+  { id:"m15",  name:"🍗 Creamy Tuscan Chicken",              cat:"Mains",       kcal:700, prot:70 },
+  { id:"m16",  name:"🍗 Chicken Shawarma Rice Bowl",         cat:"Mains",       kcal:756, prot:68 },
+  { id:"m19",  name:"🍗 Lemon Herb Chicken with Couscous",  cat:"Mains",       kcal:680, prot:62 },
+  { id:"m20",  name:"🍗 Chicken Fajita Rice Bowl",           cat:"Mains",       kcal:724, prot:65 },
+  { id:"m22",  name:"🍗 Chicken & Sweet Potato Curry",       cat:"Mains",       kcal:694, prot:64 },
+  { id:"m23",  name:"🍗 Mediterranean Chicken Bowl",         cat:"Mains",       kcal:680, prot:63 },
+  { id:"m24",  name:"🍗 Chicken Burrito Bowl",               cat:"Mains",       kcal:755, prot:68 },
+  { id:"m25",  name:"🍗 Chicken & Mushroom Stir Fry",        cat:"Mains",       kcal:647, prot:61 },
+  { id:"m27",  name:"🍗 Chicken Caesar Salad Bowl",          cat:"Mains",       kcal:578, prot:58 },
+  { id:"m29",  name:"🥩 Ranch Beef Bowl",                    cat:"Mains",       kcal:559, prot:56 },
+  { id:"m30",  name:"🥩 Lean Taco Salad",                    cat:"Mains",       kcal:631, prot:66 },
+  { id:"m32",  name:"🥩 Sirloin Steak & Sweet Potato Salad",cat:"Mains",       kcal:645, prot:49 },
+  { id:"m33",  name:"🦃 Lean Turkey Mince Rice Bowl",        cat:"Mains",       kcal:690, prot:79 },
+  { id:"m34",  name:"🐟 Salmon & Quinoa with Asparagus",     cat:"Mains",       kcal:713, prot:47 },
+  { id:"m36",  name:"🐟 Tuna & Chickpea Power Bowl",         cat:"Mains",       kcal:269, prot:26 },
+  { id:"m41",  name:"🐷 Pork Tenderloin & Jasmine Rice",     cat:"Mains",       kcal:667, prot:65 },
+  { id:"m42",  name:"🐟 White Fish & Mango Salsa Rice",      cat:"Mains",       kcal:578, prot:58 },
+  { id:"m44",  name:"🥩 Lean Beef & Broccoli Rice Bowl",     cat:"Mains",       kcal:733, prot:72 },
+  { id:"m47",  name:"🍗 Thai Basil Chicken Rice",             cat:"Mains",       kcal:710, prot:67 },
+  { id:"m48",  name:"🍗 Chicken Tikka Masala Bowl",          cat:"Mains",       kcal:725, prot:68 },
+  { id:"m49",  name:"🍗 Lemon Pepper Chicken Pasta",         cat:"Mains",       kcal:748, prot:65 },
+  { id:"m50",  name:"🍗 Butter Chicken Rice Bowl",            cat:"Mains",       kcal:760, prot:69 },
+  { id:"m63",  name:"🍗 Chicken Poke Bowl",                  cat:"Mains",       kcal:596, prot:55 },
+  { id:"m64",  name:"🐟 Teriyaki Salmon Sushi Bowl",         cat:"Mains",       kcal:620, prot:48 },
+  { id:"m65",  name:"🍗 Chicken & Vegetable Stew",           cat:"Mains",       kcal:582, prot:57 },
+  { id:"m66",  name:"🥩 Korean Beef Rice Bowl",              cat:"Mains",       kcal:715, prot:62 },
+  { id:"m67",  name:"🍗 Greek Chicken Orzo",                  cat:"Mains",       kcal:688, prot:63 },
+  { id:"m68",  name:"🍗 Chicken Souvlaki Bowl",              cat:"Mains",       kcal:671, prot:65 },
+  { id:"m69",  name:"🥩 Beef & Lentil Stew",                 cat:"Mains",       kcal:604, prot:55 },
+  { id:"m70",  name:"🍗 Chicken Fried Rice",                  cat:"Mains",       kcal:694, prot:60 },
+  { id:"m71",  name:"🐟 Baked Lemon Herb Salmon",            cat:"Mains",       kcal:581, prot:52 },
+  { id:"m72",  name:"🍗 Chicken Enchilada Bowl",             cat:"Mains",       kcal:714, prot:66 },
+  { id:"m73",  name:"🥩 Beef Stir Fry Noodles",              cat:"Mains",       kcal:726, prot:58 },
+  { id:"m74",  name:"🍗 Chicken & Spinach Stuffed Peppers",  cat:"Mains",       kcal:527, prot:56 },
+  { id:"m75",  name:"🐟 Tuna Pasta Bake",                    cat:"Mains",       kcal:668, prot:54 },
+  { id:"m76",  name:"🍗 Chicken Katsu Curry Bowl",           cat:"Mains",       kcal:792, prot:67 },
+  { id:"m77",  name:"🥩 Beef Rendang Rice Bowl",             cat:"Mains",       kcal:748, prot:61 },
+  { id:"m78",  name:"🍗 Sticky Sesame Chicken Rice",          cat:"Mains",       kcal:737, prot:65 },
+  { id:"m79",  name:"🐟 Miso Glazed Salmon Bowl",            cat:"Mains",       kcal:624, prot:51 },
+  { id:"m80",  name:"🥩 Smash Burger Salad Bowl",            cat:"Mains",       kcal:631, prot:54 },
+  { id:"m81",  name:"🥩 Grilled Chicken Burger",             cat:"Mains",       kcal:617, prot:56 },
+  { id:"m82",  name:"🍗 Chicken Ramen Bowl",                  cat:"Mains",       kcal:666, prot:59 },
+  { id:"m83",  name:"🥩 Beef Bibimbap Bowl",                 cat:"Mains",       kcal:724, prot:58 },
+  { id:"m84",  name:"🍗 Moroccan Chicken Couscous",          cat:"Mains",       kcal:691, prot:63 },
+  { id:"m85",  name:"🐟 Coconut Fish Curry",                  cat:"Mains",       kcal:634, prot:49 },
+  { id:"m86",  name:"🥩 Garlic Butter Steak Bites & Rice",  cat:"Mains",       kcal:752, prot:62 },
+  { id:"pw1",  name:"⚡ Rice Cake & Peanut Butter",          cat:"Pre-Workout", kcal:320, prot:12 },
+  { id:"pw7",  name:"⚡ Protein Waffle Stack",               cat:"Pre-Workout", kcal:398, prot:30 },
+  { id:"sm7",  name:"🥤 Green Power Smoothie",               cat:"Smoothies",   kcal:310, prot:28 },
+  { id:"sm8",  name:"🥤 Tropical Protein Smoothie",          cat:"Smoothies",   kcal:340, prot:30 },
+  { id:"sm9",  name:"🥤 Peanut Butter Banana Smoothie",      cat:"Smoothies",   kcal:390, prot:32 },
+  { id:"sn8",  name:"🥜 Protein Energy Balls",               cat:"Snacks",      kcal:218, prot:14 },
+  { id:"sn9",  name:"🐟 Tuna & Veg Plate",                   cat:"Snacks",      kcal:524, prot:89 },
+  { id:"v5",   name:"🥗 Lentil & Roasted Veg Bowl",          cat:"Veg",         kcal:480, prot:22 },
+  { id:"v7",   name:"🥗 Tofu Stir Fry",                      cat:"Veg",         kcal:420, prot:26 },
+  { id:"v8",   name:"🥗 Chickpea & Spinach Curry",           cat:"Veg",         kcal:395, prot:20 },
 ];
 
-// ── Current tier data from index.html ─────────────────────────────────────────
-const CURRENT_MONTHLY = ["bf4","bf5","bf6","bf7","bf8","bf9","bf10","bf11","bf12","bf13","bf14","bf15","bf16","bf17","bf18","bf19","bf20","bf21","bf22","bf23","bf24","bf25","bf26","bf27","bf28","bf29","d2","ds3","ds4","m04","m05","m07","m09","m10","m11","m12","m13","m14","m17","m18","m21","m26","m28","m31","m35","m37","m38","m39","m40","m43","m45","m46","m51","pw3","pw4","pw5","pw6","sm3","sm4","sm5","sm6","sn3","sn4","sn5","sn6","sn7","v2","v4","v6"];
-const CURRENT_ANNUAL = ["bf1","bf2","bf3","bf4","bf5","bf6","bf7","bf8","bf9","bf10","bf11","bf12","bf13","bf14","bf15","bf16","bf17","bf18","bf19","bf20","bf21","bf22","bf23","bf24","bf25","bf26","bf27","bf28","bf29","d3","d4","d5","ds5","ds6","ds7","m52","m53","m54","m55","m56","m57","m58","m59","m60","m61","m62","pw2","sm2","sn4","v3"];
-
-// Actually just using the wave2 set — monthly and annual sets would need to be read from index.html
-// For display purposes, we show what each card will move TO
-
 // ── State ─────────────────────────────────────────────────────────────────────
-let selected = {}; // id → 'monthly' | 'annual'
-let filterCat = '';
+let selected = {};          // id → 'monthly' | 'annual'
+let activeTier = 'monthly'; // current click-to-assign tier
 
-function getCatDisplay(cat) {
-  const m = { main:'🍽️ Mains', breakfast:'🌅 Breakfast', snack:'🥜 Snacks', smoothie:'🥤 Smoothies', preworkout:'⚡ Pre-Workout', dessert:'🍰 Dessert', veg:'🥗 Veg' };
-  return m[cat] || cat;
+// ── Token management ──────────────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('sg_gh_token') || ''; }
+function saveToken() {
+  const v = document.getElementById('tokenInput').value.trim();
+  if (!v) return;
+  localStorage.setItem('sg_gh_token', v);
+  document.getElementById('tokenInput').value = '';
+  showTokenStatus('✅ Token saved', 'ok');
+  updateDeployBtn();
+}
+function clearToken() {
+  localStorage.removeItem('sg_gh_token');
+  document.getElementById('tokenInput').value = '';
+  showTokenStatus('Token cleared', '');
+  updateDeployBtn();
+}
+function showTokenStatus(msg, cls) {
+  const el = document.getElementById('tokenStatus');
+  el.textContent = msg;
+  el.className = 'token-status ' + cls;
 }
 
-function render() {
-  const cats = [...new Set(WAVE2_RECIPES.map(r => r.cat))];
+// ── Tier toggle ───────────────────────────────────────────────────────────────
+function setActiveTier(t) {
+  activeTier = t;
+  document.getElementById('btnM').className = t === 'monthly' ? 'active-m' : '';
+  document.getElementById('btnA').className = t === 'annual'  ? 'active-a' : '';
+}
+
+// ── Selection ─────────────────────────────────────────────────────────────────
+function toggle(id) {
+  if (selected[id] === activeTier) delete selected[id];
+  else selected[id] = activeTier;
+  renderCard(id);
+  updateStats();
+}
+function selectAllVisible() {
+  WAVE2.forEach(r => selected[r.id] = activeTier);
+  renderAll();
+}
+function clearAll() {
+  selected = {};
+  renderAll();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderAll() {
+  const cats = [...new Set(WAVE2.map(r => r.cat))];
   const grid = document.getElementById('recipeGrid');
-  const activeTier = document.getElementById('releaseToTier').value;
-  const catFilter = document.getElementById('filterCat').value;
-
-  let html = '';
-  for (const cat of cats) {
-    const recipes = WAVE2_RECIPES.filter(r => r.cat === cat && (!catFilter || r.cat === catFilter));
-    if (!recipes.length) continue;
-
+  grid.innerHTML = cats.map(cat => {
+    const recipes = WAVE2.filter(r => r.cat === cat);
     const selCount = recipes.filter(r => selected[r.id]).length;
-    html += `<div class="cat-section">
-      <div class="cat-header">
-        <span class="cat-label">${getCatDisplay(cat)}</span>
-        <span class="cat-count">${recipes.length} recipes</span>
-        ${selCount ? `<span style="font-size:10px;color:var(--gold);">${selCount} selected</span>` : ''}
+    return `<div class="cat-block">
+      <div class="cat-heading">
+        ${cat} <span class="cnt">${recipes.length}</span>
+        ${selCount ? `<span class="sel-cnt">${selCount} selected</span>` : ''}
       </div>
-      <div class="grid">`;
-
-    for (const r of recipes) {
-      const sel = selected[r.id];
-      let cls = 'recipe-card';
-      if (sel === 'monthly') cls += ' selected-monthly';
-      if (sel === 'annual') cls += ' selected-annual';
-      html += `<div class="${cls}" onclick="toggleRecipe('${r.id}')">
-        ${sel ? `<div class="tier-pill">${sel === 'monthly' ? '📘 MONTHLY' : '⭐ ANNUAL'}</div>` : ''}
-        <div class="name">${r.name}</div>
-        <div class="id">${r.id}</div>
-        <div class="macros">
-          <span>${r.kcal} kcal</span>
-          <span style="color:var(--accent)">${r.protein}g prot</span>
-        </div>
-      </div>`;
-    }
-    html += '</div></div>';
-  }
-
-  grid.innerHTML = html || '<div class="empty">No recipes match the filter.</div>';
+      <div class="grid">${recipes.map(cardHTML).join('')}</div>
+    </div>`;
+  }).join('');
   updateStats();
 }
 
-function toggleRecipe(id) {
-  const tier = document.getElementById('releaseToTier').value;
-  if (selected[id] === tier) {
-    delete selected[id];
-  } else {
-    selected[id] = tier;
-  }
-  render();
+function cardHTML(r) {
+  const s = selected[r.id];
+  const cls = s === 'monthly' ? 'sel-m' : s === 'annual' ? 'sel-a' : '';
+  const badge = s === 'monthly' ? '<div class="tier-badge">📘 MONTHLY</div>'
+              : s === 'annual'  ? '<div class="tier-badge">⭐ ANNUAL</div>' : '';
+  return `<div class="rcard ${cls}" id="card-${r.id}" onclick="toggle('${r.id}')">
+    ${badge}
+    <div class="rname">${r.name}</div>
+    <div class="rid">${r.id}</div>
+    <div class="rmacros"><span>${r.kcal} kcal</span><span style="color:var(--accent)">${r.prot}g protein</span></div>
+  </div>`;
 }
 
-function selectAll() {
-  const tier = document.getElementById('releaseToTier').value;
-  const catFilter = document.getElementById('filterCat').value;
-  WAVE2_RECIPES.filter(r => !catFilter || r.cat === catFilter).forEach(r => selected[r.id] = tier);
-  render();
-}
-
-function clearSelection() {
-  selected = {};
-  render();
+function renderCard(id) {
+  const el = document.getElementById('card-' + id);
+  if (!el) return;
+  const r = WAVE2.find(x => x.id === id);
+  el.outerHTML = cardHTML(r);
 }
 
 function updateStats() {
-  const wave2Remaining = WAVE2_RECIPES.length - Object.keys(selected).length;
-  const monthly = Object.values(selected).filter(t => t === 'monthly').length;
-  const annual = Object.values(selected).filter(t => t === 'annual').length;
-  document.getElementById('wave2Count').textContent = wave2Remaining;
-  document.getElementById('selectedCount').textContent = Object.keys(selected).length;
-  document.getElementById('monthlyCount').textContent = monthly;
-  document.getElementById('annualCount').textContent = annual;
+  const m = Object.values(selected).filter(t => t === 'monthly').length;
+  const a = Object.values(selected).filter(t => t === 'annual').length;
+  const total = m + a;
+  document.getElementById('stWave2').textContent = WAVE2.length - total;
+  document.getElementById('stSel').textContent = total;
+  document.getElementById('stM').textContent = m;
+  document.getElementById('stA').textContent = a;
+
+  const summary = document.getElementById('deploySummary');
+  if (!total) {
+    summary.innerHTML = 'Select recipes above to release them to the app.';
+  } else {
+    const parts = [];
+    if (m) parts.push(`<strong>${m} → Monthly</strong>`);
+    if (a) parts.push(`<strong>${a} → Annual</strong>`);
+    summary.innerHTML = parts.join(' · ') + ' · Click Deploy to go live.';
+  }
+  updateDeployBtn();
 }
 
-function generateCode() {
-  const sel = Object.keys(selected);
-  if (!sel.length) { alert('Select at least one recipe to release.'); return; }
-
-  const monthlyReleases = sel.filter(id => selected[id] === 'monthly').sort();
-  const annualReleases = sel.filter(id => selected[id] === 'annual').sort();
-  const remainingWave2 = WAVE2_RECIPES.filter(r => !selected[r.id]).map(r => r.id).sort();
-
-  // Output 1: new RECIPE_TIER_WAVE2
-  const w2Set = remainingWave2.map(id => `"${id}"`).join(', ');
-  document.getElementById('out1').value = `const RECIPE_TIER_WAVE2   = new Set([${w2Set}]);`;
-
-  // Output 2: add to monthly / annual
-  let out2 = '';
-  if (monthlyReleases.length) {
-    out2 += `// Add these to RECIPE_TIER_MONTHLY (append inside the Set):\n// ${monthlyReleases.map(id => `"${id}"`).join(', ')}\n\n`;
-  }
-  if (annualReleases.length) {
-    out2 += `// Add these to RECIPE_TIER_ANNUAL (append inside the Set):\n// ${annualReleases.map(id => `"${id}"`).join(', ')}`;
-  }
-  document.getElementById('out2').value = out2.trim();
-
-  // Output 3: NEWLY_RELEASED_IDS
-  const allReleased = [...monthlyReleases, ...annualReleases].sort();
-  const releasedAt = new Date().toISOString().split('T')[0];
-  document.getElementById('out3').value =
-    `// Released: ${releasedAt} | Badge shows for 60 days\nconst NEWLY_RELEASED_IDS = new Set([${allReleased.map(id => `"${id}"`).join(', ')}]);`;
-
-  document.getElementById('outputPanel').style.display = 'block';
-  document.getElementById('outputPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+function updateDeployBtn() {
+  const total = Object.keys(selected).length;
+  const hasToken = !!getToken();
+  const btn = document.getElementById('deployBtn');
+  btn.disabled = !total || !hasToken;
+  if (!hasToken) btn.title = 'Save your GitHub token first';
 }
 
-function copyAll() {
-  const parts = [
-    document.getElementById('out1').value,
-    document.getElementById('out2').value,
-    document.getElementById('out3').value
-  ];
-  navigator.clipboard.writeText(parts.join('\n\n---\n\n')).then(() => {
-    alert('✅ All 3 patches copied to clipboard!');
+// ── GitHub API ────────────────────────────────────────────────────────────────
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`, {
+    headers: { Authorization: `token ${getToken()}`, Accept: 'application/vnd.github.v3+json' }
   });
+  if (!r.ok) throw new Error(`GitHub GET failed: ${r.status} ${await r.text()}`);
+  return r.json();
 }
 
-function saveToHistory() {
-  const sel = Object.keys(selected);
-  if (!sel.length) return;
+async function ghPut(path, content, sha, message) {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${getToken()}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, content: btoa(unescape(encodeURIComponent(content))), sha, branch: BRANCH })
+  });
+  if (!r.ok) throw new Error(`GitHub PUT failed: ${r.status} ${await r.text()}`);
+  return r.json();
+}
 
-  const history = JSON.parse(localStorage.getItem('sg_release_history') || '[]');
-  const entry = {
+// ── Patch logic (mirrors Python script, runs in-browser) ─────────────────────
+function patchHTML(html, monthlyReleases, annualReleases) {
+  const allReleased = [...monthlyReleases, ...annualReleases];
+
+  // 1. Remove released IDs from RECIPE_TIER_WAVE2
+  html = html.replace(/const RECIPE_TIER_WAVE2\s*=\s*new Set\(\[([\s\S]*?)\]\);/, (_, inner) => {
+    const current = inner.match(/"([^"]+)"/g).map(s => s.replace(/"/g,''));
+    const updated = current.filter(id => !allReleased.includes(id)).sort();
+    return `const RECIPE_TIER_WAVE2   = new Set([${updated.map(id => `"${id}"`).join(', ')}]);`;
+  });
+
+  // 2. Add monthly releases to RECIPE_TIER_MONTHLY
+  if (monthlyReleases.length) {
+    html = html.replace(/const RECIPE_TIER_MONTHLY\s*=\s*new Set\(\[([\s\S]*?)\]\);/, (_, inner) => {
+      const current = inner.match(/"([^"]+)"/g).map(s => s.replace(/"/g,''));
+      const updated = [...new Set([...current, ...monthlyReleases])].sort();
+      return `const RECIPE_TIER_MONTHLY = new Set([${updated.map(id => `"${id}"`).join(', ')}]);`;
+    });
+  }
+
+  // 3. Add annual releases to RECIPE_TIER_ANNUAL
+  if (annualReleases.length) {
+    html = html.replace(/const RECIPE_TIER_ANNUAL\s*=\s*new Set\(\[([\s\S]*?)\]\);/, (_, inner) => {
+      const current = inner.match(/"([^"]+)"/g).map(s => s.replace(/"/g,''));
+      const updated = [...new Set([...current, ...annualReleases])].sort();
+      return `const RECIPE_TIER_ANNUAL  = new Set([${updated.map(id => `"${id}"`).join(', ')}]);`;
+    });
+  }
+
+  // 4. Update NEWLY_RELEASED_IDS
+  html = html.replace(/const NEWLY_RELEASED_IDS\s*=\s*new Set\(\[.*?\]\);.*/,
+    `const NEWLY_RELEASED_IDS = new Set([${allReleased.sort().map(id => `"${id}"`).join(', ')}]); // released ${new Date().toISOString().split('T')[0]}`);
+
+  return html;
+}
+
+// ── Step helpers ──────────────────────────────────────────────────────────────
+function setStep(steps, i, status) {
+  const el = steps[i];
+  if (!el) return;
+  el.className = 'step ' + status;
+  el.querySelector('.step-icon').textContent = status === 'done' ? '✅' : status === 'active' ? '⏳' : status === 'err' ? '❌' : '○';
+}
+
+// ── Deploy ────────────────────────────────────────────────────────────────────
+async function deploy() {
+  const monthly = Object.keys(selected).filter(id => selected[id] === 'monthly').sort();
+  const annual  = Object.keys(selected).filter(id => selected[id] === 'annual').sort();
+  const all     = [...monthly, ...annual];
+  if (!all.length) return;
+
+  const stepDefs = [
+    'Fetching current index.html from GitHub',
+    'Patching tier constants',
+    'Pushing updated file to GitHub',
+    'Done — changes are live!',
+  ];
+
+  document.getElementById('overlayTitle').textContent = `Releasing ${all.length} recipe${all.length > 1 ? 's' : ''}…`;
+  document.getElementById('overlaySubtitle').textContent = 'Updating index.html on GitHub. Takes ~5 seconds.';
+  document.getElementById('steps').innerHTML = stepDefs.map((s, i) =>
+    `<div class="step" id="step${i}"><span class="step-icon">○</span> ${s}</div>`
+  ).join('');
+  document.getElementById('overlay').style.display = 'flex';
+
+  const steps = stepDefs.map((_, i) => document.getElementById('step' + i));
+
+  try {
+    // Step 0: Fetch
+    setStep(steps, 0, 'active');
+    const file = await ghGet(FILE_PATH);
+    const sha = file.sha;
+    const html = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    setStep(steps, 0, 'done');
+
+    // Step 1: Patch
+    setStep(steps, 1, 'active');
+    const patched = patchHTML(html, monthly, annual);
+    if (patched === html) throw new Error('No changes detected — check recipe IDs match the app.');
+    setStep(steps, 1, 'done');
+
+    // Step 2: Push
+    setStep(steps, 2, 'active');
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const now = new Date();
+    const msg = `feat: wave2 recipe drop — ${all.length} recipes released (${monthNames[now.getMonth()]} ${now.getFullYear()})`;
+    const result = await ghPut(FILE_PATH, patched, sha, msg);
+    const commitSha = result.commit.sha.slice(0, 8);
+    setStep(steps, 2, 'done');
+
+    // Step 3: Done
+    setStep(steps, 3, 'done');
+    document.getElementById('overlayTitle').textContent = '✅ Deployed!';
+    document.getElementById('overlaySubtitle').textContent = `Commit ${commitSha} · Netlify will rebuild in ~30 seconds.`;
+
+    // Save history
+    saveHistory(monthly, annual, commitSha);
+
+    // Update local state — remove released from wave2 list
+    all.forEach(id => { delete selected[id]; });
+
+    setTimeout(() => {
+      document.getElementById('overlay').style.display = 'none';
+      renderAll();
+      renderHistory();
+    }, 3000);
+
+  } catch (err) {
+    const activeStep = steps.findIndex(s => s.className.includes('active'));
+    if (activeStep >= 0) setStep(steps, activeStep, 'err');
+    document.getElementById('overlayTitle').textContent = '❌ Deploy failed';
+    document.getElementById('overlaySubtitle').textContent = err.message;
+    setTimeout(() => document.getElementById('overlay').style.display = 'none', 4000);
+  }
+}
+
+// ── History ───────────────────────────────────────────────────────────────────
+function saveHistory(monthly, annual, commit) {
+  const hist = JSON.parse(localStorage.getItem('sg_release_hist') || '[]');
+  const all = [...monthly, ...annual];
+  hist.unshift({
     date: new Date().toISOString(),
-    released: sel.map(id => ({ id, tier: selected[id], name: WAVE2_RECIPES.find(r => r.id === id)?.name || id }))
-  };
-  history.unshift(entry);
-  localStorage.setItem('sg_release_history', JSON.stringify(history));
-  renderHistory();
-  alert('✅ Saved to release history!');
+    count: all.length,
+    monthly, annual,
+    commit
+  });
+  localStorage.setItem('sg_release_hist', JSON.stringify(hist.slice(0, 20)));
 }
 
 function renderHistory() {
-  const history = JSON.parse(localStorage.getItem('sg_release_history') || '[]');
+  const hist = JSON.parse(localStorage.getItem('sg_release_hist') || '[]');
   const el = document.getElementById('historyList');
-  if (!history.length) {
-    el.innerHTML = '<div class="empty">No releases recorded yet.</div>';
-    return;
-  }
-  el.innerHTML = history.map(entry => {
-    const date = new Date(entry.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
-    const monthly = entry.released.filter(r => r.tier === 'monthly');
-    const annual = entry.released.filter(r => r.tier === 'annual');
-    return `<div class="history-item">
-      <div>
-        <div style="font-weight:700;">${entry.released.length} recipes released</div>
-        <div class="date">${date}</div>
-        ${monthly.length ? `<div class="recipes-list">📘 Monthly: ${monthly.map(r => r.name).join(', ')}</div>` : ''}
-        ${annual.length ? `<div class="recipes-list">⭐ Annual: ${annual.map(r => r.name).join(', ')}</div>` : ''}
+  if (!hist.length) { el.innerHTML = '<div class="empty">No releases yet.</div>'; return; }
+  el.innerHTML = hist.map(h => {
+    const d = new Date(h.date);
+    const date = d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+    const names = [...h.monthly.map(id => {
+      const r = WAVE2.find(x => x.id === id); return r ? r.name : id;
+    }), ...h.annual.map(id => {
+      const r = WAVE2.find(x => x.id === id); return r ? r.name : id;
+    })];
+    return `<div class="hist-item">
+      <div class="hist-date">${date}</div>
+      <div class="hist-detail">
+        <strong>${h.count} recipe${h.count > 1 ? 's' : ''} released</strong>
+        ${h.monthly.length ? `<div class="ids">📘 Monthly: ${h.monthly.join(', ')}</div>` : ''}
+        ${h.annual.length  ? `<div class="ids">⭐ Annual: ${h.annual.join(', ')}</div>` : ''}
+        ${h.commit ? `<div class="commit">commit ${h.commit}</div>` : ''}
       </div>
     </div>`;
   }).join('');
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-document.getElementById('filterCat').addEventListener('change', e => { filterCat = e.target.value; render(); });
-render();
+const storedToken = getToken();
+if (storedToken) {
+  showTokenStatus(`✅ Token saved (${storedToken.slice(0,7)}…)`, 'ok');
+  document.getElementById('setupCard').style.opacity = '0.7';
+}
+renderAll();
 renderHistory();
 </script>
 </body>
