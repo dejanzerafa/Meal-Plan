@@ -8901,30 +8901,39 @@ function getProteinType(r) {
     return null;
 }
 
-// ── PrepCalendar ─────────────────────────────────────────────────────────────
-// Monthly prep log — marks days user logged a meal prep session
-function PrepCalendar({ C, logs: logsProp, onLogsChange }) {
+// ── ComplianceLog ────────────────────────────────────────────────────────────
+// Monthly meal-prep compliance tracker — shows how consistently user preps
+function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
     const today = new Date();
     const [viewYear,  setViewYear]  = React.useState(today.getFullYear());
-    const [viewMonth, setViewMonth] = React.useState(today.getMonth()); // 0-indexed
-    // Use app-level logs prop if provided (so Supabase restores are reflected immediately),
-    // otherwise fall back to own local state for standalone usage.
+    const [viewMonth, setViewMonth] = React.useState(today.getMonth());
     const [localLogs, setLocalLogs] = React.useState(() => {
         try { return JSON.parse(localStorage.getItem("mp_cal_logs") || "[]"); } catch(e) { return []; }
     });
+    const [target, setTarget] = React.useState(() => {
+        try { return parseInt(localStorage.getItem("mp_prep_target") || "8", 10); } catch(e) { return 8; }
+    });
+
     const logs = logsProp !== undefined ? logsProp : localLogs;
-
     const todayStr = [today.getFullYear(), String(today.getMonth()+1).padStart(2,"0"), String(today.getDate()).padStart(2,"0")].join("-");
+    const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth();
 
-    const prepDays = React.useMemo(() => {
+    const allPrepDays = React.useMemo(() => {
         const s = new Set();
         logs.forEach(l => { if(l.date) s.add(l.date); });
         return s;
     }, [logs]);
 
+    const monthKey = `${viewYear}-${String(viewMonth+1).padStart(2,"0")}`;
+    const monthPrepDays = React.useMemo(() => {
+        const s = new Set();
+        logs.forEach(l => { if(l.date && l.date.startsWith(monthKey)) s.add(l.date); });
+        return s;
+    }, [logs, monthKey]);
+
     const toggleDay = (dateStr) => {
         let newLogs;
-        if (prepDays.has(dateStr)) {
+        if (allPrepDays.has(dateStr)) {
             newLogs = logs.filter(l => l.date !== dateStr);
         } else {
             newLogs = [...logs, { date: dateStr, loggedAt: new Date().toISOString() }];
@@ -8934,127 +8943,168 @@ function PrepCalendar({ C, logs: logsProp, onLogsChange }) {
         else { setLocalLogs(newLogs); localStorage.setItem("mp_cal_logs", JSON.stringify(newLogs)); }
     };
 
+    const adjustTarget = (delta) => {
+        const n = Math.max(1, Math.min(31, target + delta));
+        setTarget(n);
+        try { localStorage.setItem("mp_prep_target", String(n)); } catch(_) {}
+    };
+
     const monthName = new Date(viewYear, viewMonth, 1).toLocaleString("default", { month: "long" });
-    const firstDow = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
+    const firstDow  = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    const daysElapsed = isCurrentMonth ? today.getDate() : daysInMonth;
+
+    const sessionCount = monthPrepDays.size;
+    const compliance   = Math.min(100, Math.round((sessionCount / target) * 100));
+    const projectedSessions   = (isCurrentMonth && daysElapsed > 0) ? Math.round((sessionCount / daysElapsed) * daysInMonth) : sessionCount;
+    const projectedCompliance = Math.min(100, Math.round((projectedSessions / target) * 100));
+
+    const complianceLabel = compliance >= 90 ? "Excellent" : compliance >= 70 ? "Good" : compliance >= 50 ? "On Track" : compliance >= 25 ? "Keep Going" : "Get Started";
+    const complianceColor = compliance >= 90 ? "#22c55e" : compliance >= 70 ? C.accent : compliance >= 50 ? "#f59e0b" : "#ef4444";
 
     const prevMonth = () => { if(viewMonth===0){setViewMonth(11);setViewYear(y=>y-1);}else setViewMonth(m=>m-1); };
     const nextMonth = () => { if(viewMonth===11){setViewMonth(0);setViewYear(y=>y+1);}else setViewMonth(m=>m+1); };
 
-    // Build streak from sorted logs
-    const streak = React.useMemo(() => {
-        const sorted = [...prepDays].sort().reverse();
-        let s = 0, check = todayStr;
-        const prev = (d) => {
-            const [y,m,day] = d.split("-").map(Number);
-            const dt = new Date(y, m-1, day - 1);
-            return y+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
-        };
-        for (const d of sorted) {
-            if (d === check) { s++; check = prev(check); } else break;
-        }
-        return s;
-    }, [prepDays, todayStr]);
+    // SVG ring geometry
+    const R = 52, cx = 64, cy = 64, strokeW = 10;
+    const circumference = 2 * Math.PI * R;
+    const dashOffset = circumference * (1 - compliance / 100);
 
-    const [prepRem, setPrepRem] = React.useState(function(){ try { return localStorage.getItem("mp_next_prep") || ""; } catch(_){ return ""; } });
-    const [prepRemSaved, setPrepRemSaved] = React.useState(function(){ try { return !!localStorage.getItem("mp_next_prep"); } catch(_){ return false; } });
-
+    // Calendar grid
+    const calOffset = (firstDow + 6) % 7;
     const cells = [];
-    // blank cells for day-of-week offset (Mon start: adjust so Mon=0)
-    const offset = (firstDow + 6) % 7; // convert Sun=0 to Mon=0
-    for (let i=0; i<offset; i++) cells.push(null);
-    for (let d=1; d<=daysInMonth; d++) cells.push(d);
-
+    for (let i = 0; i < calOffset; i++) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cells.push(d);
     const dateStr = (d) => `${viewYear}-${String(viewMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
-    return React.createElement("div", { className:"tab-anim", style:{paddingBottom:24} },
-        // ── Header ──
-        React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20} },
-            React.createElement("div", null,
-                React.createElement("div", { style:{fontSize:22,fontWeight:900,color:C.text,lineHeight:1} }, "Prep Log"),
-                React.createElement("div", { style:{fontSize:12,color:C.sub,marginTop:3} }, prepDays.size+" sessions logged")),
-            React.createElement("div", { style:{background:C.accentDim,border:`1px solid ${C.accentBorder}`,borderRadius:10,padding:"8px 16px",textAlign:"center"} },
-                React.createElement("div", { style:{fontSize:22,fontWeight:900,color:C.accent,lineHeight:1} }, streak),
-                React.createElement("div", { style:{fontSize:10,color:C.accent,fontWeight:700,letterSpacing:"0.05em"} }, streak===1?"DAY":"DAYS"))),
+    // Last 3 months history
+    const historyMonths = React.useMemo(() => {
+        const months = [];
+        for (let i = 2; i >= 0; i--) {
+            const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+            const count = logs.filter(l => l.date && l.date.startsWith(key)).length;
+            const pct = Math.min(100, Math.round((count / target) * 100));
+            months.push({ label: d.toLocaleString("default", { month: "short" }), count, pct, isCurrent: i === 0 });
+        }
+        return months;
+    }, [logs, target]);
 
-        // ── Month nav ──
-        React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:14,padding:"16px",marginBottom:16} },
-            React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14} },
+    return React.createElement("div", { className:"tab-anim", style:{paddingBottom:32} },
+
+        // ── Header ──
+        React.createElement("div", { style:{marginBottom:20} },
+            React.createElement("div", { style:{fontSize:22,fontWeight:900,color:C.text,lineHeight:1,letterSpacing:"-0.02em"} }, "Compliance Log"),
+            React.createElement("div", { style:{fontSize:12,color:C.sub,marginTop:4} }, "Track your monthly meal prep consistency")),
+
+        // ── Month nav + ring ──
+        React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:16,padding:"20px 16px",marginBottom:14} },
+
+            React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20} },
                 React.createElement("button", { onClick:prevMonth, style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "‹"),
-                React.createElement("div", { style:{fontSize:15,fontWeight:800,color:C.text} }, monthName+" "+viewYear),
+                React.createElement("div", { style:{fontSize:15,fontWeight:800,color:C.text} }, `${monthName} ${viewYear}`),
                 React.createElement("button", { onClick:nextMonth, style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "›")),
-            // Day labels
+
+            React.createElement("div", { style:{display:"flex",alignItems:"center",gap:20} },
+
+                // SVG compliance ring
+                React.createElement("svg", { width:128, height:128, viewBox:"0 0 128 128", style:{flexShrink:0} },
+                    React.createElement("circle", { cx, cy, r:R, fill:"none", stroke:"rgba(255,255,255,0.06)", strokeWidth:strokeW }),
+                    React.createElement("circle", { cx, cy, r:R, fill:"none", stroke:complianceColor, strokeWidth:strokeW,
+                        strokeLinecap:"round", strokeDasharray:circumference, strokeDashoffset:dashOffset,
+                        transform:"rotate(-90 64 64)", style:{transition:"stroke-dashoffset 0.6s ease, stroke 0.3s ease"} }),
+                    React.createElement("text", { x:cx, y:cy-9, textAnchor:"middle", dominantBaseline:"middle",
+                        style:{fontSize:26,fontWeight:800,fill:C.text,fontFamily:"Fraunces,Georgia,serif"} }, `${compliance}%`),
+                    React.createElement("text", { x:cx, y:cy+14, textAnchor:"middle",
+                        style:{fontSize:9,fontWeight:700,fill:complianceColor,fontFamily:"sans-serif",letterSpacing:"0.06em"} }, complianceLabel.toUpperCase())),
+
+                // Stats panel
+                React.createElement("div", { style:{flex:1} },
+                    React.createElement("div", { style:{marginBottom:14} },
+                        React.createElement("div", { style:{fontSize:28,fontWeight:900,color:C.text,lineHeight:1,letterSpacing:"-0.02em"} }, `${sessionCount}/${target}`),
+                        React.createElement("div", { style:{fontSize:12,color:C.sub,marginTop:2} }, "sessions this month")),
+
+                    isCurrentMonth && projectedCompliance !== compliance &&
+                        React.createElement("div", { style:{background:C.accentDim,border:`1px solid ${C.accentBorder}`,borderRadius:8,padding:"8px 10px",marginBottom:12} },
+                            React.createElement("div", { style:{fontSize:10,fontWeight:700,color:C.accent,letterSpacing:"0.06em"} }, "📈 PROJECTED"),
+                            React.createElement("div", { style:{fontSize:13,fontWeight:800,color:C.text} }, `${projectedCompliance}% · ${projectedSessions} sessions`)),
+
+                    React.createElement("div", { style:{display:"flex",alignItems:"center",gap:8} },
+                        React.createElement("div", { style:{fontSize:10,color:C.muted,fontWeight:700,letterSpacing:"0.06em"} }, "TARGET"),
+                        React.createElement("button", { onClick:()=>adjustTarget(-1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "−"),
+                        React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text,minWidth:20,textAlign:"center"} }, target),
+                        React.createElement("button", { onClick:()=>adjustTarget(1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "+"),
+                        React.createElement("div", { style:{fontSize:10,color:C.muted} }, "/mo"))
+                )
+            )
+        ),
+
+        // ── Calendar grid ──
+        React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:14,padding:"14px",marginBottom:12} },
+            React.createElement("div", { style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:10} }, "SESSIONS"),
             React.createElement("div", { style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4} },
                 ["M","T","W","T","F","S","S"].map((d,i) =>
-                    React.createElement("div", { key:i, style:{textAlign:"center",fontSize:10,fontWeight:700,color:C.muted,padding:"4px 0"} }, d))),
-            // Calendar cells
+                    React.createElement("div", { key:i, style:{textAlign:"center",fontSize:9,fontWeight:700,color:C.muted,padding:"3px 0"} }, d))),
             React.createElement("div", { style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3} },
                 cells.map((d, i) => {
                     if (!d) return React.createElement("div", { key:"e"+i });
                     const ds = dateStr(d);
-                    const isPrepped = prepDays.has(ds);
-                    const isToday = ds === todayStr;
-                    const isFuture = ds > todayStr;
+                    const isPrepped = monthPrepDays.has(ds);
+                    const isToday   = ds === todayStr;
+                    const isFuture  = ds > todayStr;
                     return React.createElement("button", {
                         key: ds,
                         onClick: () => !isFuture && toggleDay(ds),
                         style:{
-                            aspectRatio:"1",
-                            borderRadius:8,
-                            border: isToday ? `2px solid ${C.accent}` : `1px solid ${isPrepped?C.accentBorder:C.dim}`,
-                            background: isPrepped ? C.accentDim : "transparent",
-                            color: isFuture ? C.dim : isPrepped ? C.accent : C.text,
-                            fontWeight: isToday||isPrepped ? 800 : 400,
-                            fontSize:13,
-                            cursor: isFuture?"default":"pointer",
+                            aspectRatio:"1", borderRadius:7,
+                            border: isToday ? `2px solid ${C.accent}` : `1px solid ${isPrepped ? complianceColor : C.dim}`,
+                            background: isPrepped ? `${complianceColor}22` : "transparent",
+                            color: isFuture ? C.dim : isPrepped ? complianceColor : C.text,
+                            fontWeight: isPrepped ? 800 : 400, fontSize:12,
+                            cursor: isFuture ? "default" : "pointer",
                             display:"flex",alignItems:"center",justifyContent:"center",
-                            position:"relative",
-                            transition:"all 0.12s",
+                            transition:"all 0.1s",
                         }
-                    }, isPrepped
-                        ? React.createElement("span", { style:{fontSize:16} }, "✓")
-                        : d);
-                }))),
+                    }, isPrepped ? "✓" : d);
+                }))
+        ),
 
-        // ── Log Today button ──
-        React.createElement("button", {
+        // ── Log Today button (current month only) ──
+        isCurrentMonth && React.createElement("button", {
             onClick: () => toggleDay(todayStr),
             style:{
                 width:"100%",
-                background: prepDays.has(todayStr) ? "none" : C.accent,
-                border: prepDays.has(todayStr) ? `1px solid ${C.dim}` : "none",
+                background: monthPrepDays.has(todayStr) ? "none" : C.accent,
+                border: monthPrepDays.has(todayStr) ? `1px solid ${C.dim}` : "none",
                 borderRadius:12, padding:"14px",
                 fontSize:14, fontWeight:800,
-                color: prepDays.has(todayStr) ? C.sub : "#000",
-                cursor:"pointer", marginBottom:12,
-                transition:"all 0.2s"
+                color: monthPrepDays.has(todayStr) ? C.sub : "#000",
+                cursor:"pointer", marginBottom:12, transition:"all 0.2s"
             }
-        }, prepDays.has(todayStr) ? "✓ Today logged — tap to unlog" : "✓ Log Today's Prep"),
+        }, monthPrepDays.has(todayStr) ? "✓ Today logged — tap to unlog" : "✓ Log Today’s Prep"),
 
-        // ── Recent log list ──
-        logs.length > 0 && React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:14,padding:"14px 16px"} },
-            React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:12} }, "RECENT SESSIONS"),
-            logs.slice(0,10).map(l =>
-                React.createElement("div", { key:l.date, style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.dim}`} },
-                    React.createElement("div", { style:{fontSize:13,color:C.text,fontWeight:500} },
-                        new Date(l.date+"T12:00:00").toLocaleDateString("default",{weekday:"short",month:"short",day:"numeric"})),
-                    React.createElement("button", { onClick:()=>toggleDay(l.date), style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:6,padding:"3px 10px",fontSize:11,color:C.sub,cursor:"pointer"} }, "Remove"))))
-        , React.createElement("div", { style: { marginTop: 16, borderTop: "1px solid " + C.dim, paddingTop: 14 } },
-            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.07em", marginBottom: 8 } }, "📅 PREP REMINDER"),
-            prepRemSaved
-                ? React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
-                    React.createElement("span", { style: { fontSize: 12, color: C.sub } }, prepRem ? "Reminder set for " + new Date(prepRem + "T12:00:00").toLocaleDateString("default", {weekday:"short", month:"short", day:"numeric"}) + " ✓" : "Reminder set ✓"),
-                    React.createElement("button", { onClick: function() { try { localStorage.removeItem("mp_next_prep"); localStorage.removeItem("mp_notif_prep"); } catch(_){} setPrepRemSaved(false); setPrepRem(""); },
-                        style: { fontSize: 11, color: C.muted, background: "none", border: "none", cursor: "pointer", padding: 0 } }, "Clear"))
-                : React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
-                    React.createElement("input", { type: "date", value: prepRem, onChange: function(e){ setPrepRem(e.target.value); },
-                        style: { flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 8, border: "1px solid " + C.dim, background: C.card, color: C.text, outline: "none" } }),
-                    React.createElement("button", { onClick: function() {
-                        if (!prepRem) return;
-                        try { localStorage.setItem("mp_next_prep", prepRem); localStorage.setItem("mp_notif_prep", String(new Date(prepRem + "T08:00:00").getTime())); } catch(_){}
-                        setPrepRemSaved(true);
-                    }, style: { padding: "7px 14px", fontSize: 12, fontWeight: 700, borderRadius: 8,
-                        background: C.accentDim, border: "1px solid " + C.accent, color: C.accent, cursor: "pointer" } }, "Set"))));
+        // ── 3-month history bars ──
+        React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:14,padding:"16px"} },
+            React.createElement("div", { style:{fontSize:10,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:14} }, "RECENT MONTHS"),
+            React.createElement("div", { style:{display:"flex",gap:8} },
+                historyMonths.map((m, i) =>
+                    React.createElement("div", { key:i, style:{flex:1,textAlign:"center"} },
+                        React.createElement("div", { style:{height:60,display:"flex",alignItems:"flex-end",justifyContent:"center",marginBottom:6} },
+                            React.createElement("div", { style:{
+                                width:"60%", margin:"0 auto",
+                                height: `${Math.max(4, m.pct * 0.6)}px`,
+                                background: m.pct >= 90 ? "#22c55e" : m.pct >= 70 ? C.accent : m.pct >= 50 ? "#f59e0b" : m.pct > 0 ? "#ef4444" : C.dim,
+                                borderRadius:"4px 4px 0 0", transition:"height 0.4s ease",
+                                opacity: m.isCurrent ? 1 : 0.55,
+                            }})),
+                        React.createElement("div", { style:{fontSize:15,fontWeight:800,color:m.isCurrent?C.text:C.sub} }, `${m.pct}%`),
+                        React.createElement("div", { style:{fontSize:10,color:C.muted,fontWeight:700,letterSpacing:"0.04em",marginTop:1} }, m.label.toUpperCase()),
+                        React.createElement("div", { style:{fontSize:9,color:C.muted,marginTop:1} }, `${m.count} session${m.count!==1?"s":""}`)
+                    )
+                )
+            )
+        )
+    );
 }
 
 function getTabMeta() { return [
@@ -9063,7 +9113,7 @@ function getTabMeta() { return [
     { id: "shopping",    label: t("tab_shop"),    icon: "🛒" },
     { id: "pantry",      label: "PANTRY",         icon: "🧺" },
     { id: "macros",      label: "FOODS",          icon: "🥦" },
-    { id: "log",         label: "LOG",            icon: "📅" },
+    { id: "log",         label: "COMPLY",         icon: "📊" },
     { id: "supplements", label: "SUPPS",          icon: "💊" },
 ]; }
 // ─── MACRO CALCULATOR ──────────────────────────────────────────────────────
@@ -13070,7 +13120,7 @@ function App() {
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Today tab to generate your shopping list."))) :
                 (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale, pantry: pantry }))),
                 
-                    tab === "log" && React.createElement(PrepCalendar, { C: C, logs: calLogs, onLogsChange: setCalLogs }),
+                    tab === "log" && React.createElement(ComplianceLog, { C: C, logs: calLogs, onLogsChange: setCalLogs }),
                     tab === "supplements" && React.createElement(SupplementsTab, {
                         C: C,
                         currentUser: currentUser,
@@ -13093,18 +13143,10 @@ function App() {
 
                     tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
 
-                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 14, background: C.card, borderRadius: 12, padding: 4 } },
-                        React.createElement("button", { onClick: () => setRecipeView("recipes"), style: { flex: 1, padding: "8px 0", fontSize: 11, fontWeight: 700, borderRadius: 9, border: "none", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.15s",
-                            background: recipeView === "recipes" ? C.accent : "transparent",
-                            color: recipeView === "recipes" ? "#fff" : C.sub } }, "🍳 RECIPES"),
-                        React.createElement("button", { onClick: () => setRecipeView("foods"), style: { flex: 1, padding: "8px 0", fontSize: 11, fontWeight: 700, borderRadius: 9, border: "none", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.15s",
-                            background: recipeView === "foods" ? C.accent : "transparent",
-                            color: recipeView === "foods" ? "#fff" : C.sub } }, "🥦 FOODS DB"),
-                        React.createElement("button", { onClick: () => setShowRecipeBuilder(true), title: "Build a custom recipe", style: { flexShrink: 0, width: 38, padding: "8px 0", fontSize: 16, fontWeight: 800, borderRadius: 9, border: "1px solid " + C.accent, background: C.accentDim, color: C.accent, cursor: "pointer", lineHeight: 1 } }, "+")),
+                    React.createElement("div", { style: { display: "flex", justifyContent: "flex-end", marginBottom: 12 } },
+                        React.createElement("button", { onClick: () => setShowRecipeBuilder(true), title: "Build a custom recipe", style: { padding: "7px 14px", fontSize: 12, fontWeight: 800, borderRadius: 9, border: "1px solid " + C.accent, background: C.accentDim, color: C.accent, cursor: "pointer", letterSpacing: "0.04em" } }, "+ Custom Recipe")),
 
-                    recipeView === "foods" && React.createElement(IngredientBrowser, null),
-
-                    recipeView === "recipes" && React.createElement("div", null,
+                    React.createElement("div", null,
 
                     React.createElement("div", { style: { fontSize: 10, color: C.sub, marginBottom: 10 } },
                         filteredRecipes.length,
