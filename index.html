@@ -13065,12 +13065,12 @@ function App() {
                             : shopAlert ? "Shop day \u2014 your shopping list is ready"
                             : "Prep day \u2014 time to cook your new batch"),
                         React.createElement("button", { onClick: () => { setShopAlert(false); setPrepAlert(false); }, style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 15, padding: "0 2px", flexShrink: 0 } }, "\u2715")),
-                    // ── New-drop banner (annual only) ────────────
-                    ["annual"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
-                        React.createElement("div", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83C\uDF1F"),
+                    // ── New-drop banner (dynamic — shows when NEWLY_RELEASED_IDS is populated) ──
+                    NEWLY_RELEASED_IDS.size > 0 && ["monthly","annual","dev"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
+                        React.createElement("div", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDD25"),
                         React.createElement("div", { style: { flex: 1 } },
-                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Q3 Drop is live!"),
-                            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, "20 new recipes just landed \u2014 check the Recipes tab to explore them.")),
+                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "New recipes just dropped!"),
+                            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, NEWLY_RELEASED_IDS.size + " new recipes added \u2014 look for the \uD83D\uDD25 NEW badge in the Recipes tab.")),
                         React.createElement("button", { onClick: function() { setTab("recipes"); }, style: { background: C.accent, border: "none", color: "#000", borderRadius: 8, padding: "5px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", flexShrink: 0 } }, "View \u2192")),
                     // ── Cooking milestone card ──────────────────────────────────────
                     cookedRecipes.size > 0 && (function() {
