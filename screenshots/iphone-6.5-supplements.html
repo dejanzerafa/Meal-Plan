@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1242px;min-height:2688px;background:#1e1a16;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;color:#f3ece0;overflow:hidden;position:relative}
+.sb{height:102px;display:flex;align-items:center;justify-content:space-between;padding:0 99px;font-size:49px;font-weight:600;background:#1e1a16}
+.hdr{padding:59px 80px 32px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.logo{font-size:72px;font-weight:800;letter-spacing:-0.5px}
+.logo .acc{color:#E07B2A}
+.logo .wht{color:#f3ece0}
+.section-lbl{font-size:39px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#7a6d5e;padding:43px 80px 16px}
+.tab-bar{position:absolute;bottom:0;left:0;right:0;height:255px;background:#2c2520;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:flex-start;justify-content:space-around;padding-top:37px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:8px}
+.tab-ico{font-size:70px;line-height:1}
+.tab-lbl{font-size:32px;color:#7a6d5e}
+.tab-lbl.on{color:#E07B2A}
+.card{margin:21px 62px 0;background:#2c2520;border-radius:52px;padding:43px 64px;border:1px solid rgba(255,255,255,0.06)}
+.tag{display:inline-block;font-size:32px;padding:8px 27px;border-radius:22px;font-weight:700;margin-right:18px}
+.tag.g{background:rgba(74,222,128,0.12);color:#4ade80}
+.tag.b{background:rgba(96,165,250,0.12);color:#60a5fa}
+.tag.a{background:rgba(224,123,42,0.15);color:#E07B2A}
+
+.hdr2{display:flex;justify-content:space-between;align-items:flex-end;padding:59px 80px 32px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.add-btn{background:#E07B2A;border:none;border-radius:68px;padding:21px 49px;font-size:39px;font-weight:800;color:#000}
+.next-banner{background:rgba(224,123,42,0.07);border-bottom:1px solid rgba(224,123,42,0.14);padding:34px 80px;display:flex;align-items:center;gap:34px}
+.next-tag{background:rgba(224,123,42,0.2);border-radius:31px;padding:10px 34px;font-size:37px;color:#E07B2A;font-weight:700;white-space:nowrap}
+.next-txt{font-size:39px;color:#b8a890;flex:1}
+.supp-card{margin:24px 62px 0;background:#2c2520;border-radius:52px;padding:43px 64px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:47px}
+.supp-ico{font-size:86px;flex-shrink:0}
+.supp-inf{flex:1}
+.supp-nm{font-size:49px;font-weight:700;margin-bottom:5px}
+.supp-dose{font-size:38px;color:#b8a890;margin-bottom:13px}
+.tbadge{display:inline-block;font-size:32px;padding:8px 27px;border-radius:18px;font-weight:700;margin-right:14px}
+.tbadge.done{background:rgba(74,222,128,0.12);color:#4ade80}
+.tbadge.pend{background:rgba(224,123,42,0.12);color:#E07B2A}
+.toggle{width:136px;height:72px;border-radius:43px;background:#4ade80;flex-shrink:0;position:relative}
+.toggle::after{content:'';position:absolute;top:8px;right:8px;width:54px;height:54px;border-radius:50%;background:#fff}
+.toggle.off{background:rgba(255,255,255,0.1)}
+.toggle.off::after{right:auto;left:8px}
+.streak{margin:32px 62px 0;background:#2c2520;border-radius:49px;padding:40px 64px;border:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:47px}
+.streak-v{font-size:59px;font-weight:800;color:#E07B2A}
+.streak-l{font-size:34px;color:#7a6d5e;margin-top:5px}
+</style></head><body>
+<div class="sb"><span>9:41</span><span style="letter-spacing:2px">●●●●</span></div>
+<div class="hdr2">
+  <div class="logo"><span class="acc">SOUL</span><span class="wht">GAINZ</span></div>
+  <button class="add-btn">+ Add</button>
+</div>
+<div class="next-banner">
+  <span class="next-tag">Next up</span>
+  <span class="next-txt">Creatine due at 12:00 PM</span>
+  <span style="font-size:39px;color:#E07B2A">⏰</span>
+</div>
+<div class="supp-card">
+  <div class="supp-ico">💊</div>
+  <div class="supp-inf"><div class="supp-nm">Creatine Monohydrate</div><div class="supp-dose">5g · Daily</div><div><span class="tbadge pend">12:00 PM</span></div></div>
+  <div class="toggle"></div>
+</div>
+<div class="supp-card">
+  <div class="supp-ico">🟡</div>
+  <div class="supp-inf"><div class="supp-nm">Vitamin D3</div><div class="supp-dose">5,000 IU · With breakfast</div><div><span class="tbadge done">8:00 AM ✓</span></div></div>
+  <div class="toggle"></div>
+</div>
+<div class="supp-card">
+  <div class="supp-ico">🔴</div>
+  <div class="supp-inf"><div class="supp-nm">Omega-3 Fish Oil</div><div class="supp-dose">2 caps · 1,000mg EPA/DHA</div><div><span class="tbadge done">8:00 AM ✓</span><span class="tbadge pend">7:00 PM</span></div></div>
+  <div class="toggle"></div>
+</div>
+<div class="supp-card">
+  <div class="supp-ico">⚡</div>
+  <div class="supp-inf"><div class="supp-nm">Pre-Workout (ON Gold)</div><div class="supp-dose">1 scoop · 30 min before training</div><div><span class="tbadge pend">11:00 AM</span></div></div>
+  <div class="toggle off"></div>
+</div>
+<div class="streak">
+  <span style="font-size:86px">🔥</span>
+  <div><div class="streak-v">14 days</div><div class="streak-l">supplement streak — keep it up!</div></div>
+</div>
+<div class="tab-bar"><div class="tab"><span class="tab-ico">🍽️</span><span class="tab-lbl">Plan</span></div><div class="tab"><span class="tab-ico">📋</span><span class="tab-lbl">Recipes</span></div><div class="tab"><span class="tab-ico">🛒</span><span class="tab-lbl">Shop</span></div><div class="tab"><span class="tab-ico">💊</span><span class="tab-lbl on">Supplements</span></div><div class="tab"><span class="tab-ico">👤</span><span class="tab-lbl">Profile</span></div></div>
+</body></html>
