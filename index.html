@@ -8042,7 +8042,21 @@ function IngredientBrowser() {
 // ─── APP ───────────────────────────────────────────────────────────────────
 // Cooking method filter removed per user request
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
-const FREE_IDS = new Set(["m01", "bf9", "d1"]);
+// ── Recipe tier access system ─────────────────────────────────────────────────
+// Free  (14): enough for one full week of meal prep across all categories
+// Monthly (53 cumulative): solid 6-month variety library
+// Annual  (97 cumulative): near-complete library, ~double monthly
+// Wave2   (66): held back — released in future content drops to all paid tiers
+// Seasonal (hol): separate explicit-purchase bundle (unchanged)
+const RECIPE_TIER_FREE    = new Set(["bf1", "bf2", "bf3", "d5", "ds2", "m13", "m37", "m40", "pw0", "pw2", "sm1", "sn1", "sn2", "v3"]);
+const RECIPE_TIER_MONTHLY = new Set(["bf10", "bf11", "bf12", "bf13", "bf14", "bf15", "bf16", "bf17", "bf4", "bf5", "bf6", "bf7", "bf8", "bf9", "d4", "ds3", "ds4", "m02", "m04", "m07", "m09", "m12", "m14", "m18", "m21", "m26", "m28", "m31", "m38", "m43", "m45", "pw4", "pw6", "sm2", "sm3", "sn3", "sn4", "v1", "v4"]);
+const RECIPE_TIER_ANNUAL  = new Set(["bf18", "bf19", "bf20", "bf21", "bf22", "bf23", "bf24", "bf25", "bf26", "bf27", "bf28", "bf29", "d1", "ds5", "ds6", "m05", "m10", "m11", "m35", "m39", "m46", "m51", "m52", "m53", "m54", "m55", "m56", "m57", "m58", "m59", "m60", "m61", "m62", "pw3", "pw5", "sm4", "sm5", "sm6", "sn5", "sn6", "sn7", "v2", "v6", "v9"]);
+const RECIPE_TIER_WAVE2   = new Set(["bf30", "bf31", "bf32", "bf33", "bf34", "bf35", "m01", "m03", "m06", "m08", "m15", "m16", "m19", "m20", "m22", "m23", "m24", "m25", "m27", "m29", "m30", "m32", "m33", "m34", "m36", "m41", "m42", "m44", "m47", "m48", "m49", "m50", "m63", "m64", "m65", "m66", "m67", "m68", "m69", "m70", "m71", "m72", "m73", "m74", "m75", "m76", "m77", "m78", "m79", "m80", "m81", "m82", "m83", "m84", "m85", "m86", "pw1", "pw7", "sm7", "sm8", "sm9", "sn8", "sn9", "v5", "v7", "v8"]);
+// Convenience sets — what each cumulative tier can see
+const MONTHLY_VISIBLE = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY]);
+const ANNUAL_VISIBLE  = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY, ...RECIPE_TIER_ANNUAL]);
+// Legacy alias kept so any remaining references don't break
+const FREE_IDS = RECIPE_TIER_FREE;
 // ── Analytics ──────────────────────────────────────────────────────────────────
 const _sessionId = (() => {
     try {
@@ -8079,9 +8093,11 @@ const STRIPE_PRICES = {
 // Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
 const SOULFOOD_RECIPE_IDS = ["hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10"];
 // Q3 2025 recipe drop — accessible to all paid tiers (monthly and annual).
-const QUARTERLY_DROP_IDS = new Set(["m65","m66","m67","m68","m69","m70","m71","m72","m73","m74","m75","bf28","bf29","bf30","bf31","bf32","sm8","sm9","sn7","sn8"]);
+// QUARTERLY_DROP_IDS replaced by RECIPE_TIER system — monthly+annual see these
+const QUARTERLY_DROP_IDS = RECIPE_TIER_MONTHLY;
 // Annual-exclusive recipes — bonus content for the biggest commitment.
-const LIFETIME_EXCLUSIVE_IDS = new Set(["m76","m77","m78","m79","m80","m81","m82","m83","m84","v8","v9"]);
+// LIFETIME_EXCLUSIVE_IDS replaced by RECIPE_TIER_ANNUAL — see RECIPE_TIER system above
+const LIFETIME_EXCLUSIVE_IDS = RECIPE_TIER_ANNUAL;
 // ── Promo Codes ──────────────────────────────────────────────────────────────
 // Promo codes managed via Supabase DB — see AdminPanel + redeem()
 
@@ -8316,8 +8332,8 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isAnn
                     !isCookingMethodBadge && r.badge && React.createElement("span", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 4, padding: "2px 7px" } }, r.badge),
                     tierLabel,
                     r.carb && React.createElement("span", { style: { fontSize: 10, color: C.carb, background: C.blueDim, border: `1px solid ${C.blueBorder}`, borderRadius: 4, padding: "2px 7px" } }, r.carb)),
-                React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, r.name),
-                r.subtitle && React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 2 } }, r.subtitle)),
+                React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text } }, (r.name||'').slice(0,3) + '•••'),
+                null, /* subtitle hidden on locked cards */),
             React.createElement("div", { style: { flexShrink: 0, marginLeft: 8, background: "rgba(184,74,31,0.1)", border: "1px solid rgba(184,74,31,0.25)", borderRadius: 8, padding: "4px 8px", fontSize: 16 } }, "\uD83D\uDD12")),
         // Blurred macro strip teaser
         React.createElement("div", { style: { display: "flex", gap: 8, padding: "0 14px 10px", filter: "blur(4px)", opacity: 0.6, userSelect: "none", pointerEvents: "none" } },
@@ -12599,29 +12615,31 @@ function App() {
     };
     // Calculator unlock helper (legacy promo path — calculator now free for all via canUseCalculator)
     const unlockCalculator = () => setUnlocks(Object.assign(Object.assign({}, unlocks), { calculator: true, _serverVerified: true }));
-    // canView — recipe access check
+    // canView — recipe access check (4-tier system: free / monthly / annual / wave2)
     const canView = id => {
-        // User's own custom recipes are always visible regardless of tier
+        // Custom recipes always visible
         if (id && id.startsWith("custom_")) return true;
-        // Always show free preview recipes
-        if (FREE_IDS.has(id)) return true;
-        // Annual-exclusive recipes — annual or dev tier
-        if (LIFETIME_EXCLUSIVE_IDS.has(id)) return ["annual","dev"].includes(unlocks.tier);
-        // Former quarterly-drop recipes — now available to all paid tiers (monthly, annual, dev)
-        if (QUARTERLY_DROP_IDS.has(id)) return ["monthly","annual","dev"].includes(unlocks.tier);
-        // SoulFood seasonal bundle — requires EXPLICIT purchase (seasonal tier + matching priceId)
-        // or dev-tier override. This check MUST come before allRecipes to prevent bypass —
-        // all paid tiers have allRecipes:true but that does NOT include seasonal content.
+        // Wave2: completely hidden from everyone until released
+        if (RECIPE_TIER_WAVE2.has(id)) return false;
+        // Free tier: always visible to all
+        if (RECIPE_TIER_FREE.has(id)) return true;
+        // Seasonal bundle — requires EXPLICIT purchase (separate from subscription tiers)
         if (SOULFOOD_RECIPE_IDS.includes(id)) {
             return unlocks.tier === "seasonal" || unlocks.tier === "dev";
         }
-        // Standard catalog — any allRecipes unlock (monthly, annual).
-        // For authenticated users: require _serverVerified to prevent localStorage spoofing.
-        // Unauthenticated users (promo/dev unlock) are trusted as-is.
+        // For authenticated users require server verification to prevent localStorage spoofing
         const canTrustUnlocks = !currentUser || unlocks._serverVerified;
-        if (unlocks.allRecipes && canTrustUnlocks) return true;
-        // Individual single-recipe purchases
+        const tier = unlocks.tier || "free";
+        // Dev: sees everything
+        if (tier === "dev") return true;
+        // Annual: sees free + monthly + annual tiers
+        if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
+        // Monthly: sees free + monthly tiers
+        if (tier === "monthly" && canTrustUnlocks) return MONTHLY_VISIBLE.has(id);
+        // Individual single-recipe purchases (legacy)
         if (unlocks.recipes && unlocks.recipes.includes(id) && canTrustUnlocks) return true;
+        // allRecipes flag (legacy promo / grandfathered access) — treat as annual
+        if (unlocks.allRecipes && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
         return false;
     };
     // canUseCalculator — free ONCE per email address, paid to recalculate
@@ -12745,6 +12763,8 @@ function App() {
     const { L, D, BF, DS, PRE_M, total } = React.useMemo(() => computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale), [lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale]);
     const profileName = profile ? (profile.firstName || "").trim() : "";
     const filteredRecipes = React.useMemo(() => allRecipes.filter(r => {
+        // Wave2 recipes are completely hidden (not shown even as locked cards)
+        if (RECIPE_TIER_WAVE2.has(r.id)) return false;
         if (recipeCat === "favourites") {
             if (!favourites.has(r.id)) return false;
             // fall through — search + dietary + protein filters still apply
@@ -13180,7 +13200,7 @@ function App() {
                                     fontSize: 12, fontWeight: 700, color: C.bg, cursor: "pointer" }
                             }, "Clear all filters"));
                     })(),
-                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id), onUnlockSeasonal: () => setShowSeasonalPopup(true), isAnnualExclusive: LIFETIME_EXCLUSIVE_IDS.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
+                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: (id, name) => startCheckout("single", id), onUnlockSeasonal: () => setShowSeasonalPopup(true), isAnnualExclusive: RECIPE_TIER_ANNUAL.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
                     filteredRecipes.length > recipeShowCount && React.createElement("button", { onClick: () => setRecipeShowCount(c => c + 15), style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", marginBottom: 10 } }, "Show more (" + (filteredRecipes.length - recipeShowCount) + " remaining)"),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
