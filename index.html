@@ -12957,7 +12957,8 @@ function App() {
                             transition: "all 0.15s", WebkitTapHighlightColor: "transparent" } },
                         NavSvg("method", C.muted),
                         React.createElement("span", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.06em",
-                            color: C.muted, lineHeight: 1 } }, "METHOD"))
+                            color: C.muted, lineHeight: 1 } }, "METHOD")),
+                    NavBtn("settings", "SETTINGS", "settings", tab === "settings")
                 ];
             })()),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
@@ -13299,10 +13300,9 @@ function App() {
                         "✅ Your account is already registered — every visit is saved and you'll receive updates via email.")
                 )),
                 tab === "settings" && React.createElement("div", { className: "tab-anim", key: "settings" },
-                    React.createElement("div", { style:{display:"flex",alignItems:"center",gap:10,marginBottom:16} },
-                        React.createElement("button", { onClick:()=>setTab("profile"),
-                            style:{background:"none",border:"none",fontSize:18,color:C.sub,cursor:"pointer",padding:0} }, "←"),
-                        React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} }, "⚙️ Settings")),
+                    React.createElement("div", { style:{marginBottom:20} },
+                        React.createElement("div", { style:{fontSize:22,fontWeight:900,color:C.text,lineHeight:1,letterSpacing:"-0.02em"} }, "Settings"),
+                        React.createElement("div", { style:{fontSize:12,color:C.sub,marginTop:4} }, "Appearance, language & preferences")),
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
                             padding: "14px 16px", marginBottom: 16 } },
                         React.createElement("div", { style: { fontSize: 11, fontWeight: 800, color: C.text, letterSpacing: "0.08em",
@@ -13381,54 +13381,9 @@ function App() {
                             React.createElement("br", null),
                             "Feed Your Soul \u00B7 Fuel Your Gainz"))),
                 tab === "profile" && React.createElement("div", { className: "tab-anim", key: "profile", style: { paddingBottom: 32 } },
-                    // ── Quick-nav: Settings + Guide ──────────────────────────────────
-                    React.createElement("div", { style:{display:"flex",gap:8,marginBottom:8} },
-                        React.createElement("button", { onClick:()=>setTab("settings"),
-                            style:{flex:1,background:C.card,border:"1px solid "+C.dim,borderRadius:12,
-                                padding:"11px 14px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"} },
-                            React.createElement("span",{style:{fontSize:16}},"⚙️"),
-                            React.createElement("span",{style:{fontSize:13,fontWeight:600,color:C.sub}},"Settings")),
-                        React.createElement("button", { onClick:()=>setTab("info"),
-                            style:{flex:1,background:C.card,border:"1px solid "+C.dim,borderRadius:12,
-                                padding:"11px 14px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"} },
-                            React.createElement("span",{style:{fontSize:16}},"📖"),
-                            React.createElement("span",{style:{fontSize:13,fontWeight:600,color:C.sub}},"Guide"))),
-                    // ── Blog & Tips link ─────────────────────────────────────────────
-                    React.createElement("a", { href:"https://soulgainz.app/blog.html", target:"_blank", rel:"noopener noreferrer",
-                        style:{display:"flex",alignItems:"center",gap:10,background:C.card,border:"1px solid "+C.dim,
-                            borderRadius:12,padding:"11px 14px",marginBottom:12,textDecoration:"none",cursor:"pointer"} },
-                        React.createElement("span",{style:{fontSize:18}},"✍️"),
-                        React.createElement("div",{style:{flex:1}},
-                            React.createElement("div",{style:{fontSize:13,fontWeight:600,color:C.sub}},"Blog & Tips"),
-                            React.createElement("div",{style:{fontSize:11,color:C.muted,marginTop:1}},"Meal prep guides, recipes & how-tos")),
-                        React.createElement("span",{style:{fontSize:12,color:C.muted}}, "→")),
-                    // ── Account row (sign out + admin) ───────────────────────────────
-                    currentUser && React.createElement("div", { style:{display:"flex",gap:8,marginBottom:12} },
-                        isAdmin(currentUser.email) && React.createElement("button", {
-                            onClick:()=>setShowAdminPanel(true),
-                            style:{flex:1,background:"rgba(224,123,42,0.10)",border:"1px solid rgba(224,123,42,0.25)",
-                                borderRadius:12,padding:"11px 14px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"} },
-                            React.createElement("span",{ style:{fontSize:16} }, "\uD83D\uDD11"),
-                            React.createElement("span",{ style:{fontSize:13,fontWeight:700,color:C.accent} }, "Promo Admin")),
-                        React.createElement("button", {
-                            onClick:signOut,
-                            style:{flex:1,background:C.card,border:`1px solid ${C.border}`,
-                                borderRadius:12,padding:"11px 14px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"} },
-                            React.createElement("span",{ style:{fontSize:16} }, "\uD83D\uDEAA"),
-                            React.createElement("span",{ style:{fontSize:13,fontWeight:600,color:C.sub} }, "Sign Out"))),
-                    !currentUser && React.createElement("button", {
-                        onClick:()=>setOnboardStep("signup"),
-                        style:{width:"100%",background:C.card,border:`1px solid ${C.border}`,borderRadius:12,
-                            padding:"13px",marginBottom:12,fontSize:13,fontWeight:700,color:C.sub,cursor:"pointer"} },
-                        "\uD83D\uDD11 Sign in to sync across devices"),
-                    // ── Promo code active badge ──────────────────────────────────────────
-                    (unlocks && unlocks.via === "promo") && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(154,168,106,0.10)", border: "1px solid rgba(154,168,106,0.30)", borderRadius: 12, padding: "10px 14px", marginBottom: 12 } },
-                        React.createElement("div", { style: { fontSize: 18, flexShrink: 0 } }, "🎟️"),
-                        React.createElement("div", { style: { flex: 1 } },
-                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.green } }, "Promo code active" + (unlocks.label ? " · " + unlocks.label : "")),
-                            React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 1 } }, unlocks.expires ? "Access until " + new Date(unlocks.expires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Permanent access")),
-                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.green, background: "rgba(154,168,106,0.15)", border: "1px solid rgba(154,168,106,0.30)", borderRadius: 6, padding: "3px 8px", letterSpacing: "0.05em" } }, (unlocks.tier || "").toUpperCase())),
-                    // ── 7-day prep adherence ─────────────────────────────────
+                    // ── Macro calculator — top of ME tab ──────────────────────────────
+                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => setShowUpgrade(true), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free", profileData: profile }),
+                    // ── 7-day prep adherence ──────────────────────────────────────────
                     (function() {
                         var batchLogs; try { batchLogs = JSON.parse(localStorage.getItem("mp_cal_logs") || "[]"); } catch(e) { batchLogs = []; }
                         if (!batchLogs.length) return null;
@@ -13455,7 +13410,7 @@ function App() {
                                     background: d.onPlan ? C.accent : C.card2,
                                     border: d.isToday ? "2px solid " + C.accent : "1.5px solid " + C.dim,
                                     display: "flex", alignItems: "center", justifyContent: "center" } },
-                                    React.createElement("span", { style: { fontSize: 13 } }, d.onPlan ? "\u2713" : "")),
+                                    React.createElement("span", { style: { fontSize: 13 } }, d.onPlan ? "✓" : "")),
                                 React.createElement("div", { style: { fontSize: 9, color: d.isToday ? C.accent : C.muted, fontWeight: d.isToday ? 700 : 500 } }, d.label)
                             );
                         });
@@ -13466,9 +13421,14 @@ function App() {
                                     hitDays + "/7 days")),
                             React.createElement("div", { style: { display: "flex", gap: 4 } }, dayDots));
                     })(),
-                    // ── Macro calculator ────────────────────────────────────
-                    React.createElement(ProfileTab, { C: C, canUse: canUseCalculator(), onSave: handleProfileSave, setShowUpgrade: setShowUpgrade, onUnlockCalc: () => setShowUpgrade(true), macroNudge: macroNudge, updateNudge: updateNudge, resetNudge: resetNudge, tier: (unlocks && unlocks.tier) || "free", profileData: profile }),
-                    // ── More ────────────────────────────────────────────────
+                    // ── Promo code active badge ────────────────────────────────────────
+                    (unlocks && unlocks.via === "promo") && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(154,168,106,0.10)", border: "1px solid rgba(154,168,106,0.30)", borderRadius: 12, padding: "10px 14px", marginBottom: 12 } },
+                        React.createElement("div", { style: { fontSize: 18, flexShrink: 0 } }, "🎟️"),
+                        React.createElement("div", { style: { flex: 1 } },
+                            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.green } }, "Promo code active" + (unlocks.label ? " · " + unlocks.label : "")),
+                            React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 1 } }, unlocks.expires ? "Access until " + new Date(unlocks.expires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Permanent access")),
+                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.green, background: "rgba(154,168,106,0.15)", border: "1px solid rgba(154,168,106,0.30)", borderRadius: 6, padding: "3px 8px", letterSpacing: "0.05em" } }, (unlocks.tier || "").toUpperCase())),
+                    // ── More ──────────────────────────────────────────────────────────
                     React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "MORE"),
                         React.createElement("a", { href: "/method.html", target: "_blank", rel: "noopener", style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textDecoration: "none", marginBottom: 8, cursor: "pointer" } },
@@ -13477,15 +13437,52 @@ function App() {
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "The Method"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "How batch cooking works")),
                             React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "↗️")),
-                        React.createElement("button", { onClick: () => setShowFeedback(true), style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer", marginBottom: 8 } },
+                        React.createElement("button", { onClick: () => setTab("info"), style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer", marginBottom: 8 } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "📘"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Getting Started"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Your 6-step setup guide")),
+                            React.createElement("span", { style: { fontSize: 12, color: C.muted } }, "→")),
+                        React.createElement("a", { href:"https://soulgainz.app/blog.html", target:"_blank", rel:"noopener noreferrer",
+                            style:{display:"flex",alignItems:"center",gap:12,padding:"11px 12px",borderRadius:10,background:C.card2,border:`1px solid ${C.dim}`,textDecoration:"none",marginBottom:8,cursor:"pointer"} },
+                            React.createElement("span",{style:{fontSize:20}},"✍️"),
+                            React.createElement("div",{style:{flex:1}},
+                                React.createElement("div",{style:{fontSize:12,fontWeight:700,color:C.text}},"Blog & Tips"),
+                                React.createElement("div",{style:{fontSize:11,color:C.sub}},"Meal prep guides, recipes & how-tos")),
+                            React.createElement("span",{style:{fontSize:14,color:C.muted}}, "→")),
+                        React.createElement("button", { onClick: () => setShowFeedback(true), style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer" } },
                             React.createElement("span", { style: { fontSize: 20 } }, "💬"),
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Send Feedback"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Feature requests, bugs or ideas")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→"))),
+                    // ── Account ───────────────────────────────────────────────────────
+                    currentUser && React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12 } },
+                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "ACCOUNT"),
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${C.dim}` } },
+                            "Signed in as ", React.createElement("span", { style: { color: C.text, fontWeight: 600 } }, currentUser.email)),
+                        isAdmin(currentUser.email) && React.createElement("button", {
+                            onClick: () => setShowAdminPanel(true),
+                            style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: "rgba(224,123,42,0.10)", border: "1px solid rgba(224,123,42,0.25)", textAlign: "left", cursor: "pointer", marginBottom: 8 } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "🔑"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.accent } }, "Promo Admin"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Manage promo codes")),
                             React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
-                        // Getting started guide (collapsible)
-                        React.createElement(GuideAccordion, { C: C })),
-                    // ── Legal (collapsed) ───────────────────────────────────
+                        React.createElement("button", {
+                            onClick: signOut,
+                            style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer" } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "🚪"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Sign Out"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Sign out of your account")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→"))),
+                    !currentUser && React.createElement("button", {
+                        onClick: () => setOnboardStep("signup"),
+                        style: { width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12,
+                            padding: "13px", marginBottom: 12, fontSize: 13, fontWeight: 700, color: C.sub, cursor: "pointer" } },
+                        "🔑 Sign in to sync across devices"),
+                    // ── Legal (collapsed) ─────────────────────────────────────────────
                     React.createElement(LegalAccordion, { C: C })),
         ))),
         swapSlot && (swapSlot==="lunch" ? lr : dr) && React.createElement(SwapModal, { C, currentRecipe: swapSlot==="lunch" ? lr : dr, slot: swapSlot, allRecipes, effectiveTargets, canView,
