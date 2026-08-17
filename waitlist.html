@@ -317,10 +317,11 @@
     <div id="form-section">
       <label class="form-label">Get early access</label>
       <div class="form-row">
-        <input type="text" id="name" placeholder="First name (optional)" autocomplete="given-name" />
+        <input type="text" id="first-name" placeholder="First name *" autocomplete="given-name" required />
+        <input type="text" id="last-name" placeholder="Last name *" autocomplete="family-name" required />
       </div>
       <div class="form-row">
-        <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required />
+        <input type="email" id="email" placeholder="Email address *" autocomplete="email" required />
       </div>
       <button class="btn" id="submit-btn" onclick="submitWaitlist()">
         JOIN THE WAITLIST
@@ -331,7 +332,7 @@
     <!-- SUCCESS -->
     <div class="success-state" id="success-section">
       <div class="check">🔥</div>
-      <h2>You're on the list.</h2>
+      <h2 id="success-heading">You're on the list.</h2>
       <p>
         We'll email you the moment SoulGainz drops.<br>
         Follow us on Instagram for behind-the-scenes and launch updates.
@@ -358,15 +359,29 @@
 
 <script>
   async function submitWaitlist() {
-    const emailEl  = document.getElementById("email");
-    const nameEl   = document.getElementById("name");
-    const btn      = document.getElementById("submit-btn");
-    const msgEl    = document.getElementById("msg");
+    const firstNameEl = document.getElementById("first-name");
+    const lastNameEl  = document.getElementById("last-name");
+    const emailEl     = document.getElementById("email");
+    const btn         = document.getElementById("submit-btn");
+    const msgEl       = document.getElementById("msg");
 
-    const email = emailEl.value.trim();
-    const name  = nameEl.value.trim();
+    const firstName = firstNameEl.value.trim();
+    const lastName  = lastNameEl.value.trim();
+    const email     = emailEl.value.trim();
 
-    // Basic client-side validation
+    // Validation — all fields required
+    if (!firstName) {
+      msgEl.textContent = "Please enter your first name.";
+      msgEl.className = "msg error";
+      firstNameEl.focus();
+      return;
+    }
+    if (!lastName) {
+      msgEl.textContent = "Please enter your last name.";
+      msgEl.className = "msg error";
+      lastNameEl.focus();
+      return;
+    }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       msgEl.textContent = "Please enter a valid email address.";
       msgEl.className = "msg error";
@@ -383,7 +398,7 @@
       const res = await fetch("/.netlify/functions/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, source: "waitlist_page" }),
+        body: JSON.stringify({ email, name: `${firstName} ${lastName}`, source: "waitlist_page" }),
       });
 
       const data = await res.json();
