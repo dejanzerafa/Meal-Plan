@@ -13203,7 +13203,8 @@ function App() {
                         isPremium: ["monthly","annual","dev"].includes(unlocks?.tier),
                     }),
                     tab === "pantry" && (
-                        ["monthly","annual","dev"].includes(unlocks?.tier)
+                        // Pantry is under development — locked for all users until manually enabled
+                        false
                             ? React.createElement(PantryTab, {
                                 C, pantry, setPantry, allRecipes,
                                 setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert,
