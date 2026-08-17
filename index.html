@@ -137,6 +137,18 @@
     [data-theme="light"] { --ring: rgba(224,123,42,0.20); }
     /* ── Fraunces numerals ── */
     .num-display { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+    /* ── Accessibility: focus-visible styles ── */
+    :focus-visible {
+      outline: 2px solid #E07B2A;
+      outline-offset: 2px;
+    }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 2px solid #E07B2A;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    /* Suppress focus ring for mouse/touch users */
+    :focus:not(:focus-visible) { outline: none; }
   </style>
 
   <script>
@@ -7912,7 +7924,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                     React.createElement("button", { onClick: function() { try { localStorage.removeItem("mp_next_shop"); localStorage.removeItem("mp_notif_shop"); } catch(_){} setShopRemSaved(false); setShopRem(""); },
                         style: { fontSize: 11, color: C.muted, background: "none", border: "none", cursor: "pointer", padding: 0 } }, "Clear"))
                 : React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
-                    React.createElement("input", { type: "date", value: shopRem, onChange: function(e){ setShopRem(e.target.value); },
+                    React.createElement("input", { type: "date", value: shopRem, onChange: function(e){ setShopRem(e.target.value); }, "aria-label": "Shopping reminder date",
                         style: { flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 8, border: "1px solid " + C.dim, background: C.card2, color: C.text, outline: "none" } }),
                     React.createElement("button", { onClick: function() {
                         if (!shopRem) return;
@@ -7948,6 +7960,7 @@ function IngredientBrowser() {
 
         React.createElement("input", {
             placeholder: "Search ingredients…",
+            "aria-label": "Search ingredients",
             value: search,
             onChange: function(e) { setSearch(e.target.value); },
             style: { width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 10,
@@ -7980,7 +7993,7 @@ function IngredientBrowser() {
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 } }, selIng.name),
                 React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6 } },
                     React.createElement("input", {
-                        type: "number", value: grams, min: 1,
+                        type: "number", value: grams, min: 1, "aria-label": "Grams",
                         onChange: function(e) { setGrams(Math.max(1, parseInt(e.target.value) || 100)); },
                         style: { width: 60, padding: "6px 8px", borderRadius: 8, border: "1px solid " + C.dim,
                             background: C.card2, color: C.text, fontSize: 13, fontFamily: "inherit",
@@ -7989,6 +8002,7 @@ function IngredientBrowser() {
                     React.createElement("span", { style: { fontSize: 12, color: C.muted } }, "g")),
                 React.createElement("button", {
                     onClick: function() { setSelId(null); },
+                    "aria-label": "Close calculator",
                     style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 20, lineHeight: 1, padding: 0 }
                 }, "×")),
             React.createElement("div", { style: { display: "flex", gap: 8 } },
@@ -8401,6 +8415,7 @@ function SeasonalPopup({ show, onClose, onBuy }) {
             // ── Close button ──────────────────────────────────────────────
             React.createElement("button", {
                 onClick: onClose,
+                "aria-label": "Close",
                 style: {
                     position: "absolute", top: 14, right: 14,
                     background: "rgba(26,22,18,0.18)",
@@ -8584,6 +8599,7 @@ function FeedbackModal({ onClose, currentTab }) {
                             letterSpacing: "0.07em", marginBottom: 6 } }, "MESSAGE"),
                     React.createElement("textarea", { value: msg, onChange: function(e){ setMsg(e.target.value); },
                         placeholder: "What's on your mind? Be as specific as you like.",
+                        "aria-label": "Feedback message",
                         rows: 4, style: Object.assign({}, inp, { resize: "none", lineHeight: 1.6,
                             marginBottom: 12, display: "block" }) }),
                     React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub,
@@ -8591,6 +8607,7 @@ function FeedbackModal({ onClose, currentTab }) {
                     React.createElement("input", { type: "email", value: email,
                         onChange: function(e){ setEmail(e.target.value); },
                         placeholder: "So we can follow up if needed",
+                        "aria-label": "Email address for follow-up",
                         style: Object.assign({}, inp, { marginBottom: 18 }) }),
                     status === "err" && React.createElement("div", { style: { fontSize: 12, color: "#ef4444",
                             marginBottom: 10, textAlign: "center" } }, "Something went wrong — please try again."),
@@ -8759,6 +8776,7 @@ function PromoCodeInput({ C, onRedeemed }) {
                     onChange: function(e){ setCode(e.target.value.slice(0,40)); setStatus(null); },
                     onKeyDown: function(e){ if(e.key==="Enter") redeem(); },
                     placeholder: "Enter your code",
+                    "aria-label": "Promo code",
                     style: { flex: 1, background: C.card, border: "1.5px solid " + (errMsg ? "#ef4444" : C.dim), borderRadius: 9,
                         padding: "9px 12px", fontSize: 14, fontWeight: 600, color: C.text, letterSpacing: "0.04em",
                         outline: "none", fontFamily: "monospace" } }),
@@ -8856,7 +8874,7 @@ function DevModal({ onClose, onApplyTier }) {
             React.createElement("input", { value: code,
                 onChange: e => { setCode(e.target.value); checkPreview(e.target.value); },
                 onKeyDown: e => e.key === "Enter" && submit(),
-                placeholder: "Enter access code", type: "password",
+                placeholder: "Enter access code", type: "password", "aria-label": "Developer access code",
                 style: { width: "100%", background: error ? "rgba(239,68,68,0.1)" : C.card2,
                     border: `1px solid ${error ? "#ef4444" : preview ? C.green : C.dim}`, borderRadius: 8,
                     padding: "10px 12px", color: C.text, fontSize: 14, fontFamily: "inherit",
@@ -9016,14 +9034,14 @@ function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
         React.createElement("div", { style:{background:C.card,border:`1px solid ${C.dim}`,borderRadius:16,padding:"20px 16px",marginBottom:14} },
 
             React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20} },
-                React.createElement("button", { onClick:prevMonth, style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "‹"),
+                React.createElement("button", { onClick:prevMonth, "aria-label":"Previous month", style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "‹"),
                 React.createElement("div", { style:{fontSize:15,fontWeight:800,color:C.text} }, `${monthName} ${viewYear}`),
-                React.createElement("button", { onClick:nextMonth, style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "›")),
+                React.createElement("button", { onClick:nextMonth, "aria-label":"Next month", style:{background:"none",border:`1px solid ${C.dim}`,borderRadius:8,padding:"6px 12px",color:C.sub,cursor:"pointer",fontSize:16} }, "›")),
 
             React.createElement("div", { style:{display:"flex",alignItems:"center",gap:20} },
 
                 // SVG compliance ring
-                React.createElement("svg", { width:128, height:128, viewBox:"0 0 128 128", style:{flexShrink:0} },
+                React.createElement("svg", { width:128, height:128, viewBox:"0 0 128 128", "aria-hidden":"true", focusable:"false", style:{flexShrink:0} },
                     React.createElement("circle", { cx, cy, r:R, fill:"none", stroke:"rgba(255,255,255,0.06)", strokeWidth:strokeW }),
                     React.createElement("circle", { cx, cy, r:R, fill:"none", stroke:complianceColor, strokeWidth:strokeW,
                         strokeLinecap:"round", strokeDasharray:circumference, strokeDashoffset:dashOffset,
@@ -9047,9 +9065,9 @@ function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
                     React.createElement("div", { style:{marginTop:4} },
                         React.createElement("div", { style:{fontSize:9,color:C.muted,fontWeight:700,letterSpacing:"0.06em",marginBottom:6} }, "MONTHLY TARGET"),
                         React.createElement("div", { style:{display:"flex",alignItems:"center",gap:8} },
-                            React.createElement("button", { onClick:()=>adjustTarget(-1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "−"),
+                            React.createElement("button", { onClick:()=>adjustTarget(-1), "aria-label":"Decrease monthly target", style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "−"),
                             React.createElement("div", { style:{fontSize:16,fontWeight:900,color:C.text,minWidth:56,textAlign:"center"} }, `${target}/mo`),
-                            React.createElement("button", { onClick:()=>adjustTarget(1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "+")))
+                            React.createElement("button", { onClick:()=>adjustTarget(1), "aria-label":"Increase monthly target", style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "+")))
                 )
             )
         ),
@@ -9414,9 +9432,9 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
                     form.heightUnit === "cm"
                         ? React.createElement(CalcTextInput, { value: form.height, onChange: e => set("height", e.target.value), placeholder: "e.g. 183", type: "number" })
                         : React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
-                            React.createElement("input", { value: form.ftFt, onChange: e => set("ftFt", e.target.value), placeholder: "6", type: "number", min: "0", step: "1", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
+                            React.createElement("input", { value: form.ftFt, onChange: e => set("ftFt", e.target.value), placeholder: "6", type: "number", min: "0", step: "1", "aria-label": "Height feet", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
                             React.createElement("span", { style: { color: "inherit", fontSize: 13, opacity: 0.7 } }, "ft"),
-                            React.createElement("input", { value: form.ftIn, onChange: e => set("ftIn", e.target.value), placeholder: "0", type: "number", min: "0", max: "11", step: "1", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
+                            React.createElement("input", { value: form.ftIn, onChange: e => set("ftIn", e.target.value), placeholder: "0", type: "number", min: "0", max: "11", step: "1", "aria-label": "Height inches", style: { width: 64, padding: "9px 10px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "inherit", fontSize: 15, fontFamily: "inherit", outline: "none" } }),
                             React.createElement("span", { style: { color: "inherit", fontSize: 13, opacity: 0.7 } }, "in"))),
                 React.createElement(CalcInputRow, { label: "Current Weight" },
                     React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
@@ -9671,10 +9689,10 @@ function ManualMacroInput({ C, onSave }) {
                     React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.text } }, "Daily Calories"),
                     React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.accent } }, kcal + " kcal")),
                 React.createElement("input", {
-                    type: "range", min: 1000, max: 5000, step: 50, value: kcal,
+                    type: "range", min: 1000, max: 5000, step: 50, value: kcal, "aria-label": "Daily calories slider",
                     onChange: e => { const v = Number(e.target.value); setKcal(v); setKcalStr(String(v)); }, style: sliderStyle }),
                 React.createElement("input", {
-                    type: "number", value: kcalStr, min: 1000, max: 5000, inputMode: "numeric",
+                    type: "number", value: kcalStr, min: 1000, max: 5000, inputMode: "numeric", "aria-label": "Daily calories",
                     onChange: e => { setKcalStr(e.target.value); const n = parseInt(e.target.value); if (!isNaN(n) && n >= 500 && n <= 5000) setKcal(n); },
                     onBlur: e => { const n = parseInt(e.target.value); const v = isNaN(n) ? kcal : Math.max(1000, Math.min(5000, n)); setKcal(v); setKcalStr(String(v)); },
                     style: inputStyle })),
@@ -9684,10 +9702,10 @@ function ManualMacroInput({ C, onSave }) {
                     React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.prot } }, "Protein"),
                     React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.prot } }, protein + "g")),
                 React.createElement("input", {
-                    type: "range", min: 50, max: 400, step: 5, value: protein,
+                    type: "range", min: 50, max: 400, step: 5, value: protein, "aria-label": "Protein target slider",
                     onChange: e => { const v = Number(e.target.value); setProtein(v); setProteinStr(String(v)); }, style: Object.assign({}, sliderStyle, { accentColor: C.prot }) }),
                 React.createElement("input", {
-                    type: "number", value: proteinStr, min: 50, max: 400, inputMode: "numeric",
+                    type: "number", value: proteinStr, min: 50, max: 400, inputMode: "numeric", "aria-label": "Protein target in grams",
                     onChange: e => { setProteinStr(e.target.value); const n = parseInt(e.target.value); if (!isNaN(n) && n >= 10 && n <= 400) setProtein(n); },
                     onBlur: e => { const n = parseInt(e.target.value); const v = isNaN(n) ? protein : Math.max(50, Math.min(400, n)); setProtein(v); setProteinStr(String(v)); },
                     style: inputStyle })),
@@ -9697,10 +9715,10 @@ function ManualMacroInput({ C, onSave }) {
                     React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: C.fat } }, "Fat"),
                     React.createElement("span", { style: { fontSize: 15, fontWeight: 800, color: C.fat } }, fat + "g")),
                 React.createElement("input", {
-                    type: "range", min: 20, max: 200, step: 5, value: fat,
+                    type: "range", min: 20, max: 200, step: 5, value: fat, "aria-label": "Fat target slider",
                     onChange: e => { const v = Number(e.target.value); setFat(v); setFatStr(String(v)); }, style: Object.assign({}, sliderStyle, { accentColor: C.fat }) }),
                 React.createElement("input", {
-                    type: "number", value: fatStr, min: 20, max: 200, inputMode: "numeric",
+                    type: "number", value: fatStr, min: 20, max: 200, inputMode: "numeric", "aria-label": "Fat target in grams",
                     onChange: e => { setFatStr(e.target.value); const n = parseInt(e.target.value); if (!isNaN(n) && n >= 5 && n <= 200) setFat(n); },
                     onBlur: e => { const n = parseInt(e.target.value); const v = isNaN(n) ? fat : Math.max(20, Math.min(200, n)); setFat(v); setFatStr(String(v)); },
                     style: inputStyle })),
@@ -9860,7 +9878,7 @@ function LegalAccordion({ C }) {
             React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", background: C.bg, margin: "max(40px,env(safe-area-inset-top)) 0 0", borderRadius: "24px 24px 0 0", overflow: "hidden" } },
                 React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderBottom: "1px solid " + C.dim, flexShrink: 0 } },
                     React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text } }, legalContent[legalView].title),
-                    React.createElement("button", { onClick: () => setLegalView(null), style: { background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "✕")),
+                    React.createElement("button", { onClick: () => setLegalView(null), "aria-label": "Close", style: { background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "✕")),
                 React.createElement("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "18px" } },
                     React.createElement("p", { style: { fontSize: 12, color: C.sub, lineHeight: 1.65, marginBottom: 16 } }, legalContent[legalView].intro),
                     legalContent[legalView].points.map((pt, i) =>
@@ -9921,8 +9939,8 @@ function MeHeader({ C, tier: tierProp }) {
     if (!saved || editing) {
         return React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "20px 16px", marginBottom: 12 } },
             React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 14 } }, editing ? "EDIT PROFILE" : "YOUR ACCOUNT"),
-            React.createElement("input", { type: "text", placeholder: "Your name", value: name, onChange: e => setName(e.target.value), style: inputStyle }),
-            React.createElement("input", { type: "email", placeholder: "Email address", value: email, onChange: e => setEmail(e.target.value), style: inputStyle }),
+            React.createElement("input", { type: "text", placeholder: "Your name", "aria-label": "Your name", value: name, onChange: e => setName(e.target.value), style: inputStyle }),
+            React.createElement("input", { type: "email", placeholder: "Email address", "aria-label": "Email address", value: email, onChange: e => setEmail(e.target.value), style: inputStyle }),
             React.createElement("div", { style: { display: "flex", gap: 8 } },
                 React.createElement("button", { onClick: handleSave, disabled: saving || !name.trim() || !email.trim(),
                     style: { flex: 1, background: (saving || !name.trim() || !email.trim()) ? C.dim : C.accent, border: "none", borderRadius: 8, padding: "11px", fontSize: 13, fontWeight: 700, color: "#000", cursor: "pointer" } },
@@ -10055,15 +10073,15 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
         // Name + Email
         React.createElement("div", { style:{ marginBottom:12 } },
             React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Full Name"),
-            React.createElement("input", { type:"text", value:name, onChange:e=>setName(e.target.value), placeholder:"e.g. Alex Smith", style:inp })),
+            React.createElement("input", { type:"text", value:name, onChange:e=>setName(e.target.value), placeholder:"e.g. Alex Smith", "aria-label":"Full name", style:inp })),
         React.createElement("div", { style:{ marginBottom:16 } },
             React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Email"),
-            React.createElement("input", { type:"email", value:email, onChange:e=>setEmail(e.target.value), placeholder:"your@email.com", style:inp })),
+            React.createElement("input", { type:"email", value:email, onChange:e=>setEmail(e.target.value), placeholder:"your@email.com", "aria-label":"Email address", style:inp })),
 
         // DOB + gender row
         React.createElement("div", { style:{ marginBottom:12 } },
             React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Date of Birth"),
-            React.createElement("input", { type:"date", value:form.dob, onChange:e=>set("dob",e.target.value), style:inp }),
+            React.createElement("input", { type:"date", value:form.dob, onChange:e=>set("dob",e.target.value), "aria-label":"Date of birth", style:inp }),
             age!==null && React.createElement("div", { style:{ fontSize:11, color:C.green, marginTop:4, fontWeight:600 } }, "✓ "+age+" years old")),
         React.createElement("div", { style:{ marginBottom:12 } },
             React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:6, fontWeight:600 } }, "Gender"),
@@ -10079,7 +10097,7 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
                     seg("kg",  form.weightUnit==="kg",  ()=>set("weightUnit","kg")),
                     seg("lbs", form.weightUnit==="lbs", ()=>set("weightUnit","lbs")))),
             React.createElement("input", { type:"number", value:form.weight, onChange:e=>set("weight",e.target.value),
-                placeholder:form.weightUnit==="kg"?"e.g. 85":"e.g. 187", style:inp })),
+                placeholder:form.weightUnit==="kg"?"e.g. 85":"e.g. 187", "aria-label":"Weight", style:inp })),
 
         // Height
         React.createElement("div", { style:{ marginBottom:14 } },
@@ -10090,13 +10108,13 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
                     seg("ft",  form.heightUnit==="ft",  ()=>set("heightUnit","ft")))),
             form.heightUnit==="cm"
                 ? React.createElement("input", { type:"number", value:form.height, onChange:e=>set("height",e.target.value),
-                    placeholder:"e.g. 183", style:inp })
+                    placeholder:"e.g. 183", "aria-label":"Height in centimetres", style:inp })
                 : React.createElement("div", { style:{ display:"flex", gap:8, alignItems:"center" } },
                     React.createElement("input", { type:"number", value:form.ftFt, onChange:e=>set("ftFt",e.target.value),
-                        placeholder:"6", style:{...inp, width:70} }),
+                        placeholder:"6", "aria-label":"Height feet", style:{...inp, width:70} }),
                     React.createElement("span", { style:{ color:C.muted, fontSize:13 } }, "ft"),
                     React.createElement("input", { type:"number", value:form.ftIn, onChange:e=>set("ftIn",e.target.value),
-                        placeholder:"0", min:0, max:11, style:{...inp, width:70} }),
+                        placeholder:"0", min:0, max:11, "aria-label":"Height inches", style:{...inp, width:70} }),
                     React.createElement("span", { style:{ color:C.muted, fontSize:13 } }, "in"))),
 
         // BMI preview (when complete)
@@ -10425,6 +10443,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
                         React.createElement("span", { style: { color: C.text, fontWeight: 600 } }, pct + "% → " + tkc + " kcal")),
                     React.createElement("input", { type: "range", min: 5, max: 80, step: 1, value: pct,
                         onChange: function(e){ setCustomPct(s.key, +e.target.value); },
+                        "aria-label": s.label + " macro split percentage",
                         style: { width: "100%", accentColor: C.purple } }));
             }),
             React.createElement("button", { onClick: canApply ? function(){ applyCustom(); setSplitMode(null); setShowBalance(false); } : undefined,
@@ -10459,7 +10478,7 @@ function MacroBalancer({ allSet, total, targets, L, D, BF, PRE_M, DS,
             React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.purple } }, "⚖️ Macro Split"),
             React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
                 React.createElement("button", { onClick: function(){ setShowTips(function(v){ return !v; }); }, style: { background: "none", border: "1px solid " + C.dim, borderRadius: 6, padding: "3px 8px", fontSize: 10, color: C.sub, cursor: "pointer" } }, showTips ? "Hide tips" : "💡 Tips"),
-                React.createElement("button", { onClick: function(){ setShowBalance(false); setSplitMode(null); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); }, style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕"))),
+                React.createElement("button", { onClick: function(){ setShowBalance(false); setSplitMode(null); setLunchScale(1); setDinnerScale(1); setBfScale(1); setPreScale(1); setDesScale(1); }, "aria-label": "Close macro split", style: { background: "none", border: "none", color: C.sub, fontSize: 16, cursor: "pointer" } }, "✕"))),
         // ── Tips panel ──
         showTips && React.createElement("div", { style: { background: C.card, borderRadius: 10, padding: "12px 14px", marginBottom: 12, borderLeft: "3px solid " + C.purple } },
             React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 8 } }, "What is Macro Split?"),
@@ -10828,19 +10847,19 @@ function OnboardingSignup({ onDone }) {
         // Form
         : React.createElement("div", { style:{width:"100%",maxWidth:380,display:"flex",flexDirection:"column",gap:12} },
             mode==="signup" && React.createElement("div", { style:{display:"flex",gap:10} },
-                React.createElement("input", { value:name, onChange:e=>setName(e.target.value), placeholder:"First name", style:inp }),
-                React.createElement("input", { value:surname, onChange:e=>setSurname(e.target.value), placeholder:"Last name", style:inp })),
+                React.createElement("input", { value:name, onChange:e=>setName(e.target.value), placeholder:"First name", "aria-label":"First name", style:inp }),
+                React.createElement("input", { value:surname, onChange:e=>setSurname(e.target.value), placeholder:"Last name", "aria-label":"Last name", style:inp })),
             React.createElement("input", { type:"email",value:email,onChange:e=>setEmail(e.target.value),
-                placeholder:"Email address", style:inp, autoCapitalize:"off", autoCorrect:"off" }),
+                placeholder:"Email address", "aria-label":"Email address", style:inp, autoCapitalize:"off", autoCorrect:"off" }),
             mode!=="forgot" && React.createElement("div", { style:{position:"relative"} },
                 React.createElement("input", { type:showPw?"text":"password",value:password,onChange:e=>setPassword(e.target.value),
-                    placeholder:"Password"+(mode==="signup"?" (min 8 chars)":""), style:{...inp,paddingRight:52} }),
-                React.createElement("button", { onClick:()=>setShowPw(p=>!p),
+                    placeholder:"Password"+(mode==="signup"?" (min 8 chars)":""), "aria-label":"Password", style:{...inp,paddingRight:52} }),
+                React.createElement("button", { onClick:()=>setShowPw(p=>!p), "aria-label": showPw ? "Hide password" : "Show password",
                     style:{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",
                         color:"#9C8C7C",fontSize:11,fontWeight:700,cursor:"pointer",padding:4} },
                     showPw?"HIDE":"SHOW")),
             mode==="signup" && React.createElement("input", { type:"password",value:confirmPw,onChange:e=>setConfirmPw(e.target.value),
-                placeholder:"Confirm password", style:inp }),
+                placeholder:"Confirm password", "aria-label":"Confirm password", style:inp }),
             mode==="signup" && React.createElement("label", { style:{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"2px 0"} },
                 React.createElement("input", { type:"checkbox", checked:termsAccepted, onChange:e=>setTermsAccepted(e.target.checked),
                     style:{marginTop:2,accentColor:"#E07B2A",width:16,height:16,flexShrink:0,cursor:"pointer"} }),
@@ -11021,7 +11040,7 @@ function AdminPanel({ C, currentUser, onClose }) {
             React.createElement("div", { style:{background:C.card,border:"1px solid "+C.border,borderRadius:14,padding:"16px",marginBottom:16} },
                 React.createElement("div",{ style:{fontSize:11,fontWeight:700,color:C.sub,letterSpacing:"0.08em",marginBottom:12} }, "ISSUE NEW CODE"),
                 React.createElement("input",{ value:recipEmail, onChange:e=>setRecipEmail(e.target.value),
-                    placeholder:"Recipient email address", type:"email",
+                    placeholder:"Recipient email address", type:"email", "aria-label":"Recipient email address",
                     style:{...inp, marginBottom:10} }),
                 React.createElement("select",{ value:tier, onChange:e=>setTier(e.target.value),
                     style:{...inp, cursor:"pointer", marginBottom:10} },
@@ -11068,7 +11087,7 @@ function AdminPanel({ C, currentUser, onClose }) {
                                         style:{background:"none",border:"1px solid "+C.dim,borderRadius:7,
                                             padding:"4px 10px",fontSize:11,color:C.sub,cursor:"pointer"}},
                                         copied===c.code ? "✓" : "Copy"),
-                                    React.createElement("button",{onClick:()=>deleteCode(c.id,c.code),
+                                    React.createElement("button",{onClick:()=>deleteCode(c.id,c.code), "aria-label":"Delete code",
                                         style:{background:"none",border:"1px solid "+C.dim,borderRadius:7,
                                             padding:"4px 10px",fontSize:12,color:C.muted,cursor:"pointer"}}, "×"))))
                     })
@@ -11132,7 +11151,7 @@ function NotificationSettings({ C }) {
                 React.createElement("div", { style:{fontSize:11,color:C.sub,marginBottom:6,fontWeight:600} },
                     "Daily reminder time"),
                 React.createElement("input", {
-                    type:"time", value:dailyTime,
+                    type:"time", value:dailyTime, "aria-label":"Daily reminder time",
                     onChange: e => saveTime(e.target.value),
                     style:{width:"100%",background:C.card2,border:"1px solid "+C.dim,
                         borderRadius:8,padding:"10px 12px",color:C.text,fontSize:13,
@@ -11197,7 +11216,7 @@ function CustomRecipeBuilder({ C, onSave, onClose }) {
                 alignItems:"center",marginBottom:20} },
                 React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} },
                     "\uD83D\uDCDD Custom Recipe"),
-                React.createElement("button", { onClick:onClose,
+                React.createElement("button", { onClick:onClose, "aria-label":"Close",
                     style:{background:"none",border:"none",fontSize:20,color:C.muted,cursor:"pointer"} },
                     "\u00D7")),
             field("RECIPE NAME", name, setName, "text", "e.g. Chicken Rice Bowl"),
@@ -11296,6 +11315,7 @@ function PantryTab({ C, pantry, setPantry, allRecipes, setLunch, setDinner, setB
                 value: search,
                 onChange: e => setSearch(e.target.value),
                 placeholder: "Search ingredients\u2026",
+                "aria-label": "Search pantry ingredients",
                 style:{width:"100%",background:C.card,border:"1px solid "+C.dim,borderRadius:10,
                     padding:"10px 12px 10px 36px",color:C.text,fontSize:13,boxSizing:"border-box",outline:"none"}
             }),
@@ -11610,14 +11630,14 @@ function SuppModal({ C, data, mode, onSave, onClose }) {
             React.createElement("div", { style:{marginBottom:14} },
                 React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,marginBottom:6} }, "NAME *"),
                 React.createElement("input", { value:form.name, onChange:e=>set("name",e.target.value),
-                    placeholder:"e.g. Creatine Monohydrate", style:inp })),
+                    placeholder:"e.g. Creatine Monohydrate", "aria-label":"Supplement name", style:inp })),
 
             // Dose + unit
             React.createElement("div", { style:{display:"flex",gap:10,marginBottom:14} },
                 React.createElement("div", { style:{flex:1} },
                     React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,marginBottom:6} }, "DOSE"),
                     React.createElement("input", { type:"number", value:form.dose, onChange:e=>set("dose",e.target.value),
-                        placeholder:"e.g. 5", style:{...inp} })),
+                        placeholder:"e.g. 5", "aria-label":"Supplement dose", style:{...inp} })),
                 React.createElement("div", { style:{flex:1} },
                     React.createElement("div", { style:{fontSize:11,fontWeight:700,color:C.sub,marginBottom:6} }, "UNIT"),
                     React.createElement("select", { value:form.unit, onChange:e=>set("unit",e.target.value),
@@ -11701,7 +11721,7 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
             React.createElement("div", { style:{padding:"18px 18px 0",flexShrink:0} },
                 React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6} },
                     React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text} }, "🔄 Swap Recipe"),
-                    React.createElement("button", { onClick:onClose, style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
+                    React.createElement("button", { onClick:onClose, "aria-label":"Close", style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
                 React.createElement("div", { style:{fontSize:11,color:C.sub,marginBottom:10} },
                     "Replacing: ", React.createElement("b",{style:{color:C.text}},currentRecipe.name)),
                 // Search bar
@@ -11709,6 +11729,7 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
                     value:search,
                     onChange:function(e){setSearch(e.target.value);},
                     placeholder:"Search any recipe…",
+                    "aria-label": "Search recipes",
                     style:{width:"100%",padding:"10px 14px",background:C.card2,border:"1.5px solid "+C.dim,borderRadius:10,color:C.text,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",marginBottom:10} }),
                 // Category tabs
                 React.createElement("div", { style:{display:"flex",gap:6,overflowX:"auto",paddingBottom:12,WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"} },
@@ -11777,7 +11798,7 @@ function PlansDrawer({ C, savedPlans, allRecipes, onLoad, onDelete, onClose }) {
         React.createElement("div", { style:{background:C.bg,borderRadius:"20px 20px 0 0",padding:"20px 18px",paddingBottom:"max(28px,calc(env(safe-area-inset-bottom)+16px))",width:"100%",maxWidth:440,boxShadow:"0 -20px 60px rgba(0,0,0,0.5)",maxHeight:"80vh",overflowY:"auto",WebkitOverflowScrolling:"touch"} },
             React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16} },
                 React.createElement("div", { style:{fontSize:15,fontWeight:800,color:C.text} }, "📋 My Saved Plans"),
-                React.createElement("button", { onClick:onClose, style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
+                React.createElement("button", { onClick:onClose, "aria-label":"Close", style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
             !savedPlans.length && React.createElement("div", { style:{textAlign:"center",padding:"32px 16px",color:C.muted,fontSize:13} },
                 "No saved plans yet. Set lunch & dinner then tap Save Plan."),
             savedPlans.map(function(plan,i) {
@@ -11825,7 +11846,7 @@ function PrepItFlow({ C, lunch, dinner, breakfastRecipe, preRecipe, dessert, all
             // Header
             React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6} },
                 React.createElement("div", { style:{fontSize:9,fontWeight:700,color:C.muted,letterSpacing:"0.1em"} }, "PREP IT — STEP "+step+" OF 3"),
-                React.createElement("button", { onClick:onClose, style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
+                React.createElement("button", { onClick:onClose, "aria-label":"Close", style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
             stepDots,
 
             // Step 1: Recipes
@@ -12875,7 +12896,7 @@ function App() {
             fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif",
             color: C.text, overflow: "hidden",
             background: C.bg } },
-        React.createElement("div", { style: { width: SW, flexShrink: 0, background: C.card,
+        React.createElement("nav", { role: "navigation", "aria-label": "Main navigation", style: { width: SW, flexShrink: 0, background: C.card,
                 borderRight: `1px solid ${C.border}`, display: "flex", flexDirection: "column",
                 alignItems: "center", paddingTop: 20, paddingBottom: 20, zIndex: 100,
 } },
@@ -12896,6 +12917,7 @@ function App() {
                 };
                 function NavSvg(iconKey, color) {
                     return React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none",
+                        "aria-hidden": "true", focusable: "false",
                         stroke: color, strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
                         iconKey === "meals"
                             ? [React.createElement("path",{key:"a",d:"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"}),
@@ -12964,7 +12986,7 @@ function App() {
                     NavBtn("settings", "SETTINGS", "settings", tab === "settings")
                 ];
             })()),
-        React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
+        React.createElement("main", { role: "main", style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } },
             React.createElement("div", { style: { flex: 1, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" } },
             React.createElement("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 24px" } },
                 React.createElement("div", { style: { position: "sticky", top: 0, zIndex: 20, background: C.bg, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12, paddingTop: 18, paddingBottom: 16, borderBottom: `1px solid ${C.border}`, marginBottom: 16 } },
@@ -13553,7 +13575,7 @@ function App() {
                     } else { setShowAndroidInstall(false); }
                 }, style: { background: C.accent, border: "none", color: "#fff", borderRadius: 8,
                     padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer" } }, "Install"),
-            React.createElement("button", { onClick: () => setShowAndroidInstall(false), style: { background: "none", border: "none",
+            React.createElement("button", { onClick: () => setShowAndroidInstall(false), "aria-label": "Dismiss install prompt", style: { background: "none", border: "none",
                     color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")),
         showPWA && !showUpgrade && !showDevModal && !showFeedback && (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
                 width: "100%", background: C.card2, borderTop: `1px solid ${C.accent}`,
@@ -13566,7 +13588,7 @@ function App() {
                     React.createElement("b", { style: { color: C.text } }, "Share \u2191"),
                     " then ",
                     React.createElement("b", { style: { color: C.text } }, "Add to Home Screen"))),
-            React.createElement("button", { onClick: dismissPWA, style: { background: "none", border: "none",
+            React.createElement("button", { onClick: dismissPWA, "aria-label": "Dismiss install prompt", style: { background: "none", border: "none",
                     color: C.muted, fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 } }, "\u2715")))));
 }
 // Dismiss loader after bar animations finish (~2.65s)
