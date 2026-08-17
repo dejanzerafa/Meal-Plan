@@ -109,7 +109,27 @@ exports.handler = async (event) => {
             console.log("Duplicate checkout.session.completed skipped:", session.id);
             break;
           }
-          if (subInsertErr) console.error("Subscription insert error:", subInsertErr);
+          if (subInsertErr) {
+            console.error("Subscription insert error:", subInsertErr);
+            break; // Don't provision or email on unexpected insert failure
+          }
+
+          // 2b. Write tier into profiles so re-login on any device gets correct access
+          const { error: profileErr } = await supabase
+            .from("profiles")
+            .update({
+              tier,
+              tier_via: "stripe",
+              tier_expires: realPeriodEnd,
+            })
+            .eq("email", email);
+          if (profileErr) {
+            // Profile row may not exist yet — upsert by auth user id isn't available here,
+            // log and continue so payment isn't lost
+            console.error("Profile tier update error:", profileErr);
+          } else {
+            console.log(`Profile tier set to "${tier}" for ${email}`);
+          }
         }
 
         // 3. Log event
@@ -307,18 +327,15 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
   } catch(e) { console.error("Subscriptions cancel lookup error:", e); }
 
   // Update profiles table — this is what the app reads on sign-in for tier verification
+  // Only update columns that actually exist in the profiles schema (tier, tier_via, tier_label, tier_expires)
   const { error } = await supabase
     .from("profiles")
-    .update({
-      tier: null,
-      all_recipes: false,
-      calculator: false,
-    })
+    .update({ tier: null, tier_via: null, tier_label: null, tier_expires: null })
     .eq("email", email);
 
   if (error) {
     console.error("Profile downgrade error for", email, error);
-    // Also try by stripe_customer_id as fallback
+    // Fallback: look up profile by stripe_customer_id via users table
     try {
       const { data: user } = await supabase
         .from("users")
@@ -326,12 +343,14 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
         .eq("stripe_customer_id", stripeCustomerId)
         .single();
       if (user) {
-        await supabase
+        const { error: fallbackErr } = await supabase
           .from("profiles")
-          .update({ tier: null, all_recipes: false, calculator: false })
+          .update({ tier: null, tier_via: null, tier_label: null, tier_expires: null })
           .eq("id", user.id);
+        if (fallbackErr) console.error("Profile downgrade fallback error:", fallbackErr);
+        else console.log(`Profile downgraded to free (by ID fallback): ${stripeCustomerId}`);
       }
-    } catch(e2) { console.error("Profile downgrade fallback error:", e2); }
+    } catch(e2) { console.error("Profile downgrade fallback lookup error:", e2); }
   } else {
     console.log(`Profile downgraded to free: ${email}`);
   }

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoulGainz — Join the Waitlist</title>
+  <meta name="description" content="High-protein meal prep. Verified macros. Cook once, eat all week. Join the SoulGainz waitlist." />
+  <meta property="og:title" content="SoulGainz — Join the Waitlist" />
+  <meta property="og:description" content="Cook once. Eat all week. The meal prep app built for people who train hard." />
+  <meta property="og:image" content="https://soulgainz.app/og-image.png" />
+  <link rel="icon" href="/favicon.ico" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0C0B0A;
+      --orange: #E07B2A;
+      --cream:  #F2EDE6;
+      --muted:  #6B6560;
+      --card:   #141312;
+      --border: #252220;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle background texture */
+    .page::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(224,123,42,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(224,123,42,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Wordmark ── */
+    .wordmark {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+    .wordmark span { color: var(--orange); }
+
+    /* ── Headline ── */
+    .headline {
+      font-size: clamp(36px, 8vw, 54px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .headline em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    /* ── Subtext ── */
+    .sub {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 40px;
+      max-width: 400px;
+    }
+
+    /* ── Features ── */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .feature {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .feature-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .feature-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      color: var(--cream);
+    }
+    .feature-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Form ── */
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    input::placeholder { color: var(--muted); }
+    input:focus { border-color: var(--orange); }
+
+    .btn {
+      width: 100%;
+      background: var(--orange);
+      color: #0C0B0A;
+      border: none;
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:hover  { opacity: 0.9; }
+    .btn:active { transform: scale(0.99); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── States ── */
+    .msg {
+      margin-top: 16px;
+      font-size: 14px;
+      text-align: center;
+      min-height: 20px;
+    }
+    .msg.success { color: #5cb85c; }
+    .msg.error   { color: #e05c5c; }
+
+    /* ── Success state ── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+    .success-state .check {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .success-state h2 {
+      font-size: 28px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .success-state p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .ig-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: border-color 0.15s;
+    }
+    .ig-link:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .footer a { color: var(--muted); text-decoration: none; }
+    .footer a:hover { color: var(--cream); }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ── Counter ── */
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .counter .dot {
+      width: 8px; height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @media (max-width: 480px) {
+      .features { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="container">
+
+    <div class="wordmark">SOUL<span>GAINZ</span></div>
+
+    <div class="counter">
+      <span class="dot"></span>
+      <span>Launching soon — be first to know</span>
+    </div>
+
+    <h1 class="headline">
+      Cook once.<br><em>Eat all week.</em>
+    </h1>
+
+    <p class="sub">
+      The meal prep app built for people who train hard and want their food to match.
+      High-protein recipes, verified macros, one grocery list. One session. Seven days sorted.
+    </p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🍱</div>
+        <div class="feature-title">97 Recipes</div>
+        <div class="feature-desc">High-protein. Verified macros — not estimates.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛒</div>
+        <div class="feature-title">Grocery List</div>
+        <div class="feature-desc">Auto-generated from your weekly picks. One list to rule them all.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Weekly Planner</div>
+        <div class="feature-desc">Plan your meals. Know exactly what you're eating all week.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Macro Calc</div>
+        <div class="feature-desc">Your targets, personalised to your body and goals.</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- FORM -->
+    <div id="form-section">
+      <label class="form-label">Get early access</label>
+      <div class="form-row">
+        <input type="text" id="name" placeholder="First name (optional)" autocomplete="given-name" />
+      </div>
+      <div class="form-row">
+        <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required />
+      </div>
+      <button class="btn" id="submit-btn" onclick="submitWaitlist()">
+        JOIN THE WAITLIST
+      </button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-state" id="success-section">
+      <div class="check">🔥</div>
+      <h2>You're on the list.</h2>
+      <p>
+        We'll email you the moment SoulGainz drops.<br>
+        Follow us on Instagram for behind-the-scenes and launch updates.
+      </p>
+      <a class="ig-link" href="https://instagram.com/soulgainz.app" target="_blank" rel="noopener">
+        📸 @soulgainz.app
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>Feed your soul. Fuel your gainz. 🔥</p>
+      <p style="margin-top:8px;">
+        <a href="https://soulgainz.app">soulgainz.app</a>
+        &nbsp;·&nbsp;
+        <a href="https://instagram.com/soulgainz.app" target="_blank" rel="noopener">Instagram</a>
+      </p>
+      <p style="margin-top:8px; font-size:11px;">
+        No spam. Unsubscribe anytime. We hate junk email too.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  async function submitWaitlist() {
+    const emailEl  = document.getElementById("email");
+    const nameEl   = document.getElementById("name");
+    const btn      = document.getElementById("submit-btn");
+    const msgEl    = document.getElementById("msg");
+
+    const email = emailEl.value.trim();
+    const name  = nameEl.value.trim();
+
+    // Basic client-side validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msgEl.textContent = "Please enter a valid email address.";
+      msgEl.className = "msg error";
+      emailEl.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "JOINING…";
+    msgEl.textContent = "";
+    msgEl.className = "msg";
+
+    try {
+      const res = await fetch("/.netlify/functions/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, source: "waitlist_page" }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        document.getElementById("form-section").style.display = "none";
+        document.getElementById("success-section").style.display = "block";
+      } else {
+        throw new Error(data.error || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      msgEl.textContent = err.message;
+      msgEl.className = "msg error";
+      btn.disabled = false;
+      btn.textContent = "JOIN THE WAITLIST";
+    }
+  }
+
+  // Allow Enter key to submit
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submitWaitlist();
+  });
+</script>
+</body>
+</html>

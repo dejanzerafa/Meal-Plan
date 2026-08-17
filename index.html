@@ -8762,9 +8762,9 @@ function PromoCodeInput({ C, onRedeemed }) {
                     style: { flex: 1, background: C.card, border: "1.5px solid " + (errMsg ? "#ef4444" : C.dim), borderRadius: 9,
                         padding: "9px 12px", fontSize: 14, fontWeight: 600, color: C.text, letterSpacing: "0.04em",
                         outline: "none", fontFamily: "monospace" } }),
-                React.createElement("button", { onClick: redeem,
+                React.createElement("button", { onClick: redeem, disabled: status === "loading",
                     style: { background: C.accent, border: "none", borderRadius: 9, padding: "9px 16px",
-                        fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer", flexShrink: 0 } }, "Redeem")),
+                        fontSize: 13, fontWeight: 800, color: "#000", cursor: status === "loading" ? "not-allowed" : "pointer", flexShrink: 0, opacity: status === "loading" ? 0.6 : 1 } }, status === "loading" ? "…" : "Redeem")),
             errMsg && React.createElement("div", { style: { fontSize: 11, color: "#ef4444", lineHeight: 1.5 } }, errMsg)));
 }
 
@@ -12349,8 +12349,10 @@ function App() {
                             _serverVerified: true };
                         setUnlocks(unlockData);
                     } else {
-                        // Row exists but no tier → free; still mark as server-verified so canView works
-                        setUnlocksState(prev => ({ ...prev, _serverVerified: true }));
+                        // Row exists but tier is null/free — explicitly clear all paid fields.
+                        // Do NOT spread prev state: a previously-paid user who cancelled would
+                        // otherwise retain their old tier/allRecipes values in React state.
+                        setUnlocksState({ calculator: false, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true });
                     }
                 } else {
                     // No profile row yet — treat as free tier, but mark server-verified
@@ -12679,15 +12681,16 @@ function App() {
         if (RECIPE_TIER_WAVE2.has(id)) return false;
         // Free tier: always visible to all
         if (RECIPE_TIER_FREE.has(id)) return true;
-        // Seasonal bundle — requires EXPLICIT purchase (separate from subscription tiers)
-        if (SOULFOOD_RECIPE_IDS.includes(id)) {
-            return unlocks.tier === "seasonal" || unlocks.tier === "dev";
-        }
         // For authenticated users require server verification to prevent localStorage spoofing
         const canTrustUnlocks = !currentUser || unlocks._serverVerified;
         const tier = unlocks.tier || "free";
-        // Dev: sees everything
-        if (tier === "dev") return true;
+        // Seasonal bundle — requires EXPLICIT purchase (separate from subscription tiers)
+        // canTrustUnlocks guard prevents unauthenticated localStorage spoofing
+        if (SOULFOOD_RECIPE_IDS.includes(id)) {
+            return (unlocks.tier === "seasonal" || unlocks.tier === "dev") && canTrustUnlocks;
+        }
+        // Dev: sees everything — also requires canTrustUnlocks
+        if (tier === "dev" && canTrustUnlocks) return true;
         // Annual: sees free + monthly + annual tiers
         if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
         // Monthly: sees free + monthly tiers
@@ -13219,7 +13222,7 @@ function App() {
                                     React.createElement("span", { style:{fontSize:11} }, "🚧"),
                                     React.createElement("span", { style:{fontSize:11, fontWeight:700, color:"#60a5fa", letterSpacing:"0.05em"} }, "COMING SOON — FEATURE IN DEVELOPMENT")),
                                 React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 280, marginBottom: 28 } }, "Track what you have at home and automatically skip those ingredients from your shopping list. We’re actively building this to further improve your experience."),
-                                React.createElement("button", { onClick: () => setShowUpgrade(true), style: { background: C.accent, border: "none", borderRadius: 12, padding: "14px 32px", fontSize: 15, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em" } }, "🔓 Unlock Pantry"))
+                                React.createElement("div", { style: { fontSize: 12, color: C.muted, fontStyle: "italic" } }, "No action needed — this will unlock automatically when it’s ready."))
                     ),
 
                     tab === "recipes" && React.createElement("div", { className: "tab-anim", key: "rec" },
