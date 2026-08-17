@@ -7798,6 +7798,7 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
     const checkKey = `mp_shop_${(lr||{}).id||'x'}_${(dr||{}).id||'x'}_${(bfr||{}).id||'_'}_${(prer||{}).id||'_'}_${(desr||{}).id||'_'}_${portions||7}`;
     const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem(checkKey) || '{}'); } catch(e){ return {}; } });
     const toggle = k => setChecked(c => { const n = Object.assign(Object.assign({}, c), { [k]: !c[k] }); try { localStorage.setItem(checkKey, JSON.stringify(n)); } catch(e){} return n; });
+    const resetList = () => { setChecked({}); try { localStorage.removeItem(checkKey); } catch(_){} };
     React.useEffect(() => {
         try {
             const shopKeys = Object.keys(localStorage).filter(k => k.startsWith('mp_shop_')).sort();
@@ -7861,7 +7862,13 @@ function ShoppingList({ lr, dr, portions, setPortions, targets, profileName, bfr
                 React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
                     React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: allDone ? C.green : C.sub, letterSpacing: "0.05em" } },
                         allDone ? "\u2713 All done \u2014 ready to cook!" : doneItems + " of " + totalItems + " items ticked"),
-                    React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: allDone ? C.green : C.accent } }, pct + "%")),
+                    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+                        React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: allDone ? C.green : C.accent } }, pct + "%"),
+                        React.createElement("button", {
+                            onClick: resetList,
+                            title: "Reset list for next prep week",
+                            style: { fontSize: 10, fontWeight: 700, color: C.sub, background: "none", border: `1px solid ${C.dim}`, borderRadius: 6, padding: "2px 8px", cursor: "pointer", letterSpacing: "0.04em" }
+                        }, "\u21ba New Week"))),
                 React.createElement("div", { style: { height: 5, background: C.card2, borderRadius: 3, overflow: "hidden" } },
                     React.createElement("div", { style: { width: pct + "%", height: "100%", background: allDone ? C.green : C.accent, borderRadius: 3, transition: "width 0.3s ease" } })));
         })(),
@@ -9037,12 +9044,12 @@ function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
                             React.createElement("div", { style:{fontSize:10,fontWeight:700,color:C.accent,letterSpacing:"0.06em"} }, "📈 PROJECTED"),
                             React.createElement("div", { style:{fontSize:13,fontWeight:800,color:C.text} }, `${projectedCompliance}% · ${projectedSessions} sessions`)),
 
-                    React.createElement("div", { style:{display:"flex",alignItems:"center",gap:8} },
-                        React.createElement("div", { style:{fontSize:10,color:C.muted,fontWeight:700,letterSpacing:"0.06em"} }, "TARGET"),
-                        React.createElement("button", { onClick:()=>adjustTarget(-1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "−"),
-                        React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text,minWidth:20,textAlign:"center"} }, target),
-                        React.createElement("button", { onClick:()=>adjustTarget(1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "+"),
-                        React.createElement("div", { style:{fontSize:10,color:C.muted} }, "/mo"))
+                    React.createElement("div", { style:{marginTop:4} },
+                        React.createElement("div", { style:{fontSize:9,color:C.muted,fontWeight:700,letterSpacing:"0.06em",marginBottom:6} }, "MONTHLY TARGET"),
+                        React.createElement("div", { style:{display:"flex",alignItems:"center",gap:8} },
+                            React.createElement("button", { onClick:()=>adjustTarget(-1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "−"),
+                            React.createElement("div", { style:{fontSize:16,fontWeight:900,color:C.text,minWidth:56,textAlign:"center"} }, `${target}/mo`),
+                            React.createElement("button", { onClick:()=>adjustTarget(1), style:{width:26,height:26,borderRadius:6,border:`1px solid ${C.dim}`,background:"none",color:C.sub,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"} }, "+")))
                 )
             )
         ),
@@ -13166,7 +13173,7 @@ function App() {
                                         lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions, onSkip: () => setLunch(null), onSwap: () => setSwapSlot("lunch") })) : React.createElement(EmptySlotCard, { slot: "lunch", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
                                         dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions, onSkip: () => setDinner(null), onSwap: () => setSwapSlot("dinner") })) : React.createElement(EmptySlotCard, { slot: "dinner", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dinner"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
                     dessert && desr
-                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions })
+                        ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions, onSkip: () => setDessert(null), onSwap: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } })
                         : React.createElement(EmptySlotCard, { slot: "dessert", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } }),
                     React.createElement(MacroBalancer, { allSet: !!(lr || dr || bfr || prer || desr), total: total, targets: effectiveTargets, L: L, D: D, BF: BF, PRE_M: PRE_M, DS: DS, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, showBalance: showBalance, setShowBalance: setShowBalance, setLunchScale: setLunchScale, setDinnerScale: setDinnerScale, setBfScale: setBfScale, setPreScale: setPreScale, setDesScale: setDesScale, bfActive: !breakfastSkipped, preActive: !preSkipped, desActive: !!desr, setBreakfastSkipped: setBreakfastSkipped, setPreSkipped: setPreSkipped, setDessert: setDessert, profileScale: profileScale })),
                 tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" },
@@ -13206,7 +13213,10 @@ function App() {
                             : React.createElement("div", { className: "tab-anim", style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 32px", textAlign: "center" } },
                                 React.createElement("div", { style: { fontSize: 56, marginBottom: 20 } }, "🧺"),
                                 React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, marginBottom: 10 } }, "Pantry Tracker"),
-                                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 280, marginBottom: 28 } }, "Track what you have at home and get recipe suggestions based on your pantry. Available on any paid plan."),
+                                React.createElement("div", { style: { display:"inline-flex", alignItems:"center", gap:6, background:"rgba(59,130,246,0.1)", border:"1px solid rgba(59,130,246,0.3)", borderRadius:8, padding:"4px 10px", marginBottom:14 } },
+                                    React.createElement("span", { style:{fontSize:11} }, "🚧"),
+                                    React.createElement("span", { style:{fontSize:11, fontWeight:700, color:"#60a5fa", letterSpacing:"0.05em"} }, "COMING SOON — FEATURE IN DEVELOPMENT")),
+                                React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, maxWidth: 280, marginBottom: 28 } }, "Track what you have at home and automatically skip those ingredients from your shopping list. We’re actively building this to further improve your experience."),
                                 React.createElement("button", { onClick: () => setShowUpgrade(true), style: { background: C.accent, border: "none", borderRadius: 12, padding: "14px 32px", fontSize: 15, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em" } }, "🔓 Unlock Pantry"))
                     ),
 
