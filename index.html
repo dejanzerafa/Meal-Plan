@@ -13485,6 +13485,13 @@ function App() {
                         style: { width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12,
                             padding: "13px", marginBottom: 12, fontSize: 13, fontWeight: 700, color: C.sub, cursor: "pointer" } },
                         "🔑 Sign in to sync across devices"),
+                    !currentUser && React.createElement("a", {
+                        href: "/waitlist",
+                        style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                            width: "100%", background: "#E07B2A", border: "none", borderRadius: 12,
+                            padding: "13px", marginBottom: 12, fontSize: 13, fontWeight: 900, color: "#0C0B0A",
+                            cursor: "pointer", textDecoration: "none", letterSpacing: "0.5px", boxSizing: "border-box" } },
+                        "🔥 Join the Waitlist — Get notified at launch"),
                     // ── Legal (collapsed) ─────────────────────────────────────────────
                     React.createElement(LegalAccordion, { C: C })),
         ))),
