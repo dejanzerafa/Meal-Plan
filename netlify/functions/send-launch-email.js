@@ -143,7 +143,7 @@ exports.handler = async (event) => {
                   <table style="background:#141312;border:1px solid #252220;border-radius:8px;width:100%;" cellpadding="16" cellspacing="0">
                     <tr><td>
                       <p style="margin:0 0 6px;font-size:20px;">🍱</p>
-                      <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#F2EDE6;">97 Recipes</p>
+                      <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#F2EDE6;">173 Recipes</p>
                       <p style="margin:0;font-size:12px;color:#6B6560;line-height:1.5;">High-protein. Verified macros — not estimates.</p>
                     </td></tr>
                   </table>
