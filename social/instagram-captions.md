@@ -36,7 +36,7 @@ Follow. Something's coming.
 
 We built the meal prep app we always wanted. 🔥
 
-97 verified recipes — macros checked to the gram. 📊
+173 verified recipes — macros checked to the gram. 📊
 One auto-generated grocery list based on your meals. 🛒
 A weekly planner so you cook once and you're done. 📅
 
@@ -61,7 +61,7 @@ SoulGainz is coming soon — link in bio to stay in the loop. 👇
 
 **Caption:**
 
-97 recipes. 📋
+173 recipes. 📋
 1 shopping list. 🛒
 7 days of food. 🗓️
 
@@ -213,11 +213,11 @@ Food should do the work. You just have to eat it. 🍱
 
 **Caption:**
 
-For the ones who train before the world wakes up.
+For the ones who train hard and want their food to match.
 
 For the ones who track their macros and actually mean it.
 
-For the ones who want their kitchen to match their work ethic.
+For the ones who refuse to let the kitchen undo the gym.
 
 This one's for you. 🔥
 
