@@ -18,9 +18,6 @@
 <script>
 const { useState, useEffect, useRef } = React;
 
-// ── Config ── Change this password before deploying ──────────────────────────
-const ADMIN_PASSWORD = "soulgainz2025";
-
 const C = {
   bg:"#0f0d0a", card:"#1c1712", card2:"#241e18", dim:"#3a2f24",
   accent:"#E07B2A", accentDim:"rgba(224,123,42,0.12)", accentBorder:"rgba(224,123,42,0.3)",
@@ -50,9 +47,18 @@ function LoginScreen({ onLogin }) {
   const inputRef = useRef(null);
   useEffect(() => { inputRef.current && inputRef.current.focus(); }, []);
 
-  function attempt() {
-    if (pw === ADMIN_PASSWORD) { onLogin(); }
-    else { setErr(true); setPw(""); setTimeout(() => setErr(false), 1800); }
+  async function attempt() {
+    try {
+      const res = await fetch("/.netlify/functions/admin-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (res.ok) { onLogin(); }
+      else { setErr(true); setPw(""); setTimeout(() => setErr(false), 1800); }
+    } catch {
+      setErr(true); setPw(""); setTimeout(() => setErr(false), 1800);
+    }
   }
 
   return React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:24} },

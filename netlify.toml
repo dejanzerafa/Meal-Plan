@@ -59,6 +59,47 @@
   to = "/waitlist.html"
   status = 200
 
+# ── Block internal/dev pages from public access ──────────────────────────────
+[[redirects]]
+  from = "/baseline-v15.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/recipe-release.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/recipe-review.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/recipe-image-prompts.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/generate-icons.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/generate-icons 2.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/blog-meal-prep-beginners 2.html"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/recipes-preview.html"
+  to = "/404"
+  status = 404
+
 # ── Security headers ──────────────────────────────────────────────────────────
 [[headers]]
   for = "/*"

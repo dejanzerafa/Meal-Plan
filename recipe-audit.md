@@ -1,256 +1,388 @@
-# Recipe Audit — 2026-05-10
-Total recipes: 94
+# SoulGainz Recipe Audit Report
+
+**Date:** 2026-08-17  
+**File audited:** `index.html` (SoulGainz PWA)  
+**Auditor:** Automated macro & quality review
 
 ---
 
-## 🔴 Critical (fix before launch)
+## Summary Statistics
 
-These issues are clearly wrong — macro data contradictions over 80 kcal, a broken portion count that breaks scaling, a JavaScript syntax error, and a mismatched note vs. displayed macros.
+| Metric | Value |
+|---|---|
+| Total recipes | 173 |
+| Categories | main (104), breakfast (35), dessert (10), smoothie (10), preworkout (8), salad (6) |
+| Average protein per serving | **48.9 g** |
+| Average calories per serving | **549 kcal** |
+| Recipes hitting 30g+ protein | **148 (86%)** |
+| Recipes 20–29g protein | 12 (7%) |
+| Recipes under 20g protein | 13 (7%) |
+| Macro accuracy warnings (>30 kcal off) | **9 recipes** |
 
----
-
-### [d1] Protein Brownie Cookies
-- **Issue**: `portions: 7` but recipe note explicitly states "Makes 4 cookies"
-- **Details**: The batch shopping list will scale to 7 servings, but the recipe only produces 4 physical cookies. Every shopper who follows this will overbuy by 75%.
-- **Suggested fix**: Change `portions: 7` → `portions: 4`. Also verify macros: perPortion says {kcal:146, P:14, C:20, F:4.1} but note says 145/12/18/3 — resolve which is authoritative.
-
----
-
-### [m19] Salmon & Avocado Burrito
-- **Issue**: Macro note contradicts perPortion by 119 kcal
-- **Details**: perPortion states `{kcal:623, protein:48, carbs:46, fat:28.3}`, but the recipe note says "Macros: 504 kcal · 38P · 32C · 27F". These appear to be two different serving sizes (100g vs full portion).
-- **Suggested fix**: Decide which figure is correct for one burrito. The note's 504 kcal appears to reference a 100g/smaller portion. Update either the note or perPortion to match. Also: recipe name needs a leading emoji.
+Overall the library is strong. The vast majority of mains and breakfasts clear the 30 g protein bar comfortably. The flagged issues are concentrated in the dessert and preworkout categories, which by their nature skew carb-heavy — this is expected but worth noting to users.
 
 ---
 
-### [m20] Juicy Garlic Lemon Chicken
-- **Issue**: Macro note contradicts perPortion by 81 kcal
-- **Details**: perPortion states `{kcal:278, protein:55, carbs:6, fat:2.8}`, but note says "197 kcal · 39P · 2C · 4F per 200g portion". The note appears to be for a 200g sub-portion, while perPortion is the full serving.
-- **Suggested fix**: Clarify in the note that 197 kcal is per 200g piece, and that full portions are ~278 kcal. Or standardise to one measurement. Recipe name also missing emoji.
+## All Recipes — Master Table
+
+> Macro check: ✅ = stated calories within 30 kcal of P×4+C×4+F×9 | ⚠️ = >30 kcal discrepancy  
+> Protein rating: ✅ 30g+ | ⚠️ 20–29g | ❌ under 20g
+
+### Breakfast (35 recipes)
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🥚 High-Protein Breakfast | 852 | 98.0 | 72.0 | 17.6 | ✅ | ✅ 30g+ |
+| 🍌 Banana Egg Caramel Stack | 787 | 64.9 | 81.6 | 22.8 | ✅ | ✅ 30g+ |
+| 🥚 Egg, Beef & Cheese Breakfast Bowl | 634 | 59.9 | 52.6 | 19.7 | ✅ | ✅ 30g+ |
+| 🥩 Classic Steak & Smashed Egg Skillet | 680 | 56.9 | 37.7 | 32.9 | ✅ | ✅ 30g+ |
+| 🍳 Full Power Breakfast Plate | 718 | 55.8 | 75.7 | 21.7 | ✅ | ✅ 30g+ |
+| 🥥 Mango Coconut Overnight Oats | 680 | 54.8 | 77.2 | 18.0 | ✅ | ✅ 30g+ |
+| 🥑 Smashed Avo & Poached Egg Toast | 674 | 54.5 | 49.1 | 28.1 | ✅ | ✅ 30g+ |
+| 🥓 Bacon & Hashbrown Bowl | 565 | 54.4 | 25.9 | 26.0 | ✅ | ✅ 30g+ |
+| 🌾 High-Protein Breakfast Oats | 675 | 53.5 | 73.9 | 19.4 | ✅ | ✅ 30g+ |
+| 🥞 Fluffy High-Protein Pancakes | 603 | 52.5 | 70.9 | 10.9 | ✅ | ✅ 30g+ |
+| 🌯 Loaded Protein Breakfast Wrap | 678 | 52.2 | 53.1 | 22.4 | ⚠️ | ✅ 30g+ |
+| 🐟 Omega-3 Smoked Salmon Plate | 616 | 51.3 | 39.8 | 26.9 | ✅ | ✅ 30g+ |
+| 💜 Purple Berry Power Smoothie Bowl | 553.8 | 50.8 | 70.9 | 8.7 | ✅ | ✅ 30g+ |
+| 📅 Dates & Banana Protein Toast | 588 | 50.6 | 69.4 | 13.0 | ✅ | ✅ 30g+ |
+| 🥚 Breakfast Bagel Sandwich | 642 | 49.9 | 55.9 | 23.6 | ✅ | ✅ 30g+ |
+| 🌞 Tropical Yellow Sunshine Bowl | 504 | 49.0 | 66.7 | 5.5 | ✅ | ✅ 30g+ |
+| 🥯 Turkey Sausage Breakfast Bagel | 624 | 48.7 | 55.8 | 22.2 | ✅ | ✅ 30g+ |
+| 🥚🥩 Egg, Beef & Cheese Breakfast Burritos | 590 | 48.3 | 37.8 | 27.1 | ✅ | ✅ 30g+ |
+| 🍚 Protein Chicken Congee | 597 | 47.4 | 50.7 | 24.9 | ✅ | ✅ 30g+ |
+| 🍌 Almond Butter Banana Wrap | 616 | 46.6 | 71.6 | 17.3 | ✅ | ✅ 30g+ |
+| 🍎 Apple Cinnamon Protein Porridge | 530 | 46.0 | 72.5 | 7.5 | ✅ | ✅ 30g+ |
+| 🫐 Protein Smoothie Bowl | 295 | 45.0 | 22.4 | 2.8 | ✅ | ✅ 30g+ |
+| 🍓 Berry Granola Goddess Bowl | 450.2 | 45.0 | 50.7 | 7.9 | ✅ | ✅ 30g+ |
+| 🍫 Banana Dark Chocolate Almond Oats | 504 | 41.3 | 60.1 | 11.6 | ✅ | ✅ 30g+ |
+| 🍌 Banana Blueberry Protein Oats | 456 | 40.7 | 63.6 | 5.4 | ✅ | ✅ 30g+ |
+| 🫐 Blueberry Cinnamon Protein Oats | 392 | 39.9 | 47.4 | 5.2 | ✅ | ✅ 30g+ |
+| 🥚 Eggs on Wholegrain Toast | 448 | 38.1 | 40.3 | 14.7 | ✅ | ✅ 30g+ |
+| 🥚 Stuffed Veggie Power Omelette | 493 | 38.0 | 34.6 | 23.0 | ✅ | ✅ 30g+ |
+| 🥚 High Protein Breakfast Sandwiches | 490 | 38.0 | 35.0 | 20.0 | ✅ | ✅ 30g+ |
+| 🧀 Cottage Cheese & Toast | 403 | 35.2 | 46.6 | 8.0 | ✅ | ✅ 30g+ |
+| 🍳 Egg & Veggie Protein Frittata | 372 | 30.0 | 14.0 | 21.8 | ✅ | ✅ 30g+ |
+| 🥚 Clean Egg White Omelette | 368.6 | 29.6 | 31.7 | 14.8 | ✅ | ⚠️ 20–29g |
+| 🫙 Greek Yogurt Protein Bowl | 245 | 23.7 | 19.8 | 8.8 | ✅ | ⚠️ 20–29g |
+| 🍌 Banana Bread Baked Oats | 268 | 23.2 | 32.7 | 4.7 | ✅ | ⚠️ 20–29g |
+| 🥞 High Protein Banana Pancakes | 258 | 21.0 | 29.0 | 6.0 | ✅ | ⚠️ 20–29g |
+
+### Mains (104 recipes)
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🍗 Honey Chipotle Chicken Bowl | 831 | 89.0 | 82.3 | 15.1 | ✅ | ✅ 30g+ |
+| 🐟 High-Protein Tuna & Veg Plate | 524 | 89.0 | 33.0 | 4.0 | ✅ | ✅ 30g+ |
+| 🍗 Chipotle Chicken Bowl | 847 | 88.8 | 82.4 | 17.1 | ✅ | ✅ 30g+ |
+| 🍗 Marry Me Chicken | 819 | 85.1 | 84.4 | 15.0 | ✅ | ✅ 30g+ |
+| 🦃 Lean Turkey Mince Rice Bowl | 690 | 78.6 | 74.9 | 6.1 | ✅ | ✅ 30g+ |
+| 🍗 High-Protein KFC Mac & Cheese | 898 | 75.9 | 105.2 | 18.9 | ✅ | ✅ 30g+ |
+| 🍗 Marry Me Chicken — Pasta | 772 | 75.7 | 87.9 | 12.3 | ✅ | ✅ 30g+ |
+| 🇺🇸 BBQ Chicken & Corn Rice Bowl | 755 | 74.1 | 82.4 | 13.7 | ✅ | ✅ 30g+ |
+| 🍗 Herb Chicken Bowl with Rice & Vegetables | 711 | 74.0 | 80.1 | 10.4 | ✅ | ✅ 30g+ |
+| 🍗 Honey Chipotle Chicken Burritos | 685 | 73.2 | 71.2 | 11.0 | ✅ | ✅ 30g+ |
+| 🥩 Lean Beef Hamburger Helper | 819 | 72.7 | 96.8 | 16.6 | ✅ | ✅ 30g+ |
+| 🍗 Teriyaki Chicken & Edamame Rice | 713 | 71.5 | 81.8 | 12.0 | ✅ | ✅ 30g+ |
+| 🍗 Slow-Cooked Pulled Chicken & Rice | 690 | 70.7 | 82.2 | 9.8 | ✅ | ✅ 30g+ |
+| 🎖️ All-American Beef & Rice Casserole | 729 | 69.7 | 65.2 | 20.6 | ✅ | ✅ 30g+ |
+| 🥩 Lean Beef & Broccoli Rice Bowl | 733 | 69.7 | 75.1 | 19.3 | ✅ | ✅ 30g+ |
+| 🍗 French Onion Pasta | 780 | 69.6 | 88.7 | 15.9 | ✅ | ✅ 30g+ |
+| 🎄 Rosemary Turkey & Cranberry Sweet Potato Bowl | 494 | 69.1 | 30.5 | 11.6 | ✅ | ✅ 30g+ |
+| 🍗 Chicken Alfredo Red Sauce | 828 | 68.3 | 97.2 | 20.2 | ✅ | ✅ 30g+ |
+| 🥩 Lean Beef & Potato Roast | 545 | 67.9 | 31.2 | 16.3 | ✅ | ✅ 30g+ |
+| 🥩 Beef Mince & Rice Bowl | 791 | 67.4 | 79.1 | 22.5 | ✅ | ✅ 30g+ |
+| 🥩 Spicy Thai Basil Beef Bowl | 805.6 | 67.1 | 84.9 | 21.5 | ✅ | ✅ 30g+ |
+| 🥓 Creamy Bacon Beef Protein Pasta | 600 | 67.0 | 45.0 | 18.0 | ✅ | ✅ 30g+ |
+| 🍗 Garlic Parmesan Chicken Pasta | 783 | 66.1 | 83.5 | 19.6 | ✅ | ✅ 30g+ |
+| 🐷 Pork Tenderloin & Jasmine Rice | 667 | 65.4 | 78.4 | 10.6 | ✅ | ✅ 30g+ |
+| 🍗 Buffalo Ranch Chicken Pasta | 739 | 65.3 | 86.0 | 12.9 | ✅ | ✅ 30g+ |
+| 🥟 Steamed Chicken Power Bao | 849 | 65.3 | 79.8 | 31.9 | ✅ | ✅ 30g+ |
+| 🥩 Beef Mince Bake | 733 | 64.9 | 81.8 | 17.4 | ✅ | ✅ 30g+ |
+| 🦃 Ground Turkey Taco Bowl | 805 | 64.7 | 79.7 | 24.7 | ✅ | ✅ 30g+ |
+| 🥩 High Protein Creamy Beef Pasta | 580 | 64.0 | 48.0 | 10.0 | ⚠️ | ✅ 30g+ |
+| 🍗 Chicken Bacon Mac | 739 | 63.9 | 80.4 | 15.8 | ✅ | ✅ 30g+ |
+| 🐔 Grilled Chicken Protein Burger | 733 | 63.8 | 47.1 | 33.0 | ✅ | ✅ 30g+ |
+| 🥩 Lean Beef Bowl with Rice & Vegetables | 703 | 63.7 | 81.3 | 15.2 | ✅ | ✅ 30g+ |
+| 🍗 Italian Herb Chicken, Rice & Broccoli | 649 | 63.4 | 77.5 | 9.8 | ✅ | ✅ 30g+ |
+| 🍗 Classic Chicken, Rice & Broccoli | 691 | 63.0 | 79.5 | 13.5 | ✅ | ✅ 30g+ |
+| 🫔 Crispy Chicken Crunch Wrap | 632 | 62.7 | 71.7 | 10.1 | ✅ | ✅ 30g+ |
+| 🍗 Baked Chicken Breast & Potato | 530 | 62.3 | 43.1 | 11.0 | ✅ | ✅ 30g+ |
+| 🍗 Green Pepper & Onion Pasta | 771 | 62.3 | 77.6 | 21.9 | ✅ | ✅ 30g+ |
+| 🥩 Big Mac Protein Pasta | 751 | 61.2 | 91.0 | 15.2 | ✅ | ✅ 30g+ |
+| 🍗 Herb Chicken Bowl with Sweet Potato & Vegetables | 553 | 61.2 | 62.2 | 7.4 | ✅ | ✅ 30g+ |
+| 🍔 Lean Beef Smash Burger | 649 | 61.2 | 49.6 | 22.2 | ✅ | ✅ 30g+ |
+| 🥩 Beef, Cottage Cheese & Sweet Potato Bowl | 610 | 60.5 | 61.2 | 14.0 | ✅ | ✅ 30g+ |
+| 🫓 Smoky Eggplant Baba Pita | 628 | 60.1 | 85.4 | 5.7 | ✅ | ✅ 30g+ |
+| 🐟 Seared Tuna Steak & Quinoa Tabbouleh | 550 | 59.8 | 53.8 | 9.6 | ✅ | ✅ 30g+ |
+| 🍗 Chicken & Red Lentil Soup | 567 | 59.2 | 70.7 | 4.5 | ✅ | ✅ 30g+ |
+| 🍗 Chicken, Quinoa & Zucchini Bowl | 602 | 58.8 | 58.4 | 14.5 | ✅ | ✅ 30g+ |
+| 🥩 Creamy Steak Pasta | 765 | 58.7 | 84.0 | 22.2 | ✅ | ✅ 30g+ |
+| 🍯 Honey Soy Glazed Chicken Bowl | 776.9 | 58.6 | 88.8 | 17.6 | ✅ | ✅ 30g+ |
+| 🦐 Prawn & Avocado Rice Bowl | 635 | 58.0 | 76.4 | 13.3 | ✅ | ✅ 30g+ |
+| 🌸 Honey-Glazed Chicken & Strawberry Spinach Quinoa | 605 | 57.6 | 53.0 | 17.8 | ✅ | ✅ 30g+ |
+| 🐟 White Fish & Mango Salsa Rice | 578 | 57.5 | 72.8 | 6.8 | ✅ | ✅ 30g+ |
+| 🦃 Slow-Cooker Turkey & Butternut Squash Feast | 392 | 57.3 | 22.4 | 9.3 | ✅ | ✅ 30g+ |
+| 🥩 Ranch Beef Bowl | 559 | 56.2 | 56.6 | 11.2 | ✅ | ✅ 30g+ |
+| 🥩 Hibachi Steak Bowl | 719 | 55.8 | 62.2 | 27.3 | ✅ | ✅ 30g+ |
+| 🍯 Hot Honey Beef & Sweet Potato Bowls | 593 | 55.6 | 58.2 | 16.9 | ✅ | ✅ 30g+ |
+| 🥚 Chicken & Egg Toast Stack | 617 | 55.4 | 46.9 | 22.2 | ✅ | ✅ 30g+ |
+| 🍕 Pepperoni Pizza Pasta | 633.6 | 54.9 | 52.0 | 25.5 | ✅ | ✅ 30g+ |
+| 🥩 Grilled Sirloin & Sweet Potato Mash Bowl | 640 | 54.7 | 38.8 | 29.1 | ✅ | ✅ 30g+ |
+| 🍗 Greek Chicken & Orzo Bowl | 604 | 53.1 | 58.6 | 16.2 | ✅ | ✅ 30g+ |
+| 🥩 Lean Beef Bowl with Sweet Potato & Vegetables | 547 | 53.0 | 63.3 | 11.2 | ✅ | ✅ 30g+ |
+| 🍋 Juicy Garlic Lemon Chicken | 308 | 52.5 | 5.6 | 6.8 | ✅ | ✅ 30g+ |
+| 🫔 High-Protein Chicken Quesadilla | 571 | 52.3 | 37.6 | 22.1 | ✅ | ✅ 30g+ |
+| 🍗 Herb Green Rice Chicken Bowl | 684 | 51.8 | 65.7 | 19.6 | ⚠️ | ✅ 30g+ |
+| 🎃 Black Bean & Pumpkin Chilli Chicken Bowl | 456 | 51.6 | 41.9 | 9.9 | ✅ | ✅ 30g+ |
+| 🌶 Peri Peri Grilled Chicken Plate | 677 | 51.4 | 58.1 | 27.7 | ✅ | ✅ 30g+ |
+| 🥑 Salmon & Avocado Burrito | 755.7 | 51.2 | 51.5 | 36.9 | ✅ | ✅ 30g+ |
+| 🍗 Chicken & Cauliflower Rice Bowl | 358 | 51.0 | 16.6 | 10.1 | ✅ | ✅ 30g+ |
+| 🍗 Italian Herb Chicken, Sweet Potato & Broccoli | 504 | 50.6 | 63.0 | 6.7 | ✅ | ✅ 30g+ |
+| 🍳 High-Protein Nasi Goreng | 656 | 50.3 | 71.4 | 17.3 | ✅ | ✅ 30g+ |
+| 🐣 Herb-Crusted Lamb & Quinoa with Feta | 731.6 | 50.1 | 51.8 | 36.0 | ✅ | ✅ 30g+ |
+| 🦐 Garlic Shrimp Stir-Fry & Brown Rice | 549 | 49.9 | 74.1 | 6.9 | ✅ | ✅ 30g+ |
+| 🥢 Tofu & Edamame Teriyaki Bowl | 647 | 48.8 | 76.8 | 17.5 | ✅ | ✅ 30g+ |
+| 🥩 Cheeseburger Burritos | 563 | 48.7 | 42.6 | 21.8 | ✅ | ✅ 30g+ |
+| 🍝 Slow-Cooked Beef Ragu Pasta | 590 | 48.2 | 69.8 | 12.7 | ✅ | ✅ 30g+ |
+| 🌶️ Lean Beef Chili with Sweet Potato, Spinach & Corn | 498 | 47.2 | 54.0 | 12.6 | ✅ | ✅ 30g+ |
+| ❤️ Salmon & Asparagus with Lemon-Dill Quinoa | 636 | 47.2 | 42.6 | 29.5 | ✅ | ✅ 30g+ |
+| 🎃 Roasted Pumpkin Power Bowl | 775.5 | 47.1 | 100.4 | 24.1 | ⚠️ | ✅ 30g+ |
+| 🐟 Salmon & Quinoa with Asparagus | 713 | 47.0 | 61.0 | 30.1 | ✅ | ✅ 30g+ |
+| 🍗 Chicken Club Toastie | 570 | 47.0 | 53.7 | 18.0 | ✅ | ✅ 30g+ |
+| 🐟 Salmon, Avocado & Spinach Bowl | 573.1 | 46.6 | 10.8 | 37.5 | ✅ | ✅ 30g+ |
+| 🥩 Seared Steak & Garlicky Greens | 470.2 | 46.3 | 17.5 | 24.1 | ✅ | ✅ 30g+ |
+| 🍳 Shakshuka Protein Bowls | 598 | 45.9 | 56.6 | 21.8 | ✅ | ✅ 30g+ |
+| 🍯 Slow Cooker Honey Cashew Chicken | 334 | 45.0 | 16.0 | 9.5 | ✅ | ✅ 30g+ |
+| 🥢 Teriyaki Tofu & Soba Bowl | 594 | 44.8 | 72.4 | 19.2 | ⚠️ | ✅ 30g+ |
+| 🧆 Smoky Eggplant Beef Rice Bowl | 586 | 44.1 | 75.2 | 12.1 | ✅ | ✅ 30g+ |
+| 🥗 Greek Yogurt Egg & Veggie Protein Bowl | 654 | 44.0 | 62.0 | 25.9 | ✅ | ✅ 30g+ |
+| 🥩 Ground Beef, Eggs & Brown Rice Bowl | 572 | 43.8 | 53.6 | 20.9 | ✅ | ✅ 30g+ |
+| 🍛 Lentil & Spinach Dahl | 554 | 42.6 | 81.7 | 7.0 | ✅ | ✅ 30g+ |
+| 🥬 Green Kale Basil Pesto Pasta | 593 | 42.5 | 74.2 | 14.2 | ✅ | ✅ 30g+ |
+| 🐟 Baked Cod & Roasted Baby Potatoes | 396 | 42.0 | 43.0 | 6.2 | ✅ | ✅ 30g+ |
+| 🥬 Spinach & White Bean Pasta | 535 | 40.8 | 74.9 | 9.5 | ✅ | ✅ 30g+ |
+| 🍗 Lemongrass Chicken Coconut Bowl | 511 | 40.3 | 35.4 | 22.8 | ✅ | ✅ 30g+ |
+| 🍗 Chicken with Mustard & Coffee Sauce | 228 | 37.9 | 6.3 | 4.7 | ✅ | ✅ 30g+ |
+| 🪴 Black Bean & Sweet Potato Burrito Bowls | 558 | 36.5 | 73.2 | 14.6 | ✅ | ✅ 30g+ |
+| 🌙 Spiced Lamb & Lentil Rice (Mujadara-Style) | 707 | 36.1 | 82.5 | 26.2 | ✅ | ✅ 30g+ |
+| 🐟 Bali-Spiced Barramundi Plate | 431.8 | 35.1 | 19.9 | 24.0 | ✅ | ✅ 30g+ |
+| 🧀 Paneer Tikka Masala Bowl | 472 | 33.1 | 53.1 | 14.9 | ✅ | ✅ 30g+ |
+| 🥚 Egg White Frittata & Roasted Potatoes | 305 | 33.0 | 26.0 | 7.4 | ✅ | ✅ 30g+ |
+| 🍄 Umami Miso Mushroom Pasta | 430 | 32.3 | 61.0 | 6.5 | ✅ | ✅ 30g+ |
+| 🌿 Chickpea & Roasted Veggie Couscous | 548 | 30.3 | 76.8 | 11.2 | ✅ | ✅ 30g+ |
+| 🍗 Crispy Chicken Nuggets | 316 | 28.7 | 16.0 | 14.9 | ✅ | ⚠️ 20–29g |
+| 🥚 Sweet Potato Veggie Egg Bake | 370 | 28.2 | 28.0 | 13.1 | ✅ | ⚠️ 20–29g |
+| 🥢 Balinese Peanut Tempeh Skewers | 372 | 28.1 | 26.5 | 20.8 | ⚠️ | ⚠️ 20–29g |
+| 🐟 Tuna & Chickpea Power Bowl | 269 | 25.7 | 28.6 | 6.4 | ✅ | ⚠️ 20–29g |
+| 🥒 Zesty Pickle & Veggie Board | 162 | 19.0 | 20.0 | 1.0 | ✅ | ❌ <20g |
+
+### Desserts (10 recipes)
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🥕 Carrot Protein Pancakes | 456 | 52.0 | 37.6 | 10.4 | ✅ | ✅ 30g+ |
+| 🍉 Watermelon Feta & Edamame Bowl | 401 | 35.0 | 41.1 | 12.0 | ✅ | ✅ 30g+ |
+| 🍫 Chocolate Protein Rice Cakes | 318 | 26.8 | 30.4 | 9.9 | ✅ | ⚠️ 20–29g |
+| 🥭 Mango Protein Tart | 235 | 17.6 | 31.0 | 5.4 | ✅ | ❌ <20g |
+| 🍫 High-Protein Chocolate Brownie | 198 | 16.5 | 18.4 | 8.2 | ✅ | ❌ <20g |
+| 🍫 Protein Chocolate Mousse | 260 | 15.0 | 31.0 | 10.0 | ✅ | ❌ <20g |
+| 🍵 Matcha Banana Protein Bread | 152 | 14.0 | 18.0 | 3.0 | ✅ | ❌ <20g |
+| 🍪 Protein Brownie Cookies | 136 | 13.7 | 18.2 | 3.9 | ✅ | ❌ <20g |
+| 🍫 High-Protein Chocolate Banana Brownies | 165 | 12.4 | 16.9 | 6.5 | ✅ | ❌ <20g |
+| 🍌 Protein Banana Bread | 180 | 12.4 | 22.3 | 4.9 | ✅ | ❌ <20g |
+
+### Smoothies (10 recipes)
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🥛 Creamy Oat Protein Shake | 742.2 | 69.5 | 73.6 | 21.3 | ✅ | ✅ 30g+ |
+| 🥭 Coconut Mango Protein Smoothie | 509.4 | 50.9 | 58.1 | 10.1 | ✅ | ✅ 30g+ |
+| 🍫 Chocolate Peanut Power Shake | 547 | 43.6 | 70.5 | 16.1 | ⚠️ | ✅ 30g+ |
+| 💜 Purple Acai Dream Smoothie | 544 | 42.8 | 66.1 | 14.7 | ✅ | ✅ 30g+ |
+| 🌿 Tropical Green Gains Smoothie | 550 | 42.2 | 62.5 | 18.2 | ⚠️ | ✅ 30g+ |
+| ☕ Caramel Espresso Protein Shake | 443 | 37.6 | 59.6 | 9.5 | ⚠️ | ✅ 30g+ |
+| 🍓 Berry Matcha Antioxidant Shake | 351 | 34.2 | 32.2 | 10.0 | ✅ | ✅ 30g+ |
+| 🫐 Mixed Berry Power Smoothie | 319 | 30.4 | 42.8 | 3.7 | ✅ | ✅ 30g+ |
+| 🍌 Banana & Oat Protein Smoothie | 334 | 30.0 | 46.0 | 4.6 | ✅ | ✅ 30g+ |
+| 🍫 Light Choc Peanut Shake | 305 | 23.7 | 34.3 | 8.4 | ✅ | ⚠️ 20–29g |
+
+### Pre-Workout (8 recipes)
+
+*Note: Pre-workout recipes are intentionally carb-focused to fuel training. Low protein in this category is contextually appropriate.*
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🌾 Overnight Oats with Protein | 500 | 37.0 | 70.0 | 9.6 | ✅ | ✅ 30g+ |
+| 🫙 Greek Yogurt & Berry Bowl | 318 | 24.0 | 47.0 | 4.3 | ✅ | ⚠️ 20–29g |
+| 🥚 Egg White & Toast with Jam | 274 | 22.0 | 39.0 | 2.9 | ✅ | ⚠️ 20–29g |
+| 🥛 Chocolate Milk & Banana | 351 | 11.0 | 68.0 | 4.4 | ✅ | ❌ <20g |
+| 🥯 Pre-Run Bagel & Banana | 416 | 11.0 | 89.0 | 3.0 | ✅ | ❌ <20g |
+| 🥜 Rice Cake & Peanut Butter Stack | 290 | 8.0 | 48.0 | 9.0 | ✅ | ❌ <20g |
+| 🍉 Tropical Fruit Spice Bowl | 120 | 1.5 | 30.0 | 0.5 | ✅ | ❌ <20g |
+| ⚡ Carb Bridge | 139 | 1.0 | 33.0 | 0.3 | ✅ | ❌ <20g |
+
+### Salads (6 recipes)
+
+| Name | Cal | Protein | Carbs | Fat | Macro ✓ | Protein |
+|---|---|---|---|---|---|---|
+| 🥩 Lean Taco Salad | 631 | 66.2 | 62.4 | 13.5 | ✅ | ✅ 30g+ |
+| 🥗 Crunchy Asian Sesame Chicken Salad | 520.3 | 55.2 | 28.6 | 22.2 | ✅ | ✅ 30g+ |
+| 🥑 Creamy Chicken Avocado Salad | 384 | 51.1 | 12.5 | 14.5 | ✅ | ✅ 30g+ |
+| 🥩 Sirloin Steak & Sweet Potato Salad | 645 | 49.3 | 58.0 | 23.5 | ✅ | ✅ 30g+ |
+| 🥩 Spicy Thai Beef & Herb Salad | 473 | 41.5 | 49.5 | 12.4 | ✅ | ✅ 30g+ |
+| 🍗 Minced Chicken Thai Herb Salad | 222.9 | 38.3 | 12.4 | 3.2 | ✅ | ✅ 30g+ |
 
 ---
 
-### [m25] High-Protein KFC Mac & Cheese
-- **Issue**: Macro note contradicts perPortion by 135 kcal
-- **Details**: perPortion states `{kcal:724, protein:72, carbs:89, fat:6.6}`, but note says "589 kcal · 59P · 67C · 8F (4 portions)". This is a 23% calorie discrepancy — large enough to mislead users significantly.
-- **Suggested fix**: Recalculate from scratch using exact brand weights. One set of figures needs to be removed. Also: add `portions: 4` to the recipe object. Recipe name missing emoji.
+## Recipes Flagged for Improvement
+
+### 1. Macro Accuracy Issues (>30 kcal discrepancy)
+
+These recipes have a gap between their stated calorie count and the value derived from their macros (P×4 + C×4 + F×9). The calorie figure in the UI should be corrected to match the macros, or the macros should be rechecked against ingredient weights.
+
+| Recipe | Stated kcal | Calc kcal | Diff | Direction |
+|---|---|---|---|---|
+| 🌯 Loaded Protein Breakfast Wrap | 678 | 623 | +55 | Overstated |
+| 🍫 Chocolate Peanut Power Shake | 547 | 601 | -54 | Understated |
+| 🥢 Teriyaki Tofu & Soba Bowl | 594 | 642 | -48 | Understated |
+| 🍗 Herb Green Rice Chicken Bowl | 684 | 646 | +38 | Overstated |
+| 🥢 Balinese Peanut Tempeh Skewers | 372 | 406 | -34 | Understated |
+| 🌿 Tropical Green Gains Smoothie | 550 | 583 | -33 | Understated |
+| ☕ Caramel Espresso Protein Shake | 443 | 474 | -31 | Understated |
+| 🎃 Roasted Pumpkin Power Bowl | 775.5 | 807 | -31.5 | Understated |
+| 🥩 High Protein Creamy Beef Pasta | 580 | 538 | +42 | Overstated |
+
+**Recommendation:** Audit the ingredient weights for each of these. Likely a rounding issue at the ingredient level, or a fibre/alcohol calorie being counted inconsistently.
 
 ---
 
-### [v4] Greek Yogurt Egg & Veggie Protein Bowl
-- **Issue**: JavaScript syntax error — double comma `,,` before v5
-- **Details**: The v4 recipe object ends with `},` followed by another `,` before the v5 object. In strict JS parsing this may silently insert an `undefined` element into the RECIPES array, which will break any code that assumes all array items are objects (`.map`, `.filter`, `.find` calls).
-- **Suggested fix**: Remove the extra comma. Change `},,` → `},`. Also: add `portions: 5` field (note says 5 portions), add leading emoji to recipe name.
+### 2. Low-Protein Mains (under 30g) — Needs Upgrade or Repositioning
+
+These are categorised as "main" meals but fall below the 30 g protein threshold expected of SoulGainz mains.
+
+#### 🥒 Zesty Pickle & Veggie Board (19 g protein, 162 kcal)
+- **Issue:** This is a snack/side board, not a meal. At 162 kcal and 19 g protein it will leave any active user unsatisfied as a standalone main. The ingredient list (cucumber, carrot, beetroot, broccoli, ACV, 150 g cottage cheese) is fine but the portion is simply too small.
+- **Suggestion:** Either (a) re-categorise as a snack/side, (b) increase the cottage cheese to 300 g and add 2 boiled eggs to push protein to ~35 g, or (c) add it as a complementary side alongside a main.
+
+#### 🍗 Crispy Chicken Nuggets (28.7 g protein, 316 kcal)
+- **Issue:** Only 840 g ground chicken for 7 portions = 120 g raw per serve. Protein is borderline.
+- **Suggestion:** Increase ground chicken to 1050 g (7 × 150 g raw) to push protein to ~35 g per serve. Also add a note suggesting serving with a side of rice or veg — the 316 kcal is low for a main meal.
+
+#### 🥚 Sweet Potato Veggie Egg Bake (28.2 g protein, 370 kcal)
+- **Issue:** The macro is borderline (28.2 g) and manageable, but the low calorie count means it likely works better as a light meal or breakfast, not a primary prep main.
+- **Suggestion:** Re-categorise as "breakfast" where it sits naturally, or add an extra 3 eggs or 100 g egg whites to the batch to clear 30 g.
+
+#### 🥢 Balinese Peanut Tempeh Skewers (28.1 g protein, 372 kcal — also has a macro warning)
+- **Issue:** Tempeh is a genuinely good plant-based protein source, but the current portion only yields 28 g. Additionally the calorie figure is understated by 34 kcal.
+- **Suggestion:** Increase tempeh portion by ~15% per serve, fix the calorie figure, and ensure this is tagged as a plant-based/vegan option.
+
+#### 🐟 Tuna & Chickpea Power Bowl (25.7 g protein, 269 kcal)
+- **Issue:** Low protein and very low calories for a main. Likely a portion-size issue.
+- **Suggestion:** Add a full 95 g (drained) tin of tuna per serve rather than splitting across the batch, or increase the chickpea portion. Target ≥30 g protein and ≥400 kcal for a satisfying main.
 
 ---
 
-## 🟡 Review needed (confirm with owner)
+### 3. Desserts with Misleading "High-Protein" Naming
 
-These items may be intentional (single-serve recipes without a portions field is fine) but should be confirmed before launch.
+Seven of the ten desserts carry "High-Protein" or "Protein" in their names, yet deliver under 20 g per serve. For a fitness app audience that reads labels carefully, this may undermine trust.
 
----
-
-### [bf3] 🥚 Breakfast Bagel Sandwich
-- **Issue**: Near-duplicate of b3
-- **Details**: `bf3` (portions:3, kcal:653, P:47, C:52, F:27.7) and `b3` "Turkey Sausage Breakfast Bagel" (portions:4, kcal:651, P:47, C:52, F:27.5) are nearly identical recipes with different IDs, portions counts, and slight macro variations.
-- **Suggested fix**: Confirm whether both are intentionally in the library or if one should be removed. If keeping both, differentiate the names and macros clearly.
-
----
-
-### [m29] 🥩 Ranch Beef Bowl
-- **Issue**: No `portions` field on a batch main meal
-- **Details**: Note says "divide into 3 containers" but no `portions:` key in the object. The shopping list scaler has nothing to key off.
-- **Suggested fix**: Add `portions: 3` to the recipe object.
-
----
-
-### [m30] 🥩 Lean Taco Salad
-- **Issue**: No `portions` field on a batch main meal
-- **Details**: Same as m29 — note says divide into 3 containers.
-- **Suggested fix**: Add `portions: 3`.
-
----
-
-### [m4] 🥩 Hibachi Steak Bowl
-- **Issue**: ID naming inconsistency
-- **Details**: ID is `"m4"` while all other main meal IDs are zero-padded (`"m01"` through `"m14"`). This can cause sort/lookup bugs.
-- **Suggested fix**: Rename to `"m04"` and verify no hardcoded references to `"m4"` exist elsewhere in the codebase.
-
----
-
-### [m16] 🍗 Honey Chipotle Chicken Burritos
-- **Issue 1**: Note macro contradiction
-- **Details**: Note says "Macros: 455 kcal · 65P · 52C · 4F per burrito" but perPortion states {kcal:521, protein:69, carbs:47, fat:5.1}. This is a 66 kcal gap with different macro splits.
-- **Issue 2**: batchItem `m16_chip` has `qty: 1, unit: "whole"` for "Chipotle peppers in adobo" — ambiguous. Other recipes use grams (e.g. m06 uses 198g). 1 whole could mean 1 can or 1 single pepper.
-- **Suggested fix**: Resolve note vs perPortion. Change m16_chip to `qty: 200, unit: "g"` or equivalent.
-
----
-
-### [pw6] Chocolate Milk & Banana
-- **Issue**: Missing leading emoji
-- **Details**: All other preworkout recipes start with an emoji. This one starts with "Chocolate..." — breaks visual consistency and the emoji-strip sort logic may place it differently.
-- **Suggested fix**: Add an appropriate emoji, e.g. `"🍫 Chocolate Milk & Banana"` or `"🥛 Chocolate Milk & Banana"`.
-
----
-
-### [b0] High-Protein Breakfast
-- **Issue 1**: Missing leading emoji; note macro contradiction
-- **Details**: perPortion states {kcal:863, protein:99, carbs:69, fat:20.2} but note says "Macros: 798 kcal · 93P · 64C · 19F". 65 kcal gap with different protein counts (99 vs 93).
-- **Suggested fix**: Reconcile note and perPortion. Add emoji to name.
-
----
-
-### [b1] Egg, Beef & Cheese Breakfast Bowl
-- **Issue 1**: Missing leading emoji
-- **Issue 2**: Note macro contradiction — note says "512 kcal · 48P · 45C · 15F" but perPortion states {kcal:578, protein:56, carbs:42, fat:18.7}
-- **Issue 3**: No `portions` field — note says divide into 7 containers but no `portions: 7` in object
-- **Suggested fix**: Add emoji, add `portions: 7`, resolve note vs perPortion.
-
----
-
-### [b3] Turkey Sausage Breakfast Bagel
-- **Issue 1**: Missing leading emoji
-- **Issue 2**: Note says "601 kcal · 51P · 34C · 29F" but perPortion states {kcal:651, protein:47, carbs:52, fat:27.5}
-- **Suggested fix**: Add emoji, resolve note discrepancy. Also review near-duplication with bf3.
-
----
-
-### [d2] Protein Brownie
-- **Issue 1**: Macro math off by 37 kcal — `(39×4)+(17×4)+(10.3×9)=317` vs stated 280
-- **Issue 2**: Note says "297 kcal · 37P · 17C · 9F" — three different figures (note, perPortion, and calculated all differ)
-- **Issue 3**: Missing emoji; no portions field
-- **Suggested fix**: Recalculate macros from ingredient weights. The note may be from an older version. Add emoji and `portions: 1`.
-
----
-
-### [m18] Chicken with Mustard & Coffee Sauce
-- **Issue**: Missing leading emoji; no `portions` field
-- **Details**: Recipe note says "4 portions" but no `portions:` key. The macro math checks out ({39×4}+{7×4}+{3×9}=211 vs 208 stated — within tolerance).
-- **Suggested fix**: Add emoji, add `portions: 4`.
-
----
-
-### [m21] Crispy Chicken Nuggets
-- **Issue**: Missing emoji; `flexPortions: true` with no context
-- **Details**: The recipe uses `flexPortions: true` but has no `portions` field and no explanation of what the base serving is. Per-portion macros show 106 kcal / 12P / 5C / 3.7F which appears to be per nugget or per 2-nugget serving.
-- **Suggested fix**: Add emoji. Define a base `portions` or add a clear serving note (e.g. "2 nuggets per serving").
-
----
-
-### [b4] Protein Smoothie Bowl
-- **Issue**: Missing emoji; no `portions` field (single-serve is OK but flag for consistency)
-- **Suggested fix**: Add emoji (e.g. `🫐 Protein Smoothie Bowl`).
-
----
-
-### [b5] Carrot Protein Pancakes
-- **Issue**: Missing leading emoji
-- **Suggested fix**: Add emoji (e.g. `🥕 Carrot Protein Pancakes`).
-
----
-
-### [d3] High-Protein Chocolate Cake
-- **Issue 1**: Missing emoji
-- **Issue 2**: Note says "118 kcal · 15P · 9C · 3F" but perPortion states {kcal:93, protein:12, carbs:9, fat:1.8}
-- **Details**: Macro math: `(12×4)+(9×4)+(1.8×9)=100` — closer to 100 than 93 or 118. Significant confusion between versions.
-- **Suggested fix**: Add emoji. Recalculate from ingredient weights and standardise.
-
----
-
-### [d4] Matcha Banana Protein Bread
-- **Issue**: Missing emoji; minor note discrepancy (note says 153 kcal, stated is 152 — negligible)
-- **Suggested fix**: Add emoji (e.g. `🍵 Matcha Banana Protein Bread`).
-
----
-
-### [m22] Hot Honey Beef & Sweet Potato Bowls
-- **Issue 1**: Missing emoji; no `portions` field
-- **Issue 2**: Note says "650 kcal · 50P · 45C · 30F" but perPortion states {kcal:583, protein:54, carbs:56, fat:15.7} — different macro split entirely
-- **Suggested fix**: Add emoji, add `portions: 4`. Reconcile note vs perPortion (they appear to be different recipes or versions).
-
----
-
-### [m23] Pepperoni Pizza Pasta
-- **Issue 1**: Missing emoji; no `portions` field
-- **Issue 2**: Note says "490 kcal · 44P · 40C · 18F" but perPortion states {kcal:462, protein:38, carbs:34, fat:18.8}
-- **Suggested fix**: Add emoji, add `portions: 10`. Reconcile note.
-
----
-
-### [m24] Slow Cooker Honey Cashew Chicken
-- **Issue 1**: Missing emoji; no `portions` field
-- **Issue 2**: `carb: "🍚 Rice"` but no rice in `batchItems` — rice is described as an optional add-on in the note
-- **Suggested fix**: Add emoji, add `portions: 5`. Change `carb` to `"🥜 Cashew"` or similar that reflects the actual batchItems.
-
----
-
-### [m26] Creamy Steak Pasta
-- **Issue 1**: Missing emoji; no `portions` field
-- **Issue 2**: Note says "690 kcal · 51P · 74C · 20F" but perPortion states {kcal:733, protein:52, carbs:76, fat:23.2}
-- **Suggested fix**: Add emoji, add `portions: 10`. Reconcile note.
-
----
-
-### [m27] Sweet Potato Veggie Egg Bake
-- **Issue**: Missing emoji; no `portions` field; note labels macros as "estimated"
-- **Details**: Note explicitly says "~200 kcal · 10P · 26C · 6F per portion (4 portions, estimated)" — these don't match the perPortion object (213/13/25/7.5). Both may be estimates.
-- **Suggested fix**: Add emoji, add `portions: 4`. Pick one set of figures.
-
----
-
-### [b6] High-Protein Breakfast Oats
-- **Issue**: Missing emoji; no `portions` field (single-serve)
-- **Suggested fix**: Add emoji (e.g. `🌾 High-Protein Breakfast Oats`).
-
----
-
-### [d5] Chocolate Mousse Chia Pudding
-- **Issue 1**: Macro math off by 33 kcal — `(30×4)+(42×4)+(26.7×9)=528` vs stated 495
-- **Issue 2**: Missing emoji; no `portions` field
-- **Suggested fix**: Add emoji. Verify fat content — 26.7g fat for a portion with 8g almond butter and 25g dark chocolate seems high; recheck ingredient quantities. Add `portions: 1`.
-
----
-
-### [v1] Lentil & Spinach Dahl
-- **Issue**: Missing emoji; no `portions` field (note says 7)
-- **Suggested fix**: Add emoji (e.g. `🍛 Lentil & Spinach Dahl`), add `portions: 7`.
-
----
-
-### [v2] Tofu & Edamame Teriyaki Bowl
-- **Issue 1**: Macro math off by 34 kcal — `(34×4)+(56×4)+(14×9)=486` vs stated 520
-- **Issue 2**: Missing emoji; no `portions` field (note says 5)
-- **Suggested fix**: Add emoji, add `portions: 5`. Recalculate macros — the 34 kcal gap suggests either protein or carbs are understated by ~8g.
-
----
-
-### [v3] Chickpea & Roasted Veggie Couscous
-- **Issue 1**: Macro math off by 31 kcal — `(19×4)+(62×4)+(10×9)=414` vs stated 445
-- **Issue 2**: Missing emoji; no `portions` field (note says 6)
-- **Suggested fix**: Add emoji, add `portions: 6`. Recalculate — the gap is likely fat being understated (olive oil 40mL across 6 portions adds ~60 kcal per portion).
-
----
-
-## 🟢 Looks good
-
-The following 63 recipe IDs passed all checks (macro math within 30 kcal, portions defined or single-serve, emoji present, carb field matches batchItems, holiday flags correct):
-
-m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12, m13, m14, bf2, bf4, bf5, bf6, ds2, m28, m15, m17, m31, m32, m33, m34, m35, m36, m37, m38, m39, m40, m41, m42, m43, m44, m45, m46, m47, m48, m49, m50, pw0, pw1, pw2, pw3, pw4, pw5, v5, v6, v7, v8, v9, hol1, hol2, hol3, hol4, hol5, hol6, hol7, hol8, hol9, hol10
-
-**Notable**: All 10 holiday recipes (hol1–hol10) correctly carry `locked: true` and `seasonal: true`. All 14 core main meals (m01–m14) pass all checks. The m31–m50 locked premium recipe block is clean.
-
----
-
-## Summary of issues by type
-
-| Check | Critical | Review |
+| Recipe | Protein | Issue |
 |---|---|---|
-| Macro note vs perPortion contradiction (>60 kcal) | 2 (m19, m25) | 6 (b0, b1, b3, m16, m22, m26) |
-| Macro math (P×4+C×4+F×9) off >30 kcal | 0 | 4 (d2, d5, v2, v3) |
-| portions field broken / missing on batch recipe | 1 (d1: wrong count) | 14 (multiple) |
-| Missing leading emoji | 0 (flagged alongside other issues) | 18 recipes |
-| JavaScript syntax error | 1 (v4: double comma) | — |
-| carb field mismatch | 0 | 1 (m24) |
-| Duplicate/near-duplicate recipe | 0 | 1 (bf3 ≈ b3) |
-| ID naming inconsistency | 0 | 1 (m4 → should be m04) |
-| Ambiguous batchItem qty/unit | 0 | 1 (m16_chip: qty:1 whole) |
+| 🍫 High-Protein Chocolate Banana Brownies | 12.4 g | Name says "high-protein" — 12.4 g is not high |
+| 🍵 Matcha Banana Protein Bread | 14.0 g | Lowest-cal item in the library (152 kcal), likely a 1-slice serving |
+| 🍪 Protein Brownie Cookies | 13.7 g | Fine as a treat but rename to set expectations |
+| 🍌 Protein Banana Bread | 12.4 g | Same issue |
+| 🍫 High-Protein Chocolate Brownie | 16.5 g | Name vs. reality mismatch |
+| 🍫 Protein Chocolate Mousse | 15.0 g | Moderate issue |
+| 🥭 Mango Protein Tart | 17.6 g | Borderline |
+
+**Recommendation options:**
+- **Option A (rename):** Drop "High-Protein" from recipe names that deliver <20 g. Keep "Protein" to indicate it contains protein powder, but don't imply it's a protein-optimised meal.
+- **Option B (reformulate):** Add an extra scoop of protein powder or cottage cheese to each recipe to cross the 20–25 g threshold.
+- **Option C (label in UI):** Add a note on the dessert card: *"Treat — pairs well with a high-protein main."*
+
+---
+
+### 4. Pre-Workout Category — Low-Protein by Design (Acceptable)
+
+The five pre-workout recipes with under 20 g protein are intentionally carb-dominant:
+
+- ⚡ Carb Bridge (1 g P, 33 g C) — Rice cakes + jam, a pure rapid-carb option
+- 🍉 Tropical Fruit Spice Bowl (1.5 g P, 30 g C) — Fruit bowl, fine as a light option
+- 🥜 Rice Cake & Peanut Butter Stack (8 g P, 48 g C)
+- 🥛 Chocolate Milk & Banana (11 g P, 68 g C)
+- 🥯 Pre-Run Bagel & Banana (11 g P, 89 g C)
+
+These are contextually appropriate for pre-training fuel. However, the UI should make clear that these are *carb fuel options*, not protein meals, so users don't slot them in as their primary protein source for the day.
+
+**Suggestion:** Add a category description or badge in the UI: *"Carb Fuel — designed for pre-training energy, not protein targets."*
+
+---
+
+### 5. Notable Outliers Worth Reviewing
+
+#### 🍋 Juicy Garlic Lemon Chicken (308 kcal, 52.5 g protein, only 5.6 g carbs)
+- Extremely low calorie and carb for a main. With 3 portions from 600 g chicken breast it's accurate, but users expecting a complete meal prep main with a carb source may be confused.
+- **Suggestion:** Rename to make its "protein-only" nature clear, e.g. *"Lean Garlic Lemon Chicken (Protein Only)"*, or add a note to pair with rice/potato.
+
+#### 🍗 Chicken with Mustard & Coffee Sauce (228 kcal, 37.9 g protein, 6.3 g carbs)
+- Same situation — great protein, very low calories. Clearly a protein-only dish.
+- **Suggestion:** Add a carb side option to the recipe steps or clarify in the subtitle.
+
+#### 🥛 Creamy Oat Protein Shake (742 kcal, 69.5 g protein)
+- This is the highest-calorie smoothie by far. It's a legitimate meal-replacement shake but at 742 kcal it may surprise users expecting a lighter drink.
+- **Suggestion:** Add a *"Meal replacement"* tag or note the portion size in the subtitle.
+
+---
+
+## Strong Recipes — Keep As-Is
+
+The following recipes represent the best of the library: macro-accurate, high-protein (≥45 g), well-named, and meal-prep appropriate.
+
+**Top-tier mains:**
+- 🍗 Honey Chipotle Chicken Bowl / Burritos (89 g / 73.2 g protein) — flagship recipes
+- 🐟 High-Protein Tuna & Veg Plate (89 g, only 524 kcal — exceptional protein efficiency)
+- 🍗 Marry Me Chicken & Marry Me Chicken — Pasta (85 g / 75.7 g)
+- 🦃 Lean Turkey Mince Rice Bowl (78.6 g protein, only 6.1 g fat — clean bulk staple)
+- 🎄 Rosemary Turkey & Cranberry Sweet Potato Bowl (69.1 g, 494 kcal — elite protein density)
+- 🍗 Slow-Cooked Pulled Chicken & Rice (70.7 g, 9.8 g fat — extremely lean)
+- 🍗 Chicken & Red Lentil Soup (59.2 g, 4.5 g fat — best fat-to-protein ratio in the library)
+- 🦃 Slow-Cooker Turkey & Butternut Squash Feast (57.3 g, 392 kcal — diet-phase standout)
+- 🍗 Chicken & Cauliflower Rice Bowl (51 g, 358 kcal — low-carb cut phase gem)
+
+**Top-tier breakfasts:**
+- 🥚 High-Protein Breakfast (98 g protein — highest in the entire library)
+- 🥚 Egg, Beef & Cheese Breakfast Bowl (59.9 g)
+- 🥥 Mango Coconut Overnight Oats (54.8 g — best prep-ahead breakfast)
+- 🍓 Berry Granola Goddess Bowl (45 g, 450 kcal — great balance)
+
+**Best plant-based options:**
+- 🥢 Tofu & Edamame Teriyaki Bowl (48.8 g)
+- 🍛 Lentil & Spinach Dahl (42.6 g)
+- 🥬 Spinach & White Bean Pasta (40.8 g)
+- 🥬 Green Kale Basil Pesto Pasta (42.5 g)
+- 🧀 Paneer Tikka Masala Bowl (33.1 g)
+
+**Best salads (all are strong):**
+- All 6 salads clear 38 g protein — the salad category is the most consistently well-built section of the app.
+
+**Best smoothies:**
+- 🥭 Coconut Mango Protein Smoothie (50.9 g, 509 kcal — best smoothie overall)
+- 🍓 Berry Matcha Antioxidant Shake (34.2 g, 351 kcal — best calorie-to-protein ratio in smoothies)
+
+---
+
+## Action Priority List
+
+| Priority | Action | Recipes Affected |
+|---|---|---|
+| 🔴 High | Fix 9 macro calorie discrepancies | See Section 1 |
+| 🔴 High | Remove "High-Protein" from dessert names delivering <17g protein | 5 recipes |
+| 🟡 Medium | Boost protein in Zesty Pickle & Veggie Board or re-categorise | 1 recipe |
+| 🟡 Medium | Increase portion size for Crispy Chicken Nuggets & Tuna Chickpea Bowl | 2 recipes |
+| 🟡 Medium | Add UI label to pre-workout carb options clarifying they're not protein meals | 5 recipes |
+| 🟢 Low | Add "protein-only / pair with carb side" note to Juicy Garlic Lemon Chicken, Chicken with Mustard & Coffee Sauce | 2 recipes |
+| 🟢 Low | Add "meal replacement" tag to Creamy Oat Protein Shake | 1 recipe |
+| 🟢 Low | Re-categorise Sweet Potato Veggie Egg Bake from main → breakfast | 1 recipe |
+
