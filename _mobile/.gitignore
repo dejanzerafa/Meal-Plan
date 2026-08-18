@@ -7,3 +7,7 @@ www/
 
 # Node
 node_modules/
+
+# Release keystore — NEVER commit this
+*.keystore
+*.jks

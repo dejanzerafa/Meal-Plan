@@ -37,7 +37,7 @@ Don't like a recipe? Swap it instantly with a macro-matched alternative. Same ma
 🧮 MACRO CALCULATOR
 Enter your stats and get personalised calorie and macro targets — protein, carbs, and fats — based on your goal and activity level. Free for all users.
 
-📚 94+ RECIPES
+📚 173 RECIPES
 High-protein, batch-friendly recipes for every meal. Each recipe includes full macros, prep time, and step-by-step batch cook instructions. New recipes added regularly.
 
 🛒 SMART SHOPPING LIST
@@ -53,7 +53,7 @@ SoulGainz was built for gym-goers, busy professionals, and anyone who wants to s
 ── PLANS ──
 
 Free: macro calculator + limited recipe access
-Monthly Pro: all 94+ recipes, meal planning, shopping list, and every feature
+Monthly Pro: all 173 recipes, meal planning, shopping list, and every feature
 Annual Pro: everything in Monthly + 11 exclusive recipes, best value
 
 All sales are final. Cancel anytime before your next renewal to avoid the next charge.
@@ -123,7 +123,7 @@ Don't like a recipe? Swap it instantly with a macro-matched alternative. Same ma
 MACRO CALCULATOR
 Enter your stats and get personalised calorie and macro targets — protein, carbs, and fats — based on your goal and activity level. Free for all users.
 
-94+ RECIPES
+173 RECIPES
 High-protein, batch-friendly recipes for every meal. Each recipe includes full macros, prep time, and step-by-step batch cook instructions. New recipes added regularly.
 
 SMART SHOPPING LIST
@@ -139,7 +139,7 @@ SoulGainz was built for gym-goers, busy professionals, and anyone who wants to s
 PLANS
 
 • Free: macro calculator + limited recipe access
-• Monthly Pro: all 94+ recipes, meal planning, shopping list, and every feature
+• Monthly Pro: all 173 recipes, meal planning, shopping list, and every feature
 • Annual Pro: everything in Monthly + 11 exclusive recipes, best value
 
 All purchases are final. Cancel anytime before your next renewal.
