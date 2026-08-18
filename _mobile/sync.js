@@ -30,6 +30,21 @@ for (const file of FILES) {
     }
 }
 
+// Copy vendor folder (react, react-dom, supabase, sentry)
+// index.html references these as /vendor/... — must exist in www/vendor/
+const vendorSrc  = path.join(ROOT, "vendor");
+const vendorDest = path.join(WWW, "vendor");
+if (fs.existsSync(vendorSrc)) {
+    if (!fs.existsSync(vendorDest)) fs.mkdirSync(vendorDest, { recursive: true });
+    for (const f of fs.readdirSync(vendorSrc)) {
+        fs.copyFileSync(path.join(vendorSrc, f), path.join(vendorDest, f));
+        console.log(`  ✅ vendor/${f} → www/vendor/${f}`);
+        copied++;
+    }
+} else {
+    console.log("  ⚠️  vendor/ not found — run the Netlify build first to populate it");
+}
+
 // Inject Capacitor bridge into index.html
 const indexPath = path.join(WWW, "index.html");
 if (fs.existsSync(indexPath)) {
