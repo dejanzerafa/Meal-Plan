@@ -12361,7 +12361,7 @@ function App() {
                             // Silently downgrade on Supabase side
                             try { await getSB()?.from("profiles").update({ tier:"free", tier_expires:null }).eq("id", userId); } catch(_) {}
                         }
-                        const isPaid = ["monthly","annual"].includes(effectiveTier);
+                        const isPaid = ["monthly","annual","dev"].includes(effectiveTier);
                         const unlockData = { tier:effectiveTier, via:row.tier_via||"account",
                             label:row.tier_label, expires:row.tier_expires,
                             calculator:isPaid, allRecipes:isPaid, recipes:[],
@@ -12659,6 +12659,7 @@ function App() {
     }, [showUpgrade]);
     const [showSeasonalPopup, setShowSeasonalPopup] = useState(false);
     const [showDevModal, setShowDevModal] = useState(false);
+    const [showDevTierPicker, setShowDevTierPicker] = useState(false);
     const [showAdminPanel, setShowAdminPanel] = useState(false);
     // ── Saved meal plan templates ────────────────────────────────────────────
     const [savedPlans, setSavedPlans] = useState(() => { try { return JSON.parse(localStorage.getItem("mp_saved_plans")||"[]"); } catch(e){ return []; } });
@@ -12680,7 +12681,7 @@ function App() {
                 .then(buf => {
                     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
                     if (hash === "0e465f7ccdb023f35c37a5770c4aca439c6fe2a4ab36d603988687ff3ad4dd87") {
-                        setShowDevModal(true);
+                        setShowDevTierPicker(true);
                     }
                 });
         }
@@ -13561,6 +13562,35 @@ function App() {
                     React.createElement("button", { onClick: () => { try { localStorage.removeItem('mp_new_unlock'); } catch(_) {} setShowWelcomeUnlock(false); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Go to Recipes →")))),
         React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); setShowUpgrade(true); } }),
         showAdminPanel && currentUser && React.createElement(AdminPanel, { C:C, currentUser:currentUser, onClose:()=>setShowAdminPanel(false) }),
+        showDevTierPicker && (() => {
+            const _tc = { free:C.sub, monthly:"#60a5fa", annual:C.accent, dev:"#f59e0b" };
+            const _tl = { free:"Free — Limited recipes", monthly:"Monthly — All recipes", annual:"Annual — All recipes", dev:"Dev — Full access" };
+            return React.createElement("div", { style:{ position:"fixed", inset:0, background:"rgba(0,0,0,0.92)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 24px" } },
+                React.createElement("div", { style:{ background:C.card, borderRadius:16, padding:"24px 20px", maxWidth:300, width:"100%" } },
+                    React.createElement("div", { style:{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.12em", marginBottom:4 } }, "⚙️ SET ACCESS TIER"),
+                    React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:18 } }, "Choose your access level. Saved to your account until you change it."),
+                    ["free","monthly","annual","dev"].map(t => {
+                        const _cur = (t === "free" && !unlocks.tier) || unlocks.tier === t;
+                        return React.createElement("button", {
+                            key: t,
+                            onClick: async () => {
+                                const _paid = ["monthly","annual","dev"].includes(t);
+                                setUnlocks({ calculator:_paid, allRecipes:_paid, recipes:[], tier:t === "free" ? null : t, via:"dev", label:t.charAt(0).toUpperCase()+t.slice(1), _serverVerified:true });
+                                try {
+                                    const _sb = getSB();
+                                    if (_sb && currentUser) {
+                                        await _sb.from("profiles").upsert({ id:currentUser.id, tier:t === "free" ? null : t, tier_via:"dev", tier_label:t.charAt(0).toUpperCase()+t.slice(1), tier_expires:null }, { onConflict:"id" });
+                                    }
+                                } catch(_e) { console.warn("DevTierPicker:", _e); }
+                                setShowDevTierPicker(false);
+                            },
+                            style:{ width:"100%", marginBottom:8, padding:"12px 14px", borderRadius:10, border:"2px solid "+(_cur ? _tc[t] : C.dim), background:_cur ? _tc[t]+"18" : C.card2, color:_tc[t], fontSize:13, fontWeight:700, cursor:"pointer", textAlign:"left", fontFamily:"inherit" }
+                        }, (_cur ? "✓ " : "") + _tl[t]);
+                    }),
+                    React.createElement("button", { onClick:() => setShowDevTierPicker(false), style:{ width:"100%", marginTop:6, padding:"9px", borderRadius:8, border:"1px solid "+C.dim, background:"none", color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" } }, "Cancel")
+                )
+            );
+        })(),
         showDevModal && React.createElement(DevModal, { onClose: () => setShowDevModal(false), onApplyTier: applyDevTier }),
         (unlocks.tier && unlocks.tier !== null) && (React.createElement("div", { onClick: devLock, style: { position: "fixed", bottom: 16, right: 16, background: C.green,
                 borderRadius: 20, padding: "5px 10px", fontSize: 9, fontWeight: 700,
