@@ -5,6 +5,19 @@
 const Stripe = require("stripe");
 
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "https://soulgainz.app",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "86400",
+      },
+      body: "",
+    };
+  }
+
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) return { statusCode: 500, body: "Stripe not configured" };
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });

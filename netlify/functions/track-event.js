@@ -25,6 +25,7 @@ const ALLOWED_EVENTS = new Set([
   "recipe_view",
   "recipe_unlock_click",
   "checkout_start",
+  "checkout_started",
   "checkout_cancel",
   "checkout_success",
   "subscription_start",
@@ -40,23 +41,65 @@ const ALLOWED_EVENTS = new Set([
   "search",
 ]);
 
-// ── IP rate limit: max 60 events per IP per minute ────────────────────────────
-const _ipRateMap = new Map();
-function _checkIpRateLimit(ip) {
+// ── IP rate limit: max 30 events per IP per minute via Netlify Blobs ─────────
+// Blobs are shared across all serverless instances, making this limit effective
+// even when requests hit different cold-started containers.
+// Falls back to in-process Map if Blobs are unavailable (local dev / cold store).
+const { getStore } = require("@netlify/blobs");
+
+const _ipRateMap = new Map(); // fallback for local dev
+
+async function _checkIpRateLimit(ip) {
   if (!ip) return true;
   const now = Date.now();
-  const entry = _ipRateMap.get(ip) || { count: 0, windowStart: now };
-  if (now - entry.windowStart > 60000) {
-    _ipRateMap.set(ip, { count: 1, windowStart: now });
+  const windowMs = 60_000;
+  const limit = 30;
+
+  // ── Try Netlify Blobs (production) ───────────────────────────────────────
+  try {
+    const store = getStore({ name: "rate-limits", consistency: "strong" });
+    const key = `ip:${ip}`;
+    const raw = await store.get(key);
+    let entry = raw ? JSON.parse(raw) : { count: 0, windowStart: now };
+
+    if (now - entry.windowStart > windowMs) {
+      entry = { count: 1, windowStart: now };
+    } else if (entry.count >= limit) {
+      return false;
+    } else {
+      entry.count++;
+    }
+
+    // Write back with 120s TTL (2× window to avoid premature expiry)
+    await store.set(key, JSON.stringify(entry), { ttl: 120 });
+    return true;
+  } catch (_) {
+    // ── Fallback: in-process Map (local dev or Blobs unavailable) ─────────
+    const entry = _ipRateMap.get(ip) || { count: 0, windowStart: now };
+    if (now - entry.windowStart > windowMs) {
+      _ipRateMap.set(ip, { count: 1, windowStart: now });
+      return true;
+    }
+    if (entry.count >= limit) return false;
+    entry.count++;
+    _ipRateMap.set(ip, entry);
     return true;
   }
-  if (entry.count >= 60) return false;
-  entry.count++;
-  _ipRateMap.set(ip, entry);
-  return true;
 }
 
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://soulgainz.app',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Max-Age': '86400',
+      },
+      body: '',
+    };
+  }
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
   // ── Payload size guard (reject > 4 KB) ──────────────────────────────────
@@ -76,7 +119,7 @@ exports.handler = async (event) => {
     event.headers["x-nf-client-connection-ip"] ||
     event.headers["client-ip"]
   ) || "").split(",")[0].trim();
-  if (!_checkIpRateLimit(clientIp)) {
+  if (!await _checkIpRateLimit(clientIp)) {
     return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true }) };
   }
 

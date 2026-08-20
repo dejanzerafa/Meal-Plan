@@ -1,70 +1,44 @@
 // supabase/functions/renewal-reminder/index.ts
-// Supabase Edge Function — sends renewal reminder emails 7 days before subscription end.
+// Runs daily via Supabase Cron — finds subscriptions expiring in 7 days
+// and sends a branded renewal reminder email.
 //
-// SCHEDULE (choose one approach):
+// Deploy:  supabase functions deploy renewal-reminder
+// Schedule: see supabase/cron-jobs.sql
 //
-//   Option A — pg_cron (recommended, runs inside Supabase on the free plan):
-//     Enable the pg_cron extension in Supabase Dashboard → Database → Extensions.
-//     Then run the following SQL in the SQL editor (replace PROJECT_REF and ANON_KEY):
-//
-//       select cron.schedule(
-//         'renewal-reminder-daily',
-//         '0 9 * * *',
-//         $$
-//           select net.http_post(
-//             url     := 'https://<PROJECT_REF>.supabase.co/functions/v1/renewal-reminder',
-//             headers := '{"Authorization": "Bearer <ANON_KEY>", "Content-Type": "application/json"}'::jsonb,
-//             body    := '{}'::jsonb
-//           );
-//         $$
-//       );
-//
-//   Option B — deploy via Supabase CLI (also sets schedule):
-//     supabase functions deploy renewal-reminder --schedule "0 9 * * *"
-//
-// REQUIRED SECRETS (set via: supabase secrets set KEY=value):
-//   SUPABASE_URL             — auto-injected by Supabase runtime
-//   SUPABASE_SERVICE_ROLE_KEY — injected at deploy time
-//   RESEND_API_KEY
-//   FROM_EMAIL               — e.g. "SoulGainz <admin@soulgainz.app>"
-//   APP_URL                  — e.g. "https://soulgainz.app"
+// Env vars:
+//   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY — auto-injected
+//   RESEND_API_KEY, FROM_EMAIL, APP_URL, CRON_SECRET
 
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-Deno.serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+serve(async (req: Request) => {
+  const secret = req.headers.get("x-cron-secret");
+  if (secret !== Deno.env.get("CRON_SECRET")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const apiKey      = Deno.env.get("RESEND_API_KEY");
-  const fromEmail   = Deno.env.get("FROM_EMAIL") ?? "SoulGainz <admin@soulgainz.app>";
-  const appUrl      = Deno.env.get("APP_URL")    ?? "https://soulgainz.app";
+  const resendKey   = Deno.env.get("RESEND_API_KEY");
+  const fromEmail   = Deno.env.get("FROM_EMAIL") || "SoulGainz <admin@soulgainz.app>";
+  const appUrl      = Deno.env.get("APP_URL") || "https://soulgainz.app";
 
-  if (!apiKey) {
+  if (!resendKey) {
     console.log("RESEND_API_KEY not set — skipping renewal reminders");
-    return new Response(JSON.stringify({ ok: true, skipped: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ skipped: true }), { status: 200 });
   }
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // Find subscriptions expiring in 6–8 days (window prevents double-sends on retry)
+  // Window: subscriptions expiring in 6–8 days (prevents double-sends on retry)
   const now         = new Date();
   const windowStart = new Date(now.getTime() + 6 * 86400 * 1000).toISOString();
   const windowEnd   = new Date(now.getTime() + 8 * 86400 * 1000).toISOString();
 
   const { data: subs, error } = await supabase
     .from("subscriptions")
-    .select("user_id, tier, current_period_end, users(email)")
+    .select("user_id, tier, current_period_end, users(email, first_name)")
     .eq("status", "active")
     .eq("cancel_at_period_end", false)
     .gte("current_period_end", windowStart)
@@ -72,58 +46,53 @@ Deno.serve(async (req) => {
 
   if (error) {
     console.error("Supabase query error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
   if (!subs || subs.length === 0) {
     console.log("No renewals in the 6–8 day window");
-    return new Response(JSON.stringify({ ok: true, sent: 0 }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ sent: 0 }), { status: 200 });
   }
 
   let sent = 0;
   for (const sub of subs) {
-    const email = (sub as any).users?.email;
+    const user: any = sub.users;
+    const email = user?.email;
     if (!email) continue;
 
-    const renewDate = new Date(sub.current_period_end).toLocaleDateString("en-GB", {
+    const firstName  = user?.first_name || email.split("@")[0] || "there";
+    const renewDate  = new Date(sub.current_period_end).toLocaleDateString("en-GB", {
       day: "numeric", month: "long", year: "numeric",
     });
-    const tierLabel =
-      ({ annual: "Annual", quarterly: "Quarterly", monthly: "Monthly" } as Record<string, string>)[sub.tier] ?? sub.tier;
+    const tierLabel  = ({ annual: "Annual", quarterly: "Quarterly", monthly: "Monthly" } as any)[sub.tier] || sub.tier;
 
     try {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: fromEmail,
-          to: email,
+          from:    fromEmail,
+          to:      email,
           subject: `Your SoulGainz ${tierLabel} plan renews in 7 days`,
-          html: buildRenewalEmail(tierLabel, renewDate, appUrl),
+          html:    buildRenewalEmail(firstName, tierLabel, renewDate, appUrl),
         }),
       });
       if (res.ok) {
         sent++;
+        console.log("Renewal reminder sent to", email);
       } else {
         console.error("Resend error for", email, await res.text());
       }
-    } catch (e) {
-      console.error("Send error for", email, e);
+    } catch (e: any) {
+      console.error("Send error for", email, e.message);
     }
   }
 
   console.log(`Renewal reminders sent: ${sent}/${subs.length}`);
-  return new Response(JSON.stringify({ ok: true, sent }), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  return new Response(JSON.stringify({ sent, total: subs.length }), { status: 200 });
 });
 
-function buildRenewalEmail(tierLabel: string, renewDate: string, appUrl: string): string {
+function buildRenewalEmail(firstName: string, tierLabel: string, renewDate: string, appUrl: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -141,17 +110,17 @@ function buildRenewalEmail(tierLabel: string, renewDate: string, appUrl: string)
         </tr>
         <tr>
           <td style="padding:32px;">
-            <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 12px;">Renewing soon</h1>
+            <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 12px;">Renewing soon, ${firstName}</h1>
             <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
-              Your <strong>${tierLabel} plan</strong> renews on <strong>${renewDate}</strong>. No action needed — we&apos;ll handle it automatically.
+              Your <strong>${tierLabel} plan</strong> renews on <strong>${renewDate}</strong>. No action needed &mdash; we&apos;ll handle it automatically.
             </p>
             <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
               <div style="font-size:11px;font-weight:700;color:#7a6d5e;letter-spacing:0.1em;margin-bottom:8px;">WHAT&rsquo;S INCLUDED</div>
               <table cellpadding="0" cellspacing="0">
-                <tr><td style="font-size:13px;padding-right:10px;">&#x1F513;</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Full access to every recipe</td></tr>
-                <tr><td style="font-size:13px;padding-right:10px;">&#x1F4C5;</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">New drops every month</td></tr>
-                <tr><td style="font-size:13px;padding-right:10px;">&#x1F6D2;</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Auto-generated shopping list</td></tr>
-                <tr><td style="font-size:13px;padding-right:10px;">&#x1F4CA;</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Macro calculator + personalised targets</td></tr>
+                <tr><td style="font-size:13px;padding-right:10px;">🔓</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Full access to all 173 recipes</td></tr>
+                <tr><td style="font-size:13px;padding-right:10px;">📅</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">New recipe drops every month</td></tr>
+                <tr><td style="font-size:13px;padding-right:10px;">🛒</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Auto-generated shopping list</td></tr>
+                <tr><td style="font-size:13px;padding-right:10px;">📊</td><td style="font-size:13px;color:#4a3f33;line-height:1.6;">Macro calculator + personalised targets</td></tr>
               </table>
             </div>
             <table width="100%" cellpadding="0" cellspacing="0">
@@ -164,7 +133,7 @@ function buildRenewalEmail(tierLabel: string, renewDate: string, appUrl: string)
               </tr>
             </table>
             <p style="font-size:12px;color:#7a6d5e;line-height:1.6;margin:0;">
-              To cancel before renewal, visit your account or reply to this email.
+              To cancel before renewal, visit your account settings or reply to this email.
             </p>
           </td>
         </tr>
@@ -172,7 +141,7 @@ function buildRenewalEmail(tierLabel: string, renewDate: string, appUrl: string)
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
               Cook once. Eat all week.<br>
-              <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

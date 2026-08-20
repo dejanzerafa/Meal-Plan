@@ -3,7 +3,8 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-  command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && curl --fail -L 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js' -o vendor/supabase.min.js && curl --fail -L 'https://browser.sentry-cdn.com/7.119.0/bundle.min.js' -o vendor/sentry.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && test -s vendor/supabase.min.js && test -s vendor/sentry.min.js && echo 'Vendor files OK'" 
+  # Sentry removed — now loaded via CDN loader in index.html (no local file needed)
+  command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && curl --fail -L 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js' -o vendor/supabase.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && test -s vendor/supabase.min.js && echo 'Vendor files OK'"
 
 # ── Secrets scanning ─────────────────────────────────────────────────────────
 # VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).
@@ -95,11 +96,7 @@
   to = "/404"
   status = 404
 
-[[redirects]]
-  from = "/recipes-preview.html"
-  to = "/404"
-  status = 404
-
+# recipes-preview.html is a live SEO page — intentionally NOT blocked
 # ── Security headers ──────────────────────────────────────────────────────────
 [[headers]]
   for = "/*"
@@ -116,6 +113,9 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self), usb=()"
     # Basic XSS protection for older browsers
     X-XSS-Protection = "1; mode=block"
+    # Content Security Policy — enforced here (HTTP header) so it applies to ALL pages
+    # before any resource is parsed, unlike a <meta> tag which is parsed mid-document.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.sentry-cdn.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob: https://www.google-analytics.com; connect-src 'self' https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://*.supabase.co https://fonts.googleapis.com https://*.sentry.io https://o*.ingest.sentry.io https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; worker-src 'self';"
 
 # ── Netlify function CORS pre-flight ─────────────────────────────────────────
 [[headers]]

@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v163
+// SoulGainz — Service Worker v169
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v167';
+const CACHE_NAME = 'meal-plan-v170';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -23,12 +23,15 @@ const PRECACHE = [
   '/icon-72.png',
   '/icon-48.png',
   '/icon-32.png',
-  '/vendor/sentry.min.js',
   '/vendor/react.min.js',
   '/vendor/react-dom.min.js',
   '/vendor/supabase.min.js',
   'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap',
   '/offline.html',
+  '/landing.html',
+  '/waitlist',
+  '/waitlist.html',
+  '/recipes-preview.html',
 ];
 
 // ── Install: precache app shell ──────────────────────────────────────────────
@@ -93,10 +96,12 @@ self.addEventListener('fetch', event => {
         const cached = await caches.match(event.request);
         if (cached) return cached;
         if (isNavigation) {
-          const offline = await caches.match('/offline.html');
-          if (offline) return offline;
+          // Serve the app shell first — works for any URL (Instagram links, shared pages, etc.)
+          // Only fall back to offline.html if even the app shell isn't cached
           const index = await caches.match('/index.html');
           if (index) return index;
+          const offline = await caches.match('/offline.html');
+          if (offline) return offline;
         }
         return new Response('Offline — please reload when connected.', {
           status: 503,

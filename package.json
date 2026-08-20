@@ -4,6 +4,7 @@
   "description": "Server-side functions for Meal Prep app — Stripe + Supabase + Resend",
   "private": true,
   "dependencies": {
+    "@netlify/blobs": "^11.0.1",
     "@supabase/supabase-js": "^2.39.7",
     "acorn": "^8.18.0",
     "stripe": "^14.21.0",

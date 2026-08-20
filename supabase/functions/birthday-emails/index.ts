@@ -1,47 +1,46 @@
 // supabase/functions/birthday-emails/index.ts
-// Deno Edge Function — port of netlify/functions/birthday-emails.js
+// Runs daily via Supabase Cron — finds users whose birthday is today,
+// creates a unique Stripe promo code, and sends a branded birthday email.
 //
-// Schedule via pg_cron (run in Supabase SQL Editor after deploying):
+// Deploy:  supabase functions deploy birthday-emails
+// Schedule: see supabase/cron-jobs.sql
 //
-//   select cron.schedule(
-//     'birthday-emails-daily',
-//     '0 8 * * *',
-//     $$ select net.http_post(
-//         url:='https://rjreunvnsfjclpighogp.supabase.co/functions/v1/birthday-emails',
-//         headers:='{"Content-Type":"application/json","Authorization":"Bearer YOUR_ANON_KEY"}'::jsonb,
-//         body:='{}'::jsonb
-//     ) as request_id; $$
-//   );
-//
-// Required Supabase secrets (set via `supabase secrets set`):
+// Env vars (set in Supabase Dashboard → Settings → Edge Functions):
+//   SUPABASE_URL             — auto-injected
+//   SUPABASE_SERVICE_ROLE_KEY — auto-injected
 //   RESEND_API_KEY           — re_xxxx...
+//   STRIPE_SECRET_KEY        — sk_live_xxxx...
+//   STRIPE_BIRTHDAY_COUPON_ID — base coupon ID from Stripe Dashboard
 //   FROM_EMAIL               — SoulGainz <admin@soulgainz.app>
 //   APP_URL                  — https://soulgainz.app
-//   STRIPE_SECRET_KEY        — sk_live_xxxx... (optional — creates real Stripe promo codes)
-//   STRIPE_BIRTHDAY_COUPON_ID — coupon ID from Stripe dashboard (optional)
-//
-// Note: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are injected automatically
-// by the Supabase Edge Function runtime — no need to set them manually.
+//   CRON_SECRET              — random secret to prevent unauthorized triggers
 
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-Deno.serve(async (_req: Request) => {
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const resendKey   = Deno.env.get("RESEND_API_KEY");
-  const stripeKey   = Deno.env.get("STRIPE_SECRET_KEY");
-  const couponId    = Deno.env.get("STRIPE_BIRTHDAY_COUPON_ID");
-  const fromEmail   = Deno.env.get("FROM_EMAIL")  ?? "SoulGainz <admin@soulgainz.app>";
-  const appUrl      = Deno.env.get("APP_URL")     ?? "https://soulgainz.app";
+serve(async (req: Request) => {
+  // Guard: only allow calls with the correct cron secret
+  const secret = req.headers.get("x-cron-secret");
+  if (secret !== Deno.env.get("CRON_SECRET")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
+
+  const supabaseUrl     = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey     = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const resendKey       = Deno.env.get("RESEND_API_KEY");
+  const stripeKey       = Deno.env.get("STRIPE_SECRET_KEY");
+  const couponId        = Deno.env.get("STRIPE_BIRTHDAY_COUPON_ID");
+  const fromEmail       = Deno.env.get("FROM_EMAIL") || "SoulGainz <admin@soulgainz.app>";
+  const appUrl          = Deno.env.get("APP_URL") || "https://soulgainz.app";
 
   if (!resendKey) {
-    console.log("Missing RESEND_API_KEY — skipping birthday run");
+    console.log("RESEND_API_KEY not set — skipping birthday run");
     return new Response(JSON.stringify({ skipped: true }), { status: 200 });
   }
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // Today's month and day (UTC)
+  // Today's month/day (UTC)
   const now   = new Date();
   const month = String(now.getUTCMonth() + 1).padStart(2, "0");
   const day   = String(now.getUTCDate()).padStart(2, "0");
@@ -50,36 +49,32 @@ Deno.serve(async (_req: Request) => {
   console.log(`Birthday check for ${month}-${day} (${year})`);
 
   try {
-    // ── 1. Find users whose birthday is today ──────────────────────────────────
-    const { data: allUsers, error: usersErr } = await supabase
+    // Fetch all users with a birthday + marketing opt-in
+    const { data: allUsers, error: fetchErr } = await supabase
       .from("users")
-      .select("id,email,first_name,date_of_birth")
+      .select("id, email, first_name, date_of_birth")
       .not("date_of_birth", "is", null)
       .eq("marketing_opt_in", true);
 
-    if (usersErr) {
-      console.error("Supabase users fetch error:", usersErr.message);
-      return new Response(JSON.stringify({ error: usersErr.message }), { status: 500 });
-    }
+    if (fetchErr) throw fetchErr;
 
-    // Filter to today's birthdays (month-day match)
+    // Filter to today's birthdays (month-day match regardless of year)
     const todaysBirthdays = (allUsers ?? []).filter((u: any) => {
-      const dob: string = u.date_of_birth ?? "";
+      if (!u.date_of_birth) return false;
+      const dob: string = u.date_of_birth; // "YYYY-MM-DD"
       return dob.slice(5, 7) === month && dob.slice(8, 10) === day;
     });
 
     console.log(`Found ${todaysBirthdays.length} birthday(s) today`);
-
     if (todaysBirthdays.length === 0) {
       return new Response(JSON.stringify({ sent: 0 }), { status: 200 });
     }
 
-    // ── 2. Process each birthday ───────────────────────────────────────────────
-    const results: { sent: any[]; skipped: string[]; failed: any[] } = { sent: [], skipped: [], failed: [] };
+    const results = { sent: [] as any[], skipped: [] as string[], failed: [] as any[] };
 
     for (const user of todaysBirthdays) {
       try {
-        // Check if already sent a code this year
+        // Skip if we already sent a code this year
         const { data: existing } = await supabase
           .from("birthday_codes")
           .select("promo_code")
@@ -107,22 +102,20 @@ Deno.serve(async (_req: Request) => {
                 "Content-Type": "application/x-www-form-urlencoded",
               },
               body: new URLSearchParams({
-                coupon: couponId,
-                code:   promoCode,
+                coupon:   couponId,
+                code:     promoCode,
                 "restrictions[first_time_transaction]": "false",
-                "metadata[user_id]":  user.id,
-                "metadata[year]":     String(year),
-                "metadata[type]":     "birthday",
+                "metadata[user_id]": user.id,
+                "metadata[year]":    String(year),
+                "metadata[type]":    "birthday",
                 expires_at: String(Math.floor((Date.now() + 30 * 24 * 60 * 60 * 1000) / 1000)),
               }).toString(),
             });
             if (stripeRes.ok) {
               const stripeData = await stripeRes.json();
               stripePromoId = stripeData.id;
-              console.log("Stripe promo created:", promoCode);
             } else {
-              const err = await stripeRes.text();
-              console.warn("Stripe promo creation warning:", err, "— using code without Stripe link");
+              console.warn("Stripe promo creation warning:", await stripeRes.text());
             }
           } catch (stripeErr: any) {
             console.warn("Stripe error (non-fatal):", stripeErr.message);
@@ -137,9 +130,9 @@ Deno.serve(async (_req: Request) => {
           stripe_promo_id: stripePromoId,
         });
 
-        // Send birthday email
+        // Send the birthday email
         const firstName = user.first_name || user.email.split("@")[0] || "there";
-        const emailRes  = await fetch("https://api.resend.com/emails", {
+        const emailRes = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${resendKey}`,
@@ -162,7 +155,6 @@ Deno.serve(async (_req: Request) => {
           results.failed.push({ email: user.email, error: err });
         }
 
-        // Small pause between sends
         await new Promise((r) => setTimeout(r, 300));
 
       } catch (userErr: any) {
@@ -171,13 +163,16 @@ Deno.serve(async (_req: Request) => {
       }
     }
 
-    return new Response(JSON.stringify({
-      date:    `${month}-${day}-${year}`,
-      sent:    results.sent.length,
-      skipped: results.skipped.length,
-      failed:  results.failed.length,
-      details: results,
-    }), { status: 200, headers: { "Content-Type": "application/json" } });
+    return new Response(
+      JSON.stringify({
+        date: `${month}-${day}-${year}`,
+        sent:    results.sent.length,
+        skipped: results.skipped.length,
+        failed:  results.failed.length,
+        details: results,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
 
   } catch (err: any) {
     console.error("birthday-emails fatal error:", err);
@@ -185,10 +180,10 @@ Deno.serve(async (_req: Request) => {
   }
 });
 
-// ── Birthday email HTML ────────────────────────────────────────────────────────
+// ── Birthday email HTML ────────────────────────────────────────────────────
 function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string): string {
   const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    .toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+    .toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -197,7 +192,6 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0e9de;padding:40px 16px;">
     <tr><td align="center">
       <table width="100%" style="max-width:520px;background:#faf6f0;border-radius:16px;overflow:hidden;border:1px solid #ddd3c3;">
-
         <tr>
           <td style="background:#0C0B0A;padding:32px 32px 24px;text-align:center;">
             <div style="font-family:Georgia,serif;font-size:22px;letter-spacing:0.06em;">
@@ -206,7 +200,6 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
             <div style="font-size:11px;color:#8C8279;letter-spacing:0.16em;margin-top:6px;">FEED YOUR SOUL &middot; FUEL YOUR GAINZ</div>
           </td>
         </tr>
-
         <tr>
           <td style="background:linear-gradient(135deg,#1a1612 0%,#2d1f0e 100%);padding:32px;text-align:center;">
             <div style="font-size:56px;margin-bottom:12px;">🎂</div>
@@ -214,13 +207,11 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
             <p style="font-size:14px;color:#8C8279;margin:0;letter-spacing:0.08em;">FROM THE SOULGAINZ KITCHEN TO YOU</p>
           </td>
         </tr>
-
         <tr>
           <td style="padding:32px;">
             <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
-              Your birthday deserves a treat &mdash; and we don't mean the cheat meal 😄. We're giving you <strong style="color:#1a1612;">10% off</strong> any unlock or plan upgrade, just for today (and the next 30 days).
+              Your birthday deserves a treat &mdash; and we don&apos;t mean the cheat meal 😄. We&apos;re giving you <strong style="color:#1a1612;">10% off</strong> any unlock or plan upgrade, just for today (and the next 30 days).
             </p>
-
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
               <tr>
                 <td style="background:#1a1612;border-radius:12px;padding:24px;text-align:center;">
@@ -230,24 +221,6 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
                 </td>
               </tr>
             </table>
-
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-              <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">🔓</td>
-                <td style="padding-bottom:16px;">
-                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Unlock a recipe</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Any single recipe unlock for just $1.61 instead of $1.99.</div>
-                </td>
-              </tr>
-              <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">♾️</td>
-                <td style="padding-bottom:16px;">
-                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Go lifetime</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Lifetime access drops to $53.99 &mdash; every recipe, every future drop, forever.</div>
-                </td>
-              </tr>
-            </table>
-
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
               <tr>
                 <td align="center">
@@ -257,7 +230,6 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
                 </td>
               </tr>
             </table>
-
             <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:10px;padding:16px 18px;">
               <div style="font-size:12px;color:#4a3f33;line-height:1.7;">
                 Enter code <strong style="color:#1a1612;">${promoCode}</strong> at checkout. Valid for 30 days. One use per account. Cannot be combined with other offers.
@@ -265,16 +237,14 @@ function buildBirthdayEmail(firstName: string, promoCode: string, appUrl: string
             </div>
           </td>
         </tr>
-
         <tr>
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
               Cook once. Eat all week. And have a brilliant birthday. 🎉<br>
-              Questions? <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>
-
       </table>
     </td></tr>
   </table>

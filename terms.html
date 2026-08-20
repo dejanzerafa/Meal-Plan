@@ -4,188 +4,256 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms of Service — SoulGainz</title>
-  <meta name="description" content="SoulGainz Terms of Service. Read our terms before using the app." />
+  <meta name="description" content="SoulGainz Terms of Service — governing your use of the SoulGainz meal prep and macro tracking application." />
+  <link rel="icon" type="image/svg+xml" href="/icon-stacked.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0C0B0A; color: #F2EDE6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 16px; line-height: 1.7; }
-    header { background: #0C0B0A; border-bottom: 1px solid #2a2520; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .logo { font-family: Georgia, serif; font-size: 20px; letter-spacing: 0.06em; text-decoration: none; }
-    .logo .s1 { color: #E07B2A; } .logo .s2 { color: #F2EDE6; }
-    .back-link { font-size: 13px; color: #8C8279; text-decoration: none; letter-spacing: 0.06em; }
-    .back-link:hover { color: #E07B2A; }
-    .hero { background: linear-gradient(135deg, #1a1612 0%, #2d1f0e 100%); padding: 56px 24px 40px; text-align: center; border-bottom: 1px solid #2a2520; }
-    .hero-label { font-size: 11px; letter-spacing: 0.2em; color: #8C8279; text-transform: uppercase; margin-bottom: 12px; }
-    .hero h1 { font-family: Georgia, serif; font-size: clamp(28px, 5vw, 42px); color: #F2EDE6; margin-bottom: 12px; }
-    .hero-meta { font-size: 13px; color: #8C8279; }
-    .hero-meta span { color: #E07B2A; }
-    .container { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
-    .toc { background: #161412; border: 1px solid #2a2520; border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
-    .toc h2 { font-size: 12px; letter-spacing: 0.16em; color: #8C8279; text-transform: uppercase; margin-bottom: 16px; }
-    .toc ol { padding-left: 18px; }
-    .toc li { margin-bottom: 6px; }
-    .toc a { color: #E07B2A; text-decoration: none; font-size: 14px; }
-    .toc a:hover { text-decoration: underline; }
-    section { margin-bottom: 48px; scroll-margin-top: 80px; }
-    section h2 { font-family: Georgia, serif; font-size: 22px; color: #E07B2A; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #2a2520; }
-    section h3 { font-size: 15px; font-weight: 700; color: #F2EDE6; margin: 20px 0 8px; }
-    p { color: #C8BFB5; margin-bottom: 14px; font-size: 15px; }
-    ul, ol { padding-left: 22px; margin-bottom: 14px; }
-    li { color: #C8BFB5; font-size: 15px; margin-bottom: 6px; }
-    a { color: #E07B2A; }
-    strong { color: #F2EDE6; }
-    .highlight-box { background: #1a1612; border: 1px solid #3a2d1e; border-left: 3px solid #E07B2A; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; font-size: 14px; color: #C8BFB5; }
-    footer { background: #0C0B0A; border-top: 1px solid #2a2520; padding: 24px; text-align: center; }
-    footer p { font-size: 13px; color: #5c5249; margin-bottom: 6px; }
-    footer a { color: #E07B2A; text-decoration: none; font-size: 13px; }
+    :root {
+      --bg: #1A1208;
+      --surface: #1E170E;
+      --border: #2E2520;
+      --orange: #E07B2A;
+      --cream: #F2EDE6;
+      --muted: #9C8C7C;
+      --text: #C8BFB5;
+      --heading: #F2EDE6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    header a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .wordmark {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: -0.3px;
+    }
+    .wordmark span { color: var(--cream); }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--heading);
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-top: 36px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    p { margin-bottom: 14px; }
+    ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    .highlight {
+      background: rgba(224, 123, 42, 0.1);
+      border-left: 3px solid var(--orange);
+      padding: 14px 18px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 20px;
+      color: var(--cream);
+      font-size: 14px;
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 36px 0;
+    }
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--orange); }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+    .back-btn:hover { color: var(--cream); text-decoration: none; }
   </style>
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K4FXCEWNFC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-K4FXCEWNFC");
+  </script>
 </head>
 <body>
-  <header>
-    <a href="/" class="logo"><span class="s1">SOUL</span><span class="s2">GAINZ</span></a>
-    <a href="/" class="back-link">← Back to App</a>
-  </header>
-  <div class="hero">
-    <div class="hero-label">Legal</div>
-    <h1>Terms of Service</h1>
-    <p class="hero-meta">Effective date: <span>1 May 2026</span> &nbsp;·&nbsp; Last updated: <span>10 August 2026</span></p>
-  </div>
-  <div class="container">
-    <div class="toc">
-      <h2>Contents</h2>
-      <ol>
-        <li><a href="#acceptance">Acceptance of Terms</a></li>
-        <li><a href="#service">Description of Service</a></li>
-        <li><a href="#accounts">Accounts &amp; Registration</a></li>
-        <li><a href="#payments">Payments &amp; Subscriptions</a></li>
-        <li><a href="#content">Content &amp; Intellectual Property</a></li>
-        <li><a href="#health">Health &amp; Allergy Disclaimer</a></li>
-        <li><a href="#prohibited">Prohibited Use</a></li>
-        <li><a href="#termination">Termination</a></li>
-        <li><a href="#liability">Limitation of Liability</a></li>
-        <li><a href="#governing">Governing Law</a></li>
-        <li><a href="#changes">Changes to These Terms</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ol>
-    </div>
 
-    <section id="acceptance">
-      <h2>1. Acceptance of Terms</h2>
-      <p>By accessing or using SoulGainz (available at <strong>soulgainz.app</strong>), you agree to be bound by these Terms of Service ("Terms") and our <a href="/privacy">Privacy Policy</a>. If you do not agree, please do not use the service.</p>
-      <p>These Terms apply to all visitors, users, and others who access or use SoulGainz.</p>
-    </section>
+<header>
+  <a href="https://soulgainz.app">
+    <img src="/icon-32.png" width="28" height="28" alt="SoulGainz icon" style="border-radius:6px;">
+    <span class="wordmark">Soul<span>Gainz</span></span>
+  </a>
+</header>
 
-    <section id="service">
-      <h2>2. Description of Service</h2>
-      <p>SoulGainz is a meal preparation and nutrition planning progressive web application. The App provides:</p>
-      <ul>
-        <li>High-protein meal prep recipes with batch-cook instructions</li>
-        <li>Automated grocery shopping lists based on selected recipes</li>
-        <li>A macro and calorie calculator</li>
-        <li>A meal prep calendar for planning and tracking</li>
-        <li>Access to new recipe drops as they are published</li>
-      </ul>
-      <p>SoulGainz is a digital product. No physical goods are shipped.</p>
-    </section>
+<main>
+  <a href="https://soulgainz.app" class="back-btn">← Back to SoulGainz</a>
 
-    <section id="accounts">
-      <h2>3. Accounts &amp; Registration</h2>
-      <p>To access the full features of SoulGainz, you must create an account by providing your name and email address. You are responsible for:</p>
-      <ul>
-        <li>Providing accurate and current information during registration</li>
-        <li>Maintaining the security of your account credentials</li>
-        <li>All activity that occurs under your account</li>
-      </ul>
-      <p>You must be at least 16 years of age to use this service. By registering, you confirm that you meet this requirement.</p>
-      <p>We reserve the right to suspend or terminate accounts that violate these Terms or that we reasonably believe are being used fraudulently.</p>
-    </section>
+  <h1 class="page-title">Terms of Service</h1>
+  <p class="meta">Last updated: August 2026 &nbsp;·&nbsp; Version 2026-08 &nbsp;·&nbsp; Effective immediately upon account creation</p>
 
-    <section id="payments">
-      <h2>4. Payments &amp; Subscriptions</h2>
-      <h3>Plans</h3>
-      <ul>
-        <li><strong>Monthly Pro</strong> — AUD $16.99 billed monthly</li>
-        <li><strong>Annual Pro</strong> — AUD $150.00 billed annually (equivalent to AUD $12.50/month)</li>
-      </ul>
-      <p>All prices are in Australian Dollars (AUD) and include applicable GST where required by law.</p>
-      <h3>Payments</h3>
-      <p>Payments are processed securely by <strong>Stripe</strong>. SoulGainz does not store your payment card details. By completing a purchase, you agree to Stripe's <a href="https://stripe.com/au/legal" target="_blank" rel="noopener">Terms of Service</a>.</p>
-      <h3>Refunds</h3>
-      <p>All purchases are <strong>final and non-refundable</strong>. Due to the digital nature of this product, we do not offer refunds, credits, or exchanges once a subscription or purchase has been completed. Please review what is included in each plan before subscribing.</p>
-      <h3>Subscription Cancellation</h3>
-      <p>You may cancel a recurring subscription at any time via the Billing Portal in the app Settings tab. Cancellation takes effect at the end of your current billing period and you retain access until that date.</p>
-      <h3>Promotional Codes</h3>
-      <p>Promotional codes (including birthday discounts and friend referral codes) are single-use, non-transferable, and subject to expiry. They cannot be combined with other offers.</p>
-    </section>
-
-    <section id="content">
-      <h2>5. Content &amp; Intellectual Property</h2>
-      <p>All recipes, text, images, graphics, logos, and other content on SoulGainz are the property of SoulGainz and are protected by applicable copyright and intellectual property laws.</p>
-      <p>You are granted a personal, non-exclusive, non-transferable licence to access and use the Content for your own personal, non-commercial use only. You may not:</p>
-      <ul>
-        <li>Copy, reproduce, or redistribute Content on any other platform</li>
-        <li>Sell or sublicense any Content</li>
-        <li>Scrape or extract Content using automated tools</li>
-        <li>Use Content for commercial purposes without written consent</li>
-      </ul>
-    </section>
-
-    <section id="health">
-      <h2>6. Health &amp; Allergy Disclaimer</h2>
-      <div class="highlight-box">
-        <strong>⚠️ Important:</strong> SoulGainz provides general nutritional information for educational purposes only. It is not a substitute for professional medical or dietary advice.
-      </div>
-      <p>Macro calculations and calorie targets are estimates based on standard formulas. Individual results vary. <strong>Always consult a qualified health professional before making significant changes to your diet</strong>, particularly if you have a medical condition, are pregnant, breastfeeding, or under 18.</p>
-      <h3>Allergen Information</h3>
-      <p>Recipe allergen information is automatically detected from ingredient labels and is provided as a guide only. SoulGainz cannot guarantee all allergens are identified. <strong>If you have a food allergy, always verify ingredient labels independently before preparing or consuming any recipe.</strong></p>
-      <p>SoulGainz accepts no liability for any adverse reaction, injury, or illness resulting from the preparation or consumption of recipes in the app.</p>
-    </section>
-
-    <section id="prohibited">
-      <h2>7. Prohibited Use</h2>
-      <p>You agree not to use SoulGainz to:</p>
-      <ul>
-        <li>Violate any applicable law or regulation</li>
-        <li>Share account credentials with others</li>
-        <li>Attempt to gain unauthorised access to any part of the service</li>
-        <li>Interfere with or disrupt the performance of the service</li>
-        <li>Use the service for commercial purposes without prior written consent</li>
-        <li>Attempt to reverse engineer or extract the source code of the application</li>
-      </ul>
-    </section>
-
-    <section id="termination">
-      <h2>8. Termination</h2>
-      <p>We reserve the right to suspend or terminate your access at our discretion, without notice, if you breach these Terms. You may delete your account at any time by contacting <a href="mailto:admin@soulgainz.app">admin@soulgainz.app</a>. Account deletion is permanent.</p>
-    </section>
-
-    <section id="liability">
-      <h2>9. Limitation of Liability</h2>
-      <p>To the maximum extent permitted by applicable law, SoulGainz and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service.</p>
-      <p>SoulGainz is provided "as is" without warranties of any kind. Nothing in these Terms limits or excludes any liability that cannot be excluded under applicable Australian Consumer Law.</p>
-    </section>
-
-    <section id="governing">
-      <h2>10. Governing Law</h2>
-      <p>These Terms are governed by the laws of Queensland, Australia. Any disputes shall be subject to the exclusive jurisdiction of the courts of Queensland, Australia.</p>
-    </section>
-
-    <section id="changes">
-      <h2>11. Changes to These Terms</h2>
-      <p>We may update these Terms from time to time. We will update the "Last updated" date above and notify registered users of material changes by email. Continued use of SoulGainz after changes are posted constitutes acceptance of the updated Terms.</p>
-    </section>
-
-    <section id="contact">
-      <h2>12. Contact</h2>
-      <ul>
-        <li><strong>Email:</strong> <a href="mailto:admin@soulgainz.app">admin@soulgainz.app</a></li>
-        <li><strong>Website:</strong> <a href="https://soulgainz.app">soulgainz.app</a></li>
-      </ul>
-    </section>
+  <div class="highlight">
+    By creating a SoulGainz account, you confirm that you have read, understood, and agreed to these Terms of Service in full. The date and version of your acceptance is recorded at the time of account creation.
   </div>
 
-  <footer>
-    <p>&copy; 2026 SoulGainz. All rights reserved.</p>
-    <a href="/privacy">Privacy Policy</a> &nbsp;·&nbsp; <a href="/">Back to App</a>
-  </footer>
+  <h2>1. Who We Are</h2>
+  <p>SoulGainz is a meal prep and macro tracking application operated by SoulGainz ("<strong>we</strong>", "<strong>us</strong>", "<strong>our</strong>"). The app is accessible at <a href="https://soulgainz.app">soulgainz.app</a>.</p>
+  <p>For questions, contact us at: <a href="mailto:support@soulgainz.com">support@soulgainz.com</a></p>
+
+  <hr class="section-divider" />
+
+  <h2>2. Acceptance of Terms</h2>
+  <p>By accessing or using SoulGainz, you agree to be bound by these Terms of Service. If you do not agree, you must not use the app. These terms apply to all users including free, monthly, and annual subscribers.</p>
+
+  <hr class="section-divider" />
+
+  <h2>3. Not Medical Advice — Health Disclaimer</h2>
+  <div class="highlight">
+    SoulGainz is a meal planning and macro tracking tool. It is NOT a healthcare provider, dietitian, nutritionist, or medical service.
+  </div>
+  <ul>
+    <li>No content within this application — including recipes, macro calculations, calorie targets, or nutritional data — constitutes medical advice, diagnosis, or treatment.</li>
+    <li>Always consult a qualified health professional, registered dietitian, or physician before making significant changes to your diet, particularly if you have an existing medical condition, allergy, or special dietary need.</li>
+    <li>You use the content entirely at your own risk. SoulGainz is not responsible for any health outcome resulting from your use of this app.</li>
+    <li>Macro and calorie calculations are estimates only. Individual metabolic variation, food preparation methods, and ingredient quality affect actual nutritional outcomes.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>4. Your Account</h2>
+  <ul>
+    <li>You must be at least 13 years old (or the minimum age of digital consent in your country) to create an account.</li>
+    <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+    <li>You may request deletion of your account and associated data at any time by contacting <a href="mailto:support@soulgainz.com">support@soulgainz.com</a>.</li>
+    <li>We may suspend or terminate accounts that violate these terms, engage in abuse, or attempt to circumvent subscription access controls.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>5. Subscriptions and Payments</h2>
+  <ul>
+    <li>SoulGainz offers a free tier and paid subscriptions (Monthly Pro and Annual Pro), processed via Stripe.</li>
+    <li>Subscriptions renew automatically at the end of each billing period unless cancelled.</li>
+    <li>You may cancel at any time from your account settings. Cancellation takes effect at the end of the current billing period — no partial refunds are issued unless required by law.</li>
+    <li>Prices are displayed in USD at checkout. Currency conversion is handled by your card issuer.</li>
+    <li>We reserve the right to change pricing with reasonable notice. Existing subscriptions will not be affected mid-term.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>6. Acceptable Use</h2>
+  <p>You agree not to:</p>
+  <ul>
+    <li>Use SoulGainz for any unlawful purpose or in violation of any applicable regulations.</li>
+    <li>Attempt to reverse-engineer, decompile, or extract the source code of the application.</li>
+    <li>Scrape, copy, or redistribute any content (recipes, data, UI) commercially without written permission.</li>
+    <li>Share paid account credentials to allow access by non-paying users.</li>
+    <li>Attempt to bypass or circumvent subscription access controls or paywall logic.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>7. Intellectual Property</h2>
+  <p>All content within this application — including source code, design, user interface, recipes, nutritional data, meal plans, batch-cooking methodology, written content, and visual assets — is the exclusive proprietary property of SoulGainz. All rights reserved in all jurisdictions worldwide.</p>
+  <p>No licence, express or implied, is granted to any party other than the authorised end user for personal, non-commercial use.</p>
+
+  <hr class="section-divider" />
+
+  <h2>8. Limitation of Liability</h2>
+  <div class="highlight">
+    To the maximum extent permitted by applicable law, SoulGainz's total liability to you for any claim arising out of or relating to these terms or your use of the app is limited to the amount you paid us in the 12 months preceding the claim.
+  </div>
+  <ul>
+    <li>We are not liable for any indirect, incidental, special, consequential, or punitive damages — including but not limited to loss of data, loss of revenue, loss of profits, or personal injury — even if we have been advised of the possibility of such damages.</li>
+    <li>SoulGainz is provided "as is" without warranty of any kind. We do not warrant that the app will be error-free, uninterrupted, or meet your specific requirements.</li>
+    <li>Nothing in these terms excludes or limits liability that cannot be excluded under applicable law, including statutory consumer rights.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>9. Privacy</h2>
+  <p>We collect only the information necessary to provide and improve SoulGainz. We do not sell your data, use it for advertising, or share it with third parties except as required to operate the service (e.g., Stripe for payments, Supabase for data storage, Resend for transactional emails).</p>
+  <p>Full details are in our <a href="https://soulgainz.app/privacy">Privacy Policy</a>.</p>
+  <ul>
+    <li>EEA users have rights under GDPR including the right to access, correct, and delete their data.</li>
+    <li>You may have additional rights under the privacy laws of your country.</li>
+    <li>To exercise any privacy rights, contact <a href="mailto:support@soulgainz.com">support@soulgainz.com</a>.</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <h2>10. Changes to These Terms</h2>
+  <p>We reserve the right to update these terms at any time. Significant changes will be communicated via email or an in-app notice. Continued use of SoulGainz after the effective date of updated terms constitutes acceptance of the new terms.</p>
+  <p>The current version and effective date are noted at the top of this page. Your acceptance version is stored at account creation.</p>
+
+  <hr class="section-divider" />
+
+  <h2>11. Governing Law and Disputes</h2>
+  <p>These Terms of Service are governed by and construed in accordance with the laws of the State of Qatar. Any dispute arising out of or in connection with these terms or your use of SoulGainz shall be subject to the exclusive jurisdiction of the courts of Qatar, without prejudice to your rights under the mandatory consumer protection laws of your country of residence.</p>
+  <p>Nothing in this clause prevents you from seeking relief under the consumer protection laws of your jurisdiction.</p>
+
+  <hr class="section-divider" />
+
+  <h2>12. Contact</h2>
+  <p>For any questions about these terms, your account, or to request data deletion:</p>
+  <ul>
+    <li>Email: <a href="mailto:support@soulgainz.com">support@soulgainz.com</a></li>
+    <li>Website: <a href="https://soulgainz.app">soulgainz.app</a></li>
+  </ul>
+</main>
+
+<footer>
+  <p>© 2026 SoulGainz · All rights reserved · <a href="https://soulgainz.app">Home</a> · <a href="/privacy">Privacy Policy</a> · <a href="mailto:support@soulgainz.com">Contact</a></p>
+  <p style="margin-top:8px; font-size:12px;">Version 2026-08 · Governing law: State of Qatar</p>
+</footer>
+
 </body>
 </html>

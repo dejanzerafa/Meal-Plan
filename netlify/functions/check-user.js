@@ -3,6 +3,19 @@
 // Used by the client to enforce server-side calc gate.
 
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "https://soulgainz.app",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "86400",
+      },
+      body: "",
+    };
+  }
+
   if (event.httpMethod !== "GET") {
     return { statusCode: 405, body: "Method not allowed" };
   }

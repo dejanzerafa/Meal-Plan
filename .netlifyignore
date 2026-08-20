@@ -1,0 +1,42 @@
+# Mobile build artifacts
+_mobile/
+
+# Node modules
+node_modules/
+
+# Screenshots and test artifacts
+uat_screenshots/
+screenshots/
+
+# Dev/review files
+recipe-review.html
+recipe-image-prompts.html
+recipe-image-prompts.csv
+baseline-v15.html
+
+# Source control
+.git/
+
+# macOS
+.DS_Store
+.AppleDouble
+._*
+
+# Brand assets (not served)
+SOULGAINZ_BRAND 5/
+
+# Business docs (not served)
+*.pptx
+*.docx
+*.pdf
+files/
+
+# Social media assets (not served)
+social/
+
+# Backups
+*.bak
+*.backup
+
+# Supabase local
+supabase/.temp/
