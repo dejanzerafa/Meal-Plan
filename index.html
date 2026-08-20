@@ -12673,13 +12673,13 @@ function App() {
         const t = logoTaps + 1;
         if (t >= 5) {
             setLogoTaps(0);
-            // Require PIN before opening dev modal — prevents accidental unlock by promo code users
-            const pin = window.prompt("Developer access only. Enter PIN:");
+            // Silent PIN guard — no hints, no labels, no context leaked to accidental tappers
+            const pin = window.prompt("");
             if (!pin) return;
             crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
                 .then(buf => {
                     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-                    if (hash === "db7bec919aebcbe729113e0fc8c9d3c8259191f5e2369fb3f8a4833ce8accb02") {
+                    if (hash === "0e465f7ccdb023f35c37a5770c4aca439c6fe2a4ab36d603988687ff3ad4dd87") {
                         setShowDevModal(true);
                     }
                 });
