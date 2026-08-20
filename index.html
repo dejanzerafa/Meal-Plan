@@ -11992,8 +11992,9 @@ function App() {
     const [preSkipped, setPreSkippedState] = useState(() => localStorage.getItem("mp_pre_skip") === "1");
     const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || "pw1");
     const [pendingSlot, setPendingSlot] = useState(null); // null | "lunch" | "dinner" | "breakfast" | "dessert"
-    const [lunch, setLunchState] = useState(() => localStorage.getItem("mp_lunch") || "m01");
-    const [dinner, setDinnerState] = useState(() => localStorage.getItem("mp_dinner") || "m04");
+    // "" = explicitly cleared by user; null key = first-ever load (use default)
+    const [lunch, setLunchState] = useState(() => { const v = localStorage.getItem("mp_lunch"); return v === null ? "m01" : v === "" ? null : v; });
+    const [dinner, setDinnerState] = useState(() => { const v = localStorage.getItem("mp_dinner"); return v === null ? "m04" : v === "" ? null : v; });
     const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || "bf1");
     const [dessert, setDessertState] = useState(() => localStorage.getItem("mp_dessert") || null);
     const [lunchScale, setLunchScale] = useState(1);
@@ -12786,7 +12787,7 @@ function App() {
     const setLunch = id => {
         if (id === null) {
             setLunchState(null);
-            localStorage.removeItem("mp_lunch");
+            localStorage.setItem("mp_lunch", ""); // "" = explicitly cleared; preserves first-load default
         }
         else {
             setLunchState(id);
@@ -12798,7 +12799,7 @@ function App() {
     const setDinner = id => {
         if (id === null) {
             setDinnerState(null);
-            localStorage.removeItem("mp_dinner");
+            localStorage.setItem("mp_dinner", ""); // "" = explicitly cleared; preserves first-load default
         }
         else {
             setDinnerState(id);
@@ -13515,9 +13516,9 @@ function App() {
                                 display: "inline-block",
                                 fontSize: 10, fontWeight: 900, letterSpacing: "0.1em",
                                 padding: "4px 10px", borderRadius: 20,
-                                color: unlocks.tier === "dev" ? "#f59e0b" : unlocks.tier === "annual" ? C.accent : unlocks.tier === "monthly" ? "#60a5fa" : C.sub,
-                                background: unlocks.tier === "dev" ? "rgba(245,158,11,0.12)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.12)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.12)" : "rgba(107,101,96,0.12)",
-                                border: `1px solid ${unlocks.tier === "dev" ? "rgba(245,158,11,0.35)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.35)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.35)" : "rgba(107,101,96,0.35)"}`,
+                                color: unlocks.tier === "dev" ? C.green : unlocks.tier === "annual" ? C.accent : unlocks.tier === "monthly" ? "#60a5fa" : C.sub,
+                                background: unlocks.tier === "dev" ? "rgba(34,197,94,0.12)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.12)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.12)" : "rgba(107,101,96,0.12)",
+                                border: `1px solid ${unlocks.tier === "dev" ? "rgba(34,197,94,0.35)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.35)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.35)" : "rgba(107,101,96,0.35)"}`,
                             } }, TIER_LABELS[unlocks.tier] || "FREE")),
                         isAdmin(currentUser.email) && React.createElement("button", {
                             onClick: () => setShowAdminPanel(true),
