@@ -8664,7 +8664,7 @@ function OnboardingModal({ onClose }) {
 }
 // ── Promo Code Redeemer ──────────────────────────────────────────────────────
 // Global tier label map — shared across PromoCodeInput, MeHeader, and any future component
-const TIER_LABELS = { monthly: "Monthly Pro", annual: "Annual Pro", dev: "Dev Access", free: "Free" };
+const TIER_LABELS = { monthly: "PRO MONTHLY", annual: "PRO ANNUAL", dev: "FULL DEV", free: "FREE" };
 
 function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
     const [open, setOpen] = React.useState(!!defaultOpen);
@@ -12573,10 +12573,12 @@ function App() {
                 const unlock = e.detail;
                 const tier = unlock.tier;
                 const tierPerms = {
-                    monthly:   { calculator: true, allRecipes: true,  recipes: [], tier: "monthly" },
-                    annual:    { calculator: true, allRecipes: true,  recipes: [], tier: "annual" },
+                    monthly: { calculator: true, allRecipes: true,  recipes: [], tier: "monthly" },
+                    annual:  { calculator: true, allRecipes: true,  recipes: [], tier: "annual" },
+                    dev:     { calculator: true, allRecipes: true,  recipes: [], tier: "dev" },
+                    free:    { calculator: true, allRecipes: false, recipes: [], tier: null },
                 };
-                const perms = tierPerms[tier] || { calculator: true, allRecipes: false, recipes: [], tier: tier };
+                const perms = tierPerms[tier] || { calculator: true, allRecipes: false, recipes: [], tier: tier || null };
                 // Promo unlocks come from a server-validated Netlify function — mark as verified
                 const next = Object.assign({}, perms, { via: "promo", label: unlock.label, expires: unlock.expires, _serverVerified: true });
                 setUnlocks(next);
@@ -13506,8 +13508,17 @@ function App() {
                     // ── Account ───────────────────────────────────────────────────────
                     currentUser && React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12 } },
                         React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: 12 } }, "ACCOUNT"),
-                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${C.dim}` } },
+                        React.createElement("div", { style: { fontSize: 11, color: C.sub, marginBottom: 8 } },
                             "Signed in as ", React.createElement("span", { style: { color: C.text, fontWeight: 600 } }, currentUser.email)),
+                        React.createElement("div", { style: { marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${C.dim}` } },
+                            React.createElement("span", { style: {
+                                display: "inline-block",
+                                fontSize: 10, fontWeight: 900, letterSpacing: "0.1em",
+                                padding: "4px 10px", borderRadius: 20,
+                                color: unlocks.tier === "dev" ? "#f59e0b" : unlocks.tier === "annual" ? C.accent : unlocks.tier === "monthly" ? "#60a5fa" : C.sub,
+                                background: unlocks.tier === "dev" ? "rgba(245,158,11,0.12)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.12)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.12)" : "rgba(107,101,96,0.12)",
+                                border: `1px solid ${unlocks.tier === "dev" ? "rgba(245,158,11,0.35)" : unlocks.tier === "annual" ? "rgba(224,123,42,0.35)" : unlocks.tier === "monthly" ? "rgba(96,165,250,0.35)" : "rgba(107,101,96,0.35)"}`,
+                            } }, TIER_LABELS[unlocks.tier] || "FREE")),
                         isAdmin(currentUser.email) && React.createElement("button", {
                             onClick: () => setShowAdminPanel(true),
                             style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: "rgba(224,123,42,0.10)", border: "1px solid rgba(224,123,42,0.25)", textAlign: "left", cursor: "pointer", marginBottom: 8 } },
