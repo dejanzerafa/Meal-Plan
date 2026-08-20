@@ -12364,7 +12364,7 @@ function App() {
                         const isPaid = ["monthly","annual","dev"].includes(effectiveTier);
                         const unlockData = { tier:effectiveTier, via:row.tier_via||"account",
                             label:row.tier_label, expires:row.tier_expires,
-                            calculator:isPaid, allRecipes:isPaid, recipes:[],
+                            calculator:true, allRecipes:isPaid, recipes:[],
                             // Mark as server-verified — this flag is never persisted to localStorage.
                             // canView uses this to prevent localStorage spoofing for authenticated users.
                             _serverVerified: true };
@@ -12373,11 +12373,11 @@ function App() {
                         // Row exists but tier is null/free — explicitly clear all paid fields.
                         // Do NOT spread prev state: a previously-paid user who cancelled would
                         // otherwise retain their old tier/allRecipes values in React state.
-                        setUnlocksState({ calculator: false, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true });
+                        setUnlocksState({ calculator: true, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true });
                     }
                 } else {
                     // No profile row yet — treat as free tier, but mark server-verified
-                    setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: false, _serverVerified: true }));
+                    setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: true, _serverVerified: true }));
                     // Restore profile from localStorage if available (same-device sign-out/sign-in
                     // while Supabase profile hasn't synced yet)
                     try {
@@ -13583,7 +13583,7 @@ function App() {
                                 // via:"dev" only for dev tier — free/monthly/annual use "account" so
                                 // no dev badge shows and the experience is identical to a real user
                                 const _via = t === "dev" ? "dev" : "account";
-                                setUnlocks({ calculator:_paid, allRecipes:_paid, recipes:[], tier:t === "free" ? null : t, via:_via, label:t.charAt(0).toUpperCase()+t.slice(1), _serverVerified:true });
+                                setUnlocks({ calculator:true, allRecipes:_paid, recipes:[], tier:t === "free" ? null : t, via:_via, label:t.charAt(0).toUpperCase()+t.slice(1), _serverVerified:true });
                                 try {
                                     const _sb = getSB();
                                     if (_sb && currentUser) {
