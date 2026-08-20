@@ -8337,16 +8337,10 @@ async function startCheckout(tier, recipeId) {
 }
 // Dev access — tiered codes, stored as SHA-256 hashes only, never plaintext in source
 const DEV_TIER_HASHES = {
-    // ── Original codes (kept for backward compat) ──────────────────────────
-    "837488f6d1011054c23e6147534de79e373151605d212653d898fe4cfa49a7c8": { tier: "free",    allRecipes: false, label: "Free Tier" },
-    "00608339aac4da4d44e9a472ba7e892e3040c014c961fedbb3d2254ef70ee6bd": { tier: "monthly", allRecipes: true,  label: "Monthly" },
-    "f18c8961def0319ca9c09998402637311dde8b944e0eca16c9e9b2dc54a71208": { tier: "annual",  allRecipes: true,  label: "Annual" },
-    "097aa9f4e905a098fcc389d95a1d50f504e69f4788345b9500aa45df24e05a99": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
-    // ── Simple codes: SGFREE / SGMONTH / SGANNUAL / SGDEV ─────────────────
-    "b17ad9be1d0231ab3ea814be0afe3d88bb8d022e67b83411dc7588ecdb271b47": { tier: "free",    allRecipes: false, label: "Free Tier" },
-    "422e5f242ee9615dfe7a01d89faca3c7bec329c6a58df07340a6cedae28e88ce": { tier: "monthly", allRecipes: true,  label: "Monthly" },
-    "b2153f49bedf40adfcaa8bd993dcdeccead2d7fcc4820738db14cbbaa4a5474d": { tier: "annual",  allRecipes: true,  label: "Annual" },
-    "628988b0f35aa1223f24dd8a3517f8a320648af5d7acba11530b6e4da950fbb7": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
+    "65cd0e4dc23e7069f752a28f49e3587206d065a3e1bbb46037ec65d969887635": { tier: "free",    allRecipes: false, label: "Free Tier" },
+    "6a3dcbfdaa6b44b66c89a5ce097c159d95f3efffef13f118426e00e7611d6c63": { tier: "monthly", allRecipes: true,  label: "Monthly" },
+    "60f7434f9305c48b197ed1fd8255a077a23dffa2e02f5f82b458c2c0acd5cbd3": { tier: "annual",  allRecipes: true,  label: "Annual" },
+    "ace818b02ac88cdbae7bb99b2eaa7e79618ace47d406ae685c0cba64a0eff041": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
 };
 async function _hashInput(input) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.toUpperCase().trim()));
@@ -12678,11 +12672,19 @@ function App() {
     const tapLogo = () => {
         const t = logoTaps + 1;
         if (t >= 5) {
-            setShowDevModal(true);
             setLogoTaps(0);
+            // Require PIN before opening dev modal — prevents accidental unlock by promo code users
+            const pin = window.prompt("Developer access only. Enter PIN:");
+            if (!pin) return;
+            crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
+                .then(buf => {
+                    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+                    if (hash === "db7bec919aebcbe729113e0fc8c9d3c8259191f5e2369fb3f8a4833ce8accb02") {
+                        setShowDevModal(true);
+                    }
+                });
         }
-        else
-            setLogoTaps(t);
+        else setLogoTaps(t);
     };
     // Dev unlock: full access to everything (calculator + all recipes)
     const applyDevTier = (tier, _allRecipes) => setUnlocks({
