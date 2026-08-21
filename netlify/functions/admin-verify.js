@@ -1,44 +1,100 @@
 // netlify/functions/admin-verify.js
 // Verifies admin password against ADMIN_SECRET env var.
 // Returns a short-lived session token so the password never lives in client code.
+//
+// Rate limiting: max 10 failed attempts per IP per 15-minute window using Netlify Blobs.
+// Requires Netlify Blobs (available automatically on all Netlify plans, no extra config).
+
+const { getStore } = require("@netlify/blobs");
+
+const RATE_LIMIT_MAX    = 10;
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes in ms
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin":  "https://soulgainz.app",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age":       "86400",
+};
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "https://soulgainz.app",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Max-Age": "86400",
-      },
-      body: "",
-    };
+    return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
 
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
-  let body;
-  try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
-
   const secret = process.env.ADMIN_SECRET;
   if (!secret) {
     return { statusCode: 500, body: JSON.stringify({ error: "Admin not configured" }) };
   }
 
+  // ── IP-based rate limiting ───────────────────────────────────────────────────
+  const clientIp =
+    event.headers["x-nf-client-connection-ip"] ||
+    (event.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+    "unknown";
+
+  let store;
+  let attempts = { count: 0, windowStart: Date.now() };
+
+  try {
+    store = getStore({ name: "admin-rate-limit", consistency: "strong" });
+    const stored = await store.get(`ip:${clientIp}`, { type: "json" }).catch(() => null);
+    if (stored) {
+      if (Date.now() - stored.windowStart < RATE_LIMIT_WINDOW) {
+        attempts = stored; // still within window
+      }
+      // else: window expired — start fresh (don't update attempts)
+    }
+  } catch (_) {
+    // Blobs unavailable (e.g. local dev) — degrade gracefully, skip rate limiting
+    store = null;
+  }
+
+  if (attempts.count >= RATE_LIMIT_MAX) {
+    const resetInMs  = RATE_LIMIT_WINDOW - (Date.now() - attempts.windowStart);
+    const resetInMin = Math.ceil(resetInMs / 60000);
+    return {
+      statusCode: 429,
+      headers: { "Retry-After": String(resetInMin * 60) },
+      body: JSON.stringify({
+        error: `Too many failed attempts. Try again in ${resetInMin} minute${resetInMin !== 1 ? "s" : ""}.`,
+      }),
+    };
+  }
+
+  // ── Parse + verify password ─────────────────────────────────────────────────
+  let body;
+  try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
+
   if (!body.password || body.password !== secret) {
-    // Small delay to slow brute-force
+    // Increment failed-attempt counter
+    if (store) {
+      try {
+        await store.setJSON(`ip:${clientIp}`, {
+          count:       attempts.count + 1,
+          windowStart: attempts.windowStart,
+        });
+      } catch (_) {}
+    }
+    // Small sequential delay — combined with rate limiting this stops brute force
     await new Promise(r => setTimeout(r, 400));
     return { statusCode: 401, body: JSON.stringify({ error: "Incorrect password" }) };
   }
 
-  // Return a signed token: base64(timestamp + ":" + secret slice)
-  // Simple — not JWT, but sufficient for an internal admin page
+  // ── Success: clear rate limit counter for this IP ───────────────────────────
+  if (store) {
+    try { await store.delete(`ip:${clientIp}`); } catch (_) {}
+  }
+
+  // Return a signed token: base64(timestamp + ":" + last 8 chars of secret)
   const token = Buffer.from(`${Date.now()}:${secret.slice(-8)}`).toString("base64");
   return {
     statusCode: 200,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
   };
 };
