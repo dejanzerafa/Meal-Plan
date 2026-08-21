@@ -10176,13 +10176,17 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
     const [basicsKey, setBasicsKey] = React.useState(0); // triggers re-render when basics saved
     const handleBasicsSaved = (basics) => {
         setBasicsKey(k => k+1);
-        // Merge basics into the current profile object and sync to Supabase
-        if (basics && onSave) {
+        // Only merge+sync when the user already has a calculator profile.
+        // If profile is null (calculator not done yet), the basics are in localStorage
+        // and will be included automatically when the user completes the calculator.
+        // Calling onSave with a result-less object would incorrectly flip ProfileTab
+        // out of the calculator view and try to render an incomplete profile display.
+        if (basics && onSave && profile) {
             const _fn = localStorage.getItem("mp_acc_first_name") || "";
             const _ln = localStorage.getItem("mp_acc_last_name")  || "";
-            const merged = Object.assign({}, profile || {}, basics, {
-                firstName: basics.firstName || _fn || (profile && profile.firstName) || "",
-                lastName:  basics.lastName  || _ln || (profile && profile.lastName)  || "",
+            const merged = Object.assign({}, profile, basics, {
+                firstName: basics.firstName || _fn || profile.firstName || "",
+                lastName:  basics.lastName  || _ln || profile.lastName  || "",
                 savedAt:   new Date().toISOString(),
             });
             onSave(merged);
@@ -12410,8 +12414,8 @@ function App() {
                             }
                         } catch(_) {}
                     }
-                    // Stamp last_seen_at on every sign-in (fire-and-forget)
-                    try { sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", userId).then(() => {}); } catch(_) {}
+                    // Stamp last_seen_at on every sign-in (fire-and-forget, never blocks)
+                    try { sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", userId).then(() => {}).catch(() => {}); } catch(_) {}
                     if (row.tier) {
                         // Check if promo/subscription tier has expired — if so, downgrade to free
                         const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();

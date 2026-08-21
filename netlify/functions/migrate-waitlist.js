@@ -82,9 +82,8 @@ exports.handler = async (event) => {
 
       try {
         // ── 2. Check if auth account exists ──────────────────────────────────
-        const { data: authData, error: authErr } = await sb.auth.admin.listUsers({ page: 1, perPage: 1 });
-        // Note: listUsers doesn't filter by email directly; use getUserByEmail
-        const { data: { user: existingUser }, error: euErr } = await sb.auth.admin.getUserByEmail(email).catch(() => ({ data: { user: null }, error: null }));
+        // getUserByEmail requires Supabase JS v2 admin API + service_role key
+        const { data: { user: existingUser } = {}, error: euErr } = await sb.auth.admin.getUserByEmail(email).catch(() => ({ data: {}, error: null }));
 
         if (existingUser) {
           // ── 3a. User has account → sync name to profiles if missing ────────
