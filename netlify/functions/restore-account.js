@@ -6,6 +6,7 @@
 // Returns:   { found, name, email, unlocks }
 
 const { createClient } = require("@supabase/supabase-js");
+const { getStore }     = require("@netlify/blobs");
 
 // ── Allowed origins ───────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -16,21 +17,28 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1",
 ];
 
-// ── IP-based rate limiting: max 5 attempts per IP per 2 minutes ───────────────
-// (prevents email enumeration / brute-force scraping)
-const _ipRateMap = new Map();
-function _checkIpRateLimit(ip) {
+// ── IP-based rate limiting via Netlify Blobs ───────────────────────────────────
+// Max 5 attempts per IP per 2 minutes — shared across all container instances.
+// Prevents email enumeration / brute-force scraping.
+const RATE_LIMIT_MAX    = 5;
+const RATE_LIMIT_WINDOW = 2 * 60 * 1000; // 2 minutes in ms
+
+async function _checkIpRateLimit(ip) {
   if (!ip) return true; // can't rate-limit without IP — allow but log
-  const now = Date.now();
-  const entry = _ipRateMap.get(ip) || { count: 0, windowStart: now };
-  if (now - entry.windowStart > 120000) {
-    _ipRateMap.set(ip, { count: 1, windowStart: now });
+  try {
+    const store = getStore({ name: "restore-rate-limit", consistency: "strong" });
+    const stored = await store.get(`ip:${ip}`, { type: "json" }).catch(() => null);
+    const now = Date.now();
+    let attempts = { count: 0, windowStart: now };
+    if (stored && (now - stored.windowStart < RATE_LIMIT_WINDOW)) {
+      attempts = stored;
+    }
+    if (attempts.count >= RATE_LIMIT_MAX) return false;
+    await store.setJSON(`ip:${ip}`, { count: attempts.count + 1, windowStart: attempts.windowStart });
     return true;
+  } catch (_) {
+    return true; // Blobs unavailable (local dev) — degrade gracefully
   }
-  if (entry.count >= 5) return false;
-  entry.count++;
-  _ipRateMap.set(ip, entry);
-  return true;
 }
 
 exports.handler = async (event) => {
@@ -65,12 +73,13 @@ exports.handler = async (event) => {
   }
 
   // ── IP rate limit ─────────────────────────────────────────────────────────
-  const clientIp = (event.headers && (
-    event.headers["x-forwarded-for"] ||
-    event.headers["x-nf-client-connection-ip"] ||
-    event.headers["client-ip"]
-  ) || "").split(",")[0].trim();
-  if (!_checkIpRateLimit(clientIp)) {
+  // Prefer x-nf-client-connection-ip (Netlify's real-IP header, not spoofable)
+  const clientIp =
+    (event.headers && event.headers["x-nf-client-connection-ip"]) ||
+    ((event.headers && event.headers["x-forwarded-for"]) || "").split(",")[0].trim() ||
+    "unknown";
+  const allowed = await _checkIpRateLimit(clientIp);
+  if (!allowed) {
     return { statusCode: 429, headers, body: JSON.stringify({ error: "Too many attempts. Please wait a moment." }) };
   }
 
@@ -86,10 +95,12 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "Valid email required" }) };
   }
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!supabaseUrl || !supabaseKey) {
+    return { statusCode: 500, headers, body: JSON.stringify({ error: "Server configuration error" }) };
+  }
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
     // 1. Look up user
