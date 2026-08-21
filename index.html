@@ -8255,8 +8255,20 @@ async function uploadLocalDataToSupabase(userId, userEmail) {
             const p = JSON.parse(raw);
             await sb.from("profiles").upsert(profileToSbRow(userId, userEmail, p), { onConflict:"id" });
         } else {
-            // Ensure at least a stub profile row exists
-            await sb.from("profiles").upsert({ id:userId, email:userEmail, updated_at:new Date().toISOString() }, { onConflict:"id" });
+            // Ensure a stub profile row exists with all available local data
+            const _fn = localStorage.getItem("mp_acc_first_name") || null;
+            const _ln = localStorage.getItem("mp_acc_last_name")  || null;
+            const _bl = getUserBasics();
+            await sb.from("profiles").upsert({
+                id:         userId,
+                email:      userEmail,
+                first_name: _fn || null,
+                last_name:  _ln || null,
+                dob:        (_bl && _bl.dob)    || null,
+                gender:     (_bl && _bl.gender) || null,
+                onboarded_at: new Date().toISOString(),
+                updated_at:   new Date().toISOString(),
+            }, { onConflict:"id" });
         }
     } catch(e) { console.warn("SG: upload profile", e); }
     // Favourites
@@ -9835,6 +9847,8 @@ function LegalAccordion({ C }) {
                 "Price changes take effect at your next renewal with 30 days' notice. Cancel before then at no extra charge.",
                 "Recipe and nutritional content is for informational purposes only — not a substitute for professional medical advice.",
                 "SoulGainz content (recipes, design, code) is proprietary. Do not reproduce or resell it commercially.",
+                "Data you enter in the app (name, date of birth, body measurements, macro targets, meal logs, and usage activity) is stored securely in our database. This data is used to operate the app, personalise your experience, and improve our features and services. We do not sell your personal data to third parties.",
+                "We may use anonymised, aggregated usage data (such as popular recipe trends or common macro goals) to develop new features, conduct internal analysis, and improve the product.",
                 "We may suspend accounts that violate these terms. You can request account deletion at any time.",
                 "Governed by the laws of the State of Qatar. Your statutory consumer rights under applicable consumer protection law are not affected by these terms.",
             ],
@@ -9844,13 +9858,15 @@ function LegalAccordion({ C }) {
             title: "Privacy Policy",
             intro: "We take your privacy seriously. Here's a plain-English summary of how we handle your data.",
             points: [
-                "We collect your email, name, and optional health data (height, weight, goals) to run the app and personalise your experience.",
-                "Your health and body data is used only within SoulGainz — it is never sold or shared with advertisers.",
+                "We collect your email address, name, and optional health data (date of birth, height, weight, gender, fitness goals, macro targets) when you register and use the app.",
+                "We store your meal logs, recipe preferences, favourites, and app activity (such as last sign-in date) to operate the app and personalise your experience.",
+                "Your data is stored in our secure database (Supabase, hosted on AWS). All connections use HTTPS/TLS encryption. Data is backed up regularly.",
+                "We may use anonymised, aggregated data across our user base — such as popular recipe selections or common macro goal distributions — to analyse trends, develop new features, and improve the product. Individual user data is never publicly exposed in this analysis.",
+                "Your personal health and body data is never sold, rented, or shared with advertisers or data brokers.",
                 "Payments are processed by Stripe. We never see or store your card number.",
-                "Your data is stored securely via Supabase. All connections use HTTPS encryption.",
-                "We send transactional emails (receipts, subscription reminders). Marketing emails only with your consent — unsubscribe anytime.",
-                "You can request a copy of your data or full account deletion at any time via support@soulgainz.com.",
-                "EEA users have rights under GDPR. You may have additional rights under the privacy laws of your country.",
+                "We send transactional emails (receipts, subscription reminders, promo codes). Marketing emails only with your consent — unsubscribe anytime.",
+                "You can request a copy of your data or full account deletion at any time by contacting support@soulgainz.com. We will respond within 30 days.",
+                "EEA users have rights under GDPR including the right to access, correct, delete, or port your data. You may have additional rights under the privacy laws of your country.",
             ],
             footer: "Last updated August 2026 · Contact: support@soulgainz.com",
         },
@@ -9994,7 +10010,9 @@ function ProfileBasicsEditor({ C, onSaved, tier }) {
         if (email.trim()) localStorage.setItem("mp_acc_email", email.trim().toLowerCase());
         setSaved(true);
         setEditing(false);
-        if (onSaved) onSaved(form);
+        // Pass name parts so the parent can merge into a full profile object and sync to Supabase
+        const _parts = name.trim().split(" ");
+        if (onSaved) onSaved({ ...form, firstName: _parts[0]||"", lastName: _parts.slice(1).join(" ")||"" });
     };
 
     const inp = { width:"100%", padding:"10px 12px", borderRadius:8, border:"1.5px solid "+C.dim,
@@ -10156,7 +10174,20 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             onSave(p);
     };
     const [basicsKey, setBasicsKey] = React.useState(0); // triggers re-render when basics saved
-    const handleBasicsSaved = () => setBasicsKey(k => k+1);
+    const handleBasicsSaved = (basics) => {
+        setBasicsKey(k => k+1);
+        // Merge basics into the current profile object and sync to Supabase
+        if (basics && onSave) {
+            const _fn = localStorage.getItem("mp_acc_first_name") || "";
+            const _ln = localStorage.getItem("mp_acc_last_name")  || "";
+            const merged = Object.assign({}, profile || {}, basics, {
+                firstName: basics.firstName || _fn || (profile && profile.firstName) || "",
+                lastName:  basics.lastName  || _ln || (profile && profile.lastName)  || "",
+                savedAt:   new Date().toISOString(),
+            });
+            onSave(merged);
+        }
+    };
 
     // Calculator is free for all users — no paywall needed
     // First-time: no profile saved (premium user)
@@ -12345,8 +12376,21 @@ function App() {
                     try { localStorage.setItem("mp_profile", JSON.stringify(p)); } catch(_) {}
                     // Restore name keys so ProfileBasicsEditor and greeting show correctly
                     try {
-                        const first = row.first_name || "";
-                        const last  = row.last_name  || "";
+                        let first = row.first_name || "";
+                        let last  = row.last_name  || "";
+                        // Backfill: if profiles row has no name, try auth.user_metadata (set during signUp options.data)
+                        if (!first && !last) {
+                            try {
+                                const { data: { user: _u } } = await sb.auth.getUser();
+                                const _m = _u?.user_metadata || {};
+                                if (_m.first_name || _m.last_name) {
+                                    first = _m.first_name || "";
+                                    last  = _m.last_name  || "";
+                                    // Write back to profiles so future loads don't need this step
+                                    await sb.from("profiles").update({ first_name:first||null, last_name:last||null }).eq("id", userId);
+                                }
+                            } catch(_bf) {}
+                        }
                         const full  = (first + " " + last).trim();
                         if (full) {
                             localStorage.setItem("mp_acc_first_name", first);
@@ -12354,6 +12398,20 @@ function App() {
                             localStorage.setItem("mp_acc_name",       full);
                         }
                     } catch(_) {}
+                    // Backfill DOB/gender from localStorage if profile row is missing them
+                    if (!row.dob || !row.gender) {
+                        try {
+                            const _lo = getUserBasics();
+                            if (_lo) {
+                                const _upd = {};
+                                if (!row.dob    && _lo.dob)    _upd.dob    = _lo.dob;
+                                if (!row.gender && _lo.gender)  _upd.gender = _lo.gender;
+                                if (Object.keys(_upd).length) await sb.from("profiles").update(_upd).eq("id", userId);
+                            }
+                        } catch(_) {}
+                    }
+                    // Stamp last_seen_at on every sign-in (fire-and-forget)
+                    try { sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", userId).then(() => {}); } catch(_) {}
                     if (row.tier) {
                         // Check if promo/subscription tier has expired — if so, downgrade to free
                         const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();
@@ -12377,10 +12435,31 @@ function App() {
                         setUnlocksState({ calculator: true, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true });
                     }
                 } else {
-                    // No profile row yet — treat as free tier, but mark server-verified
+                    // No profile row yet — create stub with all available local data
                     setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: true, _serverVerified: true }));
-                    // Restore profile from localStorage if available (same-device sign-out/sign-in
-                    // while Supabase profile hasn't synced yet)
+                    try {
+                        const _fn = localStorage.getItem("mp_acc_first_name") || null;
+                        const _ln = localStorage.getItem("mp_acc_last_name")  || null;
+                        const _bl = getUserBasics();
+                        let _mFirst = null, _mLast = null;
+                        try { const { data:{ user:_u } } = await sb.auth.getUser(); const _m = _u?.user_metadata||{}; _mFirst=_m.first_name||null; _mLast=_m.last_name||null; } catch(_) {}
+                        await sb.from("profiles").upsert({
+                            id:           userId,
+                            email:        userEmail,
+                            first_name:   _fn || _mFirst || null,
+                            last_name:    _ln || _mLast  || null,
+                            dob:          (_bl && _bl.dob)    || null,
+                            gender:       (_bl && _bl.gender) || null,
+                            onboarded_at: new Date().toISOString(),
+                            last_seen_at: new Date().toISOString(),
+                            updated_at:   new Date().toISOString(),
+                        }, { onConflict:"id" });
+                        // Restore name to localStorage from discovered metadata
+                        const _rf = _fn || _mFirst || null;
+                        const _rl = _ln || _mLast  || null;
+                        if (_rf) { localStorage.setItem("mp_acc_first_name", _rf); localStorage.setItem("mp_acc_last_name", _rl||""); localStorage.setItem("mp_acc_name", [_rf, _rl].filter(Boolean).join(" ")); }
+                    } catch(_) {}
+                    // Restore profile from localStorage if available (same-device sign-out/sign-in)
                     try {
                         const local = JSON.parse(localStorage.getItem("mp_profile") || "null");
                         if (local) { setProfile(local); }
