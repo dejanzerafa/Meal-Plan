@@ -31,6 +31,10 @@ exports.handler = async (event) => {
   }
 
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
+
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    return { statusCode: 500, body: "Supabase env vars not configured" };
+  }
   const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY

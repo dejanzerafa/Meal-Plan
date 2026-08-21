@@ -3482,7 +3482,7 @@ const RECIPES = [
         name: "🍪 Protein Brownie Cookies", subtitle: "Oven · batch bake",
         portions: 7,
         badge: "🌬️ Oven", carb: "🍫 Chocolate",
-        perPortion: { kcal:136, protein:13.7, carbs:18.2, fat:3.9 },
+        perPortion: { kcal:163, protein:13.7, carbs:18.2, fat:3.9 },
         batchItems: [
             { key: "d1_yog", label: "Plain nonfat Greek yogurt", qty: 340, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.333333},
             { key: "d1_pump", label: "Pure pumpkin purée", qty: 122, unit: "g", cat: "Vegetables" , ingId: 137 , role: "veg", baseQty: 30.5},
@@ -7549,7 +7549,7 @@ class AppErrorBoundary extends React.Component {
             return React.createElement('div', { style: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100vh', fontFamily:'sans-serif', padding:'32px', textAlign:'center', background:'#1a1612' } },
                 React.createElement('div', { style: { fontSize:32, marginBottom:16 } }, '⚠️'),
                 React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#f3ece0' } }, 'Something went wrong'),
-                React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, e ? e.message : 'An unexpected error occurred'),
+                React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, 'An unexpected error occurred. If this keeps happening, try clearing the cache below.'),
                 React.createElement('button', { onClick: function(){ window.location.reload(); }, style: { background:'#c0602a', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:14, fontWeight:700, cursor:'pointer', marginBottom:10 } }, 'Reload App'),
                 React.createElement('button', { onClick: function(){ try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {} window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
             );
@@ -8347,7 +8347,7 @@ async function startCheckout(tier, recipeId) {
         console.error("Checkout error:", err);
     }
 }
-// Dev access — tiered codes, stored as SHA-256 hashes only, never plaintext in source
+// Dev access — stored as SHA-256 hashes only, never plaintext in source
 const DEV_TIER_HASHES = {
     "65cd0e4dc23e7069f752a28f49e3587206d065a3e1bbb46037ec65d969887635": { tier: "free",    allRecipes: false, label: "Free Tier" },
     "6a3dcbfdaa6b44b66c89a5ce097c159d95f3efffef13f118426e00e7611d6c63": { tier: "monthly", allRecipes: true,  label: "Monthly" },

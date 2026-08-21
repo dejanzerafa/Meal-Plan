@@ -21,7 +21,17 @@
 
 const { createClient } = require("@supabase/supabase-js");
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin":  "https://soulgainz.app",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age":       "86400",
+};
+
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: CORS_HEADERS, body: "" };
+  }
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }

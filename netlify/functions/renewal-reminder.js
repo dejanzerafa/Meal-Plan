@@ -14,19 +14,23 @@
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event) => {
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+  const apiKey     = process.env.RESEND_API_KEY;
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
-  const appUrl = process.env.APP_URL || "https://soulgainz.app";
-
+  if (!supabaseUrl || !supabaseKey) {
+    console.log("Supabase env vars not set — skipping renewal reminders");
+    return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true, reason: "no_supabase" }) };
+  }
   if (!apiKey) {
     console.log("RESEND_API_KEY not set — skipping renewal reminders");
-    return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true, reason: "no_resend" }) };
   }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const appUrl = process.env.APP_URL || "https://soulgainz.app";
 
   // Find subscriptions expiring in 6-8 days (window prevents double-sends on retry)
   const now = new Date();

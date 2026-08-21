@@ -1,11 +1,10 @@
-// SoulGainz — Service Worker v180
+// SoulGainz — Service Worker v181
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v180';
+const CACHE_NAME = 'meal-plan-v181';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
-  '/',
   '/index.html',
   '/manifest.json',
   '/icon-stacked.svg',
@@ -59,7 +58,13 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
   const isApp = url.hostname === self.location.hostname;
-  if (!isApp) return; // only handle same-origin requests (React is now self-hosted)
+  // For external requests (Google Fonts etc.) — serve from cache when offline, else network
+  if (!isApp) {
+    event.respondWith(
+      caches.match(event.request).then(cached => cached || fetch(event.request))
+    );
+    return;
+  }
 
   const isAsset = /\.(png|svg|json|webp|ico|woff2?|ttf|js)$/.test(url.pathname);
   const isNavigation = event.request.mode === 'navigate';
