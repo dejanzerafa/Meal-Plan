@@ -808,6 +808,372 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ── Nav Links (mobile fix) ─────────────────────────────── */
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text);
+      padding: 4px 8px;
+      line-height: 1;
+    }
+
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(12,11,10,0.97);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .nav-mobile-menu.open {
+      display: flex;
+    }
+
+    .nav-mobile-menu a {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #F2EDE6;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .nav-mobile-menu a:hover { color: var(--accent); }
+
+    .nav-mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #F2EDE6;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+    }
+
+    /* ── Feature Strip ──────────────────────────────────────── */
+    .feature-strip {
+      background: #F2EDE6;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 0;
+    }
+
+    .feature-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(26,22,18,0.07);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-card-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .feature-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .feature-card-desc {
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 768px) {
+      .feature-strip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .feature-strip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── App Screenshot Showcase ────────────────────────────── */
+    .app-showcase {
+      background: var(--bg);
+    }
+
+    .app-showcase-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .phone-mockups {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+    }
+
+    .phone-frame {
+      width: 280px;
+      min-height: 560px;
+      border-radius: 36px;
+      border: 2px solid #2a2520;
+      background: #1C1A18;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(12,11,10,0.28), 0 4px 16px rgba(12,11,10,0.18);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .phone-notch {
+      width: 80px;
+      height: 20px;
+      background: #0C0B0A;
+      border-radius: 0 0 14px 14px;
+      margin: 0 auto;
+    }
+
+    .phone-screen {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .phone-screen-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #F2EDE6;
+      margin-bottom: 2px;
+    }
+
+    .phone-screen-subtitle {
+      font-size: 10px;
+      color: #8A8580;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* Mockup 1 - Meal Plan rows */
+    .meal-row {
+      background: rgba(242,237,230,0.06);
+      border: 1px solid rgba(242,237,230,0.1);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .meal-row-emoji { font-size: 20px; flex-shrink: 0; }
+
+    .meal-row-info { flex: 1; min-width: 0; }
+
+    .meal-row-label {
+      font-size: 9px;
+      color: #8A8580;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .meal-row-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #F2EDE6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meal-row-macros {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .macro-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 100px;
+    }
+
+    .macro-badge-p { background: rgba(184,74,31,0.25); color: #E07B2A; }
+    .macro-badge-c { background: rgba(196,146,31,0.2); color: #c4921f; }
+    .macro-badge-f { background: rgba(138,133,128,0.2); color: #8A8580; }
+
+    /* Mockup 2 - Recipes screen */
+    .recipe-filter-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .filter-tab {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(242,237,230,0.08);
+      color: #8A8580;
+    }
+
+    .filter-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .recipe-mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .recipe-mini-item {
+      background: rgba(242,237,230,0.06);
+      border: 1px solid rgba(242,237,230,0.1);
+      border-radius: 10px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-align: center;
+    }
+
+    .recipe-mini-item-emoji { font-size: 22px; }
+
+    .recipe-mini-item-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: #F2EDE6;
+      line-height: 1.2;
+    }
+
+    .recipe-mini-item-macro {
+      font-size: 9px;
+      font-weight: 700;
+      color: #E07B2A;
+    }
+
+    /* Mockup 3 - Calculator screen */
+    .calc-field {
+      background: rgba(242,237,230,0.06);
+      border: 1px solid rgba(242,237,230,0.12);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .calc-field-label { font-size: 12px; color: #8A8580; font-weight: 500; }
+    .calc-field-value { font-size: 12px; font-weight: 700; color: #F2EDE6; }
+
+    .calc-result {
+      background: rgba(184,74,31,0.12);
+      border: 1px solid rgba(184,74,31,0.25);
+      border-radius: 12px;
+      padding: 14px 12px;
+      margin-top: 4px;
+    }
+
+    .calc-result-title {
+      font-size: 9px;
+      color: #8A8580;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .calc-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .calc-bar-row:last-child { margin-bottom: 0; }
+
+    .calc-bar-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: #F2EDE6;
+      width: 48px;
+      flex-shrink: 0;
+    }
+
+    .calc-bar-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(242,237,230,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .calc-bar-fill-p { height: 100%; width: 73%; background: #E07B2A; border-radius: 3px; }
+    .calc-bar-fill-c { height: 100%; width: 60%; background: #c4921f; border-radius: 3px; }
+    .calc-bar-fill-f { height: 100%; width: 35%; background: #8A8580; border-radius: 3px; }
+
+    .calc-bar-val {
+      font-size: 10px;
+      font-weight: 700;
+      color: #F2EDE6;
+      width: 32px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 960px) {
+      .phone-frame { width: 230px; min-height: 460px; }
+    }
+
+    @media (max-width: 768px) {
+      .phone-mockups { flex-direction: column; align-items: center; flex-wrap: wrap; }
+      .phone-frame { width: 280px; min-height: 520px; }
+    }
   </style>
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K4FXCEWNFC"></script>
@@ -827,17 +1193,31 @@
         <a href="/" class="nav-logo serif">
           <span>SOUL</span>GAINZ
         </a>
-        <div style="display:flex;align-items:center;gap:20px;">
-          <a href="calculator.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Calculator</a>
-          <a href="blog.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Blog</a>
-          <a href="about.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">About</a>
-          <a href="pricing.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Pricing</a>
-          <a href="mailto:admin@soulgainz.app" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Help</a>
-          <a href="/pricing" class="btn btn-primary nav-cta">See plans →</a>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="nav-links">
+            <a href="calculator.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Calculator</a>
+            <a href="blog.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Blog</a>
+            <a href="about.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">About</a>
+            <a href="pricing.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Pricing</a>
+            <a href="mailto:admin@soulgainz.app" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Help</a>
+          </div>
+          <a href="/waitlist" class="btn btn-primary nav-cta">See plans →</a>
+          <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">☰</button>
         </div>
       </div>
     </div>
   </nav>
+
+  <!-- ── MOBILE NAV MENU ────────────────────────────────────────── -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <button class="nav-mobile-close" id="nav-mobile-close" aria-label="Close menu">✕</button>
+    <a href="calculator.html" class="nav-mobile-link">Calculator</a>
+    <a href="blog.html" class="nav-mobile-link">Blog</a>
+    <a href="about.html" class="nav-mobile-link">About</a>
+    <a href="pricing.html" class="nav-mobile-link">Pricing</a>
+    <a href="mailto:admin@soulgainz.app" class="nav-mobile-link">Help</a>
+    <a href="/waitlist" class="btn btn-primary" style="margin-top:8px;font-size:17px;padding:16px 32px;">Join the waitlist →</a>
+  </div>
 
   <!-- ── HERO ────────────────────────────────────────────────────── -->
   <section class="hero">
@@ -950,6 +1330,39 @@
 
           </div>
           <p class="hero-visual-label">All recipes · Verified macros · Free to start</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURE STRIP ──────────────────────────────────────────── -->
+  <section class="feature-strip">
+    <div class="container">
+      <div class="feature-strip-grid">
+
+        <div class="feature-card">
+          <div class="feature-card-icon">🔥</div>
+          <div class="feature-card-title">170+ Recipes</div>
+          <p class="feature-card-desc">High-protein, macro-verified. New recipes added regularly.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">📊</div>
+          <div class="feature-card-title">Built-in Macro Calculator</div>
+          <p class="feature-card-desc">Get your exact daily targets based on your body and goals.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">🛒</div>
+          <div class="feature-card-title">Auto Grocery List</div>
+          <p class="feature-card-desc">Every ingredient, auto-calculated for your portions.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">📱</div>
+          <div class="feature-card-title">Save to Home Screen</div>
+          <p class="feature-card-desc">Works like a native app. No App Store needed.</p>
         </div>
 
       </div>
@@ -1181,6 +1594,144 @@
     </div>
   </section>
 
+  <!-- ── APP SCREENSHOT SHOWCASE ────────────────────────────────── -->
+  <section class="app-showcase">
+    <div class="container">
+      <div class="app-showcase-header">
+        <p class="section-label">Inside the app</p>
+        <h2 class="section-heading">Everything you need, in one place.</h2>
+      </div>
+
+      <div class="phone-mockups">
+
+        <!-- Phone 1: Meal Plan -->
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-screen-title">Meal Plan</div>
+            <div class="phone-screen-subtitle">Today · Monday</div>
+
+            <div class="meal-row">
+              <div class="meal-row-emoji">🥚</div>
+              <div class="meal-row-info">
+                <div class="meal-row-label">Breakfast</div>
+                <div class="meal-row-name">Greek Egg Wrap</div>
+                <div class="meal-row-macros">
+                  <span class="macro-badge macro-badge-p">38g protein</span>
+                  <span class="macro-badge macro-badge-c">32g carbs</span>
+                  <span class="macro-badge macro-badge-f">14g fat</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="meal-row">
+              <div class="meal-row-emoji">🍱</div>
+              <div class="meal-row-info">
+                <div class="meal-row-label">Lunch</div>
+                <div class="meal-row-name">Teriyaki Chicken Bowl</div>
+                <div class="meal-row-macros">
+                  <span class="macro-badge macro-badge-p">52g protein</span>
+                  <span class="macro-badge macro-badge-c">58g carbs</span>
+                  <span class="macro-badge macro-badge-f">12g fat</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="meal-row">
+              <div class="meal-row-emoji">🐟</div>
+              <div class="meal-row-info">
+                <div class="meal-row-label">Dinner</div>
+                <div class="meal-row-name">Salmon &amp; Greens</div>
+                <div class="meal-row-macros">
+                  <span class="macro-badge macro-badge-p">46g protein</span>
+                  <span class="macro-badge macro-badge-c">22g carbs</span>
+                  <span class="macro-badge macro-badge-f">20g fat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 2: Recipes -->
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-screen-title">Recipes</div>
+            <div class="recipe-filter-tabs">
+              <span class="filter-tab active">Breakfast</span>
+              <span class="filter-tab">Mains</span>
+              <span class="filter-tab">Salads</span>
+            </div>
+            <div class="recipe-mini-grid">
+              <div class="recipe-mini-item">
+                <div class="recipe-mini-item-emoji">🥚</div>
+                <div class="recipe-mini-item-name">Greek Egg Wrap</div>
+                <div class="recipe-mini-item-macro">38g protein</div>
+              </div>
+              <div class="recipe-mini-item">
+                <div class="recipe-mini-item-emoji">🍳</div>
+                <div class="recipe-mini-item-name">Protein French Toast</div>
+                <div class="recipe-mini-item-macro">36g protein</div>
+              </div>
+              <div class="recipe-mini-item">
+                <div class="recipe-mini-item-emoji">🥣</div>
+                <div class="recipe-mini-item-name">Overnight Protein Oats</div>
+                <div class="recipe-mini-item-macro">42g protein</div>
+              </div>
+              <div class="recipe-mini-item">
+                <div class="recipe-mini-item-emoji">🧇</div>
+                <div class="recipe-mini-item-name">Cottage Cheese Waffles</div>
+                <div class="recipe-mini-item-macro">34g protein</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 3: Macro Calculator -->
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-screen-title">Macro Calculator</div>
+            <div class="phone-screen-subtitle">Your daily targets</div>
+
+            <div class="calc-field">
+              <span class="calc-field-label">Age</span>
+              <span class="calc-field-value">28</span>
+            </div>
+            <div class="calc-field">
+              <span class="calc-field-label">Weight</span>
+              <span class="calc-field-value">80 kg</span>
+            </div>
+            <div class="calc-field">
+              <span class="calc-field-label">Goal</span>
+              <span class="calc-field-value">Build muscle</span>
+            </div>
+
+            <div class="calc-result">
+              <div class="calc-result-title">Your daily targets</div>
+              <div class="calc-bar-row">
+                <span class="calc-bar-name">Protein</span>
+                <div class="calc-bar-track"><div class="calc-bar-fill-p"></div></div>
+                <span class="calc-bar-val">220g</span>
+              </div>
+              <div class="calc-bar-row">
+                <span class="calc-bar-name">Carbs</span>
+                <div class="calc-bar-track"><div class="calc-bar-fill-c"></div></div>
+                <span class="calc-bar-val">180g</span>
+              </div>
+              <div class="calc-bar-row">
+                <span class="calc-bar-name">Fat</span>
+                <div class="calc-bar-track"><div class="calc-bar-fill-f"></div></div>
+                <span class="calc-bar-val">65g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ── MACRO CALCULATOR TEASER ─────────────────────────────────── -->
   <section class="macro-teaser">
     <div class="container">
@@ -1311,6 +1862,36 @@
         }
       });
     });
+
+    // Mobile nav menu toggle
+    (function () {
+      var hamburger = document.getElementById('nav-hamburger');
+      var closeBtn  = document.getElementById('nav-mobile-close');
+      var menu      = document.getElementById('nav-mobile-menu');
+
+      function openMenu() {
+        menu.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        menu.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      hamburger.addEventListener('click', openMenu);
+      closeBtn.addEventListener('click', closeMenu);
+
+      // Close on any link click inside the mobile menu
+      menu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    })();
   </script>
 
 </body>
