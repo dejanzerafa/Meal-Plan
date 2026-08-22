@@ -42,8 +42,7 @@
   <script src="/vendor/react.min.js"></script>
   <script src="/vendor/react-dom.min.js"></script>
   <script src="/vendor/supabase.min.js"></script>
-  <link rel="preconnect" href="https://checkout.stripe.com">
-  <link rel="dns-prefetch" href="https://checkout.stripe.com">
+  <!-- Payments handled via soulgainz.app/pricing — no Stripe in app (Apple compliance) -->
   <!-- PWA / Home Screen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -8109,17 +8108,20 @@ function track(eventName, properties) {
         }).catch(() => {});
     } catch(_) {}
 }
-// ── Stripe configuration ────────────────────────────────────────────────
-// Set STRIPE_ENABLED=true once Netlify env vars are configured.
-// While false: upgrade buttons show "launching soon" (safe for friend testing).
-const STRIPE_ENABLED = true;
-// STRIPE_PUBLIC_KEY removed — checkout is handled server-side via Netlify functions.
-const STRIPE_PRICES = {
-    annual: "price_1U56lDGjmPEqu9q9xfEMKPAd",    // live $150/yr
-    monthly: "price_1U56lUGjmPEqu9q9Rgk9ZIDK",   // live $16.99/mo
-    // Calculator, single-recipe, and seasonal are all included in any paid plan.
-    // No standalone purchases — subscriptions only.
-};
+// ── Subscription via website ─────────────────────────────────────────────────
+// Payments are handled at soulgainz.app/pricing (Stripe + Wise).
+// The app is free on the App Store — no in-app purchases (Apple compliance).
+// Subscription status is read from Supabase (tier column on the user's profile row).
+// openSubscribePage() opens the pricing page in the device's native browser.
+function openSubscribePage() {
+    const url = "https://soulgainz.app/pricing";
+    // On Capacitor (native iOS/Android) use _system to open in Safari/Chrome, not in-app browser
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        window.open(url, "_system");
+    } else {
+        window.open(url, "_blank", "noopener");
+    }
+}
 // SoulFood seasonal recipe bundle — populate these IDs when the bundle launches.
 // Any recipe whose ID appears here is unlocked for users with tier === "seasonal".
 const SOULFOOD_RECIPE_IDS = ["hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10"];
@@ -8313,37 +8315,9 @@ async function uploadLocalDataToSupabase(userId, userEmail) {
 }
 
 // ── Checkout flow — calls Netlify Function, redirects to Stripe ──────────
-async function startCheckout(tier, recipeId) {
-    track('checkout_started', { tier: tier, recipe_id: recipeId || null });
-    if (!STRIPE_ENABLED) {
-        alert("Payments launching soon!\n\nWe're in private beta — full payment system goes live shortly. Watch your email for the launch announcement.");
-        return;
-    }
-    try {
-        const res = await fetch("/.netlify/functions/create-checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                priceId: STRIPE_PRICES[tier],
-                tier,
-                recipeId: recipeId || null,
-            }),
-        });
-        if (!res.ok)
-            throw new Error("Checkout creation failed");
-        const { url } = await res.json();
-        if (url && url.startsWith('https://checkout.stripe.com/'))
-            window.location.href = url;
-        else if (url)
-            throw new Error('Unexpected checkout URL — possible security issue');
-        else
-            throw new Error("No checkout URL returned");
-    }
-    catch (err) {
-        alert("Could not start checkout. Please try again or contact support.");
-        console.error("Checkout error:", err);
-    }
-}
+// startCheckout removed — subscription handled at soulgainz.app/pricing
+// Kept as a no-op alias so any remaining reference doesn't crash
+function startCheckout() { openSubscribePage(); }
 // Dev access — stored as SHA-256 hashes only, never plaintext in source
 const DEV_TIER_HASHES = {
     "65cd0e4dc23e7069f752a28f49e3587206d065a3e1bbb46037ec65d969887635": { tier: "free",    allRecipes: false, label: "Free Tier" },
@@ -8778,59 +8752,45 @@ function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
             errMsg && React.createElement("div", { style: { fontSize: 11, color: "#ef4444", lineHeight: 1.5 } }, errMsg)));
 }
 
+// UpgradeModal — Apple-compliant: no prices shown, no Stripe in app.
+// Subscription is managed at soulgainz.app/pricing — app reads status from Supabase.
 function UpgradeModal({ onClose }) {
-    return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.72)", zIndex: 300,
+    var features = [
+        ["\u2713", "All 170+ high-protein recipes"],
+        ["\u2713", "Auto grocery list builder"],
+        ["\u2713", "Weekly meal planner"],
+        ["\u2713", "Verified macros to the gram"],
+        ["\u2713", "Unlimited macro recalculation"],
+        ["\u2B50", "Annual plan: exclusive bonus recipes"],
+    ];
+    return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.75)", zIndex: 300,
             display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0",
             overflow: "auto" } },
-        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "22px 18px 0", paddingBottom: "max(28px, calc(env(safe-area-inset-bottom) + 16px))",
+        React.createElement("div", { style: { background: C.bg, borderRadius: "24px 24px 0 0", padding: "24px 20px 0",
+                paddingBottom: "max(32px, calc(env(safe-area-inset-bottom) + 20px))",
                 maxWidth: 440, width: "100%", boxShadow: "0 -24px 64px rgba(0,0,0,0.5)",
                 maxHeight: "95vh", overflowY: "auto" } },
-            React.createElement("div", { style: { width: 40, height: 4, background: C.dim, borderRadius: 2, margin: "0 auto 18px" } }),
-            React.createElement("div", { style: { textAlign: "center", fontSize: 24, marginBottom: 8, opacity: 0.85 } }, "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F\uD83E\uDD90\uD83E\uDD66"),
-            React.createElement("div", { className: "display", style: { fontSize: 24, color: C.text, textAlign: "center", marginBottom: 4 } }, "Choose your access"),
-            React.createElement("div", { style: { fontSize: 12, color: C.sub, textAlign: "center", lineHeight: 1.5, marginBottom: 20,
-                    fontStyle: "italic" } }, "94 high-protein recipes. Verified macros. Clean ingredients."),
-            React.createElement("div", { onClick: () => startCheckout("annual"), style: { background: C.card, border: `1px solid ${C.blue}`, borderRadius: 14,
-                    padding: "14px 16px", marginBottom: 10, position: "relative", cursor: "pointer" } },
-                React.createElement("div", { style: { position: "absolute", top: -9, right: 14, background: C.accent,
-                        borderRadius: 20, padding: "3px 10px", fontSize: 9, fontWeight: 800, color: "#fff",
-                        letterSpacing: "0.05em" } }, "SAVE 26%"),
-                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
-                    React.createElement("div", { style: { flex: 1 } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.blue, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "ANNUAL · 12 MONTHS"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All 173 recipes + 11 annual exclusive recipes"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "$12.50/mo effective · 2 months free vs monthly · Best value")),
-                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
-                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.blue, lineHeight: 1 } }, "$150"),
-                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/year")))),
-            React.createElement("div", { onClick: () => startCheckout("monthly"), style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14,
-                    padding: "14px 16px", marginBottom: 18, cursor: "pointer" } },
-                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
-                    React.createElement("div", { style: { flex: 1 } },
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 3 } }, "MONTHLY \u00B7 CANCEL ANYTIME"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.text, fontWeight: 700 } }, "All 173 recipes — full access from day one"),
-                        React.createElement("div", { style: { fontSize: 10, color: C.sub, marginTop: 2 } }, "Most flexible \u00B7 Cancel anytime")),
-                    React.createElement("div", { style: { textAlign: "right", flexShrink: 0, marginLeft: 10 } },
-                        React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, lineHeight: 1 } }, "$16.99"),
-                        React.createElement("div", { style: { fontSize: 9, color: C.muted, marginTop: 2 } }, "/month")))),
-            React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 16, marginBottom: 16 } },
-                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em", textAlign: "center", marginBottom: 12 } }, "WHAT YOU GET"),
-                React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } },
-                    React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px 14px" } },
-                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.06em", marginBottom: 10 } }, "FREE"),
-                        [["\u2713", "3 preview recipes"], ["\u2713", "Macro calculator"], ["\u2713", "Prep calendar"], ["\u2717", "No shopping list"], ["\u2717", "No new drops"]].map(([icon, text]) =>
-                            React.createElement("div", { key: text, style: { display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 7, fontSize: 11, color: C.sub } },
-                                React.createElement("span", { style: { color: icon === "\u2717" ? C.muted : C.green, fontWeight: 700 } }, icon),
-                                React.createElement("span", { style: { color: icon === "\u2717" ? C.muted : C.sub } }, text)))),
-                    React.createElement("div", { style: { background: C.accentDim, border: `1.5px solid ${C.accentBorder}`, borderRadius: 12, padding: "12px 14px" } },
-                        React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.accent, letterSpacing: "0.06em", marginBottom: 10 } }, "PAID"),
-                        [["\u2713", "173 recipes unlocked"], ["\u2713", "Shopping list"], ["\u2713", "Macro calculator"], ["\u2B50", "Annual: 11 exclusive recipes"]].map(([icon, text]) =>
-                            React.createElement("div", { key: text, style: { display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 7, fontSize: 11, color: C.text } },
-                                React.createElement("span", { style: { color: C.accent, fontWeight: 700 } }, icon),
-                                React.createElement("span", null, text)))))),
-            React.createElement("div", { style: { fontSize: 10, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, STRIPE_ENABLED ? "🔒 Secure via Stripe · Cancel anytime · All sales are final" : "🔒 Payments launching soon — beta in progress"),
+            React.createElement("div", { style: { width: 40, height: 4, background: C.dim, borderRadius: 2, margin: "0 auto 20px" } }),
+            React.createElement("div", { style: { textAlign: "center", fontSize: 26, marginBottom: 10 } }, "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F"),
+            React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, textAlign: "center", marginBottom: 6, fontWeight: 900 } }, "Unlock Full Access"),
+            React.createElement("div", { style: { fontSize: 13, color: C.sub, textAlign: "center", lineHeight: 1.6, marginBottom: 24 } },
+                "Monthly and annual plans available at soulgainz.app"),
+            React.createElement("div", { style: { background: C.card, borderRadius: 14, padding: "16px", marginBottom: 20 } },
+                React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.1em", marginBottom: 12 } }, "WHAT YOU GET"),
+                features.map(function(item) {
+                    var icon = item[0], text = item[1];
+                    return React.createElement("div", { key: text, style: { display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8, fontSize: 13, color: C.text } },
+                        React.createElement("span", { style: { color: icon === "\u2B50" ? C.accent : C.green, fontWeight: 700, flexShrink: 0 } }, icon),
+                        React.createElement("span", null, text));
+                })),
+            React.createElement("button", { onClick: openSubscribePage,
+                style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 14,
+                    padding: "16px", fontSize: 15, fontWeight: 900, cursor: "pointer", marginBottom: 10 } },
+                "Get Access at SoulGainz.app \u2192"),
+            React.createElement("div", { style: { fontSize: 11, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } },
+                "Subscribe at SoulGainz.app \u00B7 Cancel anytime"),
             React.createElement("button", { onClick: onClose, style: { width: "100%", background: "none", border: "none", color: C.muted,
-                    fontSize: 11, cursor: "pointer", padding: "6px" } }, "Maybe later"))));
+                    fontSize: 12, cursor: "pointer", padding: "8px" } }, "Maybe later"))));
 }
 function DevModal({ onClose, onApplyTier }) {
     const [code, setCode] = useState("");
@@ -9806,7 +9766,7 @@ function GuideAccordion({ C }) {
         { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From TODAY, tap '+ Add Food' to assign meals. Add breakfast, pre-workout and dessert slots too.", tip: null },
         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to SHOP. The app builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: null },
         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
-        { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library. Monthly from $16.99, or go Annual for $150.", tip: null },
+        { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library. Monthly from €16.99, or go Annual for €150.", tip: null },
     ];
     return React.createElement("div", null,
         React.createElement("button", { onClick: function() { setOpen(function(o) { return !o; }); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: "1px solid " + C.dim, textAlign: "left", cursor: "pointer", marginBottom: open ? 8 : 0 } },
@@ -11557,7 +11517,7 @@ function SupplementsTab({ C, currentUser, isPremium }) {
                     React.createElement("div", { style:{fontSize:11,color:C.sub,marginTop:1} }, desc))))),
         React.createElement("div", { style:{background:C.accentDim,border:"1px solid "+C.accentBorder,borderRadius:12,
                 padding:"14px 16px",textAlign:"center",fontSize:12,color:C.sub} },
-            "Unlock with any SoulGainz plan starting at $16.99/mo → ME tab"));
+            "Unlock with any SoulGainz plan starting at €16.99/mo → ME tab"));
 
     // ── Disclaimer (first time) ────────────────────────────────────────────────
     if (!disclaimerSeen) return React.createElement("div", { className:"tab-anim", style:{padding:"20px 0"} },
@@ -12146,7 +12106,7 @@ function App() {
         // Dismiss loader early for returning users on cached loads
         setTimeout(function() {
             if (typeof dismissLoader === 'function') dismissLoader();
-        }, 600);
+        }, 300);
         try {
             var shopDate = localStorage.getItem("mp_next_shop");
             var prepDate = localStorage.getItem("mp_next_prep");
@@ -12174,7 +12134,7 @@ function App() {
     });
     const [filter, setFilter] = useState(null); // cooking method filter removed, kept for compat
     const [proteinFilter, setProteinFilter] = useState(null);
-    const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "main");
+    const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "breakfast");
     const [recipeQuery, setRecipeQuery] = useState(() => {
         // Recipe deep-link: parse ?recipe=rXX synchronously at mount to avoid race with useEffect
         try {
@@ -12243,8 +12203,21 @@ function App() {
                 });
             }
             reg.addEventListener('updatefound', onUpdateFound);
+
+            // ── Proactive update checks ───────────────────────────────────────
+            // Check for new SW on window focus (catches users who left app open overnight)
+            const checkUpdate = () => { try { reg.update(); } catch(e) {} };
+            window.addEventListener('focus', checkUpdate);
+            // Also check every 30 minutes for users who keep app open all day
+            const _swCheckInterval = setInterval(checkUpdate, 30 * 60 * 1000);
+
+            return () => {
+                window.removeEventListener('focus', checkUpdate);
+                clearInterval(_swCheckInterval);
+            };
         }).catch(() => {});
-        const onControllerChange = () => { /* Reloaded by SW update */ };
+        // When SW activates (after SKIP_WAITING) → reload all open tabs automatically
+        const onControllerChange = () => { window.location.reload(); };
         navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
         return () => {
             navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
@@ -12504,14 +12477,18 @@ function App() {
             }
         }
 
+        // Safety net: if getSession hangs (offline / slow Capacitor start), unblock the UI after 5s
+        const _authReadyTimer = setTimeout(() => { setAuthReady(true); }, 5000);
+
         sb.auth.getSession().then(({ data: { session } }) => {
+            clearTimeout(_authReadyTimer);
             if (session?.user) {
                 setCurrentUser(session.user);
                 // Only load data here if onAuthStateChange hasn't already fired for this session
                 if (!window._sg_data_loaded) { window._sg_data_loaded = session.user.id; loadUserData(session.user.id, session.user.email); }
             }
             setAuthReady(true);
-        });
+        }).catch(() => { clearTimeout(_authReadyTimer); setAuthReady(true); });
 
         const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
             if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
@@ -12940,6 +12917,8 @@ function App() {
         if (recipeCat === "favourites") {
             if (!favourites.has(r.id)) return false;
             // fall through — search + dietary + protein filters still apply
+        } else if (recipeCat === "all") {
+            // "All" tab — no category filter, show every recipe
         } else {
             const rCats = [r.category || "main"].concat(r.tags || []);
             if (!rCats.includes(recipeCat))
@@ -13091,7 +13070,7 @@ function App() {
                             (function(){ var d=new Date(); return d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"}); })())),
                     React.createElement(FlameWordmark, { size: 18 }),
                 tab === "recipes" && React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, marginTop: 8, paddingTop: 8, marginLeft: -12, marginRight: -12, paddingLeft: 12, paddingRight: 12 } },
-                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, [["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["salad", "\uD83E\uDD57 Salads"], ["smoothie", "\uD83E\uDD64 Smoothies"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"], ["favourites", "\u2764\uFE0F Favs"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flexShrink: 0, padding: "8px 10px", fontSize: 11, fontWeight: 700, borderRadius: 10,
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, [["all", "\u2728 All"], ["breakfast", "\uD83C\uDF05 Breakfast"], ["main", "\uD83C\uDF7D\uFE0F Mains"], ["salad", "\uD83E\uDD57 Salads"], ["smoothie", "\uD83E\uDD64 Smoothies"], ["preworkout", "\u26A1 Pre-Workout"], ["dessert", "\uD83C\uDF70 Dessert"], ["favourites", "\u2764\uFE0F Favs"]].map(([cat, lbl]) => (React.createElement("button", { key: cat, onClick: () => setRecipeCat(cat), style: { flexShrink: 0, padding: "8px 10px", fontSize: 11, fontWeight: 700, borderRadius: 10,
                                 border: `1px solid ${recipeCat === cat ? C.accent : C.dim}`,
                                 background: recipeCat === cat ? C.accentDim : C.card2,
                                 color: recipeCat === cat ? C.accent : C.sub, cursor: "pointer" } }, lbl)))),
@@ -13353,6 +13332,7 @@ function App() {
                         filteredRecipes.length,
                         " recipe",
                         filteredRecipes.length !== 1 ? "s" : "",
+                        recipeCat === "all" && " · Full recipe library",
                         recipeCat === "breakfast" && " · All free",
                         recipeCat === "preworkout" && " · All free · Pick one 30–45 min before training",
                         recipeCat === "dessert" && " · High protein treats",
@@ -13404,7 +13384,7 @@ function App() {
                         { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
                         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: "Batch size scales every ingredient quantity automatically." },
                         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
-                        { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library. Monthly from $16.99/mo or annual for $150 — every recipe, every future drop.", tip: null },
+                        { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library. Monthly from €16.99/mo or annual for €150 — every recipe, every future drop.", tip: null },
                     ].map((s) => React.createElement("div", { key: s.num, style: { display: "flex", gap: 14, marginBottom: 14, padding: "14px", background: C.card, border: `1px solid ${C.dim}`, borderRadius: 14 } },
                         React.createElement("div", { style: { flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 36 } },
                             React.createElement("div", { style: { fontSize: 22, lineHeight: 1 } }, s.icon),
@@ -13747,8 +13727,8 @@ function dismissLoader() {
     stopLoaderMessages();
     var l = document.getElementById('mp-loader');
     if (!l) return;
-    l.style.animation = 'loaderOut 5.0s ease forwards';
-    setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 5000);
+    l.style.animation = 'loaderOut 0.4s ease forwards';
+    setTimeout(function() { if (l && l.parentNode) l.parentNode.removeChild(l); }, 450);
 }
 // Global error catcher — shows errors on screen without needing DevTools
 function showOnScreenError(msg, src, line) {
