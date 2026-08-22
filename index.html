@@ -12128,6 +12128,8 @@ function App() {
     const [tab, setTab] = useState(() => {
         const openTab = window._sg_open_tab;
         if (openTab) { delete window._sg_open_tab; return openTab; }
+        // Deep-link: ?tab=macros (or any tab name) → open that tab directly
+        try { const t = new URLSearchParams(window.location.search).get("tab"); if (t) return t; } catch(_) {}
         // Deep-link: ?recipe=rXX → open recipes tab (parsed here synchronously, before render)
         try { if (new URLSearchParams(window.location.search).get("recipe")) return "recipes"; } catch(_) {}
         return "meals";

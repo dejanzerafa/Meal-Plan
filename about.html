@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About SoulGainz — Our Story</title>
+  <meta name="description" content="SoulGainz was built by people who were training hard but eating badly. An ever-growing library of verified high-protein recipes, auto grocery lists, one batch cook. Here's why." />
+  <link rel="canonical" href="https://soulgainz.app/about" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0C0B0A;
+      --orange:  #E07B2A;
+      --cream:   #F2EDE6;
+      --grey:    #8A8580;
+      --dkgrey:  #1C1A18;
+      --midgrey: #373432;
+      --dimgrey: #2A2826;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(12,11,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(242,237,230,0.08);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 18px; font-weight: 900; letter-spacing: -0.02em;
+      color: var(--cream);
+    }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--grey);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-ghost {
+      background: none; border: 1px solid rgba(242,237,230,0.2);
+      color: var(--cream); border-radius: 8px;
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .btn-ghost:hover { border-color: rgba(242,237,230,0.5); }
+    .btn-cta {
+      background: var(--orange); color: var(--black);
+      border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 13px; font-weight: 800;
+      cursor: pointer; transition: opacity 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .btn-cta:hover { opacity: 0.9; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 64px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      background: rgba(224,123,42,0.12);
+      border: 1px solid rgba(224,123,42,0.25);
+      border-radius: 20px; padding: 5px 14px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 60px);
+      font-weight: 900; letter-spacing: -0.03em;
+      line-height: 1.08; color: var(--cream); margin-bottom: 20px;
+    }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero p {
+      font-size: 18px; color: var(--grey); line-height: 1.7;
+      max-width: 560px; margin: 0 auto;
+    }
+
+    /* ── Stats strip ── */
+    .stats {
+      border-top: 1px solid rgba(242,237,230,0.08);
+      border-bottom: 1px solid rgba(242,237,230,0.08);
+      padding: 32px 24px;
+      margin-bottom: 80px;
+    }
+    .stats-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    @media (max-width: 640px) {
+      .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    }
+    .stat {
+      text-align: center;
+      border-right: 1px solid rgba(242,237,230,0.08);
+      padding: 0 20px;
+    }
+    .stat:last-child { border-right: none; }
+    @media (max-width: 640px) {
+      .stat { border-right: none; }
+    }
+    .stat-num {
+      font-size: 36px; font-weight: 900; letter-spacing: -0.03em;
+      color: var(--cream); line-height: 1;
+    }
+    .stat-num span { color: var(--orange); }
+    .stat-label {
+      font-size: 12px; color: var(--grey); margin-top: 6px; font-weight: 500;
+    }
+
+    /* ── Story sections ── */
+    .story-section {
+      max-width: 740px; margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .story-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .story-section h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800; letter-spacing: -0.025em;
+      line-height: 1.15; color: var(--cream);
+      margin-bottom: 24px;
+    }
+    .story-section p {
+      font-size: 17px; color: var(--grey); line-height: 1.75;
+      margin-bottom: 18px;
+    }
+    .story-section p:last-child { margin-bottom: 0; }
+    .story-section p strong { color: var(--cream); font-weight: 700; }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 3px solid var(--orange);
+      padding: 20px 28px;
+      margin: 40px 0;
+      background: rgba(224,123,42,0.06);
+      border-radius: 0 12px 12px 0;
+    }
+    .pull-quote p {
+      font-size: 19px; font-weight: 600; color: var(--cream);
+      line-height: 1.5; font-style: italic; margin: 0;
+    }
+
+    /* ── Values grid ── */
+    .values {
+      max-width: 980px; margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .values-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      text-align: center; margin-bottom: 12px;
+    }
+    .values h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800; letter-spacing: -0.025em;
+      color: var(--cream); text-align: center;
+      margin-bottom: 48px;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .values-grid { grid-template-columns: 1fr; }
+    }
+    .value-card {
+      background: var(--dkgrey);
+      border: 1px solid rgba(242,237,230,0.08);
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    .value-icon {
+      font-size: 28px; margin-bottom: 14px; display: block;
+    }
+    .value-title {
+      font-size: 16px; font-weight: 800; color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .value-desc {
+      font-size: 14px; color: var(--grey); line-height: 1.6;
+    }
+
+    /* ── Method ── */
+    .method {
+      max-width: 740px; margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .method-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .method h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800; letter-spacing: -0.025em;
+      color: var(--cream); margin-bottom: 36px;
+    }
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex; gap: 24px; align-items: flex-start;
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(242,237,230,0.07);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      font-size: 11px; font-weight: 900; letter-spacing: 0.08em;
+      color: var(--orange); background: rgba(224,123,42,0.1);
+      border: 1px solid rgba(224,123,42,0.2);
+      border-radius: 8px; padding: 5px 10px;
+      flex-shrink: 0; margin-top: 2px;
+      white-space: nowrap;
+    }
+    .step-content {}
+    .step-title {
+      font-size: 16px; font-weight: 800; color: var(--cream);
+      margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 14px; color: var(--grey); line-height: 1.6;
+    }
+
+    /* ── CTA banner ── */
+    .cta-banner {
+      max-width: 900px; margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .cta-inner {
+      background: var(--dkgrey);
+      border: 1px solid rgba(242,237,230,0.1);
+      border-radius: 20px;
+      padding: 56px 48px;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .cta-inner { padding: 40px 24px; }
+    }
+    .cta-inner h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 900; letter-spacing: -0.025em;
+      color: var(--cream); margin-bottom: 14px;
+    }
+    .cta-inner h2 em { color: var(--orange); font-style: normal; }
+    .cta-inner p {
+      font-size: 16px; color: var(--grey);
+      margin-bottom: 32px; max-width: 420px; margin-left: auto; margin-right: auto;
+    }
+    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .cta-btn-primary {
+      background: var(--orange); color: var(--black);
+      border: none; border-radius: 12px;
+      padding: 16px 32px; font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: opacity 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .cta-btn-primary:hover { opacity: 0.88; }
+    .cta-btn-ghost {
+      background: none; border: 1px solid rgba(242,237,230,0.2);
+      color: var(--cream); border-radius: 12px;
+      padding: 16px 32px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .cta-btn-ghost:hover { border-color: rgba(242,237,230,0.5); }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: 740px; margin: 0 auto 80px;
+      height: 1px; background: rgba(242,237,230,0.08);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(242,237,230,0.08);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 20px; font-weight: 900; letter-spacing: -0.02em;
+      color: var(--cream); margin-bottom: 16px;
+    }
+    .footer-logo span { color: var(--orange); }
+    .footer-links {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .footer-links a {
+      font-size: 13px; color: var(--grey); transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-copy {
+      font-size: 12px; color: rgba(138,133,128,0.6);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Soul<span>Gainz</span></a>
+    <div class="nav-links">
+      <a href="/landing.html">Home</a>
+      <a href="/about.html" style="color:var(--cream)">About</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="mailto:admin@soulgainz.app">Help</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/waitlist.html" class="btn-ghost">Join waitlist</a>
+      <a href="/pricing.html" class="btn-cta">See plans →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-label">Our Story</div>
+  <h1>Built by people who <em>had the same problem.</em></h1>
+  <p>We were training hard, tracking macros, and still ending up at 8pm with nothing prepped and no plan. So we built the thing we needed.</p>
+</div>
+
+<!-- ── Stats ── -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num">170<span>+</span></div>
+      <div class="stat-label">Verified recipes & growing</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-label">Macros verified to the gram</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Cook session per week</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Days of food sorted</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── The Problem ── -->
+<div class="story-section">
+  <div class="story-label">The Problem</div>
+  <h2>Three apps open. Macros guessed. Food ordered. Again.</h2>
+  <p>
+    We were doing everything right at the gym. Progressive overload, enough sleep, protein targets dialled in — on paper. But then weekday reality hit: back from the gym at 7pm, fridge half-empty, and the usual debate about whether a chicken wrap from the petrol station counted as meal prep.
+  </p>
+  <p>
+    The information existed. There were <strong>thousands of high-protein recipes</strong> scattered across apps, blogs, YouTube, and PDF downloads. But stitching them into a plan, figuring out the macros, writing a shopping list, and actually cooking it all — that was a different project entirely.
+  </p>
+  <div class="pull-quote">
+    <p>"We weren't failing at the gym. We were failing at the kitchen — and it was undoing everything."</p>
+  </div>
+  <p>
+    So we built SoulGainz to close that gap. Not another recipe database. A system — from recipe to grocery list to batch cook, all in one place, with macros you can actually trust.
+  </p>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── The Method ── -->
+<div class="method">
+  <div class="method-label">How It Works</div>
+  <h2>One session. Seven days sorted.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Browse & build your week</div>
+        <div class="step-desc">Choose from our growing recipe library sorted by protein, calories, prep time, and cuisine. Build your weekly plan in minutes — the app handles portion counts automatically.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Auto grocery list</div>
+        <div class="step-desc">Every ingredient, every quantity, combined and consolidated for you. One list. One shop. No mental maths, no missed items, no second trips.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Batch cook once</div>
+        <div class="step-desc">Follow the in-app cooking guide and prep your entire week in one session — typically 2–3 hours on a Sunday. Open fridge. Eat. Repeat.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">Hit your macros every day</div>
+        <div class="step-desc">Every recipe has macros verified to the gram — not estimated, not approximated. What you see is what you eat. No more guessing, no more logging meals with a question mark.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── Values ── -->
+<div class="values">
+  <div class="values-label">What we stand for</div>
+  <h2>Built on three things.</h2>
+  <div class="values-grid">
+    <div class="value-card">
+      <span class="value-icon">🎯</span>
+      <div class="value-title">Accuracy over convenience</div>
+      <div class="value-desc">Every macro on every recipe is verified — not pulled from a database, not approximated. If the number is wrong, the plan is wrong. We verify everything.</div>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">🔁</span>
+      <div class="value-title">Simplicity that sticks</div>
+      <div class="value-desc">Sustainable nutrition doesn't come from perfection — it comes from having a system you'll actually use every week. One cook, one list, one session.</div>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">🍽️</span>
+      <div class="value-title">Food worth eating</div>
+      <div class="value-desc">High-protein food doesn't have to taste like gym culture. Every recipe is genuinely worth eating — not because you have to, but because you want to.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── CTA ── -->
+<div class="cta-banner">
+  <div class="cta-inner">
+    <h2>Ready to sort your <em>week?</em></h2>
+    <p>Free to start. 170+ recipes and growing. Your macros locked in from day one.</p>
+    <div class="cta-buttons">
+      <a href="/pricing.html" class="cta-btn-primary">See plans →</a>
+      <a href="/waitlist.html" class="cta-btn-ghost">Join the waitlist</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-logo">Soul<span>Gainz</span></div>
+  <div class="footer-links">
+    <a href="/landing.html">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="mailto:hello@soulgainz.app">Contact</a>
+  </div>
+  <p class="footer-copy">© 2026 SoulGainz. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
