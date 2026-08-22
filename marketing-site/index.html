@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoulGainz — Cook Once. Eat All Week.</title>
+  <meta name="description" content="The high-protein meal prep app. 170+ verified recipes, macro calculator, auto grocery list. Join the waitlist." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://marketing.soulgainz.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://marketing.soulgainz.app/" />
+  <meta property="og:title" content="SoulGainz — Cook Once. Eat All Week." />
+  <meta property="og:description" content="High-protein meal prep with verified macros. 170+ recipes, auto grocery list, batch cook 7 days in one session." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#E07B2A" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0C0B0A;
+      --orange:  #E07B2A;
+      --cream:   #F2EDE6;
+      --grey:    #8A8580;
+      --dkgrey:  #1C1A18;
+      --midgrey: #373432;
+      --border:  rgba(242,237,230,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .serif { font-family: "Fraunces", Georgia, serif; }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      transition: background 0.25s, box-shadow 0.25s;
+    }
+    .nav.scrolled {
+      background: rgba(12,11,10,0.94);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 rgba(242,237,230,0.08);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--cream);
+    }
+    .nav-logo span { color: var(--orange); }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--grey);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-cta {
+      background: var(--orange); color: var(--black);
+      border: none; border-radius: 8px;
+      padding: 9px 18px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s; display: inline-block;
+    }
+    .nav-cta:hover { opacity: 0.88; color: var(--black); }
+    .nav-mobile-toggle {
+      display: none; background: none; border: none;
+      color: var(--cream); font-size: 22px; cursor: pointer; padding: 4px;
+    }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .nav-mobile-toggle { display: block; }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(224,123,42,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--orange); background: rgba(224,123,42,0.1);
+      border: 1px solid rgba(224,123,42,0.25); border-radius: 20px;
+      padding: 5px 14px; margin-bottom: 24px;
+    }
+    .hero-badge::before { content: "●"; font-size: 8px; }
+    .hero h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.08;
+      color: var(--cream); margin-bottom: 20px;
+    }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero-sub {
+      font-size: 18px; color: var(--grey); line-height: 1.65;
+      max-width: 460px; margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange); color: var(--black);
+      border: none; border-radius: 10px;
+      padding: 15px 28px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); color: var(--black); }
+    .btn-ghost {
+      background: none; color: var(--cream);
+      border: 1.5px solid rgba(242,237,230,0.2); border-radius: 10px;
+      padding: 14px 24px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.2s; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: rgba(242,237,230,0.5); color: var(--cream); }
+
+    /* Phone mockup stack (hero right column) */
+    .hero-visual {
+      position: relative; height: 520px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .phone-mock {
+      position: absolute;
+      width: 200px;
+      background: var(--dkgrey);
+      border: 2px solid rgba(242,237,230,0.1);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+    .phone-mock .notch {
+      width: 80px; height: 22px;
+      background: var(--black); border-radius: 0 0 14px 14px;
+      margin: 0 auto 12px;
+    }
+    .phone-mock .screen { padding: 0 14px 20px; }
+    .pm-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 8px;
+    }
+    .pm-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 14px; font-weight: 700; color: var(--cream);
+      margin-bottom: 10px; line-height: 1.3;
+    }
+    .pm-row {
+      display: flex; gap: 8px; margin-bottom: 6px;
+    }
+    .pm-chip {
+      font-size: 9px; font-weight: 700; padding: 3px 8px;
+      border-radius: 6px; background: rgba(224,123,42,0.15);
+      color: var(--orange); border: 1px solid rgba(224,123,42,0.2);
+    }
+    .pm-chip.grey { background: rgba(242,237,230,0.06); color: var(--grey); border-color: rgba(242,237,230,0.1); }
+    .pm-card {
+      background: rgba(242,237,230,0.06); border-radius: 10px;
+      padding: 8px 10px; margin-bottom: 6px;
+      border: 1px solid rgba(242,237,230,0.06);
+    }
+    .pm-card-label { font-size: 9px; color: var(--grey); margin-bottom: 2px; }
+    .pm-card-val { font-size: 11px; font-weight: 700; color: var(--cream); }
+    .pm-macro-row { display: flex; gap: 4px; margin-bottom: 4px; }
+    .pm-macro {
+      flex: 1; background: rgba(242,237,230,0.06); border-radius: 8px;
+      padding: 5px 6px; text-align: center; border: 1px solid rgba(242,237,230,0.06);
+    }
+    .pm-macro-num { font-size: 13px; font-weight: 800; color: var(--cream); }
+    .pm-macro-name { font-size: 8px; color: var(--grey); }
+    .pm-bar-wrap { height: 4px; background: rgba(242,237,230,0.08); border-radius: 2px; margin-bottom: 4px; }
+    .pm-bar { height: 100%; border-radius: 2px; background: var(--orange); }
+    .pm-recipe-img {
+      width: 100%; height: 60px;
+      background: linear-gradient(135deg, rgba(224,123,42,0.3), rgba(224,123,42,0.1));
+      border-radius: 8px; margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+
+    .phone-mock.center {
+      width: 220px; z-index: 3;
+      top: 50%; transform: translateY(-50%);
+    }
+    .phone-mock.left {
+      width: 185px; z-index: 2;
+      left: 0; top: 50%;
+      transform: translateY(-45%) rotate(-8deg);
+      opacity: 0.8;
+    }
+    .phone-mock.right {
+      width: 185px; z-index: 2;
+      right: 0; top: 50%;
+      transform: translateY(-45%) rotate(8deg);
+      opacity: 0.8;
+    }
+
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero { min-height: auto; padding: 110px 24px 60px; }
+      .hero-visual { height: 380px; }
+      .phone-mock.left, .phone-mock.right { display: none; }
+      .phone-mock.center { width: 200px; transform: translateY(-50%); }
+    }
+
+    /* ── Feature strip ── */
+    .features {
+      background: var(--cream); padding: 72px 24px;
+    }
+    .features-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+    .features-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 12px;
+      text-align: center;
+    }
+    .features-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(26px, 4vw, 38px); font-weight: 800;
+      color: var(--black); text-align: center; margin-bottom: 48px;
+      letter-spacing: -0.02em;
+    }
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    @media (max-width: 860px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .feature-grid { grid-template-columns: 1fr; } }
+    .feature-card {
+      background: #fff;
+      border: 1px solid rgba(12,11,10,0.08);
+      border-radius: 20px; padding: 28px 22px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(12,11,10,0.1); }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(224,123,42,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 16px;
+    }
+    .feature-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 17px; font-weight: 700; color: var(--black);
+      margin-bottom: 8px; letter-spacing: -0.01em;
+    }
+    .feature-desc { font-size: 14px; color: #6b6460; line-height: 1.55; }
+
+    /* ── Mockup section ── */
+    .mockups {
+      padding: 80px 24px; background: var(--dkgrey);
+    }
+    .mockups-inner {
+      max-width: 1100px; margin: 0 auto; text-align: center;
+    }
+    .mockups .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 12px;
+    }
+    .mockups h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(26px, 4vw, 40px); font-weight: 800;
+      color: var(--cream); letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .mockups-sub { font-size: 16px; color: var(--grey); margin-bottom: 56px; }
+    .mockup-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+      align-items: end;
+    }
+    @media (max-width: 680px) { .mockup-row { grid-template-columns: 1fr; } }
+    .mockup-item { text-align: center; }
+    .mockup-phone {
+      width: 200px; margin: 0 auto 16px;
+      background: var(--black);
+      border: 2px solid rgba(242,237,230,0.12);
+      border-radius: 32px; overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .mockup-phone .notch2 {
+      width: 72px; height: 20px; background: var(--dkgrey);
+      border-radius: 0 0 12px 12px; margin: 0 auto 10px;
+    }
+    .mockup-screen { padding: 0 14px 18px; }
+    .mockup-item-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--grey); margin-bottom: 6px;
+    }
+    .mockup-item-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 16px; font-weight: 700; color: var(--cream);
+    }
+
+    /* ── How it works ── */
+    .how {
+      padding: 80px 24px; background: var(--black);
+    }
+    .how-inner { max-width: 1100px; margin: 0 auto; }
+    .how .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 12px;
+      text-align: center;
+    }
+    .how h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(26px, 4vw, 40px); font-weight: 800;
+      color: var(--cream); text-align: center;
+      letter-spacing: -0.02em; margin-bottom: 56px;
+    }
+    .how-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;
+      position: relative;
+    }
+    @media (max-width: 680px) { .how-steps { grid-template-columns: 1fr; } }
+    .how-step { text-align: center; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(224,123,42,0.12); border: 2px solid rgba(224,123,42,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px; font-weight: 800; color: var(--orange);
+      margin: 0 auto 20px;
+    }
+    .step-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px; font-weight: 700; color: var(--cream);
+      margin-bottom: 10px; letter-spacing: -0.01em;
+    }
+    .step-desc { font-size: 15px; color: var(--grey); line-height: 1.6; }
+
+    /* ── Pricing preview ── */
+    .pricing-preview {
+      background: var(--dkgrey); padding: 80px 24px;
+    }
+    .pricing-preview-inner { max-width: 1100px; margin: 0 auto; }
+    .pricing-preview .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 12px;
+      text-align: center;
+    }
+    .pricing-preview h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(26px, 4vw, 40px); font-weight: 800;
+      color: var(--cream); text-align: center;
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .pricing-preview-sub {
+      font-size: 16px; color: var(--grey); text-align: center; margin-bottom: 48px;
+    }
+    .price-cards {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+      max-width: 720px; margin: 0 auto 40px;
+    }
+    @media (max-width: 600px) { .price-cards { grid-template-columns: 1fr; } }
+    .price-card {
+      background: rgba(242,237,230,0.04); border: 1px solid rgba(242,237,230,0.08);
+      border-radius: 20px; padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+    .price-card.featured-plan {
+      border-color: var(--orange); border-width: 2px;
+      background: rgba(224,123,42,0.05);
+      position: relative;
+    }
+    .price-card:hover { border-color: rgba(242,237,230,0.2); }
+    .price-card.featured-plan:hover { border-color: var(--orange); }
+    .price-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: var(--black);
+      font-size: 10px; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; border-radius: 20px; padding: 4px 14px;
+    }
+    .price-tier {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--grey); margin-bottom: 8px;
+    }
+    .price-amount {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 42px; font-weight: 800; color: var(--cream);
+      letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
+    }
+    .price-amount sup { font-size: 22px; vertical-align: top; margin-top: 6px; }
+    .price-period { font-size: 13px; color: var(--grey); margin-bottom: 16px; }
+    .price-perks {
+      list-style: none; margin-bottom: 24px;
+    }
+    .price-perks li {
+      font-size: 13px; color: var(--grey); padding: 5px 0;
+      border-bottom: 1px solid rgba(242,237,230,0.06);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .price-perks li::before { content: "✓"; color: var(--orange); font-weight: 700; }
+    .see-all-plans {
+      text-align: center;
+    }
+    .see-all-plans a {
+      font-size: 15px; font-weight: 600; color: var(--grey);
+      border-bottom: 1px solid rgba(138,133,128,0.3);
+      padding-bottom: 2px; transition: color 0.2s, border-color 0.2s;
+    }
+    .see-all-plans a:hover { color: var(--cream); border-color: rgba(242,237,230,0.5); }
+
+    /* ── Waitlist CTA ── */
+    .waitlist-cta {
+      background: var(--orange); padding: 80px 24px;
+      text-align: center;
+    }
+    .waitlist-cta h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(28px, 5vw, 52px); font-weight: 800;
+      color: var(--black); letter-spacing: -0.03em; margin-bottom: 16px;
+    }
+    .waitlist-cta p {
+      font-size: 18px; color: rgba(12,11,10,0.7); margin-bottom: 32px;
+    }
+    .btn-dark {
+      background: var(--black); color: var(--cream);
+      border: none; border-radius: 10px;
+      padding: 15px 32px; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: inline-block; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-dark:hover { opacity: 0.88; transform: translateY(-1px); color: var(--cream); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--dkgrey); border-top: 1px solid rgba(242,237,230,0.08);
+      padding: 48px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px; font-weight: 800; color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .footer-brand span { color: var(--orange); }
+    .footer-tagline { font-size: 13px; color: var(--grey); }
+    .footer-links {
+      display: flex; gap: 24px; flex-wrap: wrap; align-items: center;
+    }
+    .footer-links a {
+      font-size: 13px; color: var(--grey); transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-copy {
+      font-size: 12px; color: var(--grey); margin-top: 32px;
+      padding-top: 24px; border-top: 1px solid rgba(242,237,230,0.06);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Soul<span>Gainz</span></a>
+      <ul class="nav-links">
+        <li><a href="/about">About</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="https://soulgainz.app/blog">Blog</a></li>
+        <li><a href="mailto:admin@soulgainz.app">Help</a></li>
+      </ul>
+      <a href="https://soulgainz.app/waitlist" class="nav-cta">Join waitlist →</a>
+      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">Coming soon</div>
+        <h1 class="serif">Cook Once.<br><em>Eat All Week.</em></h1>
+        <p class="hero-sub">The high-protein meal prep app with verified macros, 170+ recipes, and an auto grocery list. Batch cook 7 days of food in one Sunday session.</p>
+        <div class="hero-actions">
+          <a href="https://soulgainz.app/waitlist" class="btn-primary">Join the waitlist →</a>
+          <a href="/pricing" class="btn-ghost">See pricing</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <!-- Left phone: Recipe Library -->
+        <div class="phone-mock left">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="pm-label">Recipe Library</div>
+            <div class="pm-card">
+              <div class="pm-recipe-img">🥩</div>
+              <div class="pm-card-val" style="font-size:10px;">Teriyaki Salmon Bowl</div>
+              <div class="pm-row" style="margin-top:4px;">
+                <div class="pm-chip">38g protein</div>
+                <div class="pm-chip grey">520 kcal</div>
+              </div>
+            </div>
+            <div class="pm-card">
+              <div class="pm-recipe-img">🍗</div>
+              <div class="pm-card-val" style="font-size:10px;">Greek Chicken Bowls</div>
+              <div class="pm-row" style="margin-top:4px;">
+                <div class="pm-chip">42g protein</div>
+                <div class="pm-chip grey">480 kcal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center phone: Meal Plan -->
+        <div class="phone-mock center">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="pm-label">This Week</div>
+            <div class="pm-title">Meal Plan</div>
+            <div class="pm-macro-row">
+              <div class="pm-macro"><div class="pm-macro-num">2,180</div><div class="pm-macro-name">kcal</div></div>
+              <div class="pm-macro"><div class="pm-macro-num">185g</div><div class="pm-macro-name">protein</div></div>
+              <div class="pm-macro"><div class="pm-macro-num">210g</div><div class="pm-macro-name">carbs</div></div>
+              <div class="pm-macro"><div class="pm-macro-num">62g</div><div class="pm-macro-name">fat</div></div>
+            </div>
+            <div style="margin:10px 0 8px;">
+              <div class="pm-bar-wrap"><div class="pm-bar" style="width:88%;"></div></div>
+            </div>
+            <div class="pm-card"><div class="pm-card-label">Monday</div><div class="pm-card-val">Teriyaki Salmon Bowl</div></div>
+            <div class="pm-card"><div class="pm-card-label">Tuesday</div><div class="pm-card-val">Greek Chicken Bowls</div></div>
+            <div class="pm-card"><div class="pm-card-label">Wednesday</div><div class="pm-card-val">Turkey Taco Bowls</div></div>
+          </div>
+        </div>
+
+        <!-- Right phone: Macro Calculator -->
+        <div class="phone-mock right">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="pm-label">Macro Calculator</div>
+            <div class="pm-card">
+              <div class="pm-card-label">Goal</div>
+              <div class="pm-card-val">Muscle Gain</div>
+            </div>
+            <div class="pm-macro-row" style="margin-top:8px;">
+              <div class="pm-macro"><div class="pm-macro-num" style="color:var(--orange);">2,400</div><div class="pm-macro-name">kcal target</div></div>
+            </div>
+            <div class="pm-macro-row" style="margin-top:6px;">
+              <div class="pm-macro"><div class="pm-macro-num">195g</div><div class="pm-macro-name">protein</div></div>
+              <div class="pm-macro"><div class="pm-macro-num">245g</div><div class="pm-macro-name">carbs</div></div>
+              <div class="pm-macro"><div class="pm-macro-num">72g</div><div class="pm-macro-name">fat</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE STRIP -->
+  <section class="features">
+    <div class="features-inner">
+      <div class="features-label">What you get</div>
+      <h2 class="features-title serif">Everything you need to eat better</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📖</div>
+          <div class="feature-title serif">170+ Recipes</div>
+          <p class="feature-desc">Every recipe has verified macros. High-protein, calorie-counted, and actually delicious.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧮</div>
+          <div class="feature-title serif">Macro Calculator</div>
+          <p class="feature-desc">Enter your stats and goal. Get your personalised calorie and macro targets in seconds.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛒</div>
+          <div class="feature-title serif">Auto Grocery List</div>
+          <p class="feature-desc">Pick your week's recipes and get a ready-to-go shopping list. No manual totalling.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📲</div>
+          <div class="feature-title serif">Save to Home Screen</div>
+          <p class="feature-desc">Installs like a native app on iPhone and Android. Works offline, no App Store needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOCKUPS -->
+  <section class="mockups">
+    <div class="mockups-inner">
+      <div class="section-label">Inside the app</div>
+      <h2 class="serif">Built for people who take their training seriously</h2>
+      <p class="mockups-sub">Clean UI, fast loading, always offline-ready.</p>
+      <div class="mockup-row">
+        <div class="mockup-item">
+          <div class="mockup-phone">
+            <div class="notch2"></div>
+            <div class="mockup-screen">
+              <div class="pm-label">Meal Plan</div>
+              <div class="pm-macro-row">
+                <div class="pm-macro"><div class="pm-macro-num">2,180</div><div class="pm-macro-name">kcal</div></div>
+                <div class="pm-macro"><div class="pm-macro-num">185g</div><div class="pm-macro-name">protein</div></div>
+              </div>
+              <div style="margin:8px 0;">
+                <div class="pm-bar-wrap"><div class="pm-bar" style="width:92%;"></div></div>
+              </div>
+              <div class="pm-card"><div class="pm-card-label">Breakfast</div><div class="pm-card-val">Greek Yoghurt Parfait</div></div>
+              <div class="pm-card"><div class="pm-card-label">Lunch</div><div class="pm-card-val">Teriyaki Salmon Bowl</div></div>
+              <div class="pm-card"><div class="pm-card-label">Dinner</div><div class="pm-card-val">Turkey Taco Bowls</div></div>
+            </div>
+          </div>
+          <div class="mockup-item-label">Meal Plan View</div>
+          <div class="mockup-item-title serif">Your week, planned</div>
+        </div>
+
+        <div class="mockup-item" style="transform:translateY(-24px);">
+          <div class="mockup-phone" style="width:220px; box-shadow:0 32px 80px rgba(0,0,0,0.7);">
+            <div class="notch2"></div>
+            <div class="mockup-screen">
+              <div class="pm-label">Recipe Library</div>
+              <div class="pm-card">
+                <div class="pm-recipe-img">🥩</div>
+                <div class="pm-title" style="font-size:12px;">Teriyaki Salmon Bowl</div>
+                <div class="pm-row">
+                  <div class="pm-chip">38g protein</div>
+                  <div class="pm-chip grey">520 kcal</div>
+                </div>
+              </div>
+              <div class="pm-card">
+                <div class="pm-recipe-img">🫙</div>
+                <div class="pm-title" style="font-size:12px;">Turkey Meatball Jars</div>
+                <div class="pm-row">
+                  <div class="pm-chip">44g protein</div>
+                  <div class="pm-chip grey">490 kcal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-item-label">Recipe Library</div>
+          <div class="mockup-item-title serif">170+ high-protein recipes</div>
+        </div>
+
+        <div class="mockup-item">
+          <div class="mockup-phone">
+            <div class="notch2"></div>
+            <div class="mockup-screen">
+              <div class="pm-label">Macro Calculator</div>
+              <div class="pm-card">
+                <div class="pm-card-label">Your goal</div>
+                <div class="pm-card-val">Muscle Gain</div>
+              </div>
+              <div class="pm-macro-row" style="margin-top:8px;">
+                <div class="pm-macro" style="flex:2;">
+                  <div class="pm-macro-num" style="font-size:20px;color:var(--orange);">2,400</div>
+                  <div class="pm-macro-name">kcal/day</div>
+                </div>
+              </div>
+              <div class="pm-macro-row" style="margin-top:6px;">
+                <div class="pm-macro"><div class="pm-macro-num">195g</div><div class="pm-macro-name">protein</div></div>
+                <div class="pm-macro"><div class="pm-macro-num">245g</div><div class="pm-macro-name">carbs</div></div>
+                <div class="pm-macro"><div class="pm-macro-num">72g</div><div class="pm-macro-name">fat</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-item-label">Macro Calculator</div>
+          <div class="mockup-item-title serif">Targets built for you</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="how-inner">
+      <div class="section-label">How it works</div>
+      <h2 class="serif">Three steps to a week of perfect meals</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">1</div>
+          <div class="step-title serif">Calculate your macros</div>
+          <p class="step-desc">Enter your weight, height, age, and goal. SoulGainz sets your daily calorie and macro targets automatically.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">2</div>
+          <div class="step-title serif">Pick your recipes</div>
+          <p class="step-desc">Browse 170+ verified high-protein recipes. Add to your weekly meal plan and get an auto grocery list.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">3</div>
+          <div class="step-title serif">Batch cook once</div>
+          <p class="step-desc">Spend 1–2 hours on Sunday and have 7 days of macro-perfect meals ready in the fridge.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PREVIEW -->
+  <section class="pricing-preview">
+    <div class="pricing-preview-inner">
+      <div class="section-label">Simple pricing</div>
+      <h2 class="serif">Pick the plan that fits</h2>
+      <p class="pricing-preview-sub">No hidden fees. Cancel anytime.</p>
+      <div class="price-cards">
+        <div class="price-card">
+          <div class="price-tier">Monthly</div>
+          <div class="price-amount serif"><sup>€</sup>16<span style="font-size:24px;">.99</span></div>
+          <div class="price-period">per month</div>
+          <ul class="price-perks">
+            <li>85+ high-protein recipes</li>
+            <li>Macro calculator</li>
+            <li>Auto grocery list</li>
+            <li>Weekly meal planning</li>
+          </ul>
+          <a href="https://soulgainz.app/waitlist" class="btn-ghost" style="width:100%;text-align:center;padding:12px;">Join waitlist</a>
+        </div>
+        <div class="price-card featured-plan">
+          <div class="price-badge">Best value</div>
+          <div class="price-tier" style="color:var(--orange);">Annual</div>
+          <div class="price-amount serif"><sup>€</sup>12<span style="font-size:24px;">.50</span></div>
+          <div class="price-period">per month, billed annually</div>
+          <ul class="price-perks">
+            <li>170+ full recipe library</li>
+            <li>Macro calculator</li>
+            <li>Auto grocery list</li>
+            <li>Weekly meal planning</li>
+          </ul>
+          <a href="https://soulgainz.app/waitlist" class="btn-primary" style="width:100%;text-align:center;padding:12px;">Join waitlist</a>
+        </div>
+      </div>
+      <div class="see-all-plans"><a href="/pricing">See full pricing details →</a></div>
+    </div>
+  </section>
+
+  <!-- WAITLIST CTA -->
+  <section class="waitlist-cta">
+    <div class="container">
+      <h2 class="serif">Ready to stop guessing<br>and start eating right?</h2>
+      <p>Join the waitlist and be first when SoulGainz launches.</p>
+      <a href="https://soulgainz.app/waitlist" class="btn-dark">Join the waitlist →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand serif">Soul<span>Gainz</span></div>
+        <div class="footer-tagline">Cook once. Eat all week.</div>
+      </div>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/pricing">Pricing</a>
+        <a href="https://soulgainz.app/terms">Terms</a>
+        <a href="https://soulgainz.app/privacy">Privacy</a>
+        <a href="mailto:admin@soulgainz.app">Contact</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 SoulGainz. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Scroll nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+  </script>
+</body>
+</html>

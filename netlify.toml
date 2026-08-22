@@ -67,6 +67,31 @@
   to = "/waitlist.html"
   status = 200
 
+[[redirects]]
+  from = "/pricing"
+  to = "/pricing.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/success"
+  to = "/success.html"
+  status = 200
+
+[[redirects]]
+  from = "/404"
+  to = "/404.html"
+  status = 404
+
 # ── Block internal/dev pages from public access ──────────────────────────────
 [[redirects]]
   from = "/baseline-v15.html"
@@ -128,7 +153,7 @@
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
-    Access-Control-Allow-Origin = "https://soulgainz.app"
+    Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "POST, GET, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
     Access-Control-Max-Age = "86400"

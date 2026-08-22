@@ -12,6 +12,7 @@ const Stripe = require("stripe");
 const ALLOWED_ORIGINS = [
   "https://soulgainz.app",
   "https://www.soulgainz.app",
+  "https://marketing.soulgainz.app",
   "https://soulgainz.netlify.app",
   "http://localhost",
   "http://127.0.0.1",
@@ -23,11 +24,14 @@ const KNOWN_TIERS = ["monthly", "annual"];
 const SUBSCRIPTION_TIERS = ["monthly", "annual"];
 
 exports.handler = async (event) => {
+  const requestOrigin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
+  const corsOrigin = ALLOWED_ORIGINS.some(o => requestOrigin.startsWith(o)) ? requestOrigin : "https://soulgainz.app";
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
       headers: {
-        "Access-Control-Allow-Origin": "https://soulgainz.app",
+        "Access-Control-Allow-Origin": corsOrigin,
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Max-Age": "86400",
@@ -108,8 +112,8 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create({
       mode,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${appUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/?checkout=cancelled`,
+      success_url: `${appUrl}/success?tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/pricing`,
       // Metadata flows through to webhook for unlock provisioning
       metadata: {
         tier,
@@ -118,8 +122,7 @@ exports.handler = async (event) => {
       },
       // Capture customer email (Stripe will prompt for it on checkout)
       customer_creation: mode === "payment" ? "always" : undefined,
-      // Apple Pay / Google Pay are auto-included by Stripe
-      payment_method_types: ["card"],
+      // Do NOT specify payment_method_types — Stripe auto-includes Apple Pay, Google Pay, card
       // Allow promo codes (run launch sales easily)
       allow_promotion_codes: true,
     });

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — SoulGainz</title>
+  <meta name="description" content="SoulGainz plans and pricing. Free, Monthly €16.99, or Annual €12.50/mo. High-protein meal prep with verified macros." />
+  <link rel="canonical" href="https://marketing.soulgainz.app/pricing" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:   #0C0B0A;
+      --orange:  #E07B2A;
+      --cream:   #F2EDE6;
+      --grey:    #8A8580;
+      --dkgrey:  #1C1A18;
+      --midgrey: #373432;
+      --dimgrey: #2A2826;
+      --green:   #4ade80;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black); color: var(--cream);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    .serif { font-family: "Fraunces", Georgia, serif; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(12,11,10,0.94); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(242,237,230,0.08); padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav-logo { font-family: "Fraunces", Georgia, serif; font-size: 20px; font-weight: 800; color: var(--cream); }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--grey); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-cta {
+      background: var(--orange); color: var(--black); border: none; border-radius: 8px;
+      padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s; display: inline-block;
+    }
+    .nav-cta:hover { opacity: 0.88; color: var(--black); }
+    @media (max-width: 680px) { .nav-links { display: none; } }
+
+    /* Hero */
+    .hero { text-align: center; padding: 72px 24px 48px; }
+    .hero-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); background: rgba(224,123,42,0.12);
+      border: 1px solid rgba(224,123,42,0.25); border-radius: 20px; padding: 5px 14px; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(32px, 6vw, 52px); font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1.1; color: var(--cream); margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero p { font-size: 17px; color: var(--grey); max-width: 480px; margin: 0 auto 32px; }
+
+    /* Toggle */
+    .toggle-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 48px;
+    }
+    .toggle-label { font-size: 14px; font-weight: 600; color: var(--grey); transition: color 0.2s; cursor: pointer; }
+    .toggle-label.active { color: var(--cream); }
+    .toggle {
+      position: relative; width: 52px; height: 28px;
+      background: var(--midgrey); border-radius: 14px; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle.annual-on { background: var(--orange); }
+    .toggle-knob {
+      position: absolute; top: 4px; left: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--cream); transition: transform 0.2s;
+    }
+    .toggle.annual-on .toggle-knob { transform: translateX(24px); }
+    .save-badge {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: var(--orange);
+      background: rgba(224,123,42,0.12); border: 1px solid rgba(224,123,42,0.3);
+      border-radius: 20px; padding: 3px 10px;
+    }
+
+    /* Plans */
+    .plans {
+      max-width: 960px; margin: 0 auto; padding: 0 20px 80px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    @media (max-width: 760px) { .plans { grid-template-columns: 1fr; max-width: 420px; } }
+    .plan-card {
+      background: var(--dkgrey); border: 1px solid rgba(242,237,230,0.08);
+      border-radius: 20px; padding: 28px 24px;
+      display: flex; flex-direction: column; position: relative;
+      transition: border-color 0.2s;
+    }
+    .plan-card:hover { border-color: rgba(242,237,230,0.2); }
+    .plan-card.featured { background: var(--dimgrey); border-color: var(--orange); border-width: 2px; }
+    .featured-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: var(--black);
+      font-size: 10px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;
+      border-radius: 20px; padding: 4px 14px; white-space: nowrap;
+    }
+    .plan-tier {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--grey); margin-bottom: 10px;
+    }
+    .plan-card.featured .plan-tier { color: var(--orange); }
+    .plan-price { margin-bottom: 6px; }
+    .plan-price .amount {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 44px; font-weight: 800; letter-spacing: -0.03em; color: var(--cream); line-height: 1;
+    }
+    .plan-price .amount.free-amt { font-size: 36px; }
+    .plan-price .period { font-size: 14px; font-weight: 500; color: var(--grey); margin-left: 2px; }
+    .plan-subprice { font-size: 12px; color: var(--grey); margin-bottom: 20px; min-height: 18px; }
+    .plan-subprice span { color: var(--orange); font-weight: 700; }
+    .plan-desc { font-size: 13px; color: var(--grey); line-height: 1.5; margin-bottom: 20px; min-height: 48px; }
+    .plan-btn {
+      width: 100%; padding: 14px; border-radius: 12px;
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 14px; font-weight: 800;
+      cursor: pointer; border: none; transition: opacity 0.15s; margin-bottom: 22px;
+    }
+    .plan-btn:hover { opacity: 0.88; }
+    .plan-btn.btn-free { background: var(--midgrey); color: var(--cream); }
+    .plan-btn.btn-monthly { background: rgba(242,237,230,0.1); color: var(--cream); border: 1px solid rgba(242,237,230,0.15); }
+    .plan-btn.btn-annual { background: var(--orange); color: var(--black); }
+    .plan-divider { border: none; border-top: 1px solid rgba(242,237,230,0.06); margin-bottom: 18px; }
+    .plan-features { list-style: none; flex: 1; }
+    .plan-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; color: var(--grey); padding: 7px 0;
+      border-bottom: 1px solid rgba(242,237,230,0.04);
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features .check { color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .plan-features .cross { color: #555; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .feat-label { color: var(--cream); font-weight: 500; }
+
+    /* FAQ */
+    .faq { max-width: 680px; margin: 0 auto; padding: 0 24px 80px; }
+    .faq h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(22px, 3vw, 30px); font-weight: 800;
+      letter-spacing: -0.02em; text-align: center; margin-bottom: 40px;
+    }
+    .faq-item { border-bottom: 1px solid rgba(242,237,230,0.08); }
+    .faq-q {
+      width: 100%; background: none; border: none; color: var(--cream);
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 15px; font-weight: 600; text-align: left;
+      padding: 18px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .faq-arrow { color: var(--grey); transition: transform 0.2s; flex-shrink: 0; font-size: 18px; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a { display: none; font-size: 14px; color: var(--grey); line-height: 1.65; padding-bottom: 18px; }
+    .faq-item.open .faq-a { display: block; }
+
+    /* CTA */
+    .cta-section { background: var(--orange); padding: 64px 24px; text-align: center; }
+    .cta-section h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(24px, 4vw, 40px); font-weight: 800;
+      color: var(--black); letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .cta-section p { font-size: 16px; color: rgba(12,11,10,0.65); margin-bottom: 28px; }
+    .btn-dark {
+      background: var(--black); color: var(--cream); border: none; border-radius: 10px;
+      padding: 14px 28px; font-size: 15px; font-weight: 700;
+      cursor: pointer; display: inline-block; transition: opacity 0.2s;
+    }
+    .btn-dark:hover { opacity: 0.86; color: var(--cream); }
+
+    /* Footer */
+    footer {
+      background: var(--dkgrey); border-top: 1px solid rgba(242,237,230,0.08); padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-brand { font-family: "Fraunces", Georgia, serif; font-size: 18px; font-weight: 800; }
+    .footer-brand span { color: var(--orange); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--grey); transition: color 0.15s; }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-copy { font-size: 12px; color: var(--grey); text-align: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(242,237,230,0.06); }
+
+    /* Auth modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--dkgrey); border: 1px solid rgba(242,237,230,0.12);
+      border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; margin: 24px;
+    }
+    .modal h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 24px; font-weight: 800; margin-bottom: 8px; color: var(--cream);
+    }
+    .modal-sub { font-size: 14px; color: var(--grey); margin-bottom: 24px; }
+    .modal-tabs {
+      display: flex; border-bottom: 1px solid rgba(242,237,230,0.1); margin-bottom: 24px;
+    }
+    .modal-tab {
+      flex: 1; background: none; border: none; color: var(--grey);
+      font-family: "Instrument Sans", sans-serif;
+      font-size: 14px; font-weight: 600; padding: 10px;
+      cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    .modal-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+    .form-field { margin-bottom: 16px; }
+    .form-field label { display: block; font-size: 12px; font-weight: 600; color: var(--grey); margin-bottom: 6px; }
+    .form-field input {
+      width: 100%; background: rgba(242,237,230,0.06); border: 1px solid rgba(242,237,230,0.12);
+      border-radius: 10px; padding: 12px 14px; color: var(--cream);
+      font-family: "Instrument Sans", sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-field input:focus { border-color: var(--orange); }
+    .form-field input::placeholder { color: var(--grey); }
+    .modal-submit {
+      width: 100%; padding: 14px; background: var(--orange); color: var(--black);
+      border: none; border-radius: 10px; font-family: "Instrument Sans", sans-serif;
+      font-size: 15px; font-weight: 800; cursor: pointer; transition: opacity 0.15s;
+      margin-top: 4px;
+    }
+    .modal-submit:hover { opacity: 0.9; }
+    .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .modal-error { font-size: 13px; color: #f87171; margin-top: 12px; min-height: 18px; }
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: var(--grey);
+      font-size: 22px; cursor: pointer; padding: 4px;
+    }
+    .modal { position: relative; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo serif">Soul<span>Gainz</span></a>
+      <ul class="nav-links">
+        <li><a href="/about">About</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="https://soulgainz.app/blog">Blog</a></li>
+        <li><a href="mailto:admin@soulgainz.app">Help</a></li>
+      </ul>
+      <a href="https://soulgainz.app/waitlist" class="nav-cta">Join waitlist →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Simple pricing</div>
+    <h1 class="serif">Plans that fit <em>your</em> goals</h1>
+    <p>Start free. Upgrade when you're ready. Cancel anytime.</p>
+  </div>
+
+  <!-- TOGGLE -->
+  <div class="toggle-wrap">
+    <span class="toggle-label active" id="lbl-monthly" onclick="setAnnual(false)">Monthly</span>
+    <div class="toggle" id="toggle" onclick="togglePlan()">
+      <div class="toggle-knob"></div>
+    </div>
+    <span class="toggle-label" id="lbl-annual" onclick="setAnnual(true)">Annual</span>
+    <span class="save-badge">Save 26%</span>
+  </div>
+
+  <!-- PLAN CARDS -->
+  <div class="plans">
+    <!-- Free -->
+    <div class="plan-card">
+      <div class="plan-tier">Free</div>
+      <div class="plan-price">
+        <span class="amount free-amt serif">€0</span>
+      </div>
+      <div class="plan-subprice">&nbsp;</div>
+      <div class="plan-desc">Get started with a curated selection of recipes. No credit card required.</div>
+      <button class="plan-btn btn-free" onclick="window.location.href='https://soulgainz.app/waitlist'">Join waitlist</button>
+      <hr class="plan-divider">
+      <ul class="plan-features">
+        <li><span class="check">✓</span><span><span class="feat-label">10 starter recipes</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Macro calculator</span></span></li>
+        <li><span class="cross">✗</span><span>Full recipe library</span></li>
+        <li><span class="cross">✗</span><span>Auto grocery list</span></li>
+        <li><span class="cross">✗</span><span>Weekly meal planning</span></li>
+      </ul>
+    </div>
+
+    <!-- Monthly -->
+    <div class="plan-card">
+      <div class="plan-tier">Monthly</div>
+      <div class="plan-price">
+        <span class="amount serif" id="monthly-price">€16.99</span>
+        <span class="period">/mo</span>
+      </div>
+      <div class="plan-subprice" id="monthly-subprice">&nbsp;</div>
+      <div class="plan-desc">85+ high-protein recipes with verified macros. Everything you need to build the habit.</div>
+      <button class="plan-btn btn-monthly" id="btn-monthly" onclick="handleCheckout('monthly')">Get Monthly</button>
+      <hr class="plan-divider">
+      <ul class="plan-features">
+        <li><span class="check">✓</span><span><span class="feat-label">85+ recipes</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Macro calculator</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Auto grocery list</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Weekly meal planning</span></span></li>
+        <li><span class="cross">✗</span><span>Full 170+ library</span></li>
+      </ul>
+    </div>
+
+    <!-- Annual -->
+    <div class="plan-card featured">
+      <div class="featured-badge">Best value</div>
+      <div class="plan-tier">Annual</div>
+      <div class="plan-price">
+        <span class="amount serif" id="annual-price">€12.50</span>
+        <span class="period">/mo</span>
+      </div>
+      <div class="plan-subprice" id="annual-subprice">Billed €149.99/year · <span>Save €54</span></div>
+      <div class="plan-desc">The full 170+ recipe library. Best value for serious meal preppers.</div>
+      <button class="plan-btn btn-annual" id="btn-annual" onclick="handleCheckout('annual')">Get Annual</button>
+      <hr class="plan-divider">
+      <ul class="plan-features">
+        <li><span class="check">✓</span><span><span class="feat-label">170+ full recipe library</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Macro calculator</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Auto grocery list</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Weekly meal planning</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">Early access to new recipes</span></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2 class="serif">Questions answered</h2>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is SoulGainz live yet?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">Not yet — we're in final development and launching soon. Join the waitlist to be first in the door. Waitlist members get early access before the public launch.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I cancel my subscription?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">Yes, at any time. Monthly subscribers can cancel and retain access until the billing period ends. Annual subscribers can cancel and keep access for the remaining months they've paid for.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What's the difference between Monthly and Annual?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">Monthly gives you access to 85+ recipes. Annual gives you the full 170+ recipe library — that's every recipe we have, plus early access to new additions. Annual also works out 26% cheaper than paying month to month.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Do I need to download anything?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">No App Store required. SoulGainz is a Progressive Web App — you visit the site, tap "Add to Home Screen", and it installs like a native app. Works offline, loads instantly.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Are the macros actually accurate?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">Yes. Every recipe in SoulGainz has been independently macro-verified — not estimated. The numbers you see are the numbers you get. That's a core principle of how we build the library.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What payment methods do you accept?
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-a">Visa, Mastercard, American Express, Apple Pay, and Google Pay — all handled securely by Stripe. We never store your card details.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div style="max-width:600px; margin:0 auto;">
+      <h2 class="serif">Still deciding? Join the waitlist first.</h2>
+      <p>Free to join. First in, first access.</p>
+      <a href="https://soulgainz.app/waitlist" class="btn-dark">Join the waitlist →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand serif">Soul<span>Gainz</span></div>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/pricing">Pricing</a>
+        <a href="https://soulgainz.app/terms">Terms</a>
+        <a href="https://soulgainz.app/privacy">Privacy</a>
+        <a href="mailto:admin@soulgainz.app">Contact</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 SoulGainz. All rights reserved.</div>
+  </footer>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      <h3 class="serif">Create your account</h3>
+      <p class="modal-sub">Sign up or log in to continue to checkout.</p>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
+        <button class="modal-tab" id="tab-login" onclick="switchTab('login')">Log in</button>
+      </div>
+      <div id="auth-form">
+        <div class="form-field" id="field-name" style="display:none;">
+          <label>Full name</label>
+          <input type="text" id="input-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label>Email address</label>
+          <input type="email" id="input-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="input-password" placeholder="Min. 8 characters" autocomplete="current-password">
+        </div>
+        <button class="modal-submit" id="auth-submit" onclick="submitAuth()">Create account &amp; continue</button>
+        <div class="modal-error" id="auth-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Config ────────────────────────────────────────────────────────────────
+    const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
+    const CHECKOUT_URL  = 'https://soulgainz.app/.netlify/functions/create-checkout';
+    const SUCCESS_URL   = 'https://soulgainz.app/success';
+
+    const PRICE_IDS = {
+      monthly: 'price_1U56lUGjmPEqu9q9Rgk9ZIDK',
+      annual:  'price_1U56lDGjmPEqu9q9xfEMKPAd',
+    };
+
+    let supabase = null;
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    } catch(e) { console.warn('Supabase init failed', e); }
+
+    // ── Plan toggle ───────────────────────────────────────────────────────────
+    let isAnnual = false;
+    let pendingTier = null;
+
+    function togglePlan() { setAnnual(!isAnnual); }
+    function setAnnual(val) {
+      isAnnual = val;
+      document.getElementById('toggle').classList.toggle('annual-on', isAnnual);
+      document.getElementById('lbl-monthly').classList.toggle('active', !isAnnual);
+      document.getElementById('lbl-annual').classList.toggle('active', isAnnual);
+    }
+
+    // ── Checkout flow ─────────────────────────────────────────────────────────
+    async function handleCheckout(tier) {
+      // Check if already authed
+      let session = null;
+      if (supabase) {
+        const { data } = await supabase.auth.getSession();
+        session = data?.session;
+      }
+
+      if (session) {
+        await startCheckout(tier, session.access_token);
+      } else {
+        pendingTier = tier;
+        openModal();
+      }
+    }
+
+    async function startCheckout(tier, accessToken) {
+      const btn = document.getElementById(tier === 'monthly' ? 'btn-monthly' : 'btn-annual');
+      if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+
+      try {
+        const res = await fetch(CHECKOUT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId: PRICE_IDS[tier],
+            tier,
+            successUrl: SUCCESS_URL,
+          }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert('Could not start checkout: ' + (data.error || 'Unknown error'));
+          if (btn) { btn.disabled = false; btn.textContent = tier === 'monthly' ? 'Get Monthly' : 'Get Annual'; }
+        }
+      } catch (err) {
+        alert('Network error — please try again.');
+        if (btn) { btn.disabled = false; btn.textContent = tier === 'monthly' ? 'Get Monthly' : 'Get Annual'; }
+      }
+    }
+
+    // ── Auth modal ────────────────────────────────────────────────────────────
+    let currentTab = 'signup';
+
+    function openModal() {
+      document.getElementById('authModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('authModal').classList.remove('active');
+      document.body.style.overflow = '';
+      pendingTier = null;
+      document.getElementById('auth-error').textContent = '';
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('field-name').style.display = tab === 'signup' ? 'block' : 'none';
+      document.getElementById('auth-submit').textContent =
+        tab === 'signup' ? 'Create account & continue' : 'Log in & continue';
+      document.getElementById('auth-error').textContent = '';
+      const pwdInput = document.getElementById('input-password');
+      pwdInput.autocomplete = tab === 'signup' ? 'new-password' : 'current-password';
+    }
+
+    switchTab('signup'); // init
+
+    async function submitAuth() {
+      if (!supabase) { alert('Auth service unavailable. Please try again.'); return; }
+
+      const email    = document.getElementById('input-email').value.trim();
+      const password = document.getElementById('input-password').value;
+      const name     = document.getElementById('input-name').value.trim();
+      const errEl    = document.getElementById('auth-error');
+      const btn      = document.getElementById('auth-submit');
+
+      errEl.textContent = '';
+
+      if (!email || !password) { errEl.textContent = 'Email and password are required.'; return; }
+      if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = currentTab === 'signup' ? 'Creating account…' : 'Logging in…';
+
+      try {
+        let session = null;
+        if (currentTab === 'signup') {
+          const { data, error } = await supabase.auth.signUp({
+            email, password,
+            options: { data: { full_name: name } },
+          });
+          if (error) throw error;
+          session = data?.session;
+          // If email confirmation required, session may be null
+          if (!session) {
+            errEl.style.color = '#4ade80';
+            errEl.textContent = 'Account created! Check your email to confirm, then log in.';
+            btn.disabled = false;
+            btn.textContent = 'Create account & continue';
+            switchTab('login');
+            return;
+          }
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          session = data?.session;
+        }
+
+        closeModal();
+        if (pendingTier && session) {
+          await startCheckout(pendingTier, session.access_token);
+        }
+      } catch (err) {
+        errEl.style.color = '#f87171';
+        errEl.textContent = err.message || 'Authentication failed. Please try again.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = currentTab === 'signup' ? 'Create account & continue' : 'Log in & continue';
+      }
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('authModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Enter key in form
+    document.getElementById('auth-form').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitAuth();
+    });
+
+    // ── FAQ accordion ─────────────────────────────────────────────────────────
+    function toggleFaq(btn) {
+      btn.parentElement.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
