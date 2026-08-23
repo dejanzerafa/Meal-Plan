@@ -92,7 +92,9 @@ exports.handler = async (event) => {
     try { await store.delete(`ip:${clientIp}`); } catch (_) {}
   }
 
-  // Return a signed token: base64(timestamp + ":" + last 8 chars of secret)
+  // Returns an HMAC of the timestamp, signed with ADMIN_SECRET. NOTE: nothing
+  // currently VERIFIES this token — admin.html discards it and gates on a
+  // sessionStorage boolean. It is issued for a future server-side check.
   // HMAC, not a slice of the secret. Base64 is encoding, not signing — the old
   // token embedded the last 8 characters of ADMIN_SECRET verbatim, recoverable
   // by anyone who saw it (browser history, proxies, extensions).

@@ -6,7 +6,7 @@
 //
 // Required env vars: RESEND_API_KEY, FROM_EMAIL, APP_URL
 
-const { rateLimit, clientIp } = require("./_shared/auth");
+const { rateLimit, clientIp, escHtml } = require("./_shared/auth");
 
 const TIER_LABELS = {
   annual:     "Annual Access",
@@ -55,8 +55,7 @@ exports.handler = async (event) => {
   // Escaped + capped: `label` is caller-supplied and this endpoint is
   // unauthenticated, so it is interpolated into an email sent to an arbitrary
   // address. Prefer the known-tier label over anything the caller sends.
-  const escHtml = v => String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const tierLabel = escHtml(TIER_LABELS[tier] || label || "Access").slice(0, 60);
+  const tierLabel = escHtml(String(TIER_LABELS[tier] || label || "Access").slice(0, 60));
   const expiryText = tierExpires
     ? `Valid until ${new Date(tierExpires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
     : "Permanent access — no expiry.";

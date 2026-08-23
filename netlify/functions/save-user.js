@@ -18,6 +18,8 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
+const { escHtml } = require("./_shared/auth");
+
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
@@ -176,9 +178,8 @@ exports.handler = async (event) => {
       // ⚠️ MUST be escaped: this endpoint is unauthenticated and `to:` is the
       // caller-supplied address, so an unescaped first_name lets anyone send
       // arbitrary HTML from support@soulgainz.app — SPF/DKIM-aligned phishing
-      // riding our sending reputation. Same helper as send-welcome.js:36.
-      const escHtml = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-      const firstName = escHtml((first_name || email.split("@")[0] || "there")).slice(0, 50);
+      // riding our sending reputation. Shared helper — see _shared/auth.js escHtml.
+      const firstName = escHtml(String(first_name || email.split("@")[0] || "there").slice(0, 50));
       const alreadySent = userData?.welcome_sent;
 
       // 3a. Brand-new user - send Welcome email

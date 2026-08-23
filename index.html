@@ -8760,11 +8760,15 @@ function fetchT(url, opts, ms) {
 // no client-side timeout of their own, so a hung one strands the sign-in button
 // on "Please wait…" indefinitely.
 function withTimeout(promise, ms, label) {
+    let t;
     return Promise.race([
         promise,
-        new Promise((_, rej) =>
-            setTimeout(() => rej(new Error((label || "Request") + " timed out")), ms || 20000)),
-    ]);
+        new Promise((_, rej) => {
+            t = setTimeout(() => rej(new Error((label || "Request") + " timed out")), ms || 20000);
+        }),
+    // Clear the timer when the promise wins, or the handle survives to fire into
+    // an already-settled race — harmless but it pins a handle per call.
+    ]).finally(() => clearTimeout(t));
 }
 
 // localStorage.setItem THROWS when the quota is exceeded. With 170+ recipes plus
@@ -8775,6 +8779,10 @@ function withTimeout(promise, ms, label) {
 function safeSet(key, value) {
     try {
         localStorage.setItem(key, value);
+        // Clear the flag on ANY successful write — otherwise one transient quota
+        // failure pinned the red banner permanently, and its 4s poll kept running
+        // forever checking a condition that could never become false again.
+        try { if (window._sg_storage_full) window._sg_storage_full = false; } catch (_) {}
         return true;
     } catch (e) {
         console.error("SG: localStorage write failed (quota?) for", key, e);
@@ -9325,7 +9333,13 @@ function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
                 accessToken = session?.access_token || null;
                 userId = session?.user?.id || null;
                 userEmail = session?.user?.email || null;
-            } catch(e) { console.error("SG: promo auth lookup failed", e); }
+            } catch(e) {
+                console.error("SG: promo auth lookup failed", e);
+                // A TIMEOUT is not "you are signed out". Falling through to
+                // must_login told an already signed-in user to sign in — advice
+                // they cannot act on, for a problem that is actually the network.
+                if (/timed out/i.test((e && e.message) || "")) { setStatus("err"); return; }
+            }
         }
         if (!userId || !accessToken) { setStatus("must_login"); return; }
 
@@ -10551,7 +10565,10 @@ function LegalAccordion({ C }) {
                         React.createElement("div", { style: { fontSize: 11, color: C.sub, lineHeight: 1.6 } }, ls.body)); })))));
 }
 // ── MeHeader — profile card with inline edit ──────────────────────────────
-function MeHeader({ C, tier: tierProp }) {
+// NOTE: this component is currently not rendered anywhere (the ME tab uses its
+// own inline header). Kept for reuse — `via` is accepted as a prop so the
+// Stripe-only guard below cannot throw if it is ever mounted.
+function MeHeader({ C, tier: tierProp, via }) {
     const [name, setName] = useState(() => { try{ return localStorage.getItem("mp_acc_name")||""; }catch(e){ return ""; } });
     const [email, setEmail] = useState(() => { try{ return localStorage.getItem("mp_acc_email")||""; }catch(e){ return ""; } });
     const [saved, setSaved] = useState(() => { try{ return !!localStorage.getItem("mp_acc_email"); }catch(e){ return false; } });
@@ -10565,8 +10582,10 @@ function MeHeader({ C, tier: tierProp }) {
         dev:       { label: "DEV",             color: "#818cf8", bg: "rgba(129,140,248,0.1)", border: "rgba(129,140,248,0.3)" },
     };
     const ti = tierMap[tier] || { label: "FREE", color: C.muted, bg: C.card2, border: C.dim };
-    // Includes "dev" so dev-code accounts can reach the billing portal too.
-    const isSubscription = ["monthly","annual","dev"].includes(tier);
+    // Stripe-originated ONLY. customer-portal looks up stripe_customer_id, which
+    // dev-code and promo-granted accounts do not have — they got a 404 alert on a
+    // button the UI had promised them. `via` is set to "account" by the webhook.
+    const isSubscription = ["monthly","annual"].includes(tier) && (via === "account" || via == null);
     const initials = name ? name.split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2) : null;
     const handleSave = async () => {
         if (!name.trim() || !email.trim()) return;
@@ -12904,8 +12923,13 @@ function App() {
         // were never removed.
         let _reg = null, _onUpdateFound = null, _checkUpdate = null, _swCheckInterval = null;
         let _reloading = false;
+        // If React unmounts before serviceWorker.ready resolves, the cleanup below
+        // sees all-null and no-ops — and the .then() then attaches an orphan focus
+        // listener plus a 30-minute interval that nothing can ever remove.
+        let _dead = false;
 
         navigator.serviceWorker.ready.then(reg => {
+            if (_dead) return;
             _reg = reg;
 
             // A worker may ALREADY be waiting from a previous visit — without
@@ -12944,6 +12968,7 @@ function App() {
         navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
 
         return () => {
+            _dead = true;
             navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
             if (_checkUpdate) window.removeEventListener('focus', _checkUpdate);
             if (_swCheckInterval) clearInterval(_swCheckInterval);
@@ -13327,10 +13352,12 @@ function App() {
         const start = () => {
             if (window._sg_awaiting_upgrade && !timer) { tries = 0; tick(); }
         };
-        window.addEventListener("focus", start);
+        // Deliberately NO focus listener here. The tier-refresh effect above
+        // already reloads on focus; adding a second one made a single app-switch
+        // fire loadUserData twice back to back (its 10s throttle is independent
+        // of this poller). The 3s interval is enough to pick the flag up.
         const iv = setInterval(start, 3000);
         return () => {
-            window.removeEventListener("focus", start);
             clearInterval(iv);
             if (timer) clearTimeout(timer);
         };
@@ -13522,8 +13549,10 @@ function App() {
             // Legacy migration
             if (localStorage.getItem("mp_unlocked") === "true") {
                 const migrated = { calculator: true, allRecipes: true, recipes: [], tier: "annual", _serverVerified: false };
-                safeSet("mp_unlocks", JSON.stringify(migrated));
-                localStorage.removeItem("mp_unlocked");
+                const _migOk = safeSet("mp_unlocks", JSON.stringify(migrated));
+                // Only drop the legacy key if the new one actually persisted — safeSet no
+                // longer throws, so an unguarded removeItem loses the migration forever.
+                if (_migOk) localStorage.removeItem("mp_unlocked");
                 return migrated;
             }
         }
@@ -14418,7 +14447,12 @@ function App() {
                         //
                         // Tier list must include "dev" — on a dev-code account the row
                         // was hidden entirely, which is why it appeared missing.
-                        ["monthly","annual","dev"].includes(unlocks && unlocks.tier) && React.createElement("button", { onClick: openBillingPortal, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer" } },
+                        // Stripe-originated subscriptions ONLY. customer-portal resolves a
+                        // stripe_customer_id, which dev-code and promo-granted accounts do
+                        // not have — they hit a 404 alert on a button we had offered them.
+                        ["monthly","annual"].includes(unlocks && unlocks.tier)
+                          && (!unlocks.via || unlocks.via === "account")
+                          && React.createElement("button", { onClick: openBillingPortal, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer" } },
                             React.createElement("span", { style: { fontSize: 20 } }, "⚙️"),
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Manage Account"),

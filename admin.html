@@ -203,6 +203,16 @@ function AdminApp() {
   const [importErr, setImportErr] = useState("");
   const fileRef = useRef(null);
 
+  // ⚠️ NOT A SECURITY BOUNDARY. This is a convenience gate only.
+  // admin-verify checks the password server-side (timing-safe, rate-limited) but
+  // returns a token this page discards, and the whole UI is gated on the
+  // sessionStorage flag below — which anyone can set from devtools.
+  //
+  // That is currently acceptable because: (a) netlify.toml 404s /admin.html in
+  // every deploy context, and (b) this page reads no user data and calls no
+  // privileged endpoint — it only builds promo-code JSON you deploy by hand.
+  // If either of those changes, this needs real server-side auth: store the
+  // token, send it as a header, and verify the HMAC in the function.
   function login() { sessionStorage.setItem("sg_admin_authed","1"); setAuthed(true); }
 
   function updateCodes(next) { setCodes(next); saveCodes(next); }

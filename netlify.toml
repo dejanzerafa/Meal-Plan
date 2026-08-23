@@ -48,11 +48,6 @@
   status = 301
 
 [[redirects]]
-  from = "/portal"
-  to = "/.netlify/functions/customer-portal"
-  status = 200
-
-[[redirects]]
   from = "/terms"
   to = "/terms.html"
   status = 200

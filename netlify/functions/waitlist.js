@@ -15,7 +15,7 @@
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
-const { rateLimit, clientIp } = require("./_shared/auth");
+const { rateLimit, clientIp, escHtml } = require("./_shared/auth");
 
 const { createClient } = require("@supabase/supabase-js");
 
@@ -117,7 +117,6 @@ exports.handler = async (event) => {
   if (resendKey) {
     // Escaped: this endpoint is unauthenticated and emails a caller-supplied
     // address, so an unescaped name is an HTML-injection / phishing relay.
-    const escHtml = v => String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const greeting = name ? `Hey ${escHtml(name.split(" ")[0])},` : "Hey,";
     const html = `
 <!DOCTYPE html>
