@@ -6,6 +6,12 @@
 //   APP_URL              — e.g. https://soulgainz.app
 //   ALLOWED_PRICE_IDS    — comma-separated list of valid Stripe price IDs (optional but recommended)
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const Stripe = require("stripe");
 
 // ── Allowed origins ───────────────────────────────────────────────────────────
@@ -25,7 +31,18 @@ const SUBSCRIPTION_TIERS = ["monthly", "annual"];
 
 exports.handler = async (event) => {
   const requestOrigin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  const corsOrigin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : "https://soulgainz.app";
+  const corsOrigin = (ALLOWED_ORIGINS.includes(requestOrigin) || _isLocalOrigin(requestOrigin)) ? requestOrigin : "https://soulgainz.app";
+
+  // MUST be on EVERY response, not just OPTIONS. marketing.soulgainz.app calls
+  // this cross-origin; the preflight passed but the browser then blocked the
+  // POST response for missing Access-Control-Allow-Origin, so the pricing page
+  // could not start a checkout at all. The site-wide "*" header used to mask
+  // this — removing that wildcard (correctly) exposed it.
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
 
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -41,24 +58,25 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, headers: corsHeaders, body: "Method not allowed" };
   }
 
   // ── Payload size guard (reject > 2 KB) ───────────────────────────────────
   if (event.body && event.body.length > 2048) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Payload too large" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Payload too large" }) };
   }
 
   // ── Origin check ─────────────────────────────────────────────────────────
   const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
-    return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
+  if (origin && !ALLOWED_ORIGINS.includes(origin) && !_isLocalOrigin(origin)) {
+    return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) {
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "STRIPE_SECRET_KEY not configured" }),
     };
   }
@@ -70,30 +88,31 @@ exports.handler = async (event) => {
   try {
     payload = JSON.parse(event.body || "{}");
   } catch (e) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
   const { priceId, tier, recipeId, email, userId } = payload;
   if (!priceId || !tier) {
     return {
       statusCode: 400,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "priceId and tier are required" }),
     };
   }
 
   // Validate email if provided (simple format check)
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid email" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid email" }) };
   }
 
   // ── Validate tier ─────────────────────────────────────────────────────────
   if (!KNOWN_TIERS.includes(tier)) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid tier" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid tier" }) };
   }
 
   // ── Validate priceId format (must be price_<alphanumeric>) ────────────────
   if (!/^price_[A-Za-z0-9]{10,40}$/.test(priceId)) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid priceId format" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid priceId format" }) };
   }
 
   // ── Validate against known price ID whitelist (if env var is set) ─────────
@@ -102,12 +121,12 @@ exports.handler = async (event) => {
     : null;
   if (allowedPriceIds && allowedPriceIds.length > 0 && !allowedPriceIds.includes(priceId)) {
     console.warn(`Blocked checkout attempt with unlisted priceId: ${priceId}`);
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid priceId" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid priceId" }) };
   }
 
   // ── Validate recipeId if present (alphanumeric, max 64 chars) ─────────────
   if (recipeId && !/^[A-Za-z0-9_-]{1,64}$/.test(recipeId)) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid recipeId" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid recipeId" }) };
   }
 
   // Subscription vs one-time mapping
@@ -137,13 +156,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ url: session.url }),
     };
   } catch (err) {
     console.error("Stripe checkout error:", err);
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: err.message }),
     };
   }

@@ -2,6 +2,12 @@
 // Lightweight GET endpoint — returns { exists: bool, calc_used: bool } for a given email.
 // Used by the client to enforce server-side calc gate.
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -22,8 +28,8 @@ exports.handler = async (event) => {
 
   // Origin check — only allow requests from known app origins
   const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
-  const allowed = ["https://soulgainz.app", "https://soulgainz.app", "http://localhost", "http://127.0.0.1"];
-  if (origin && !allowed.includes(origin)) {
+  const allowed = ["https://soulgainz.app", "https://www.soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
+  if (origin && !allowed.includes(origin) && !_isLocalOrigin(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

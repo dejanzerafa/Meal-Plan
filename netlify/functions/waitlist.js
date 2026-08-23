@@ -9,6 +9,12 @@
 //   FROM_EMAIL              — e.g. SoulGainz <support@soulgainz.app>
 //   APP_URL                 — e.g. https://soulgainz.app
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const { rateLimit, clientIp } = require("./_shared/auth");
 
 const { createClient } = require("@supabase/supabase-js");

@@ -10504,7 +10504,12 @@ function LegalAccordion({ C }) {
     };
 
     return React.createElement(React.Fragment, null,
-        legalView && React.createElement("div", { style: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", zIndex: 9000, display: "flex", flexDirection: "column" } },
+        // Rendered through a PORTAL to document.body. It previously mounted inside
+        // the ME tab's content column of the app's flex shell, so the nav rail —
+        // which paints later in the same stacking context — overlapped its left
+        // edge and clipped the panel. A portal escapes the shell entirely, and the
+        // raised z-index puts it above every other overlay in the file.
+        legalView && ReactDOM.createPortal(React.createElement("div", { style: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", zIndex: 99500, display: "flex", flexDirection: "column" } },
             React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", background: C.bg, margin: "max(40px,env(safe-area-inset-top)) 0 0", borderRadius: "24px 24px 0 0", overflow: "hidden" } },
                 React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderBottom: "1px solid " + C.dim, flexShrink: 0 } },
                     React.createElement("div", { style: { fontSize: 14, fontWeight: 700, color: C.text } }, legalContent[legalView].title),
@@ -10517,7 +10522,7 @@ function LegalAccordion({ C }) {
                             React.createElement("span", { style: { fontSize: 12, color: C.text, lineHeight: 1.6 } }, pt))),
                     React.createElement("p", { style: { fontSize: 10, color: C.muted, marginTop: 18, paddingTop: 12, borderTop: "1px solid " + C.dim } }, legalContent[legalView].footer)),
                 React.createElement("div", { style: { padding: "12px 18px", paddingBottom: "max(20px,calc(env(safe-area-inset-bottom)+12px))", borderTop: "1px solid " + C.dim, flexShrink: 0 } },
-                    React.createElement("button", { onClick: () => setLegalView(null), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "13px", fontSize: 13, fontWeight: 700, color: "#000", cursor: "pointer" } }, "Close")))),
+                    React.createElement("button", { onClick: () => setLegalView(null), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "13px", fontSize: 13, fontWeight: 700, color: "#000", cursor: "pointer" } }, "Close")))), document.body),
         React.createElement("div", { style: { background: C.card, border: "1px solid " + C.dim, borderRadius: 16, overflow: "hidden", marginBottom: 12, boxShadow: C.cardShadow } },
             React.createElement("button", { onClick: function() { setOpen(function(o) { return !o; }); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "14px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" } },
                 React.createElement("span", { style: { fontSize: 16 } }, "⚖️"),
@@ -13052,10 +13057,27 @@ function App() {
     // so the effects don't re-subscribe on every render.
     const loadUserData = React.useCallback(
         async (userId, userEmail) => {
+            // MUST be resolved inside the callback. When this function was hoisted out
+            // of the auth useEffect, `const sb = getSB()` stayed behind in that effect's
+            // closure — so every call threw ReferenceError, the catch below downgraded
+            // the user to free, and the focus-refresh re-applied it every 10s. Paying
+            // subscribers were permanently locked out. getSB() memoises, so this is free.
+            const sb = getSB();
+            if (!sb) { setAuthReady(true); return; }
+
             // Sync email cross-device so canUseCalculator works without re-onboarding
             if (userEmail) { try { safeSet("mp_acc_email", userEmail.toLowerCase().trim()); } catch(_) {} }
             try {
-                const { data: row } = await sb.from("profiles").select("*").eq("id", userId).single();
+                // Capture `error` too: supabase-js does NOT throw on transport failure,
+                // it resolves with { data: null, error }. Without this a network blip
+                // looks identical to "no profile row" and silently downgrades a
+                // subscriber to free — while marking it _serverVerified.
+                const { data: row, error: rowErr } = await sb.from("profiles").select("*").eq("id", userId).single();
+                if (rowErr && rowErr.code !== "PGRST116") {   // PGRST116 = genuinely no row
+                    console.info("SG: profile fetch failed, keeping last known access", rowErr);
+                    setAuthReady(true);
+                    return;
+                }
                 if (row) {
                     const p = sbRowToProfile(row);
                     setProfile(p);
@@ -13120,6 +13142,10 @@ function App() {
                             // canView uses this to prevent localStorage spoofing for authenticated users.
                             _serverVerified: true };
                         setUnlocks(unlockData);
+                        // The upgrade we were waiting for has landed — stop the poller
+                        // rather than burning the remaining 30 ticks (4 Supabase round
+                        // trips each) after a successful purchase.
+                        if (isPaid) { try { window._sg_awaiting_upgrade = false; } catch(_) {} }
                     } else {
                         // Row exists but tier is null/free — explicitly clear all paid fields.
                         // Do NOT spread prev state: a previously-paid user who cancelled would

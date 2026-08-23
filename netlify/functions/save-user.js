@@ -15,6 +15,12 @@
 //   APP_URL              - e.g. https://soulgainz.app
 
 // Simple in-memory rate limiter: max 5 requests per email per 60 seconds
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const _rateLimitMap = new Map();
 function _checkRateLimit(email) {
   const now = Date.now();
@@ -50,8 +56,8 @@ exports.handler = async (event) => {
 
   // Origin check — only allow requests from known app origins
   const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
-  const allowed = ["https://soulgainz.app", "https://soulgainz.app", "http://localhost", "http://127.0.0.1"];
-  if (origin && !allowed.includes(origin)) {
+  const allowed = ["https://soulgainz.app", "https://www.soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
+  if (origin && !allowed.includes(origin) && !_isLocalOrigin(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

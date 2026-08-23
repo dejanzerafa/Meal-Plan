@@ -46,7 +46,10 @@ async function rateLimit(key, { max = 5, windowMs = 900000 } = {}) {
   if (!key) return { ok: true };
   try {
     const { getStore } = await import("@netlify/blobs");
-    const store = getStore("ratelimit");
+    // STRONG consistency is required. Blobs defaults to eventual, so N concurrent
+    // requests all read count:0 and all pass — which would defeat the promo
+    // brute-force limit this exists to enforce.
+    const store = getStore({ name: "ratelimit", consistency: "strong" });
     const id = `rl_${crypto.createHash("sha256").update(key).digest("hex").slice(0, 32)}`;
     const now = Date.now();
 

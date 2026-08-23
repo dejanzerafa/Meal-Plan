@@ -5,6 +5,12 @@
 // POST body: { email: "user@example.com" }
 // Returns:   { found, name, email, unlocks }
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const { createClient } = require("@supabase/supabase-js");
 const { getStore }     = require("@netlify/blobs");
 
@@ -68,7 +74,7 @@ exports.handler = async (event) => {
 
   // ── Origin check ─────────────────────────────────────────────────────────
   const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin) && !_isLocalOrigin(origin)) {
     return { statusCode: 403, headers, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

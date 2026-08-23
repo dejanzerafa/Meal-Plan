@@ -8,6 +8,12 @@
 //   SUPABASE_SERVICE_KEY   — service_role key
 //   APP_URL                — https://soulgainz.app
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
 
@@ -21,7 +27,7 @@ const ALLOWED_ORIGINS = [
 
 exports.handler = async (event) => {
   const requestOrigin = (event.headers?.origin || event.headers?.Origin || "");
-  const corsOrigin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : "https://soulgainz.app";
+  const corsOrigin = (ALLOWED_ORIGINS.includes(requestOrigin) || _isLocalOrigin(requestOrigin)) ? requestOrigin : "https://soulgainz.app";
 
   const corsHeaders = {
     "Access-Control-Allow-Origin": corsOrigin,

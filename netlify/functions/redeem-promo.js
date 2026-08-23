@@ -4,6 +4,12 @@
 // Uses the Supabase service_role key — never exposed to the browser.
 // Returns { ok, tier, label, tierExpires } or { error }.
 
+// Exact matching (correctly) replaced startsWith, but browsers send
+// "http://localhost:8888" WITH the port, which no exact list can contain.
+// Allow loopback separately, and only outside production.
+const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
+
 const { requireUser, rateLimit, clientIp } = require("./_shared/auth");
 
 const ALLOWED_ORIGINS = [
@@ -31,7 +37,7 @@ exports.handler = async (event) => {
   }
 
   const origin = (event.headers?.origin || event.headers?.Origin) || "";
-  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin) && !_isLocalOrigin(origin)) {
     return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

@@ -5,6 +5,8 @@
 // Rate limiting: max 10 failed attempts per IP per 15-minute window using Netlify Blobs.
 // Requires Netlify Blobs (available automatically on all Netlify plans, no extra config).
 
+const { secretsMatch } = require("./_shared/auth");
+
 const { getStore } = require("@netlify/blobs");
 
 const RATE_LIMIT_MAX    = 10;
@@ -70,7 +72,7 @@ exports.handler = async (event) => {
   let body;
   try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
 
-  if (!body.password || body.password !== secret) {
+  if (!secretsMatch(body.password, secret)) {
     // Increment failed-attempt counter
     if (store) {
       try {
