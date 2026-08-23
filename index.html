@@ -8568,7 +8568,20 @@ const RECIPE_TIER_MONTHLY = new Set(["bf10", "bf11", "bf12", "bf13", "bf14", "bf
 const RECIPE_TIER_ANNUAL  = new Set(["m21", "m26", "m28", "m31", "m35", "m38", "m39", "m43", "m45", "m46", "m48", "m49", "m50", "m51", "m52", "m53", "m54", "m55", "m56", "m57", "m58", "m59", "m60", "m61", "m62", "m63", "m64", "m65", "m66", "m67", "m68", "m69", "m70", "m71", "m72", "m73", "m74", "m75", "m76", "m77", "m78", "m79", "m80", "m81", "m82", "m83", "m84", "m85", "m86", "pw1", "pw3", "pw4", "pw5", "pw6", "pw7", "sm2", "sm3", "sm4", "sm5", "sm6", "sm7", "sm8", "sm9", "sn3", "sn4", "sn5", "sn6", "sn7", "sn8", "sn9", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v9"]);
 // Pending release — staged recipes not yet published to any tier
 // Add new recipe IDs here when building them; move to RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL to release
-const RECIPE_TIER_PENDING = new Set(["m88","m89","m90","m91","m92","m93","m94","m95","m96","m97","m98","m99","m100","m101","m102","m103","v10","v11"]); // hidden from all users until released
+const RECIPE_TIER_PENDING = new Set([
+    // 18 staged recipes
+    "m88","m89","m90","m91","m92","m93","m94","m95","m96","m97","m98","m99","m100","m101","m102","m103","v10","v11",
+    // 10 SoulFood holiday/occasion recipes (Christmas, Thanksgiving, Easter,
+    // Halloween, Ramadan, July 4th, Valentine's, spring, Father's Day, Memorial
+    // Day). Moved here from the retired seasonal one-time bundle — that tier is
+    // no longer sold (KNOWN_TIERS in create-checkout.js is monthly/annual only),
+    // so these 10 finished recipes were unreachable by every customer.
+    //
+    // >>> ON RELEASE THESE GO TO ANNUAL ONLY. <<<
+    // Move the hol* IDs from here into RECIPE_TIER_ANNUAL — nothing else needs
+    // changing. Do NOT add them to RECIPE_TIER_MONTHLY.
+    "hol1","hol2","hol3","hol4","hol5","hol6","hol7","hol8","hol9","hol10",
+]); // hidden from all users until released
 // Convenience sets — what each cumulative tier can see
 const MONTHLY_VISIBLE = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY]);
 const ANNUAL_VISIBLE  = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY, ...RECIPE_TIER_ANNUAL]);
@@ -13598,15 +13611,17 @@ function App() {
         // fallback, because the app renders with currentUser === null.
         const canTrustUnlocks = !!currentUser && !!unlocks._serverVerified;
         const tier = unlocks.tier || "free";
-        // Seasonal bundle — requires EXPLICIT purchase (separate from subscription tiers)
-        // canTrustUnlocks guard prevents unauthenticated localStorage spoofing
-        if (SOULFOOD_RECIPE_IDS.includes(id)) {
-            return (unlocks.tier === "seasonal" || unlocks.tier === "dev") && canTrustUnlocks;
-        }
+        // NOTE: the SoulFood/seasonal gate that used to sit here has been removed.
+        // Those 10 hol* IDs are now in RECIPE_TIER_PENDING, which returns false
+        // above, so this branch was unreachable — and it would have silently
+        // overridden whatever tier they are eventually released into.
+        // TO RELEASE the SoulFood recipes: move the hol* IDs out of
+        // RECIPE_TIER_PENDING into RECIPE_TIER_ANNUAL. Annual-only by decision —
+        // they are an annual-tier exclusive, not part of the monthly library.
         // Dev: sees everything — also requires canTrustUnlocks
         if (tier === "dev" && canTrustUnlocks) return true;
         // Annual: sees free + monthly + annual tiers + seasonal bundle
-        if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id) || SOULFOOD_RECIPE_IDS.includes(id);
+        if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
         // Monthly: sees free + monthly tiers
         if (tier === "monthly" && canTrustUnlocks) return MONTHLY_VISIBLE.has(id);
         // Individual single-recipe purchases (legacy)
