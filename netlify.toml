@@ -93,6 +93,19 @@
   status = 404
 
 # ── Block internal/dev pages from public access ──────────────────────────────
+# index.html.bak was previously served at /index.html.bak — a full stale copy of
+# the app, including obsolete Stripe price IDs. Deleted from the repo; this rule
+# is belt-and-braces in case another backup ever lands in the publish root.
+[[redirects]]
+  from = "/*.bak"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/uat_screenshots/*"
+  to = "/404"
+  status = 404
+
 [[redirects]]
   from = "/baseline-v15.html"
   to = "/404"

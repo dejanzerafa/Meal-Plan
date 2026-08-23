@@ -24,3 +24,8 @@ supabase/.temp/
 deploy-*.zip
 .netlify/
 **/.netlify/
+
+# Editor / manual backups — these were being SERVED publicly from the deploy root
+*.bak
+*.orig
+*~
