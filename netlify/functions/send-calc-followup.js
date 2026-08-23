@@ -19,6 +19,8 @@
 //   );
 //   CREATE INDEX IF NOT EXISTS idx_calc_email_sends_email ON calc_email_sends(email);
 
+const { rateLimit, clientIp } = require("./_shared/auth");
+
 const { createClient } = require("@supabase/supabase-js");
 
 const CORS_HEADERS = {
@@ -34,6 +36,17 @@ exports.handler = async (event) => {
   }
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  // Abuse control: this endpoint sends an email to a CALLER-SUPPLIED address and
+  // had no auth and no rate limit, so a loop against it bombs an arbitrary
+  // inbox from our domain and burns the Resend quota.
+  {
+    const _rl = await rateLimit(`calcfu_${clientIp(event)}`, { max: 3, windowMs: 600000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: { "Retry-After": String(_rl.retryAfter || 600) },
+               body: JSON.stringify({ error: "Too many requests. Please wait a few minutes." }) };
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -88,7 +101,7 @@ exports.handler = async (event) => {
     }
   }
 
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl   = process.env.APP_URL    || "https://soulgainz.app";
 
   // Build the macro passthrough URL using encodeURIComponent to prevent href injection
@@ -220,7 +233,7 @@ function buildCalcFollowupEmail({ email, kcal, protein, carbs, fat, goal, macroU
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
               Cook once. Eat all week.<br>
-              <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
               &nbsp;&middot;&nbsp;
               You&rsquo;re receiving this because you used our free macro calculator.
             </p>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — SoulGainz</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0C0B0A">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0C0B0A;
+      --orange:  #E07B2A;
+      --cream:   #F2EDE6;
+      --grey:    #8A8580;
+      --dkgrey:  #1C1A18;
+      --midgrey: #373432;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--black);
+      color: var(--cream);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 18px; font-weight: 900; letter-spacing: -0.02em;
+      color: var(--cream); margin-bottom: 56px;
+    }
+    .logo span { color: var(--orange); }
+
+    .code {
+      font-size: clamp(80px, 20vw, 140px);
+      font-weight: 900; letter-spacing: -0.05em;
+      color: var(--dkgrey); line-height: 1;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .code-inner {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(80px, 20vw, 140px);
+      font-weight: 900; letter-spacing: -0.05em;
+      color: var(--orange); opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .number-wrap {
+      position: relative; display: inline-block;
+      margin-bottom: 32px;
+    }
+    .four-oh-four {
+      font-size: clamp(80px, 18vw, 130px);
+      font-weight: 900; letter-spacing: -0.04em;
+      line-height: 1; color: var(--dkgrey);
+    }
+    .four-oh-four span { color: var(--orange); }
+
+    h1 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800; letter-spacing: -0.025em;
+      color: var(--cream); margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 15px; color: var(--grey); line-height: 1.6;
+      max-width: 380px; margin: 0 auto 36px;
+    }
+
+    .links {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .btn-primary {
+      background: var(--orange); color: var(--black);
+      border: none; border-radius: 10px;
+      padding: 14px 28px; font-size: 14px; font-weight: 800;
+      text-decoration: none; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-ghost {
+      background: none; color: var(--cream);
+      border: 1px solid rgba(242,237,230,0.2);
+      border-radius: 10px;
+      padding: 14px 28px; font-size: 14px; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .btn-ghost:hover { border-color: rgba(242,237,230,0.5); }
+
+    .quick-links {
+      font-size: 13px; color: var(--grey);
+    }
+    .quick-links a {
+      color: var(--grey); text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.15s;
+    }
+    .quick-links a:hover { color: var(--cream); }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="logo">Soul<span>Gainz</span></a>
+
+  <div class="number-wrap">
+    <div class="four-oh-four">4<span>0</span>4</div>
+  </div>
+
+  <h1>This page doesn't exist.</h1>
+  <p>Maybe it moved, maybe it never existed. Either way — let's get you somewhere useful.</p>
+
+  <div class="links">
+    <a href="/" class="btn-primary">Go home →</a>
+    <a href="/pricing" class="btn-ghost">See plans</a>
+  </div>
+
+  <div class="quick-links">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/blog">Blog</a>
+    <a href="/pricing">Pricing</a>
+    <a href="mailto:hello@soulgainz.app">Contact</a>
+  </div>
+
+</body>
+</html>

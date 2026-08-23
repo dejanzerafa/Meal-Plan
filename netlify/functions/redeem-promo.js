@@ -4,6 +4,8 @@
 // Uses the Supabase service_role key — never exposed to the browser.
 // Returns { ok, tier, label, tierExpires } or { error }.
 
+const { requireUser, rateLimit, clientIp } = require("./_shared/auth");
+
 const ALLOWED_ORIGINS = [
   "https://soulgainz.app",
   "https://www.soulgainz.app",
@@ -29,7 +31,7 @@ exports.handler = async (event) => {
   }
 
   const origin = (event.headers?.origin || event.headers?.Origin) || "";
-  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
     return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
@@ -44,12 +46,35 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { code, userId, userEmail } = payload;
+  const { code } = payload;
   if (!code || typeof code !== "string" || code.length > 32) {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid code" }) };
   }
-  if (!userId) {
-    return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Must be signed in to redeem a code" }) };
+
+  // ── Identify the caller from their JWT, never from the request body ───────
+  // Previously `userId` came straight off the payload with no verification, so
+  // anyone could redeem a code onto ANY profile UUID — and there was no rate
+  // limit, making the promo_codes table brute-forceable into free paid tiers.
+  const { user, error: authError, status: authStatus } = await requireUser(event);
+  if (authError) {
+    return { statusCode: authStatus, headers: corsHeaders, body: JSON.stringify({ error: authError }) };
+  }
+  const userId = user.id;
+  const userEmail = user.email;
+
+  // ── Brute-force protection ───────────────────────────────────────────────
+  // Limited per user AND per IP: a single account cannot grind the code table,
+  // and one attacker cannot spread the attempts across throwaway accounts.
+  for (const [key, label] of [[`promo_u_${userId}`, "user"], [`promo_ip_${clientIp(event)}`, "ip"]]) {
+    const rl = await rateLimit(key, { max: 5, windowMs: 900000 });
+    if (!rl.ok) {
+      console.warn(`redeem-promo: rate limited (${label}) for ${userId}`);
+      return {
+        statusCode: 429,
+        headers: { ...corsHeaders, "Retry-After": String(rl.retryAfter || 900) },
+        body: JSON.stringify({ error: "Too many attempts. Please wait a few minutes and try again." }),
+      };
+    }
   }
 
   const apiBase = `${supabaseUrl}/rest/v1`;
@@ -86,7 +111,7 @@ exports.handler = async (event) => {
 
   // ── 4. Update profiles.tier (atomically via service key) ─────────────────
   const profileRes = await fetch(
-    `${apiBase}/profiles?id=eq.${userId}`,
+    `${apiBase}/profiles?id=eq.${encodeURIComponent(userId)}`,
     {
       method: "PATCH",
       headers,

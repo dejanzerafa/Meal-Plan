@@ -19,3 +19,8 @@ node_modules/
 
 # Supabase local dev
 supabase/.temp/
+
+# Netlify CLI deploy artefacts + local link state
+deploy-*.zip
+.netlify/
+**/.netlify/

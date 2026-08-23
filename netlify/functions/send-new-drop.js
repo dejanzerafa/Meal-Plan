@@ -7,6 +7,8 @@
 //   SUPABASE_URL, SUPABASE_SERVICE_KEY
 //   RESEND_API_KEY, FROM_EMAIL, APP_URL
 
+const { secretsMatch } = require("./_shared/auth");
+
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event) => {
@@ -22,7 +24,7 @@ exports.handler = async (event) => {
   }
 
   const { secret, subject, headline, body: bodyText, recipes = [] } = payload;
-  if (secret !== process.env.ADMIN_SECRET) {
+  if (!secretsMatch(secret, process.env.ADMIN_SECRET)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
   }
   if (!subject || !headline) {
@@ -35,7 +37,7 @@ exports.handler = async (event) => {
   }
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl = process.env.APP_URL || "https://soulgainz.app";
 
   // Fetch all active subscribers (email from users table via subscriptions)
@@ -134,7 +136,7 @@ function buildDropEmail(headline, bodyText, recipes, appUrl) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
               Cook once. Eat all week.<br>
-              <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

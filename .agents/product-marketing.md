@@ -13,8 +13,8 @@
 
 **Business model:**
 - Free tier: 14 recipes (enough for a full week trial)
-- Monthly subscription: $16.99/mo → 53 recipes
-- Annual subscription: $12.50/mo (billed $150/yr) → 173 recipes — saves 2 months vs monthly
+- Monthly subscription: €16.99/mo → 53 recipes
+- Annual subscription: €12.50/mo (billed €150/yr) → 173 recipes — saves 2 months vs monthly
 - Single-recipe purchase: $1.99 each
 - Seasonal/SoulFood bundle: explicit one-off purchase (holiday recipes)
 - Wave2 library: 66 recipes held back — released in periodic content drops to create ongoing engagement

@@ -10,7 +10,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Supabase is self-hosted so sign-in cannot be broken by an ad-blocker,
+       a corporate network filter, or a jsdelivr outage. CDN kept only as a
+       fallback if the local copy ever 404s after a bad deploy. -->
+  <script src="/vendor/supabase.min.js"
+          onerror="this.dataset.failed=1"></script>
+  <script>
+    if (!window.supabase) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"><\/script>');
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -70,44 +79,79 @@
     .hero h1 em { color: var(--orange); font-style: normal; }
     .hero p { font-size: 17px; color: var(--grey); max-width: 480px; margin: 0 auto 32px; }
 
-    /* Toggle */
-    .toggle-wrap {
-      display: flex; align-items: center; justify-content: center;
-      gap: 12px; margin-bottom: 48px;
-    }
-    .toggle-label { font-size: 14px; font-weight: 600; color: var(--grey); transition: color 0.2s; cursor: pointer; }
-    .toggle-label.active { color: var(--cream); }
-    .toggle {
-      position: relative; width: 52px; height: 28px;
-      background: var(--midgrey); border-radius: 14px; cursor: pointer; transition: background 0.2s;
-    }
-    .toggle.annual-on { background: var(--orange); }
-    .toggle-knob {
-      position: absolute; top: 4px; left: 4px;
-      width: 20px; height: 20px; border-radius: 50%;
-      background: var(--cream); transition: transform 0.2s;
-    }
-    .toggle.annual-on .toggle-knob { transform: translateX(24px); }
-    .save-badge {
-      font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: var(--orange);
-      background: rgba(224,123,42,0.12); border: 1px solid rgba(224,123,42,0.3);
-      border-radius: 20px; padding: 3px 10px;
+    /* Toggle styles removed along with the toggle itself. */
+
+    /* Plans — 3 cards side by side on desktop, swipeable carousel on mobile.
+       Swiping is pure CSS scroll-snap: no JS, so it cannot break. */
+    .plans {
+      max-width: 960px; margin: 0 auto; padding: 0 20px 56px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      /* align-items must stay `stretch` (the default). Setting it to `start`
+         let each card size to its own content, so the Free card — which has
+         the least copy — rendered noticeably shorter and the three-across
+         comparison looked ragged instead of aligned. */
+      align-items: stretch;
     }
 
-    /* Plans */
-    .plans {
-      max-width: 960px; margin: 0 auto; padding: 0 20px 80px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    /* Breakpoint kept low (680px) on purpose: the three-across comparison is
+       the most useful view, so tablets and small laptops keep it. Only true
+       phone widths fall back to the swipe carousel. */
+    @media (max-width: 680px) {
+      .plans {
+        display: flex;
+        align-items: stretch;   /* equal-height cards in the carousel too */
+        gap: 14px;
+        overflow-x: auto;
+        overflow-y: visible;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding: 0 20px;
+        /* Full-bleed so cards can peek past the viewport edge */
+        max-width: none;
+        margin: 0 -20px;
+        padding: 14px 20px 24px;
+        scrollbar-width: none;
+      }
+      .plans::-webkit-scrollbar { display: none; }
+      .plans > .plan-card {
+        flex: 0 0 82%;
+        max-width: 320px;
+        scroll-snap-align: center;
+      }
+      /* Let the first/last card centre properly */
+      .plans::after {
+        content: ''; flex: 0 0 1px;
+      }
     }
-    @media (max-width: 760px) { .plans { grid-template-columns: 1fr; max-width: 420px; } }
+
     .plan-card {
       background: var(--dkgrey); border: 1px solid rgba(242,237,230,0.08);
       border-radius: 20px; padding: 28px 24px;
       display: flex; flex-direction: column; position: relative;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
     .plan-card:hover { border-color: rgba(242,237,230,0.2); }
     .plan-card.featured { background: var(--dimgrey); border-color: var(--orange); border-width: 2px; }
+
+    /* Selected state — set by tapping/clicking a card */
+    .plan-card.selected {
+      border-color: var(--orange);
+      border-width: 2px;
+      box-shadow: 0 0 0 4px rgba(224,123,42,0.15);
+    }
+
+    /* Swipe affordance — dots, hidden on desktop */
+    .swipe-hint {
+      display: none;
+      text-align: center;
+      color: var(--grey);
+      font-size: 12px;
+      margin: -8px auto 40px;
+      letter-spacing: 0.04em;
+    }
+    /* Must match the carousel breakpoint above (680px), or the hint appears
+       on widths that show all three cards and there is nothing to swipe. */
+    @media (max-width: 680px) { .swipe-hint { display: block; } }
     .featured-badge {
       position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
       background: var(--orange); color: var(--black);
@@ -139,6 +183,10 @@
     .plan-btn.btn-free { background: var(--midgrey); color: var(--cream); }
     .plan-btn.btn-monthly { background: rgba(242,237,230,0.1); color: var(--cream); border: 1px solid rgba(242,237,230,0.15); }
     .plan-btn.btn-annual { background: var(--orange); color: var(--black); }
+    .plan-guarantee {
+      font-size: 11px; color: var(--green, #4ade80); text-align: center;
+      margin: -14px 0 20px; font-weight: 600; letter-spacing: 0.01em;
+    }
     .plan-divider { border: none; border-top: 1px solid rgba(242,237,230,0.06); margin-bottom: 18px; }
     .plan-features { list-style: none; flex: 1; }
     .plan-features li {
@@ -158,17 +206,31 @@
       font-size: clamp(22px, 3vw, 30px); font-weight: 800;
       letter-spacing: -0.02em; text-align: center; margin-bottom: 40px;
     }
+    /* Built on native <details>/<summary> — expand/collapse is handled by the
+       browser itself. No JavaScript, so this section cannot be broken by a
+       script error elsewhere on the page. */
     .faq-item { border-bottom: 1px solid rgba(242,237,230,0.08); }
     .faq-q {
-      width: 100%; background: none; border: none; color: var(--cream);
+      width: 100%; color: var(--cream);
       font-family: "Instrument Sans", sans-serif;
       font-size: 15px; font-weight: 600; text-align: left;
       padding: 18px 0; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      list-style: none;
     }
+    .faq-q::-webkit-details-marker { display: none; }   /* Safari default triangle */
+    .faq-q::marker { content: ''; }
+    .faq-q:hover { color: var(--orange); }
+    .faq-q:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
     .faq-arrow { color: var(--grey); transition: transform 0.2s; flex-shrink: 0; font-size: 18px; }
-    .faq-item.open .faq-arrow { transform: rotate(180deg); }
-    .faq-a { display: none; font-size: 14px; color: var(--grey); line-height: 1.65; padding-bottom: 18px; }
+    .faq-item[open] .faq-arrow { transform: rotate(180deg); color: var(--orange); }
+    .faq-a { font-size: 14px; color: var(--grey); line-height: 1.65; padding-bottom: 18px; }
+    .faq-a a { color: var(--orange); }
+    .faq-note {
+      max-width: 680px; margin: 8px auto 0; padding: 0 24px;
+      font-size: 12px; color: var(--grey); text-align: center; line-height: 1.6;
+    }
+    .faq-note a { color: var(--orange); }
     .faq-item.open .faq-a { display: block; }
 
     /* CTA */
@@ -207,11 +269,22 @@
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
       z-index: 200; align-items: center; justify-content: center;
+      /* Must scroll: on a short phone screen the sign-up form is taller than
+         the viewport, and without this the top is clipped with no way to
+         reach it — indistinguishable from the button doing nothing. */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 0;
     }
     .modal-overlay.active { display: flex; }
     .modal {
       background: var(--dkgrey); border: 1px solid rgba(242,237,230,0.12);
       border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; margin: 24px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+    @media (max-width: 480px) {
+      .modal { padding: 26px 20px; margin: 12px; }
     }
     .modal h3 {
       font-family: "Fraunces", Georgia, serif;
@@ -239,6 +312,55 @@
     }
     .form-field input:focus { border-color: var(--orange); }
     .form-field input::placeholder { color: var(--grey); }
+    .email-note {
+      margin-top: 8px; padding: 10px 12px;
+      background: rgba(224,123,42,0.09);
+      border: 1px solid rgba(224,123,42,0.28);
+      border-left: 3px solid var(--orange);
+      border-radius: 8px;
+      font-size: 12px; line-height: 1.5; color: var(--cream);
+    }
+    .email-note strong { color: var(--orange); font-weight: 700; }
+
+    /* ── Account gate ─────────────────────────────────────────────────────── */
+    .account-bar {
+      max-width: 640px; margin: 0 auto 28px; padding: 16px 20px;
+      border-radius: 12px; text-align: center;
+      font-size: 14px; line-height: 1.55;
+    }
+    .account-bar.signed-out {
+      background: rgba(224,123,42,0.10);
+      border: 1px solid rgba(224,123,42,0.30);
+    }
+    .account-bar.signed-in {
+      background: rgba(74,222,128,0.09);
+      border: 1px solid rgba(74,222,128,0.28);
+    }
+    .account-bar .ab-step {
+      display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+    .account-bar.signed-out .ab-step { color: var(--orange); }
+    .account-bar.signed-in  .ab-step { color: #4ade80; }
+    .account-bar .ab-body { color: var(--cream); }
+    .account-bar .ab-body strong { color: var(--orange); }
+    .account-bar.signed-in .ab-body strong { color: #4ade80; }
+    .account-bar .ab-btn {
+      margin-top: 12px; background: var(--orange); color: var(--black);
+      border: none; border-radius: 8px; padding: 11px 22px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family: inherit;
+    }
+    .account-bar .ab-btn:hover { filter: brightness(1.08); }
+    .account-bar .ab-link {
+      background: none; border: none; color: var(--grey);
+      font-size: 12px; text-decoration: underline; cursor: pointer;
+      font-family: inherit; margin-top: 8px; display: inline-block;
+    }
+    .account-bar .ab-link:hover { color: var(--cream); }
+    /* Plan buttons are visually de-emphasised until the user has an account */
+    .plans.locked .plan-btn.btn-monthly,
+    .plans.locked .plan-btn.btn-annual { opacity: 0.55; }
     .modal-submit {
       width: 100%; padding: 14px; background: var(--orange); color: var(--black);
       border: none; border-radius: 10px; font-family: "Instrument Sans", sans-serif;
@@ -263,10 +385,10 @@
     <div class="nav-inner">
       <a href="/" class="nav-logo serif">Soul<span>Gainz</span></a>
       <ul class="nav-links">
-        <li><a href="/about">About</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">Our Story</a></li>
         <li><a href="/pricing">Pricing</a></li>
-        <li><a href="https://soulgainz.app/blog">Blog</a></li>
-        <li><a href="mailto:admin@soulgainz.app">Help</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
       <a href="https://soulgainz.app/waitlist" class="nav-cta">Join waitlist →</a>
     </div>
@@ -279,15 +401,11 @@
     <p>Start free. Upgrade when you're ready. Cancel anytime.</p>
   </div>
 
-  <!-- TOGGLE -->
-  <div class="toggle-wrap">
-    <span class="toggle-label active" id="lbl-monthly" onclick="setAnnual(false)">Monthly</span>
-    <div class="toggle" id="toggle" onclick="togglePlan()">
-      <div class="toggle-knob"></div>
-    </div>
-    <span class="toggle-label" id="lbl-annual" onclick="setAnnual(true)">Annual</span>
-    <span class="save-badge">Save 26%</span>
-  </div>
+  <!-- ACCOUNT GATE — register before choosing a tier, so the plan links to the right account -->
+  <div id="account-bar" class="account-bar" style="display:none;"></div>
+
+  <!-- Monthly/Annual toggle removed — all three plans are always visible as
+       cards, so the toggle changed nothing but its own styling. -->
 
   <!-- PLAN CARDS -->
   <div class="plans">
@@ -302,7 +420,7 @@
       <button class="plan-btn btn-free" onclick="window.location.href='https://soulgainz.app/waitlist'">Join waitlist</button>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li><span class="check">✓</span><span><span class="feat-label">10 starter recipes</span></span></li>
+        <li><span class="check">✓</span><span><span class="feat-label">14 starter recipes</span></span></li>
         <li><span class="check">✓</span><span><span class="feat-label">Macro calculator</span></span></li>
         <li><span class="cross">✗</span><span>Full recipe library</span></li>
         <li><span class="cross">✗</span><span>Auto grocery list</span></li>
@@ -311,15 +429,16 @@
     </div>
 
     <!-- Monthly -->
-    <div class="plan-card">
+    <div class="plan-card" data-tier="monthly" onclick="selectPlan('monthly')">
       <div class="plan-tier">Monthly</div>
       <div class="plan-price">
         <span class="amount serif" id="monthly-price">€16.99</span>
         <span class="period">/mo</span>
       </div>
-      <div class="plan-subprice" id="monthly-subprice">&nbsp;</div>
+      <div class="plan-subprice" id="monthly-subprice">Cancel anytime</div>
       <div class="plan-desc">85+ high-protein recipes with verified macros. Everything you need to build the habit.</div>
-      <button class="plan-btn btn-monthly" id="btn-monthly" onclick="handleCheckout('monthly')">Get Monthly</button>
+      <button class="plan-btn btn-monthly" id="btn-monthly" onclick="event.stopPropagation(); handleCheckout('monthly')">Subscribe</button>
+      <div class="plan-guarantee">14-day money-back guarantee</div>
       <hr class="plan-divider">
       <ul class="plan-features">
         <li><span class="check">✓</span><span><span class="feat-label">85+ recipes</span></span></li>
@@ -331,7 +450,7 @@
     </div>
 
     <!-- Annual -->
-    <div class="plan-card featured">
+    <div class="plan-card featured" data-tier="annual" onclick="selectPlan('annual')">
       <div class="featured-badge">Best value</div>
       <div class="plan-tier">Annual</div>
       <div class="plan-price">
@@ -340,7 +459,8 @@
       </div>
       <div class="plan-subprice" id="annual-subprice">Billed €149.99/year · <span>Save €54</span></div>
       <div class="plan-desc">The full 170+ recipe library. Best value for serious meal preppers.</div>
-      <button class="plan-btn btn-annual" id="btn-annual" onclick="handleCheckout('annual')">Get Annual</button>
+      <button class="plan-btn btn-annual" id="btn-annual" onclick="event.stopPropagation(); handleCheckout('annual')">Subscribe</button>
+      <div class="plan-guarantee">14-day money-back guarantee</div>
       <hr class="plan-divider">
       <ul class="plan-features">
         <li><span class="check">✓</span><span><span class="feat-label">170+ full recipe library</span></span></li>
@@ -352,58 +472,106 @@
     </div>
   </div>
 
+  <div class="swipe-hint">← Swipe to compare plans →</div>
+
   <!-- FAQ -->
   <div class="faq">
     <h2 class="serif">Questions answered</h2>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+    <details class="faq-item">
+      <summary class="faq-q">
         Is SoulGainz live yet?
         <span class="faq-arrow">▾</span>
-      </button>
+      </summary>
       <div class="faq-a">Not yet — we're in final development and launching soon. Join the waitlist to be first in the door. Waitlist members get early access before the public launch.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Can I cancel my subscription?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Yes, at any time. Monthly subscribers can cancel and retain access until the billing period ends. Annual subscribers can cancel and keep access for the remaining months they've paid for.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+    <details class="faq-item">
+      <summary class="faq-q">
         What's the difference between Monthly and Annual?
         <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Monthly gives you access to 85+ recipes. Annual gives you the full 170+ recipe library — that's every recipe we have, plus early access to new additions. Annual also works out 26% cheaper than paying month to month.</div>
-    </div>
+      </summary>
+      <div class="faq-a">Monthly gives you 85+ recipes, the macro calculator, the auto grocery list and weekly meal planning. Annual gives you all of that plus the <strong>full 170+ recipe library</strong> and early access to every new recipe we add. Annual works out at €12.50 a month against €16.99 — about 26% cheaper, or €54 saved over a year.</div>
+    </details>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+    <details class="faq-item">
+      <summary class="faq-q">
+        Can I get a refund if it's not for me?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">Yes. Every plan comes with a <strong>14-day money-back guarantee</strong>. If SoulGainz isn't right for you, email <a href="mailto:support@soulgainz.app">support@soulgainz.app</a> within 14 days of your first payment and we'll refund it in full — no forms, no interrogation. This doesn't affect any statutory rights you have where you live.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
+        Can I cancel my subscription?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">Any time, in two taps — ME tab → Manage Account, or email <a href="mailto:support@soulgainz.app">support@soulgainz.app</a>. Cancelling stops the next payment and you keep full access until the end of the period you've already paid for. We don't refund part-used periods outside the 14-day guarantee, and we never charge a cancellation fee.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
+        Does my subscription renew automatically?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">Yes — monthly plans renew each month, annual plans each year, so your access never lapses unexpectedly. You can cancel before any renewal date. If we ever change the price, you'll get at least <strong>30 days' notice by email</strong> and the new price only applies from your next renewal — so you always have time to cancel first.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
+        What happens if a payment fails?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">Nothing dramatic. We retry the payment a few times, and if it still doesn't go through your account simply drops back to the free tier — your data, saved plans and settings all stay exactly where they are. Update your card and your full access comes straight back.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
         Do I need to download anything?
         <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">No App Store required. SoulGainz is a Progressive Web App — you visit the site, tap "Add to Home Screen", and it installs like a native app. Works offline, loads instantly.</div>
-    </div>
+      </summary>
+      <div class="faq-a">No App Store required. SoulGainz is a Progressive Web App — visit the site, tap "Add to Home Screen", and it installs like a native app. Works offline, loads instantly, and updates itself.</div>
+    </details>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+    <details class="faq-item">
+      <summary class="faq-q">
         Are the macros actually accurate?
         <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Yes. Every recipe in SoulGainz has been independently macro-verified — not estimated. The numbers you see are the numbers you get. That's a core principle of how we build the library.</div>
-    </div>
+      </summary>
+      <div class="faq-a">Yes. Every recipe has been independently macro-verified, not estimated. The numbers you see are the numbers you get — that's a core principle of how we build the library. SoulGainz is a food and nutrition tool, though, not medical advice; if you have a health condition, talk to a qualified professional before changing your diet.</div>
+    </details>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+    <details class="faq-item">
+      <summary class="faq-q">
         What payment methods do you accept?
         <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Visa, Mastercard, American Express, Apple Pay, and Google Pay — all handled securely by Stripe. We never store your card details.</div>
-    </div>
+      </summary>
+      <div class="faq-a">Visa, Mastercard, American Express, Apple Pay and Google Pay — all processed securely by Stripe. Your card details go straight to Stripe and are never stored on our servers.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
+        Can I share my account with someone else?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">Subscriptions are for one person — one account each, and credentials shouldn't be shared. Your meal plans, macro targets and saved recipes are all built around your own numbers, so a shared account gives both people worse results anyway.</div>
+    </details>
+
+    <details class="faq-item">
+      <summary class="faq-q">
+        What if you shut the service down?
+        <span class="faq-arrow">▾</span>
+      </summary>
+      <div class="faq-a">You'd get at least <strong>60 days' written notice by email</strong>, the app stays fully working through that whole period so you can export anything you want to keep, and every active subscriber receives a pro-rata refund for the unused part of their billing period.</div>
+    </details>
   </div>
+
+  <p class="faq-note">
+    These answers summarise our <a href="https://soulgainz.app/terms">Terms of Service</a> and
+    <a href="https://soulgainz.app/privacy">Privacy Policy</a> in plain English. Where anything differs, the full
+    Terms apply. Questions? <a href="mailto:support@soulgainz.app">support@soulgainz.app</a>
+  </p>
 
   <!-- CTA -->
   <section class="cta-section">
@@ -419,41 +587,43 @@
     <div class="footer-inner">
       <div class="footer-brand serif">Soul<span>Gainz</span></div>
       <div class="footer-links">
-        <a href="/about">About</a>
+        <a href="/">Home</a>
+        <a href="/about">Our Story</a>
         <a href="/pricing">Pricing</a>
-        <a href="https://soulgainz.app/terms">Terms</a>
-        <a href="https://soulgainz.app/privacy">Privacy</a>
-        <a href="mailto:admin@soulgainz.app">Contact</a>
+        <a href="/contact">Contact</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
       </div>
     </div>
     <div class="footer-copy">© 2026 SoulGainz. All rights reserved.</div>
   </footer>
 
   <!-- AUTH MODAL -->
-  <div class="modal-overlay" id="authModal">
+  <div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
     <div class="modal">
       <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-      <h3 class="serif">Create your account</h3>
-      <p class="modal-sub">Sign up or log in to continue to checkout.</p>
+      <h3 class="serif" id="authModalTitle">Create your account</h3>
+      <p class="modal-sub">Sign up or log in to continue to checkout. Already using the SoulGainz app? Log in with that same email so your plan links to your account.</p>
       <div class="modal-tabs">
         <button class="modal-tab active" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
         <button class="modal-tab" id="tab-login" onclick="switchTab('login')">Log in</button>
       </div>
       <div id="auth-form">
         <div class="form-field" id="field-name" style="display:none;">
-          <label>Full name</label>
+          <label for="input-name">Full name</label>
           <input type="text" id="input-name" placeholder="Your name" autocomplete="name">
         </div>
         <div class="form-field">
-          <label>Email address</label>
+          <label for="input-email">Email address</label>
           <input type="email" id="input-email" placeholder="you@email.com" autocomplete="email">
+          <p class="email-note">⚠️ Use the <strong>same email you signed up with in the SoulGainz app</strong>. Your plan is linked to this account — a different email means your access won't appear in the app.</p>
         </div>
         <div class="form-field">
-          <label>Password</label>
+          <label for="input-password">Password</label>
           <input type="password" id="input-password" placeholder="Min. 8 characters" autocomplete="current-password">
         </div>
         <button class="modal-submit" id="auth-submit" onclick="submitAuth()">Create account &amp; continue</button>
-        <div class="modal-error" id="auth-error"></div>
+        <div class="modal-error" id="auth-error" role="alert" aria-live="assertive"></div>
       </div>
     </div>
   </div>
@@ -463,11 +633,17 @@
     const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
     const CHECKOUT_URL  = 'https://soulgainz.app/.netlify/functions/create-checkout';
-    const SUCCESS_URL   = 'https://soulgainz.app/success';
+    // NOTE: success_url is set server-side by create-checkout.js from the APP_URL
+    // env var — do not re-declare it here, it would be dead code.
 
+    // ⚠️ LAUNCH-DAY SWAP — currently TEST mode price IDs.
+    // Swap back to LIVE the day before launch, together with STRIPE_SECRET_KEY
+    // and STRIPE_WEBHOOK_SECRET in Netlify env:
+    //   LIVE monthly: price_1U56lUGjmPEqu9q9Rgk9ZIDK
+    //   LIVE annual:  price_1U56lDGjmPEqu9q9xfEMKPAd
     const PRICE_IDS = {
-      monthly: 'price_1U56lUGjmPEqu9q9Rgk9ZIDK',
-      annual:  'price_1U56lDGjmPEqu9q9xfEMKPAd',
+      monthly: 'price_1TU83bGjmPEqu9q97qSe6xYd',  // TEST €16.99/mo
+      annual:  'price_1TXc8dGjmPEqu9q9sIA4RenP',  // TEST €150/yr
     };
 
     let supabase = null;
@@ -475,37 +651,82 @@
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     } catch(e) { console.warn('Supabase init failed', e); }
 
-    // ── Plan toggle ───────────────────────────────────────────────────────────
-    let isAnnual = false;
     let pendingTier = null;
 
-    function togglePlan() { setAnnual(!isAnnual); }
-    function setAnnual(val) {
-      isAnnual = val;
-      document.getElementById('toggle').classList.toggle('annual-on', isAnnual);
-      document.getElementById('lbl-monthly').classList.toggle('active', !isAnnual);
-      document.getElementById('lbl-annual').classList.toggle('active', isAnnual);
+    // ── Card selection ────────────────────────────────────────────────────────
+    // Tapping a card highlights it; the button on the card still starts
+    // checkout directly. Nothing here gates purchase, so a JS failure cannot
+    // stop someone buying.
+    let selectedTier = null;
+    function selectPlan(tier) {
+      selectedTier = tier;
+      document.querySelectorAll('.plan-card[data-tier]').forEach(card => {
+        card.classList.toggle('selected', card.dataset.tier === tier);
+      });
+    }
+
+    // Original button labels, so we can always restore them accurately.
+    // Must match the button text in the markup — resetPlanBtn() restores these
+    // after a failed checkout, so a mismatch silently relabels the button.
+    const BTN_LABEL = { monthly: 'Subscribe', annual: 'Subscribe' };
+    function planBtn(tier) { return document.getElementById('btn-' + tier); }
+    function resetPlanBtn(tier) {
+      const b = planBtn(tier);
+      if (b) { b.disabled = false; b.textContent = BTN_LABEL[tier] || 'Get Started'; }
+    }
+
+    // Single visible failure path. Previously a null `supabase` (blocked CDN,
+    // offline, ad-blocker) made the plan buttons do nothing at all, which is
+    // indistinguishable from a broken page.
+    function authUnavailable() {
+      alert('We could not load the secure sign-in service.\n\nThis is usually a browser extension, ad-blocker or network filter blocking cdn.jsdelivr.net. Please disable it or try another browser, then reload this page.');
     }
 
     // ── Checkout flow ─────────────────────────────────────────────────────────
+    // Set synchronously on entry. handleCheckout awaits getSession() before
+    // startCheckout disables the button, and that await is a real gap (IndexedDB
+    // read, plus a token refresh if the JWT is near expiry). A second tap in
+    // that window created a second Stripe Checkout Session.
+    let checkoutInFlight = false;
+
     async function handleCheckout(tier) {
-      // Check if already authed
+      if (!BTN_LABEL[tier]) return;               // guard against bad tier names
+      if (checkoutInFlight) return;
+      checkoutInFlight = true;
+      const earlyBtn = planBtn(tier);
+      if (earlyBtn) { earlyBtn.disabled = true; earlyBtn.textContent = 'Loading…'; }
+      try {
+        await _handleCheckout(tier);
+      } finally {
+        checkoutInFlight = false;
+      }
+    }
+
+    async function _handleCheckout(tier) {
+      if (!supabase) { authUnavailable(); resetPlanBtn(tier); return; }
+
       let session = null;
-      if (supabase) {
+      try {
         const { data } = await supabase.auth.getSession();
         session = data?.session;
+      } catch (err) {
+        console.error('getSession failed', err);
+        authUnavailable();
+        resetPlanBtn(tier);
+        return;
       }
 
       if (session) {
-        await startCheckout(tier, session.access_token);
+        await startCheckout(tier, session);
       } else {
         pendingTier = tier;
+        resetPlanBtn(tier);   // modal is showing; the button must not stay stuck
         openModal();
       }
     }
 
-    async function startCheckout(tier, accessToken) {
-      const btn = document.getElementById(tier === 'monthly' ? 'btn-monthly' : 'btn-annual');
+    async function startCheckout(tier, session) {
+      const btn = planBtn(tier);
       if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
 
       try {
@@ -515,21 +736,100 @@
           body: JSON.stringify({
             priceId: PRICE_IDS[tier],
             tier,
-            successUrl: SUCCESS_URL,
+            email:   session?.user?.email || undefined,
+            userId:  session?.user?.id    || undefined,
           }),
         });
-        const data = await res.json();
-        if (data.url) {
+
+        // Read as text first — a non-JSON body (HTML error page, CORS block)
+        // used to throw inside res.json() and surface as a bogus "Network error".
+        const raw = await res.text();
+        let data = {};
+        try { data = raw ? JSON.parse(raw) : {}; } catch (_) {}
+
+        // Only ever navigate to Stripe. `data.url` becomes a top-level navigation
+        // and CSP cannot restrict that, so a misconfigured or compromised
+        // function would turn Subscribe into an open redirect. sign-up.html
+        // already did this check; pricing.html did not.
+        if (res.ok && typeof data.url === 'string' && data.url.startsWith('https://checkout.stripe.com/')) {
           window.location.href = data.url;
-        } else {
-          alert('Could not start checkout: ' + (data.error || 'Unknown error'));
-          if (btn) { btn.disabled = false; btn.textContent = tier === 'monthly' ? 'Get Monthly' : 'Get Annual'; }
+          return;
         }
+        if (res.ok && data.url) {
+          console.error('Refusing to redirect to unexpected URL', data.url);
+          alert('Could not start checkout — unexpected response. Please email support@soulgainz.app.');
+          resetPlanBtn(tier);
+          return;
+        }
+        console.error('Checkout failed', res.status, raw);
+        alert('Could not start checkout: ' + (data.error || ('server returned ' + res.status)));
+        resetPlanBtn(tier);
       } catch (err) {
-        alert('Network error — please try again.');
-        if (btn) { btn.disabled = false; btn.textContent = tier === 'monthly' ? 'Get Monthly' : 'Get Annual'; }
+        console.error('Checkout network error', err);
+        alert('Network error — please check your connection and try again.');
+        resetPlanBtn(tier);
       }
     }
+
+    // ── Account gate ──────────────────────────────────────────────────────────
+    // New users register BEFORE choosing a tier, so the subscription always
+    // attaches to a real Supabase account — and to the SAME account they use in
+    // the app. Without this, someone can buy first and land on an orphaned
+    // profile whose tier never syncs back to the app.
+    async function renderAccountBar() {
+      const bar   = document.getElementById('account-bar');
+      const plans = document.querySelector('.plans');
+      if (!bar) return;
+
+      // Auth library never loaded — say so plainly instead of showing a
+      // "create your account" button that silently does nothing.
+      if (!supabase) {
+        bar.className = 'account-bar signed-out';
+        bar.innerHTML =
+          '<span class="ab-step">Sign-in unavailable</span>' +
+          '<div class="ab-body">We could not load the secure sign-in service. This is usually caused by an ' +
+          'ad-blocker or network filter. Please disable it or try another browser, then reload.</div>' +
+          '<button class="ab-btn" onclick="location.reload()">Reload page</button>';
+        if (plans) plans.classList.add('locked');
+        bar.style.display = 'block';
+        return;
+      }
+
+      let session = null;
+      try { const { data } = await supabase.auth.getSession(); session = data?.session; } catch (_) {}
+
+      if (session) {
+        const email = session.user?.email || 'your account';
+        bar.className = 'account-bar signed-in';
+        bar.innerHTML =
+          '<span class="ab-step">Step 2 of 2 — choose your plan</span>' +
+          '<div class="ab-body">Signed in as <strong></strong>. Your plan will be linked to this account.</div>' +
+          '<button class="ab-link" onclick="signOutAndReset()">Not you? Use a different account</button>';
+        bar.querySelector('strong').textContent = email;   // textContent — never inject email as HTML
+        if (plans) plans.classList.remove('locked');
+      } else {
+        bar.className = 'account-bar signed-out';
+        bar.innerHTML =
+          '<span class="ab-step">Step 1 of 2 — create your account</span>' +
+          '<div class="ab-body">Set up your account before choosing a plan. Already use the SoulGainz app? ' +
+          'Log in with the <strong>same email</strong> so your plan unlocks there automatically.</div>' +
+          '<button class="ab-btn" onclick="openModal()">Create account or log in</button>';
+        if (plans) plans.classList.add('locked');
+      }
+      bar.style.display = 'block';
+    }
+
+    async function signOutAndReset() {
+      try { if (supabase) await supabase.auth.signOut(); } catch (_) {}
+      pendingTier = null;
+      renderAccountBar();
+    }
+
+    // Run on load, and keep in sync if the session changes in another tab
+    renderAccountBar();
+    try {
+      if (supabase) supabase.auth.onAuthStateChange(() => { renderAccountBar(); });
+    } catch (_) {}
 
     // ── Auth modal ────────────────────────────────────────────────────────────
     let currentTab = 'signup';
@@ -561,7 +861,7 @@
     switchTab('signup'); // init
 
     async function submitAuth() {
-      if (!supabase) { alert('Auth service unavailable. Please try again.'); return; }
+      if (!supabase) { authUnavailable(); return; }
 
       const email    = document.getElementById('input-email').value.trim();
       const password = document.getElementById('input-password').value;
@@ -570,6 +870,7 @@
       const btn      = document.getElementById('auth-submit');
 
       errEl.textContent = '';
+      errEl.style.color = '#f87171';   // reset — stays green after a success msg otherwise
 
       if (!email || !password) { errEl.textContent = 'Email and password are required.'; return; }
       if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
@@ -602,8 +903,14 @@
         }
 
         closeModal();
+        renderAccountBar();
         if (pendingTier && session) {
-          await startCheckout(pendingTier, session.access_token);
+          // User picked a plan first — carry straight on to checkout
+          await startCheckout(pendingTier, session);
+        } else if (session) {
+          // Registered via the Step 1 gate — send them to the plans to choose
+          const plans = document.querySelector('.plans');
+          if (plans) plans.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       } catch (err) {
         errEl.style.color = '#f87171';
@@ -621,13 +928,31 @@
 
     // Enter key in form
     document.getElementById('auth-form').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') submitAuth();
+      // isComposing/229 guard: an IME user pressing Enter to CONFIRM a
+      // candidate (Japanese, Chinese, Korean) would otherwise submit the form
+      // with a half-typed name. Also refuse while the button is disabled, or
+      // two fast Enters both reach signUp and the second returns
+      // "User already registered" to someone who just succeeded.
+      if (e.key !== 'Enter') return;
+      if (e.isComposing || e.keyCode === 229) return;
+      const sb = document.getElementById('auth-submit');
+      if (sb && sb.disabled) return;
+      submitAuth();
     });
 
-    // ── FAQ accordion ─────────────────────────────────────────────────────────
-    function toggleFaq(btn) {
-      btn.parentElement.classList.toggle('open');
-    }
+    // ── Restore button state when the page comes back from bfcache ──────────
+    // /pricing is served with `max-age=0, must-revalidate` (NOT no-store), so it
+    // IS bfcache-eligible. Pressing Back from Stripe Checkout restored the page
+    // with Subscribe greyed out and reading "Loading…" forever — the exact
+    // "the button does nothing" symptom, with no way to retry but a hard reload.
+    window.addEventListener('pageshow', e => {
+      if (!e.persisted) return;
+      checkoutInFlight = false;
+      resetPlanBtn('monthly');
+      resetPlanBtn('annual');
+    });
+
+    // FAQ needs no JavaScript — it uses native <details>/<summary>.
   </script>
 </body>
 </html>

@@ -29,7 +29,7 @@ exports.handler = async (event) => {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl = process.env.APP_URL || "https://soulgainz.app";
 
   // Find subscriptions expiring in 6-8 days (window prevents double-sends on retry)
@@ -136,7 +136,7 @@ function buildRenewalEmail(tierLabel, renewDate, appUrl) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
               Cook once. Eat all week.<br>
-              <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

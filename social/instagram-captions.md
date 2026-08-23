@@ -1,4 +1,47 @@
-# SoulGainz — Pre-Launch Instagram Posts
+# SoulGainz — Instagram Caption Style Guide & Posts
+
+---
+
+## CAPTION STANDARD (apply to all future posts)
+
+**Structure:**
+1. Hook line — punchy, short, emoji on the same line after the statement
+2. Body — 2–4 short paragraphs, conversational, plain truth
+3. One emoji per sentence max, placed at the end of the sentence naturally
+4. CTA line — always ends with 👇
+5. One blank line, then hashtags
+
+**Emoji rules:**
+- Use emojis mid-body to punctuate statements, not to decorate every line
+- Food posts: use food emojis to represent the specific meals (🍗🥣🍳 etc.)
+- Keep it feeling human — not a list of bullet emojis
+- Never open with an emoji as the first character
+
+**Tone:** Direct. Confident. No fluff. Speaks to someone who trains seriously and wants their food to match.
+
+**Variety — keep it fresh:** Same rules, different feel every time. Rotate the hook style — sometimes a stat, sometimes a call-out, sometimes a one-liner that hits. Don't open every post the same way. Vary sentence length. Some captions can be punchy and short (5 lines total), others can breathe a bit more. The structure is a guide, not a script. If a caption starts to sound like the last one, rewrite the hook.
+
+**CTA:** Always "Join the waitlist → link in bio 👇" or "Link in bio 👇" — never link the actual URL in caption (IG doesn't make it clickable). App is NOT live — never say "download now" or "available now."
+
+**Hashtags:** Always use the rotating Set A / B / C from SOCIAL_SEPTEMBER_2026.md. Core brand tags in every post: #soulgainz #feedyoursoul #fuelyourgainz #soulgainz.app
+
+**Example (Aug 27 — the approved standard):**
+
+> 220g of protein. Three meals. No shakes. 💪
+>
+> This is what a high-protein day looks like when your food is already prepped. No second-guessing at 8pm. No scraping together a meal from whatever's left in the fridge. 🙅‍♂️
+>
+> Breakfast, lunch, dinner — all locked in before the week even starts. 🍗🥣🍳
+>
+> That's the whole point of batch cooking.
+>
+> Join the waitlist → link in bio 👇
+>
+> #mealprepcommunity #macros #gymnutrition #proteinmeal #fitnessnutrition #highproteinmeals #mealpreptips #macrotracking #gymlifestyle #soulgainz #feedyoursoul #fuelyourgainz #soulgainz.app
+
+---
+
+## Posts
 
 ---
 

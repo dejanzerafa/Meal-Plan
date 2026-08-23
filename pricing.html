@@ -97,42 +97,16 @@
       margin: 0 auto 32px; line-height: 1.6;
     }
 
-    /* ── Toggle ── */
-    .toggle-wrap {
-      display: flex; align-items: center; justify-content: center;
-      gap: 12px; margin-bottom: 48px;
-    }
-    .toggle-label { font-size: 14px; font-weight: 600; color: var(--grey); transition: color 0.2s; }
-    .toggle-label.active { color: var(--cream); }
-    .toggle {
-      position: relative; width: 52px; height: 28px;
-      background: var(--midgrey); border-radius: 14px;
-      cursor: pointer; transition: background 0.2s;
-    }
-    .toggle.annual-on { background: var(--orange); }
-    .toggle-knob {
-      position: absolute; top: 4px; left: 4px;
-      width: 20px; height: 20px; border-radius: 50%;
-      background: var(--cream); transition: transform 0.2s;
-    }
-    .toggle.annual-on .toggle-knob { transform: translateX(24px); }
-    .save-badge {
-      font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
-      color: var(--orange); background: rgba(224,123,42,0.12);
-      border: 1px solid rgba(224,123,42,0.3);
-      border-radius: 20px; padding: 3px 10px;
-    }
-
     /* ── Cards ── */
     .plans {
-      max-width: 980px; margin: 0 auto;
+      max-width: 1060px; margin: 0 auto;
       padding: 0 20px 80px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
-    @media (max-width: 760px) {
-      .plans { grid-template-columns: 1fr; max-width: 420px; }
+    @media (max-width: 900px) {
+      .plans { grid-template-columns: 1fr; max-width: 440px; }
     }
 
     .plan-card {
@@ -140,10 +114,17 @@
       border: 1px solid rgba(242,237,230,0.08);
       border-radius: 20px; padding: 28px 24px;
       display: flex; flex-direction: column;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
       position: relative;
+      cursor: pointer;
     }
-    .plan-card:hover { border-color: rgba(242,237,230,0.2); }
+    .plan-card:hover { border-color: rgba(242,237,230,0.22); transform: translateY(-2px); }
+    .plan-card.selected {
+      border-color: var(--orange);
+      border-width: 2px;
+      background: var(--dimgrey);
+      box-shadow: 0 0 0 4px rgba(224,123,42,0.10);
+    }
     .plan-card.featured {
       background: var(--dimgrey);
       border-color: var(--orange);
@@ -406,23 +387,27 @@
   <div class="hero-label">Pricing</div>
   <h1>Feed your soul.<br><em>Fuel your gainz.</em></h1>
   <p>Start free. Upgrade when you're ready. Cancel anytime.</p>
-
-  <!-- Billing toggle -->
-  <div class="toggle-wrap">
-    <span class="toggle-label active" id="lbl-monthly">Monthly</span>
-    <div class="toggle" id="billing-toggle">
-      <div class="toggle-knob"></div>
-    </div>
-    <span class="toggle-label" id="lbl-annual">Annual</span>
-    <span class="save-badge">SAVE 26%</span>
-  </div>
 </section>
+
+<!-- ── Account Status Banner (shown when user is logged in with a subscription) ── -->
+<div id="account-banner" style="display:none;max-width:680px;margin:0 auto 32px;padding:0 20px;">
+  <div style="background:rgba(224,123,42,0.1);border:1px solid rgba(224,123,42,0.3);border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#E07B2A;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">YOUR CURRENT PLAN</div>
+      <div id="account-plan-name" style="font-size:18px;font-weight:800;color:#F2EDE6;font-family:var(--serif);"></div>
+      <div id="account-plan-detail" style="font-size:12px;color:#8A8580;margin-top:2px;"></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button id="btn-manage" onclick="openPortal()" style="background:rgba(242,237,230,0.08);border:1px solid rgba(242,237,230,0.15);color:#F2EDE6;font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;cursor:pointer;">Manage / Cancel →</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── Plan Cards ────────────────────────────────────────────────────────────── -->
 <div class="plans">
 
   <!-- FREE -->
-  <div class="plan-card">
+  <div class="plan-card" id="card-free" onclick="selectCard('free')">
     <div class="plan-tier">Free</div>
     <div class="plan-price">
       <span class="amount free-amt">€0</span>
@@ -434,7 +419,7 @@
     <ul class="plan-features">
       <li class="active">
         <span class="icon yes">✓</span>
-        <span>Browse 10 free recipes</span>
+        <span>Browse 14 free recipes</span>
       </li>
       <li class="active">
         <span class="icon yes">✓</span>
@@ -459,44 +444,8 @@
     </ul>
   </div>
 
-  <!-- MONTHLY / ANNUAL (featured) -->
-  <div class="plan-card featured">
-    <div class="featured-badge" id="featured-badge">BEST VALUE · ANNUAL</div>
-    <div class="plan-tier" id="paid-tier-label">Annual</div>
-    <div class="plan-price">
-      <span class="amount" id="paid-price">€12.50</span>
-      <span class="period">/mo</span>
-    </div>
-    <div class="plan-subprice" id="paid-subprice"><span>€150 billed annually · 2 months free</span></div>
-    <div class="plan-desc" id="paid-desc">The complete 170+ recipe library, exclusive annual-only recipes, and first access to every new drop.</div>
-    <button class="plan-btn btn-featured" id="btn-paid">Get Annual Plan</button>
-    <div class="plan-divider"></div>
-    <ul class="plan-features">
-      <li class="active">
-        <span class="icon yes">✓</span>
-        <span>170+ recipes — the full library</span>
-      </li>
-      <li class="active" id="annual-exclusive-row">
-        <span class="icon star">★</span>
-        <span>Exclusive annual-only recipes</span>
-      </li>
-      <li class="active">
-        <span class="icon yes">✓</span>
-        <span>Everything in Monthly</span>
-      </li>
-      <li class="active">
-        <span class="icon yes">✓</span>
-        <span>2 months free</span>
-      </li>
-      <li class="active">
-        <span class="icon yes">✓</span>
-        <span>First access to new drops</span>
-      </li>
-    </ul>
-  </div>
-
-  <!-- MONTHLY (secondary) -->
-  <div class="plan-card" id="monthly-card">
+  <!-- MONTHLY -->
+  <div class="plan-card" id="card-monthly" onclick="selectCard('monthly')">
     <div class="plan-tier">Monthly</div>
     <div class="plan-price">
       <span class="amount">€16.99</span>
@@ -513,7 +462,7 @@
       </li>
       <li class="active">
         <span class="icon yes">✓</span>
-        <span>Full macro calculator</span>
+        <span>Unlimited macro calculator</span>
       </li>
       <li class="active">
         <span class="icon yes">✓</span>
@@ -521,11 +470,54 @@
       </li>
       <li class="active">
         <span class="icon yes">✓</span>
-        <span>Cancel anytime</span>
+        <span>Weekly meal planner</span>
+      </li>
+      <li class="active">
+        <span class="icon yes">✓</span>
+        <span>Monthly recipe drops</span>
       </li>
       <li>
         <span class="icon no">✕</span>
         <span>Annual-exclusive recipes</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ANNUAL (featured) -->
+  <div class="plan-card featured" id="card-annual" onclick="selectCard('annual')">
+    <div class="featured-badge">BEST VALUE · SAVE 26%</div>
+    <div class="plan-tier" style="color:var(--orange)">Annual</div>
+    <div class="plan-price">
+      <span class="amount">€150</span>
+      <span class="period">/year</span>
+    </div>
+    <div class="plan-subprice">
+      Billed once a year &nbsp;·&nbsp;
+      <span>Save €53.88 vs monthly</span>
+    </div>
+    <div class="plan-desc">The complete 170+ recipe library, exclusive annual-only recipes, and first access to every new drop.</div>
+    <button class="plan-btn btn-featured" id="btn-annual">Get Annual Plan</button>
+    <div class="plan-divider"></div>
+    <ul class="plan-features">
+      <li class="active">
+        <span class="icon yes">✓</span>
+        <span id="paid-recipe-count">170+ recipes — the full library</span>
+      </li>
+      <li class="active">
+        <span class="icon star">★</span>
+        <span>Exclusive annual-only recipes</span>
+      </li>
+      <li class="active">
+        <span class="icon yes">✓</span>
+        <span>Everything in Monthly</span>
+      </li>
+      <li class="active">
+        <span class="icon yes">✓</span>
+        <span>2 months free (vs monthly)</span>
+      </li>
+      <li class="active">
+        <span class="icon yes">✓</span>
+        <span>First access to new drops</span>
       </li>
     </ul>
   </div>
@@ -545,7 +537,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td class="feat-name">Recipes included</td><td>10</td><td>85+</td><td class="hl">170+ + exclusive annual recipes</td></tr>
+      <tr><td class="feat-name">Recipes included</td><td>14</td><td>85+</td><td class="hl">170+ full library + seasonal bundle</td></tr>
       <tr><td class="feat-name">Macro calculator</td><td><span class="chk y">✓</span> 1 calc</td><td><span class="chk y">✓</span> Unlimited</td><td><span class="chk y">✓</span> Unlimited</td></tr>
       <tr><td class="feat-name">Auto grocery list</td><td><span class="chk n">—</span></td><td><span class="chk y">✓</span></td><td><span class="chk y">✓</span></td></tr>
       <tr><td class="feat-name">Weekly meal planner</td><td><span class="chk y">✓</span></td><td><span class="chk y">✓</span></td><td><span class="chk y">✓</span></td></tr>
@@ -553,7 +545,7 @@
       <tr><td class="feat-name">Monthly recipe drops</td><td><span class="chk n">—</span></td><td><span class="chk y">✓</span></td><td><span class="chk y">✓</span></td></tr>
       <tr><td class="feat-name">Annual-exclusive recipes</td><td><span class="chk n">—</span></td><td><span class="chk n">—</span></td><td><span class="chk s">★</span> Exclusive annual-only recipes</td></tr>
       <tr><td class="feat-name">Cancel anytime</td><td>—</td><td><span class="chk y">✓</span></td><td><span class="chk y">✓</span></td></tr>
-      <tr><td class="feat-name">Price</td><td>Free</td><td>€16.99/mo</td><td class="hl">€12.50/mo (€150/yr)</td></tr>
+      <tr><td class="feat-name">Price</td><td>Free</td><td>€16.99/mo</td><td class="hl">€150/year <small style="color:var(--grey);font-weight:400;">(saves €53.88)</small></td></tr>
     </tbody>
   </table>
 </section>
@@ -598,11 +590,11 @@
   </div>
   <div class="faq-item">
     <div class="faq-q">Can I switch from Monthly to Annual? <span class="arrow">›</span></div>
-    <div class="faq-a">Yes. You can upgrade to Annual at any time from your account settings. The remaining value of your Monthly subscription will be credited toward the Annual plan.</div>
+    <div class="faq-a">Yes. Email us at admin@soulgainz.app and we'll switch you over. Any remaining days on your Monthly plan will be credited toward the Annual price.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">Do you offer refunds? <span class="arrow">›</span></div>
-    <div class="faq-a">Monthly plans: no refunds (you keep full access until the period ends). Annual plans: contact us within 7 days of purchase for a refund at hello@soulgainz.app.</div>
+    <div class="faq-a">Monthly plans: no refunds (you keep full access until the period ends). Annual plans: contact us within 7 days of purchase for a refund at admin@soulgainz.app.</div>
   </div>
 </section>
 
@@ -613,10 +605,9 @@
     <a href="/">App</a>
     <a href="/pricing">Pricing</a>
     <a href="/about">About</a>
-    <a href="/blog">Blog</a>
     <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>
-    <a href="mailto:hello@soulgainz.app">Contact</a>
+    <a href="mailto:admin@soulgainz.app">Contact</a>
   </div>
   <div class="footer-copy">© 2026 SoulGainz · Feed your soul. Fuel your gainz.</div>
 </footer>
@@ -642,68 +633,124 @@
 <div class="toast" id="toast"></div>
 
 <!-- ── Scripts ──────────────────────────────────────────────────────────────── -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/vendor/supabase.min.js"></script>
 <script>
   // ── Config ──
   const SUPABASE_URL      = "https://rjreunvnsfjclpighogp.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814";
   const STRIPE_PRICES = {
-    annual:  "price_1U56lDGjmPEqu9q9xfEMKPAd",  // €150/yr
-    monthly: "price_1U56lUGjmPEqu9q9Rgk9ZIDK",  // €16.99/mo
+    annual:  "price_1TXc8dGjmPEqu9q9sIA4RenP",  // TEST €150/yr
+    monthly: "price_1TU83bGjmPEqu9q97qSe6xYd",  // TEST €16.99/mo
   };
 
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
   // ── State ──
-  let billingMode = "annual"; // "monthly" | "annual"
-  let pendingTier = null;     // tier to checkout after auth
+  let selectedTier = "annual"; // "free" | "monthly" | "annual"
+  let pendingTier = null;      // tier to checkout after auth
   let currentUser = null;
 
-  // ── Init: check session ──
-  sb.auth.getSession().then(({ data: { session } }) => {
-    if (session?.user) {
-      currentUser = session.user;
-      document.getElementById("btn-signin").textContent = "My account";
-      document.getElementById("btn-signin").onclick = () => window.location.href = "/";
-    }
-  });
+  // ── Card selection ──
+  function selectCard(tier) {
+    selectedTier = tier;
+    ["free","monthly","annual"].forEach(t => {
+      const card = document.getElementById("card-" + t);
+      if (card) card.classList.toggle("selected", t === tier);
+    });
+  }
 
-  // ── Billing toggle ──
-  const toggle = document.getElementById("billing-toggle");
-  toggle.addEventListener("click", () => {
-    billingMode = billingMode === "monthly" ? "annual" : "monthly";
-    updateToggleUI();
-  });
+  // ── Supabase init (wrapped so a CDN failure doesn't break the toggle) ──
+  let sb = null;
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    sb.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        currentUser = session.user;
+        document.getElementById("btn-signin").textContent = "My account";
+        document.getElementById("btn-signin").onclick = () => window.location.href = "/";
 
-  function updateToggleUI() {
-    const isAnnual = billingMode === "annual";
-    toggle.classList.toggle("annual-on", isAnnual);
-    document.getElementById("lbl-monthly").classList.toggle("active", !isAnnual);
-    document.getElementById("lbl-annual").classList.toggle("active", isAnnual);
+        // Fetch tier from profiles table
+        try {
+          const { data: profile } = await sb
+            .from("profiles")
+            .select("tier, tier_expires")
+            .eq("id", session.user.id)
+            .maybeSingle();
+          if (profile?.tier) updateAccountUI(profile.tier, profile.tier_expires);
+        } catch(profileErr) {
+          console.warn("Could not fetch profile tier:", profileErr);
+        }
+      }
+    });
+  } catch(e) {
+    console.warn("Supabase init failed:", e);
+  }
 
-    if (isAnnual) {
-      document.getElementById("featured-badge").textContent  = "BEST VALUE · ANNUAL";
-      document.getElementById("paid-tier-label").textContent = "Annual";
-      document.getElementById("paid-price").textContent      = "€12.50";
-      document.getElementById("paid-subprice").innerHTML     = "<span>€150 billed annually · 2 months free</span>";
-      document.getElementById("paid-desc").textContent       = "The complete 170+ recipe library, exclusive annual-only recipes, and first access to every new drop.";
-      document.getElementById("btn-paid").textContent        = "Get Annual Plan";
-      document.getElementById("annual-exclusive-row").style.display = "";
-      document.getElementById("monthly-card").style.opacity = "0.6";
-    } else {
-      document.getElementById("featured-badge").textContent  = "MOST POPULAR";
-      document.getElementById("paid-tier-label").textContent = "Monthly";
-      document.getElementById("paid-price").textContent      = "€16.99";
-      document.getElementById("paid-subprice").innerHTML     = "Billed monthly · Cancel anytime";
-      document.getElementById("paid-desc").textContent       = "85+ hand-picked high-protein recipes, full macro tools, and auto grocery list. Maximum flexibility.";
-      document.getElementById("btn-paid").textContent        = "Get Monthly Plan";
-      document.getElementById("annual-exclusive-row").style.display = "none";
-      document.getElementById("monthly-card").style.opacity = "1";
+  // ── Account UI: show current plan, adapt buttons ──────────────────────────
+  function updateAccountUI(tier, tierExpires) {
+    const banner = document.getElementById("account-banner");
+    const planName = document.getElementById("account-plan-name");
+    const planDetail = document.getElementById("account-plan-detail");
+    const btnAnnual  = document.getElementById("btn-annual");
+    const btnMonthly = document.getElementById("btn-monthly");
+
+    const expiryStr = tierExpires
+      ? "Renews " + new Date(tierExpires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      : "";
+
+    if (tier === "annual") {
+      planName.textContent = "Annual Plan ✓";
+      planDetail.textContent = expiryStr || "Full library access · Annual billing";
+      banner.style.display = "block";
+      btnAnnual.textContent = "Your current plan ✓";
+      btnAnnual.disabled = true;
+      btnAnnual.style.opacity = "0.6";
+      btnAnnual.style.cursor = "default";
+    } else if (tier === "monthly") {
+      planName.textContent = "Monthly Plan ✓";
+      planDetail.textContent = expiryStr || "85+ recipes · Monthly billing";
+      banner.style.display = "block";
+      btnMonthly.textContent = "Your current plan ✓";
+      btnMonthly.disabled = true;
+      btnMonthly.style.opacity = "0.6";
+      btnMonthly.style.cursor = "default";
+      // Upgrade to annual still available
+      btnAnnual.textContent = "Upgrade to Annual →";
     }
   }
-  // Init
-  toggle.classList.add("annual-on");
-  updateToggleUI();
+
+  // ── Open Stripe Customer Portal ───────────────────────────────────────────
+  async function openPortal() {
+    const btn = document.getElementById("btn-manage");
+    if (!currentUser || !sb) {
+      showToast("Please sign in first.");
+      return;
+    }
+    btn.textContent = "Opening…";
+    btn.disabled = true;
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("No session token");
+
+      const res = await fetch("/.netlify/functions/customer-portal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({}),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Portal unavailable");
+      if (json.url) window.location.href = json.url;
+    } catch(err) {
+      showToast(err.message || "Couldn't open portal — email admin@soulgainz.app");
+      btn.textContent = "Manage / Cancel →";
+      btn.disabled = false;
+    }
+  }
+
+  // No card pre-selected — user's click determines highlight
 
   // ── Checkout ──
   async function startCheckout(tier) {
@@ -717,7 +764,7 @@
   }
 
   async function doCheckout(tier) {
-    const btn = tier === "annual" ? document.getElementById("btn-paid") :
+    const btn = tier === "annual" ? document.getElementById("btn-annual") :
                 tier === "monthly" ? document.getElementById("btn-monthly") : null;
     if (btn) { btn.disabled = true; btn.textContent = "Redirecting…"; }
 
@@ -725,7 +772,12 @@
       const res = await fetch("/.netlify/functions/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId: STRIPE_PRICES[tier], tier }),
+        body: JSON.stringify({
+          priceId: STRIPE_PRICES[tier],
+          tier,
+          email: currentUser?.email || undefined,
+          userId: currentUser?.id || undefined,
+        }),
       });
       if (!res.ok) throw new Error("Checkout failed");
       const { url } = await res.json();
@@ -739,14 +791,23 @@
   }
 
   // ── Free plan ──
-  document.getElementById("btn-free").addEventListener("click", () => {
+  document.getElementById("btn-free").addEventListener("click", (e) => {
+    e.stopPropagation();
     if (!currentUser) { pendingTier = null; openModal(); return; }
     window.location.href = "/";
   });
 
-  // ── Paid plan buttons ──
-  document.getElementById("btn-paid").addEventListener("click", () => startCheckout(billingMode));
-  document.getElementById("btn-monthly").addEventListener("click", () => startCheckout("monthly"));
+  // ── Monthly plan button ──
+  document.getElementById("btn-monthly").addEventListener("click", (e) => {
+    e.stopPropagation();
+    startCheckout("monthly");
+  });
+
+  // ── Annual plan button ──
+  document.getElementById("btn-annual").addEventListener("click", (e) => {
+    e.stopPropagation();
+    startCheckout("annual");
+  });
 
   // ── Nav sign in ──
   document.getElementById("btn-signin").addEventListener("click", () => {
@@ -795,6 +856,14 @@
     btn.disabled = true;
     btn.textContent = authMode === "signup" ? "Creating account…" : "Signing in…";
     msg.textContent = "";
+
+    if (!sb) {
+      msg.textContent = "Auth unavailable — please visit soulgainz.app to sign in.";
+      msg.className = "modal-msg err";
+      btn.disabled = false;
+      btn.textContent = authMode === "signup" ? "Create account →" : "Sign in →";
+      return;
+    }
 
     try {
       let result;

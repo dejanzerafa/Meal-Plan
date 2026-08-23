@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v185
+// SoulGainz — Service Worker v210
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v185';
+const CACHE_NAME = 'meal-plan-v210';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -31,11 +31,24 @@ const PRECACHE = [
   '/waitlist',
   '/waitlist.html',
   '/recipes-preview.html',
+  '/install.html',
+  '/success.html',
 ];
 
 // ── Install: precache app shell ──────────────────────────────────────────────
+// NOTE: deliberately NO self.skipWaiting() here.
+//
+// It used to activate immediately on install, which meant every deploy
+// hard-reloaded anyone with the app open — mid-recipe, mid-feedback, mid-form —
+// via the `controllerchange` handler in index.html. To a user that is
+// indistinguishable from a crash, and it silently lost whatever they were
+// typing. It also meant registration.waiting was almost never populated, so the
+// "Update available — tap to refresh" banner rarely appeared and the polite
+// update path was effectively dead code.
+//
+// Updates now queue in `waiting` until the user taps the banner, which posts
+// SKIP_WAITING (handled below) and only then triggers the reload.
 self.addEventListener('install', event => {
-  self.skipWaiting(); // activate immediately — take over all clients without waiting
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return Promise.allSettled(PRECACHE.map(url => cache.add(url)));

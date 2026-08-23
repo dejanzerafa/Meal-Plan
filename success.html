@@ -1,198 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Payment Successful · SoulGainz</title>
-  <meta name="theme-color" content="#b84a1f">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      min-height: 100%;
-      background: #f3ece0;
-      color: #1a1612;
-      font-family: "Instrument Sans", -apple-system, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .card {
-      max-width: 460px;
-      width: 100%;
-      background: #ebe2d3;
-      border: 1px solid #c9bda9;
-      border-radius: 18px;
-      padding: 40px 28px;
-      text-align: center;
-      box-shadow: 0 12px 40px rgba(26,22,18,0.08);
-    }
-    .check-icon {
-      width: 64px; height: 64px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      background: #b84a1f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #fff;
-      animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    h1 {
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-    .lede {
-      color: #4a3f33;
-      font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-    .tier-badge {
-      display: inline-block;
-      background: rgba(184,74,31,0.08);
-      border: 1px solid rgba(184,74,31,0.28);
-      color: #b84a1f;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 24px;
-    }
-    .btn {
-      display: inline-block;
-      background: #b84a1f;
-      color: #fff;
-      padding: 14px 32px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: 0.01em;
-      transition: transform 0.15s;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .small { font-size: 12px; color: #7a6d5e; margin-top: 18px; }
-    .error { color: #8a3614; font-weight: 600; }
-    .loader {
-      display: inline-block;
-      width: 24px; height: 24px;
-      border: 3px solid #c9bda9;
-      border-top-color: #b84a1f;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-  </style>
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K4FXCEWNFC"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag("js", new Date());
-    gtag("config", "G-K4FXCEWNFC");
-  </script>
-</head>
-<body>
-  <div class="card" id="card">
-    <div class="loader"></div>
-    <h1 style="margin-top:20px;">Verifying your payment...</h1>
-    <p class="lede">One moment while we confirm with Stripe.</p>
-  </div>
-
-<script>
-const TIER_LABELS = {
-  lifetime:   { label: "Lifetime Access · Everything Unlocked",  emoji: "🎉" },
-  annual:     { label: "Annual Plan · Full Access for a Year",   emoji: "🔥" },
-  quarterly:  { label: "Quarterly Plan · 3-Month Subscription",  emoji: "🍳" },
-  monthly:    { label: "Monthly Plan · Cancel Anytime",          emoji: "🥩" },
-  calculator: { label: "Macro Calculator · Lifetime",            emoji: "📊" },
-  single:     { label: "Single Recipe Unlocked",                 emoji: "🍽️" },
-  seasonal:   { label: "Seasonal Bundle · Limited Drop",         emoji: "🌿" },
-};
-
-(async function() {
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get("session_id");
-  const card = document.getElementById("card");
-
-  if (!sessionId) {
-    card.innerHTML = `
-      <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
-      <h1>Something went wrong</h1>
-      <p class="lede">No session ID in URL.</p>
-      <a href="/" class="btn">Back to App</a>
-    `;
-    return;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Welcome to SoulGainz Pro</title>
+<meta name="theme-color" content="#0C0B0A">
+<link rel="icon" href="/icon-512.png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0C0B0A;
+    --orange: #E07B2A;
+    --cream: #F2EDE6;
+    --grey: #8A8580;
+    --dark: #1C1A18;
+    --border: rgba(242,237,230,0.08);
+    --green: #4ade80;
+  }
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
   }
 
-  try {
-    const res = await fetch(`/.netlify/functions/verify-session?session_id=${sessionId}`);
-    const data = await res.json();
+  .check-ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(74,222,128,0.12);
+    border: 2px solid rgba(74,222,128,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+  @keyframes pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  .check-ring svg { width: 36px; height: 36px; }
 
-    if (!data.paid) {
-      card.innerHTML = `
-        <div style="font-size:48px;margin-bottom:12px;">⏳</div>
-        <h1>Payment pending</h1>
-        <p class="lede">Your payment is processing. We'll email you when it clears.</p>
-        <a href="/" class="btn">Back to App</a>
-      `;
-      return;
-    }
+  h1 {
+    font-size: clamp(26px, 7vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.5s 0.15s both;
+  }
+  h1 span { color: var(--orange); }
 
-    // Apply unlocks to localStorage
-    if (data.unlocks) {
-      try {
-        const existing = JSON.parse(localStorage.getItem("mp_unlocks") || "{}");
-        const merged = {
-          calculator: existing.calculator || data.unlocks.calculator,
-          allRecipes: existing.allRecipes || data.unlocks.allRecipes,
-          recipes: Array.from(new Set([...(existing.recipes || []), ...(data.unlocks.recipes || [])])),
-          tier: data.unlocks.tier || existing.tier,
-          seasonalPriceId: data.unlocks.seasonalPriceId || existing.seasonalPriceId || null,
-        };
-        localStorage.setItem("mp_unlocks", JSON.stringify(merged));
-      } catch (e) {
-        localStorage.setItem("mp_unlocks", JSON.stringify(data.unlocks));
-      }
-      localStorage.setItem('mp_new_unlock', '1');
-    }
+  .sub {
+    font-size: 16px;
+    color: var(--grey);
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto 36px;
+    animation: fadeUp 0.5s 0.25s both;
+  }
 
-    // Save customer email + ID for future portal access
-    if (data.email)      localStorage.setItem("mp_customer_email", data.email);
-    if (data.customerId) localStorage.setItem("mp_stripe_customer_id", data.customerId);
+  @keyframes fadeUp {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
 
-    const tier = TIER_LABELS[data.tier] || { label: "Access Unlocked", emoji: "✓" };
-    card.innerHTML = `
-      <div class="check-icon">${tier.emoji}</div>
-      <div class="tier-badge">${tier.label}</div>
-      <h1>You're in.</h1>
-      <p class="lede">Welcome aboard. Your access is unlocked and a receipt is on the way to your email.</p>
-      <a href="/" class="btn">Open the App →</a>
-      <p class="small">You can cancel or manage your plan anytime in <a href="/.netlify/functions/customer-portal?email=${encodeURIComponent(data.email||'')}" style="color:#b84a1f;">Settings → Manage Subscription</a></p>
-    `;
-  } catch (err) {
-    console.error(err);
-    card.innerHTML = `
-      <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
-      <h1>Verification failed</h1>
-      <p class="lede error">We couldn't verify your payment. If your card was charged, email support and we'll sort it.</p>
-      <a href="/" class="btn">Back to App</a>
-    `;
+  /* Plan badge */
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(224,123,42,0.12);
+    border: 1px solid rgba(224,123,42,0.3);
+    border-radius: 99px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange);
+    margin-bottom: 36px;
+    animation: fadeUp 0.5s 0.3s both;
+  }
+
+  /* Steps */
+  .next-steps {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s 0.35s both;
+  }
+  .next-steps h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grey);
+    margin-bottom: 16px;
+  }
+  .next-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .next-step-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .ns-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(224,123,42,0.15);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    margin-top: 1px;
+  }
+  .ns-text { font-size: 14px; color: var(--cream); line-height: 1.5; }
+  .ns-text small { display: block; color: var(--grey); font-size: 12px; margin-top: 2px; }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 16px 40px;
+    border-radius: 99px;
+    text-decoration: none;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.5s 0.4s both;
+  }
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    color: var(--grey);
+    font-size: 14px;
+    padding: 10px;
+    text-decoration: none;
+    animation: fadeUp 0.5s 0.45s both;
+  }
+  .btn-secondary:hover { color: var(--cream); }
+
+  /* Already installed note */
+  .install-nudge {
+    max-width: 400px;
+    background: rgba(224,123,42,0.06);
+    border: 1px solid rgba(224,123,42,0.15);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--grey);
+    line-height: 1.5;
+    animation: fadeUp 0.5s 0.5s both;
+  }
+  .install-nudge a { color: var(--orange); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="check-ring">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+</div>
+
+<h1>You're <span>in!</span></h1>
+<p class="sub" id="welcome-msg">Your subscription is active. Full access to the recipe library is unlocked.</p>
+
+<div class="plan-badge" id="plan-badge">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+  <span id="plan-name">Pro Access</span>
+</div>
+
+<div class="next-steps">
+  <h3>What's next</h3>
+  <div class="next-step-item">
+    <div class="ns-dot">1</div>
+    <div class="ns-text">Open the app
+      <small>Tap the SoulGainz icon on your home screen</small>
+    </div>
+  </div>
+  <div class="next-step-item">
+    <div class="ns-dot">2</div>
+    <div class="ns-text" id="step2-text">Browse 170+ recipes
+      <small>Your full library is now unlocked</small>
+    </div>
+  </div>
+  <div class="next-step-item">
+    <div class="ns-dot">3</div>
+    <div class="ns-text">Build your meal plan
+      <small>Tap any recipe → Add to plan</small>
+    </div>
+  </div>
+</div>
+
+<a href="/index.html?tab=me" class="btn-primary">Open SoulGainz →</a>
+<a href="/pricing" class="btn-secondary">Back to pricing</a>
+
+<div class="install-nudge" id="install-nudge" style="display:none">
+  📲 Don't have the app installed yet? <a href="/install">Follow these steps →</a>
+</div>
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const tier = params.get('tier') || '';
+
+  // Plan badge + messaging
+  const planNames = { monthly: 'Monthly Plan Active', annual: 'Annual Plan Active' };
+  const welcomeMsgs = {
+    monthly: 'Your Monthly subscription is active. Access to 85+ recipes is now unlocked.',
+    annual:  'Your Annual subscription is active. Full access to all 170+ recipes is unlocked.',
+  };
+  const step2Texts = {
+    monthly: ['Browse 85+ recipes', 'Your monthly library is now unlocked'],
+    annual:  ['Browse 170+ recipes', 'Your full annual library is now unlocked'],
+  };
+
+  if (tier && planNames[tier]) {
+    document.getElementById('plan-name').textContent = planNames[tier];
+    document.getElementById('welcome-msg').textContent = welcomeMsgs[tier];
+    const s = step2Texts[tier];
+    document.getElementById('step2-text').innerHTML = s[0] + '<small>' + s[1] + '</small>';
+  }
+
+  // Show install nudge if not running as installed PWA
+  if (!window.matchMedia('(display-mode: standalone)').matches && !navigator.standalone) {
+    document.getElementById('install-nudge').style.display = 'block';
   }
 })();
 </script>
+
 </body>
 </html>

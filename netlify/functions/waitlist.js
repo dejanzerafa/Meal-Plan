@@ -6,8 +6,10 @@
 //   SUPABASE_URL            — https://xxx.supabase.co
 //   SUPABASE_SERVICE_KEY    — service_role key (never expose client-side)
 //   RESEND_API_KEY          — re_... (optional; skipped if missing)
-//   FROM_EMAIL              — e.g. SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL              — e.g. SoulGainz <support@soulgainz.app>
 //   APP_URL                 — e.g. https://soulgainz.app
+
+const { rateLimit, clientIp } = require("./_shared/auth");
 
 const { createClient } = require("@supabase/supabase-js");
 
@@ -38,6 +40,20 @@ exports.handler = async (event) => {
       headers: corsHeaders(origin),
       body: JSON.stringify({ error: "Method not allowed" }),
     };
+  }
+
+  // Abuse control: this endpoint sends an email to a CALLER-SUPPLIED address and
+  // had no auth and no rate limit at all, so a loop against it bombs an
+  // arbitrary inbox from our domain and drains the Resend quota.
+  {
+    const _rl = await rateLimit(`waitlist_${clientIp(event)}`, { max: 5, windowMs: 600000 });
+    if (!_rl.ok) {
+      return {
+        statusCode: 429,
+        headers: { ...corsHeaders(origin), "Retry-After": String(_rl.retryAfter || 600) },
+        body: JSON.stringify({ error: "Too many requests. Please wait a few minutes." }),
+      };
+    }
   }
 
   // ── Parse body ─────────────────────────────────────────────────────────────
@@ -89,11 +105,14 @@ exports.handler = async (event) => {
 
   // ── Confirmation email (optional) ──────────────────────────────────────────
   const resendKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl    = process.env.APP_URL || "https://soulgainz.app";
 
   if (resendKey) {
-    const greeting = name ? `Hey ${name.split(" ")[0]},` : "Hey,";
+    // Escaped: this endpoint is unauthenticated and emails a caller-supplied
+    // address, so an unescaped name is an HTML-injection / phishing relay.
+    const escHtml = v => String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const greeting = name ? `Hey ${escHtml(name.split(" ")[0])},` : "Hey,";
     const html = `
 <!DOCTYPE html>
 <html>

@@ -8,7 +8,7 @@
 //   SUPABASE_SERVICE_KEY \u2014 service_role key
 //   RESEND_API_KEY       \u2014 re_xxxx...
 //   STRIPE_SECRET_KEY    \u2014 sk_live_xxxx... (for creating promo codes)
-//   FROM_EMAIL           \u2014 SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL           \u2014 SoulGainz <support@soulgainz.app>
 //   APP_URL              \u2014 https://soulgainz.app
 //
 // Stripe setup (one-time in Stripe Dashboard):
@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   const resendKey   = process.env.RESEND_API_KEY;
   const stripeKey   = process.env.STRIPE_SECRET_KEY;
   const couponId    = process.env.STRIPE_BIRTHDAY_COUPON_ID; // base coupon in Stripe
-  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl      = process.env.APP_URL    || "https://soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey || !resendKey) {
@@ -261,18 +261,25 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
 
             <!-- What to use it on -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <!-- Only Monthly and Annual subscriptions are sold (Terms 5.1, and
+                   KNOWN_TIERS in create-checkout.js). This block previously
+                   advertised single-recipe unlocks at $1.61 and lifetime access
+                   at $53.99 \u2014 neither product exists, lifetime is expressly
+                   excluded by Terms 6.4, and both were priced in USD while
+                   checkout charges EUR. Avoid hard-coding totals here so the
+                   copy cannot drift out of step with the pricing page. -->
               <tr>
                 <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">\u{1F513}</td>
                 <td style="padding-bottom:16px;">
-                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Unlock a recipe</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Any single recipe unlock for just $1.61 instead of $1.99.</div>
+                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Go Monthly</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">85+ recipes, the macro calculator, auto grocery lists and weekly planning \u2014 with 10% off your first month.</div>
                 </td>
               </tr>
               <tr>
-                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">\u267E\uFE0F</td>
+                <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:22px;width:36px;">\u2B50</td>
                 <td style="padding-bottom:16px;">
-                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Go lifetime</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Lifetime access drops to $53.99 \u2014 every recipe, every future drop, forever.</div>
+                  <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:3px;">Go Annual</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">The full 170+ recipe library plus early access to every new drop \u2014 with 10% off your first year.</div>
                 </td>
               </tr>
             </table>
@@ -301,7 +308,7 @@ function buildBirthdayEmail(firstName, promoCode, appUrl) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
               Cook once. Eat all week. And have a brilliant birthday. \u{1F389}<br>
-              Questions? <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

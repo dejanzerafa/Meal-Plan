@@ -49,7 +49,7 @@ exports.handler = async (event) => {
 
   // ── Origin check ─────────────────────────────────────────────────────────
   const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
     return { statusCode: 403, headers, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

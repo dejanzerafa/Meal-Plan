@@ -1,6 +1,6 @@
 // netlify/functions/send-feedback.js
 // Receives in-app feedback, stores it in Supabase, and emails a digest
-// to admin@soulgainz.app via Resend.
+// to support@soulgainz.app via Resend.
 //
 // POST body:
 //   { message, category, email?, tier?, device?, tab? }
@@ -9,7 +9,7 @@
 //   SUPABASE_URL         — https://xxxx.supabase.co
 //   SUPABASE_SERVICE_KEY — service_role key
 //   RESEND_API_KEY       — re_xxxx...
-//   FROM_EMAIL           — SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL           — SoulGainz <support@soulgainz.app>
 
 // ── Allowed origins ───────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -21,7 +21,10 @@ const ALLOWED_ORIGINS = [
 ];
 
 // ── Valid categories ──────────────────────────────────────────────────────────
-const VALID_CATEGORIES = ["Bug", "Feature", "Recipe", "Content", "Other"];
+// Keep in sync with the `cats` array in FeedbackModal (index.html).
+// The category is used as the email subject prefix — "[Billing] App Feedback" —
+// so these map directly onto the Gmail labels used to triage support.
+const VALID_CATEGORIES = ["Bug", "Feature", "Recipe", "Content", "Billing", "Other"];
 
 // ── IP rate limit: max 3 feedbacks per IP per 10 minutes ─────────────────────
 const _ipRateMap = new Map();
@@ -66,16 +69,20 @@ exports.handler = async (event) => {
 
   // ── Origin check ─────────────────────────────────────────────────────────
   const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
     return { statusCode: 403, headers, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
   // ── IP rate limit ─────────────────────────────────────────────────────────
   const clientIp = (event.headers && (
-    event.headers["x-forwarded-for"] ||
+    // x-nf-client-connection-ip is set by Netlify's edge and cannot be spoofed.
+    // x-forwarded-for is caller-supplied and Netlify APPENDS to it, so taking
+    // [0] took the attacker's own value — rotating it defeated the limit
+    // entirely. Fall back to the LAST hop, never the first.
     event.headers["x-nf-client-connection-ip"] ||
-    event.headers["client-ip"]
-  ) || "").split(",")[0].trim();
+    event.headers["client-ip"] ||
+    (event.headers["x-forwarded-for"] || "").split(",").pop()
+  ) || "").trim();
   if (!_checkRateLimit(clientIp)) {
     return { statusCode: 429, headers, body: JSON.stringify({ error: "Too many submissions. Please wait a few minutes." }) };
   }
@@ -107,7 +114,7 @@ exports.handler = async (event) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const resendKey   = process.env.RESEND_API_KEY;
-  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
 
   // ── 1. Store in Supabase ──────────────────────────────────────────────────
   if (supabaseUrl && supabaseKey) {
@@ -191,7 +198,7 @@ exports.handler = async (event) => {
         },
         body: JSON.stringify({
           from: fromEmail,
-          to: ["admin@soulgainz.app"],
+          to: ["support@soulgainz.app"],
           reply_to: replyTo,
           subject: `[${safeCategory}] App Feedback${safeEmail ? ` from ${safeEmail}` : ""}`,
           html,

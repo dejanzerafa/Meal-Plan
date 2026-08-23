@@ -14,11 +14,49 @@
   <meta property="og:title" content="SoulGainz — Cook Once. Eat All Week." />
   <meta property="og:description" content="High-protein meal prep with verified macros. 170+ recipes, auto grocery list, batch cook 7 days in one session." />
   <meta property="og:site_name" content="SoulGainz" />
+  <meta property="og:image" content="https://soulgainz.app/og-image.png" />
+  <meta name="twitter:image" content="https://soulgainz.app/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#b84a1f" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+
+
+  <!-- ── JSON-LD: SoftwareApplication schema ────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SoulGainz",
+    "description": "High-protein meal prep app with 170+ verified-macro recipes, auto grocery lists, and batch cooking plans. Free to start.",
+    "url": "https://soulgainz.app",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      {
+        "@type": "Offer",
+        "name": "Monthly",
+        "price": "16.99",
+        "priceCurrency": "EUR",
+        "billingIncrement": "P1M"
+      },
+      {
+        "@type": "Offer",
+        "name": "Annual",
+        "price": "150",
+        "priceCurrency": "EUR",
+        "billingIncrement": "P1Y"
+      }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -938,241 +976,430 @@
       margin-bottom: 56px;
     }
 
+    /* ── Phone mockups ── */
     .phone-mockups {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       flex-wrap: nowrap;
     }
 
-    .phone-frame {
-      width: 280px;
-      min-height: 560px;
-      border-radius: 36px;
-      border: 2px solid #2a2520;
-      background: #1C1A18;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(12,11,10,0.28), 0 4px 16px rgba(12,11,10,0.18);
+    .phone-wrap {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      gap: 14px;
       flex-shrink: 0;
     }
 
-    .phone-notch {
-      width: 80px;
-      height: 20px;
-      background: #0C0B0A;
-      border-radius: 0 0 14px 14px;
-      margin: 0 auto;
-    }
+    .phone-wrap:nth-child(2) { transform: translateY(-24px); }
 
-    .phone-screen {
-      flex: 1;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .phone-screen-title {
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 18px;
+    .phone-label {
+      font-size: 12px;
       font-weight: 700;
-      color: #F2EDE6;
-      margin-bottom: 2px;
-    }
-
-    .phone-screen-subtitle {
-      font-size: 10px;
       color: #8A8580;
-      font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 4px;
     }
 
-    /* Mockup 1 - Meal Plan rows */
-    .meal-row {
-      background: rgba(242,237,230,0.06);
-      border: 1px solid rgba(242,237,230,0.1);
-      border-radius: 12px;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .meal-row-emoji { font-size: 20px; flex-shrink: 0; }
-
-    .meal-row-info { flex: 1; min-width: 0; }
-
-    .meal-row-label {
-      font-size: 9px;
-      color: #8A8580;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    .meal-row-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: #F2EDE6;
-      white-space: nowrap;
+    .phone-frame {
+      width: 260px;
+      height: 560px;
+      border-radius: 44px;
+      border: 10px solid #1a1816;
+      outline: 1px solid #2e2b28;
+      background: #0C0B0A;
       overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .meal-row-macros {
+      box-shadow:
+        0 0 0 1px #111,
+        0 32px 80px rgba(0,0,0,0.6),
+        0 8px 24px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.04);
       display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-top: 4px;
+      flex-direction: column;
+      position: relative;
     }
 
-    .macro-badge {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 100px;
+    /* Status bar */
+    .sb {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 18px 4px;
+      flex-shrink: 0;
+    }
+    .sb-time { font-size: 11px; font-weight: 700; color: #F2EDE6; letter-spacing: -0.01em; }
+    .sb-icons { display: flex; gap: 5px; align-items: center; }
+    .sb-icon { width: 14px; height: 8px; background: #F2EDE6; border-radius: 2px; opacity: 0.8; }
+    .sb-icon.sig { width: 12px; height: 8px; background: none;
+      border-right: 3px solid #F2EDE6; border-bottom: 3px solid #F2EDE6;
+      border-left: none; border-top: none;
+      clip-path: polygon(0 100%, 100% 0, 100% 100%); opacity: 0.8; }
+    .sb-batt {
+      width: 20px; height: 10px; border: 1.5px solid rgba(242,237,230,0.6);
+      border-radius: 3px; position: relative; margin-left: 3px;
+    }
+    .sb-batt::after {
+      content: ''; position: absolute; right: -4px; top: 50%;
+      transform: translateY(-50%); width: 2px; height: 5px;
+      background: rgba(242,237,230,0.6); border-radius: 0 1px 1px 0;
+    }
+    .sb-batt-fill {
+      position: absolute; left: 1px; top: 1px; bottom: 1px;
+      width: 72%; background: #F2EDE6; border-radius: 1px;
     }
 
-    .macro-badge-p { background: rgba(184,74,31,0.25); color: #E07B2A; }
-    .macro-badge-c { background: rgba(196,146,31,0.2); color: #c4921f; }
-    .macro-badge-f { background: rgba(138,133,128,0.2); color: #8A8580; }
+    /* Dynamic island */
+    .di {
+      width: 90px; height: 26px; background: #0C0B0A;
+      border-radius: 14px; margin: 2px auto 8px;
+      flex-shrink: 0;
+      border: 1px solid #1a1816;
+    }
 
-    /* Mockup 2 - Recipes screen */
-    .recipe-filter-tabs {
+    /* Scrollable screen content */
+    .phone-screen {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Bottom nav */
+    .phone-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 12px;
+      border-top: 1px solid rgba(242,237,230,0.07);
+      background: #0C0B0A;
+      flex-shrink: 0;
+    }
+    .pn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 8px;
+      font-weight: 600;
+      color: #8A8580;
+      letter-spacing: 0.04em;
+    }
+    .pn-item.active { color: #E07B2A; }
+    .pn-dot {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: rgba(242,237,230,0.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; line-height: 1;
+    }
+    .pn-item.active .pn-dot { background: rgba(224,123,42,0.15); }
+
+    /* ── Screen 1: Recipe Library ── */
+    .sc-header {
+      padding: 0 14px 10px;
+    }
+    .sc-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #F2EDE6;
+      letter-spacing: -0.02em;
+    }
+    .sc-logo span { color: #E07B2A; }
+    .sc-sub {
+      font-size: 10px;
+      color: #8A8580;
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .sc-tabs {
       display: flex;
       gap: 6px;
-      margin-bottom: 4px;
+      padding: 0 14px 10px;
+      overflow-x: hidden;
     }
-
-    .filter-tab {
+    .sc-tab {
       font-size: 9px;
-      font-weight: 600;
-      padding: 4px 10px;
+      font-weight: 700;
+      padding: 5px 10px;
       border-radius: 100px;
-      background: rgba(242,237,230,0.08);
+      background: rgba(242,237,230,0.07);
       color: #8A8580;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+    .sc-tab.active {
+      background: #E07B2A;
+      color: #0C0B0A;
     }
 
-    .filter-tab.active {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .recipe-mini-grid {
+    .rc-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
+      padding: 0 14px;
+      flex: 1;
+      overflow: hidden;
     }
 
-    .recipe-mini-item {
+    .rc-card {
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .rc-card-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      border-radius: 14px;
+    }
+    .rc-card-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: linear-gradient(to bottom, transparent 30%, rgba(12,11,10,0.88) 100%);
+    }
+
+    .rc-card-body {
+      position: relative;
+      z-index: 1;
+      padding: 8px;
+    }
+    .rc-card-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #F2EDE6;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .rc-card-macro {
+      font-size: 9px;
+      font-weight: 800;
+      color: #E07B2A;
+      background: rgba(224,123,42,0.18);
+      padding: 2px 6px;
+      border-radius: 100px;
+      display: inline-block;
+    }
+
+    .rc-card.locked .rc-card-bg { filter: brightness(0.4); }
+    .rc-lock {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 22px; height: 22px;
+      background: rgba(12,11,10,0.7);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      z-index: 2;
+    }
+
+    /* Food gradient backgrounds */
+    .bg-egg    { background: linear-gradient(135deg, #3d2b1a 0%, #6b3d1e 100%); }
+    .bg-chicken{ background: linear-gradient(135deg, #2d2010 0%, #5c3a1a 100%); }
+    .bg-salmon { background: linear-gradient(135deg, #1a1a2e 0%, #2d2a4a 100%); }
+    .bg-bowl   { background: linear-gradient(135deg, #1a2e1a 0%, #2a4a2a 100%); }
+    .bg-pasta  { background: linear-gradient(135deg, #2e2010 0%, #4a3010 100%); }
+    .bg-wrap   { background: linear-gradient(135deg, #2e1a10 0%, #4a2a1a 100%); }
+
+    /* ── Screen 2: Recipe Detail ── */
+    .rd-hero {
+      height: 170px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      flex-shrink: 0;
+    }
+    .rd-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, #0C0B0A 100%);
+    }
+    .rd-back {
+      position: absolute;
+      top: 10px; left: 10px;
+      width: 28px; height: 28px;
+      background: rgba(12,11,10,0.6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #F2EDE6; z-index: 2;
+    }
+    .rd-badge {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      background: #E07B2A;
+      color: #0C0B0A;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 100px;
+      z-index: 2;
+      letter-spacing: 0.04em;
+    }
+
+    .rd-body {
+      padding: 0 14px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .rd-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #F2EDE6;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .rd-time {
+      font-size: 10px;
+      color: #8A8580;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .rd-macros {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .rd-macro-pill {
+      flex: 1;
       background: rgba(242,237,230,0.06);
       border: 1px solid rgba(242,237,230,0.1);
       border-radius: 10px;
-      padding: 10px 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
+      padding: 8px 6px;
       text-align: center;
     }
-
-    .recipe-mini-item-emoji { font-size: 22px; }
-
-    .recipe-mini-item-name {
-      font-size: 10px;
-      font-weight: 600;
+    .rd-macro-val {
+      font-size: 14px;
+      font-weight: 800;
       color: #F2EDE6;
-      line-height: 1.2;
+      display: block;
     }
+    .rd-macro-lbl {
+      font-size: 8px;
+      color: #8A8580;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .rd-macro-pill.p .rd-macro-val { color: #E07B2A; }
 
-    .recipe-mini-item-macro {
-      font-size: 9px;
+    .rd-section-title {
+      font-size: 10px;
       font-weight: 700;
-      color: #E07B2A;
+      color: #8A8580;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .rd-ingredient {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #F2EDE6;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(242,237,230,0.06);
+      font-weight: 500;
+    }
+    .rd-ingredient-amt { color: #8A8580; font-size: 10px; }
+
+    /* ── Screen 3: Macro Calculator ── */
+    .mc-header {
+      padding: 0 14px 12px;
+    }
+    .mc-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: #F2EDE6;
+      letter-spacing: -0.02em;
+      margin-bottom: 2px;
+    }
+    .mc-sub {
+      font-size: 10px;
+      color: #8A8580;
+      font-weight: 500;
     }
 
-    /* Mockup 3 - Calculator screen */
-    .calc-field {
+    .mc-fields { padding: 0 14px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .mc-field {
       background: rgba(242,237,230,0.06);
-      border: 1px solid rgba(242,237,230,0.12);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border: 1px solid rgba(242,237,230,0.1);
+      border-radius: 10px;
+      padding: 9px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+    .mc-field-lbl { font-size: 11px; color: #8A8580; font-weight: 500; }
+    .mc-field-val { font-size: 12px; font-weight: 700; color: #F2EDE6; }
+    .mc-field-val.goal { color: #E07B2A; }
 
-    .calc-field-label { font-size: 12px; color: #8A8580; font-weight: 500; }
-    .calc-field-value { font-size: 12px; font-weight: 700; color: #F2EDE6; }
-
-    .calc-result {
-      background: rgba(184,74,31,0.12);
-      border: 1px solid rgba(184,74,31,0.25);
-      border-radius: 12px;
+    .mc-result {
+      margin: 0 14px;
+      background: rgba(224,123,42,0.1);
+      border: 1px solid rgba(224,123,42,0.25);
+      border-radius: 14px;
       padding: 14px 12px;
-      margin-top: 4px;
     }
-
-    .calc-result-title {
-      font-size: 9px;
+    .mc-kcal {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .mc-kcal-num {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #F2EDE6;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .mc-kcal-lbl {
+      font-size: 10px;
       color: #8A8580;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 10px;
     }
 
-    .calc-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+    .mc-bars { display: flex; flex-direction: column; gap: 9px; }
+    .mc-bar-row { display: flex; align-items: center; gap: 8px; }
+    .mc-bar-lbl { font-size: 10px; font-weight: 600; color: #F2EDE6; width: 46px; flex-shrink: 0; }
+    .mc-bar-track {
+      flex: 1; height: 7px;
+      background: rgba(242,237,230,0.08);
+      border-radius: 4px; overflow: hidden;
     }
-
-    .calc-bar-row:last-child { margin-bottom: 0; }
-
-    .calc-bar-name {
-      font-size: 10px;
-      font-weight: 600;
-      color: #F2EDE6;
-      width: 48px;
-      flex-shrink: 0;
-    }
-
-    .calc-bar-track {
-      flex: 1;
-      height: 6px;
-      background: rgba(242,237,230,0.1);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .calc-bar-fill-p { height: 100%; width: 73%; background: #E07B2A; border-radius: 3px; }
-    .calc-bar-fill-c { height: 100%; width: 60%; background: #c4921f; border-radius: 3px; }
-    .calc-bar-fill-f { height: 100%; width: 35%; background: #8A8580; border-radius: 3px; }
-
-    .calc-bar-val {
-      font-size: 10px;
-      font-weight: 700;
-      color: #F2EDE6;
-      width: 32px;
-      text-align: right;
-      flex-shrink: 0;
-    }
+    .mc-bar-fill { height: 100%; border-radius: 4px; }
+    .mc-fill-p { width: 75%; background: #E07B2A; }
+    .mc-fill-c { width: 58%; background: #c49a3a; }
+    .mc-fill-f { width: 32%; background: #5c7a9a; }
+    .mc-bar-val { font-size: 10px; font-weight: 700; color: #F2EDE6; width: 34px; text-align: right; flex-shrink: 0; }
 
     @media (max-width: 960px) {
-      .phone-frame { width: 230px; min-height: 460px; }
+      .phone-frame { width: 220px; height: 480px; }
+      .phone-mockups { gap: 12px; }
     }
 
     @media (max-width: 768px) {
-      .phone-mockups { flex-direction: column; align-items: center; flex-wrap: wrap; }
-      .phone-frame { width: 280px; min-height: 520px; }
+      .phone-mockups { flex-direction: column; align-items: center; }
+      .phone-frame { width: 260px; height: 540px; }
+      .phone-wrap:nth-child(2) { transform: none; }
     }
   </style>
   <!-- Google Analytics 4 -->
@@ -1185,6 +1412,31 @@
   </script>
 </head>
 <body>
+
+  <!-- ── LAUNCH COUNTDOWN ─────────────────────────────────────────── -->
+  <div style="background:var(--accent);color:#fff;text-align:center;padding:14px 20px;position:sticky;top:0;z-index:200;">
+    <span style="font-family:'Fraunces',Georgia,serif;font-size:15px;font-weight:700;letter-spacing:-0.01em;">
+      🚀 Launching September 1 &mdash; <span id="countdown-label">counting down</span>
+    </span>
+    <a href="/waitlist" style="margin-left:16px;background:rgba(255,255,255,0.2);color:#fff;padding:5px 14px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">Join the waitlist →</a>
+  </div>
+  <script>
+    (function(){
+      var launch = new Date('2026-09-01T00:00:00');
+      function tick(){
+        var now = new Date();
+        var diff = launch - now;
+        if(diff <= 0){ document.getElementById('countdown-label').textContent = 'Live now!'; return; }
+        var d = Math.floor(diff/86400000);
+        var h = Math.floor((diff%86400000)/3600000);
+        var m = Math.floor((diff%3600000)/60000);
+        var s = Math.floor((diff%60000)/1000);
+        document.getElementById('countdown-label').textContent =
+          d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+      }
+      tick(); setInterval(tick,1000);
+    })();
+  </script>
 
   <!-- ── NAV ─────────────────────────────────────────────────────── -->
   <nav class="nav" id="nav">
@@ -1201,6 +1453,7 @@
             <a href="pricing.html" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Pricing</a>
             <a href="mailto:admin@soulgainz.app" style="font-size:13px;font-weight:600;color:var(--sub);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--sub)'">Help</a>
           </div>
+          <a href="/index.html?tab=me" class="btn btn-secondary nav-cta" style="font-size:13px;padding:8px 16px;">My Account</a>
           <a href="/waitlist" class="btn btn-primary nav-cta">See plans →</a>
           <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">☰</button>
         </div>
@@ -1216,6 +1469,7 @@
     <a href="about.html" class="nav-mobile-link">About</a>
     <a href="pricing.html" class="nav-mobile-link">Pricing</a>
     <a href="mailto:admin@soulgainz.app" class="nav-mobile-link">Help</a>
+    <a href="/index.html?tab=me" class="nav-mobile-link">My Account</a>
     <a href="/waitlist" class="btn btn-primary" style="margin-top:8px;font-size:17px;padding:16px 32px;">Join the waitlist →</a>
   </div>
 
@@ -1259,8 +1513,8 @@
             <!-- Card 1 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🍗</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Teriyaki Chicken</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">485 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1271,8 +1525,8 @@
             <!-- Card 2 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🥩</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Steak &amp; Rice</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">510 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1283,8 +1537,8 @@
             <!-- Card 3 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🫙</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Greek Yogurt Bowl</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">320 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1295,8 +1549,8 @@
             <!-- Card 4 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🍳</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Egg &amp; Veggie Bake</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">340 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1307,8 +1561,8 @@
             <!-- Card 5 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🐟</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Salmon &amp; Quinoa</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">480 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1319,8 +1573,8 @@
             <!-- Card 6 -->
             <div class="recipe-mini-card">
               <div class="recipe-mini-emoji">🥗</div>
-              <div class="recipe-mini-name"></div>
-              <div class="recipe-mini-name-short"></div>
+              <div class="recipe-mini-name" style="background:none;height:auto;font-size:9px;font-weight:700;color:var(--text);line-height:1.2;">Tuna Macro Bowl</div>
+              <div class="recipe-mini-name-short" style="background:none;height:auto;font-size:8px;font-weight:600;color:var(--accent);">410 kcal</div>
               <div class="recipe-mini-macros">
                 <div class="recipe-mini-macro-bar macro-p"></div>
                 <div class="recipe-mini-macro-bar macro-c"></div>
@@ -1382,7 +1636,7 @@
           <div class="step-number">1</div>
           <div>
             <div class="step-title">Pick your recipes</div>
-            <p class="step-desc">Browse 173 high-protein meals. Assign your breakfast, lunch, and dinner for the week — mix and match freely.</p>
+            <p class="step-desc">Browse 170+ high-protein meals. Assign your breakfast, lunch, and dinner for the week — mix and match freely.</p>
           </div>
         </div>
 
@@ -1403,6 +1657,20 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+
+  <!-- ── MID-PAGE CTA ──────────────────────────────────────────────── -->
+  <section style="padding:56px 0;background:var(--text);">
+    <div class="container" style="text-align:center;">
+      <p style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Limited waitlist spots</p>
+      <h2 class="serif" style="font-size:clamp(26px,4vw,38px);font-weight:800;color:#F2EDE6;letter-spacing:-0.02em;line-height:1.1;margin-bottom:14px;">
+        Stop guessing your macros.<br><em style="color:var(--accent);font-style:italic;">Start eating with purpose.</em>
+      </h2>
+      <p style="font-size:16px;color:#a09080;max-width:440px;margin:0 auto 28px;line-height:1.6;">Join hundreds of people who prep smarter, eat better, and never open MyFitnessPal again.</p>
+      <a href="/waitlist" class="btn btn-primary" style="font-size:16px;padding:16px 32px;">Get early access — it's free →</a>
+      <p style="margin-top:14px;font-size:13px;color:#60504a;">No credit card. Just your email.</p>
     </div>
   </section>
 
@@ -1604,133 +1872,314 @@
 
       <div class="phone-mockups">
 
-        <!-- Phone 1: Meal Plan -->
-        <div class="phone-frame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-screen-title">Meal Plan</div>
-            <div class="phone-screen-subtitle">Today · Monday</div>
-
-            <div class="meal-row">
-              <div class="meal-row-emoji">🥚</div>
-              <div class="meal-row-info">
-                <div class="meal-row-label">Breakfast</div>
-                <div class="meal-row-name">Greek Egg Wrap</div>
-                <div class="meal-row-macros">
-                  <span class="macro-badge macro-badge-p">38g protein</span>
-                  <span class="macro-badge macro-badge-c">32g carbs</span>
-                  <span class="macro-badge macro-badge-f">14g fat</span>
+        <!-- ── Phone 1: Recipe Library ── -->
+        <div class="phone-wrap">
+          <div class="phone-frame">
+            <!-- Status bar -->
+            <div class="sb">
+              <span class="sb-time">9:41</span>
+              <div class="sb-icons">
+                <div class="sb-icon sig"></div>
+                <div class="sb-icon" style="width:10px;height:7px;border-radius:1px;background:none;border:1.5px solid rgba(242,237,230,0.7);position:relative;">
+                  <div style="position:absolute;left:1px;top:1px;bottom:1px;width:55%;background:#F2EDE6;border-radius:1px;"></div>
                 </div>
               </div>
             </div>
-
-            <div class="meal-row">
-              <div class="meal-row-emoji">🍱</div>
-              <div class="meal-row-info">
-                <div class="meal-row-label">Lunch</div>
-                <div class="meal-row-name">Teriyaki Chicken Bowl</div>
-                <div class="meal-row-macros">
-                  <span class="macro-badge macro-badge-p">52g protein</span>
-                  <span class="macro-badge macro-badge-c">58g carbs</span>
-                  <span class="macro-badge macro-badge-f">12g fat</span>
+            <!-- Dynamic Island -->
+            <div class="di"></div>
+            <!-- Screen content -->
+            <div class="phone-screen">
+              <div class="sc-header">
+                <div class="sc-logo">Soul<span>Gainz</span></div>
+                <div class="sc-sub">170+ high-protein recipes</div>
+              </div>
+              <div class="sc-tabs">
+                <span class="sc-tab active">✨ All</span>
+                <span class="sc-tab">Breakfast</span>
+                <span class="sc-tab">Mains</span>
+                <span class="sc-tab">Salads</span>
+              </div>
+              <div class="rc-grid">
+                <div class="rc-card">
+                  <div class="rc-card-bg bg-egg">🥚</div>
+                  <div class="rc-card-body">
+                    <div class="rc-card-name">Greek Egg Wrap</div>
+                    <span class="rc-card-macro">38g protein</span>
+                  </div>
+                </div>
+                <div class="rc-card">
+                  <div class="rc-card-bg bg-chicken">🍗</div>
+                  <div class="rc-card-body">
+                    <div class="rc-card-name">Teriyaki Chicken Bowl</div>
+                    <span class="rc-card-macro">52g protein</span>
+                  </div>
+                </div>
+                <div class="rc-card locked">
+                  <div class="rc-card-bg bg-salmon">🐟</div>
+                  <div class="rc-lock">🔒</div>
+                  <div class="rc-card-body">
+                    <div class="rc-card-name">Honey Miso Salmon</div>
+                    <span class="rc-card-macro">46g protein</span>
+                  </div>
+                </div>
+                <div class="rc-card locked">
+                  <div class="rc-card-bg bg-bowl">🥗</div>
+                  <div class="rc-lock">🔒</div>
+                  <div class="rc-card-body">
+                    <div class="rc-card-name">Steak Arugula Bowl</div>
+                    <span class="rc-card-macro">54g protein</span>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div class="meal-row">
-              <div class="meal-row-emoji">🐟</div>
-              <div class="meal-row-info">
-                <div class="meal-row-label">Dinner</div>
-                <div class="meal-row-name">Salmon &amp; Greens</div>
-                <div class="meal-row-macros">
-                  <span class="macro-badge macro-badge-p">46g protein</span>
-                  <span class="macro-badge macro-badge-c">22g carbs</span>
-                  <span class="macro-badge macro-badge-f">20g fat</span>
-                </div>
+            <!-- Bottom nav -->
+            <div class="phone-nav">
+              <div class="pn-item active">
+                <div class="pn-dot">📖</div>
+                <span>Recipes</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">📋</div>
+                <span>Plan</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">🧮</div>
+                <span>Macros</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">👤</div>
+                <span>Profile</span>
               </div>
             </div>
           </div>
+          <div class="phone-label">Recipe Library</div>
         </div>
 
-        <!-- Phone 2: Recipes -->
-        <div class="phone-frame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-screen-title">Recipes</div>
-            <div class="recipe-filter-tabs">
-              <span class="filter-tab active">Breakfast</span>
-              <span class="filter-tab">Mains</span>
-              <span class="filter-tab">Salads</span>
+        <!-- ── Phone 2: Recipe Detail ── -->
+        <div class="phone-wrap">
+          <div class="phone-frame">
+            <div class="sb">
+              <span class="sb-time">9:41</span>
+              <div class="sb-icons">
+                <div class="sb-icon sig"></div>
+                <div class="sb-icon" style="width:10px;height:7px;border-radius:1px;background:none;border:1.5px solid rgba(242,237,230,0.7);position:relative;">
+                  <div style="position:absolute;left:1px;top:1px;bottom:1px;width:55%;background:#F2EDE6;border-radius:1px;"></div>
+                </div>
+              </div>
             </div>
-            <div class="recipe-mini-grid">
-              <div class="recipe-mini-item">
-                <div class="recipe-mini-item-emoji">🥚</div>
-                <div class="recipe-mini-item-name">Greek Egg Wrap</div>
-                <div class="recipe-mini-item-macro">38g protein</div>
+            <div class="di"></div>
+            <div class="phone-screen">
+              <div class="rd-hero bg-chicken" style="height:155px;position:relative;display:flex;align-items:center;justify-content:center;font-size:56px;flex-shrink:0;">
+                🍗
+                <div class="rd-back">‹</div>
+                <span class="rd-badge">52g PROTEIN</span>
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 30%, #0C0B0A 100%);"></div>
               </div>
-              <div class="recipe-mini-item">
-                <div class="recipe-mini-item-emoji">🍳</div>
-                <div class="recipe-mini-item-name">Protein French Toast</div>
-                <div class="recipe-mini-item-macro">36g protein</div>
+              <div class="rd-body">
+                <div class="rd-title">Teriyaki Chicken Bowl</div>
+                <div class="rd-time">⏱ 20 min · Mains</div>
+                <div class="rd-macros">
+                  <div class="rd-macro-pill p">
+                    <span class="rd-macro-val">52g</span>
+                    <span class="rd-macro-lbl">Protein</span>
+                  </div>
+                  <div class="rd-macro-pill">
+                    <span class="rd-macro-val">58g</span>
+                    <span class="rd-macro-lbl">Carbs</span>
+                  </div>
+                  <div class="rd-macro-pill">
+                    <span class="rd-macro-val">12g</span>
+                    <span class="rd-macro-lbl">Fat</span>
+                  </div>
+                  <div class="rd-macro-pill">
+                    <span class="rd-macro-val" style="font-size:12px;">548</span>
+                    <span class="rd-macro-lbl">kcal</span>
+                  </div>
+                </div>
+                <div class="rd-section-title">Ingredients</div>
+                <div class="rd-ingredient">
+                  <span>Chicken breast</span>
+                  <span class="rd-ingredient-amt">200g</span>
+                </div>
+                <div class="rd-ingredient">
+                  <span>Jasmine rice</span>
+                  <span class="rd-ingredient-amt">150g</span>
+                </div>
+                <div class="rd-ingredient">
+                  <span>Teriyaki sauce</span>
+                  <span class="rd-ingredient-amt">3 tbsp</span>
+                </div>
+                <div class="rd-ingredient">
+                  <span>Sesame seeds</span>
+                  <span class="rd-ingredient-amt">1 tsp</span>
+                </div>
               </div>
-              <div class="recipe-mini-item">
-                <div class="recipe-mini-item-emoji">🥣</div>
-                <div class="recipe-mini-item-name">Overnight Protein Oats</div>
-                <div class="recipe-mini-item-macro">42g protein</div>
+            </div>
+            <div class="phone-nav">
+              <div class="pn-item active">
+                <div class="pn-dot">📖</div>
+                <span>Recipes</span>
               </div>
-              <div class="recipe-mini-item">
-                <div class="recipe-mini-item-emoji">🧇</div>
-                <div class="recipe-mini-item-name">Cottage Cheese Waffles</div>
-                <div class="recipe-mini-item-macro">34g protein</div>
+              <div class="pn-item">
+                <div class="pn-dot">📋</div>
+                <span>Plan</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">🧮</div>
+                <span>Macros</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">👤</div>
+                <span>Profile</span>
               </div>
             </div>
           </div>
+          <div class="phone-label">Recipe Detail</div>
         </div>
 
-        <!-- Phone 3: Macro Calculator -->
-        <div class="phone-frame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-screen-title">Macro Calculator</div>
-            <div class="phone-screen-subtitle">Your daily targets</div>
-
-            <div class="calc-field">
-              <span class="calc-field-label">Age</span>
-              <span class="calc-field-value">28</span>
-            </div>
-            <div class="calc-field">
-              <span class="calc-field-label">Weight</span>
-              <span class="calc-field-value">80 kg</span>
-            </div>
-            <div class="calc-field">
-              <span class="calc-field-label">Goal</span>
-              <span class="calc-field-value">Build muscle</span>
-            </div>
-
-            <div class="calc-result">
-              <div class="calc-result-title">Your daily targets</div>
-              <div class="calc-bar-row">
-                <span class="calc-bar-name">Protein</span>
-                <div class="calc-bar-track"><div class="calc-bar-fill-p"></div></div>
-                <span class="calc-bar-val">220g</span>
+        <!-- ── Phone 3: Macro Calculator ── -->
+        <div class="phone-wrap">
+          <div class="phone-frame">
+            <div class="sb">
+              <span class="sb-time">9:41</span>
+              <div class="sb-icons">
+                <div class="sb-icon sig"></div>
+                <div class="sb-icon" style="width:10px;height:7px;border-radius:1px;background:none;border:1.5px solid rgba(242,237,230,0.7);position:relative;">
+                  <div style="position:absolute;left:1px;top:1px;bottom:1px;width:55%;background:#F2EDE6;border-radius:1px;"></div>
+                </div>
               </div>
-              <div class="calc-bar-row">
-                <span class="calc-bar-name">Carbs</span>
-                <div class="calc-bar-track"><div class="calc-bar-fill-c"></div></div>
-                <span class="calc-bar-val">180g</span>
+            </div>
+            <div class="di"></div>
+            <div class="phone-screen">
+              <div class="mc-header">
+                <div class="mc-title">Macro Calculator</div>
+                <div class="mc-sub">Personalised to your body &amp; goal</div>
               </div>
-              <div class="calc-bar-row">
-                <span class="calc-bar-name">Fat</span>
-                <div class="calc-bar-track"><div class="calc-bar-fill-f"></div></div>
-                <span class="calc-bar-val">65g</span>
+              <div class="mc-fields">
+                <div class="mc-field">
+                  <span class="mc-field-lbl">Gender</span>
+                  <span class="mc-field-val">Male</span>
+                </div>
+                <div class="mc-field">
+                  <span class="mc-field-lbl">Age</span>
+                  <span class="mc-field-val">28</span>
+                </div>
+                <div class="mc-field">
+                  <span class="mc-field-lbl">Body weight</span>
+                  <span class="mc-field-val">82 kg</span>
+                </div>
+                <div class="mc-field">
+                  <span class="mc-field-lbl">Goal</span>
+                  <span class="mc-field-val goal">Build muscle 💪</span>
+                </div>
+              </div>
+              <div class="mc-result">
+                <div class="mc-kcal">
+                  <div class="mc-kcal-num">2,640</div>
+                  <div class="mc-kcal-lbl">Daily Calories</div>
+                </div>
+                <div class="mc-bars">
+                  <div class="mc-bar-row">
+                    <span class="mc-bar-lbl">Protein</span>
+                    <div class="mc-bar-track"><div class="mc-bar-fill mc-fill-p"></div></div>
+                    <span class="mc-bar-val">205g</span>
+                  </div>
+                  <div class="mc-bar-row">
+                    <span class="mc-bar-lbl">Carbs</span>
+                    <div class="mc-bar-track"><div class="mc-bar-fill mc-fill-c"></div></div>
+                    <span class="mc-bar-val">264g</span>
+                  </div>
+                  <div class="mc-bar-row">
+                    <span class="mc-bar-lbl">Fat</span>
+                    <div class="mc-bar-track"><div class="mc-bar-fill mc-fill-f"></div></div>
+                    <span class="mc-bar-val">73g</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-nav">
+              <div class="pn-item">
+                <div class="pn-dot">📖</div>
+                <span>Recipes</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">📋</div>
+                <span>Plan</span>
+              </div>
+              <div class="pn-item active">
+                <div class="pn-dot">🧮</div>
+                <span>Macros</span>
+              </div>
+              <div class="pn-item">
+                <div class="pn-dot">👤</div>
+                <span>Profile</span>
               </div>
             </div>
           </div>
+          <div class="phone-label">Macro Calculator</div>
         </div>
 
       </div>
     </div>
   </section>
+
+
+  <!-- ── TESTIMONIALS ─────────────────────────────────────────────── -->
+  <section style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:52px;">
+        <p class="section-label">What people say</p>
+        <h2 class="section-heading">Real results, real people.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+
+        <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;box-shadow:var(--shadow);">
+          <div style="color:var(--accent);font-size:18px;margin-bottom:12px;">★★★★★</div>
+          <p style="font-size:15px;color:var(--text);line-height:1.65;margin-bottom:18px;">"I spent 3 hours a week tracking food in MyFitnessPal. Now I prep Sunday, eat great all week, and my macros are already done. Game changer."</p>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#b84a1f,#e07040);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;">M</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Dejan</div>
+              <div style="font-size:12px;color:var(--sub);">Gym-goer, Dublin</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid var(--accent);border-radius:18px;padding:28px;box-shadow:0 8px 32px rgba(184,74,31,0.12);">
+          <div style="color:var(--accent);font-size:18px;margin-bottom:12px;">★★★★★</div>
+          <p style="font-size:15px;color:var(--text);line-height:1.65;margin-bottom:18px;">"The grocery list alone saves me 30 minutes. I add 5 recipes, get one list, go shop. Done. Everything I wanted in a meal prep app."</p>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#4a8ab8,#6ab0e0);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;">S</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Mariya</div>
+              <div style="font-size:12px;color:var(--sub);">Fitness coach, London</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;box-shadow:var(--shadow);">
+          <div style="color:var(--accent);font-size:18px;margin-bottom:12px;">★★★★★</div>
+          <p style="font-size:15px;color:var(--text);line-height:1.65;margin-bottom:18px;">"I'm vegan and finding high-protein meals was a nightmare. SoulGainz has a whole vegan section with verified macros. Exactly what I needed."</p>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#4ab884,#6ae0b0);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;">J</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">James</div>
+              <div style="font-size:12px;color:var(--sub);">Runner &amp; vegan, Amsterdam</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p style="text-align:center;margin-top:32px;font-size:14px;color:var(--sub);">Join the waitlist and be ready from day one.</p>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS RESPONSIVE ──────────────────────────────────── -->
+  <style>
+    @media (max-width: 768px) {
+      .testimonials-grid { grid-template-columns: 1fr !important; }
+    }
+  </style>
 
   <!-- ── MACRO CALCULATOR TEASER ─────────────────────────────────── -->
   <section class="macro-teaser">
@@ -1768,6 +2217,54 @@
     </div>
   </section>
 
+  <!-- ── FAQ ──────────────────────────────────────────────────────── -->
+  <section style="padding:80px 0;background:var(--bg);" id="faq">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:52px;">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-heading">Common questions.</h2>
+      </div>
+      <div style="max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px;">
+
+        <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;cursor:pointer;">
+          <summary style="font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:700;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+            Is there a free plan? <span style="color:var(--accent);font-size:20px;font-weight:400;">+</span>
+          </summary>
+          <p style="margin-top:14px;font-size:15px;color:var(--sub);line-height:1.65;">Yes. The free tier gives you access to a rotating selection of recipes with full macros and grocery list generation — no credit card needed. Upgrade to unlock the full library of 189 recipes.</p>
+        </details>
+
+        <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;cursor:pointer;">
+          <summary style="font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:700;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+            How are macros verified? <span style="color:var(--accent);font-size:20px;font-weight:400;">+</span>
+          </summary>
+          <p style="margin-top:14px;font-size:15px;color:var(--sub);line-height:1.65;">Every recipe is calculated using a verified ingredient database with the 4/4/9 formula (protein × 4 + carbs × 4 + fat × 9 = kcal). All values are cross-checked — no estimates.</p>
+        </details>
+
+        <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;cursor:pointer;">
+          <summary style="font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:700;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+            Does it work on iPhone and Android? <span style="color:var(--accent);font-size:20px;font-weight:400;">+</span>
+          </summary>
+          <p style="margin-top:14px;font-size:15px;color:var(--sub);line-height:1.65;">SoulGainz is a PWA — it installs like a native app on any device. On iOS: Share → Add to Home Screen. On Android: tap Install when prompted. No App Store required.</p>
+        </details>
+
+        <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;cursor:pointer;">
+          <summary style="font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:700;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+            Can I cancel anytime? <span style="color:var(--accent);font-size:20px;font-weight:400;">+</span>
+          </summary>
+          <p style="margin-top:14px;font-size:15px;color:var(--sub);line-height:1.65;">Monthly plans cancel anytime, no questions asked. Annual plans include a 7-day refund guarantee from the purchase date.</p>
+        </details>
+
+        <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;cursor:pointer;">
+          <summary style="font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:700;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+            Do you have vegan recipes? <span style="color:var(--accent);font-size:20px;font-weight:400;">+</span>
+          </summary>
+          <p style="margin-top:14px;font-size:15px;color:var(--sub);line-height:1.65;">Yes — there's a dedicated Vegan section with high-protein plant-based recipes. All recipes are oil-free and use natural fat sources.</p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ── PRICING ─────────────────────────────────────────────────── -->
   <section id="pricing">
     <div class="container">
@@ -1777,7 +2274,18 @@
         <p class="section-sub" style="margin: 0 auto;">Less than a single meal delivery. 170+ recipes and every new drop — macros, grocery lists, all included.</p>
       </div>
 
-      <div class="pricing-grid">
+      <div class="pricing-grid" style="grid-template-columns:repeat(3,1fr);">
+
+        <!-- Free -->
+        <div class="pricing-card">
+          <div class="pricing-tier">Free</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">€0</span>
+            <span class="pricing-period">/mo</span>
+          </div>
+          <div class="pricing-desc">Rotating recipe selection, macro calculator, grocery list</div>
+          <a href="/waitlist" class="btn btn-secondary pricing-cta">Join waitlist →</a>
+        </div>
 
         <!-- Monthly -->
         <div class="pricing-card">
@@ -1786,7 +2294,7 @@
             <span class="pricing-amount">€16.99</span>
             <span class="pricing-period">/mo</span>
           </div>
-          <div class="pricing-desc">All recipes, cancel anytime</div>
+          <div class="pricing-desc">85+ recipes, cancel anytime</div>
           <a href="/pricing" class="btn btn-secondary pricing-cta">See plans →</a>
         </div>
 
@@ -1807,7 +2315,7 @@
       <div class="pricing-footer">
         <span>Secure payments via Stripe</span>
         <span class="pricing-footer-sep"></span>
-        <span>30-day money-back guarantee</span>
+        <span>Annual plans: 7-day refund guarantee</span>
       </div>
 
     </div>
@@ -1822,9 +2330,9 @@
         </div>
         <p class="footer-tagline">Feed Your Soul · Fuel Your Gainz</p>
         <div class="footer-links">
-          
-          
-          
+          <a href="/blog.html">Blog</a>
+          <a href="/calculator.html">Calculator</a>
+          <a href="/about.html">About</a>
           <a href="/terms">Terms of Service</a>
           <a href="/privacy">Privacy Policy</a>
           <a href="mailto:admin@soulgainz.app">Contact</a>

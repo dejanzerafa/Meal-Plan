@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — SoulGainz</title>
+  <meta name="description" content="Create your SoulGainz account and start your meal prep journey." />
+  <link rel="canonical" href="https://marketing.soulgainz.app/sign-up" />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <!-- Local-first, CDN fallback — same pattern as pricing.html. This page IS the
+       sign-up flow, so loading auth from jsdelivr alone meant an ad-blocker or a
+       corporate network filter produced "Auth service unavailable" on the page
+       reached straight from a Subscribe click. -->
+  <script src="/vendor/supabase.min.js"></script>
+  <script>
+    if (!window.supabase) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"><\/script>');
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:   #0C0B0A;
+      --orange:  #E07B2A;
+      --cream:   #F2EDE6;
+      --grey:    #8A8580;
+      --dkgrey:  #1C1A18;
+      --midgrey: #373432;
+      --green:   #4ade80;
+      --red:     #f87171;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black); color: var(--cream);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    a { color: inherit; text-decoration: none; }
+    .serif { font-family: "Fraunces", Georgia, serif; }
+
+    /* Nav */
+    nav {
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(242,237,230,0.08);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav-logo { font-family: "Fraunces", Georgia, serif; font-size: 20px; font-weight: 800; color: var(--cream); }
+    .nav-logo span { color: var(--orange); }
+    .nav-link { font-size: 13px; color: var(--grey); }
+    .nav-link:hover { color: var(--cream); }
+
+    /* Main */
+    main {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 48px 24px;
+    }
+    .card {
+      background: var(--dkgrey);
+      border: 1px solid rgba(242,237,230,0.1);
+      border-radius: 24px;
+      padding: 44px 40px;
+      width: 100%; max-width: 440px;
+    }
+    @media (max-width: 480px) {
+      .card { padding: 32px 24px; border-radius: 16px; }
+    }
+
+    /* Header */
+    .card-logo {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 22px; font-weight: 800; text-align: center;
+      margin-bottom: 8px;
+    }
+    .card-logo span { color: var(--orange); }
+    .card-badge {
+      text-align: center; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--orange); background: rgba(224,123,42,0.12);
+      border: 1px solid rgba(224,123,42,0.25);
+      border-radius: 20px; padding: 4px 14px;
+      display: inline-block; margin: 0 auto 24px;
+    }
+    .card-header { text-align: center; margin-bottom: 32px; }
+    .card-header h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 26px; font-weight: 800; color: var(--cream);
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .card-header p { font-size: 14px; color: var(--grey); }
+
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 0; margin-bottom: 28px;
+      background: var(--midgrey); border-radius: 10px; padding: 3px;
+    }
+    .tab {
+      flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 700;
+      color: var(--grey); cursor: pointer; border-radius: 8px;
+      transition: all 0.2s; border: none; background: none;
+    }
+    .tab.active { background: var(--dkgrey); color: var(--cream); }
+
+    /* Form */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: var(--grey); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+    input {
+      width: 100%; padding: 13px 14px;
+      background: var(--black); border: 1.5px solid rgba(242,237,230,0.12);
+      border-radius: 10px; color: var(--cream); font-size: 14px;
+      font-family: inherit; outline: none; transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--orange); }
+    input::placeholder { color: var(--grey); }
+
+    .submit-btn {
+      width: 100%; padding: 15px; margin-top: 6px;
+      background: var(--orange); color: var(--black); border: none;
+      border-radius: 12px; font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: opacity 0.2s; font-family: inherit;
+    }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .msg {
+      margin-top: 12px; font-size: 13px; text-align: center;
+      min-height: 20px; line-height: 1.4;
+    }
+    .msg.err { color: var(--red); }
+    .msg.ok  { color: var(--green); }
+
+    /* Plan selection (shown after sign-up if no tier in URL) */
+    .plan-select { margin-top: 28px; }
+    .plan-select-title {
+      font-size: 13px; font-weight: 700; color: var(--grey);
+      text-align: center; margin-bottom: 14px; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .plan-btns { display: flex; flex-direction: column; gap: 10px; }
+    .plan-btn {
+      width: 100%; padding: 14px 18px;
+      border-radius: 12px; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none; transition: opacity 0.2s;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: inherit;
+    }
+    .plan-btn:hover { opacity: 0.9; }
+    .plan-btn.monthly { background: rgba(242,237,230,0.08); color: var(--cream); border: 1px solid rgba(242,237,230,0.15); }
+    .plan-btn.annual  { background: var(--orange); color: var(--black); }
+    .plan-btn .plan-name { font-weight: 800; }
+    .plan-btn .plan-price { font-size: 12px; opacity: 0.8; }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--grey); font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: ""; flex: 1; height: 1px; background: rgba(242,237,230,0.1);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 24px;
+      border-top: 1px solid rgba(242,237,230,0.06);
+      font-size: 12px; color: var(--grey);
+    }
+    footer a { color: var(--grey); }
+    footer a:hover { color: var(--cream); }
+
+    /* Tier banner (shown if tier in URL) */
+    .tier-banner {
+      background: rgba(224,123,42,0.1);
+      border: 1px solid rgba(224,123,42,0.25);
+      border-radius: 10px; padding: 12px 16px;
+      margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .tier-banner .tier-icon { font-size: 20px; flex-shrink: 0; }
+    .tier-banner .tier-text { font-size: 13px; color: var(--cream); }
+    .tier-banner .tier-text strong { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Soul<span>Gainz</span></a>
+    <a href="/pricing" class="nav-link">← See plans</a>
+  </div>
+</nav>
+
+<!-- Main -->
+<main>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-badge" id="badge-label">Create Account</div>
+      <h1 class="serif" id="card-title">Join SoulGainz</h1>
+      <p id="card-sub">Create an account to get started.</p>
+    </div>
+
+    <!-- Tier reminder banner (shown when tier is pre-selected) -->
+    <div class="tier-banner" id="tier-banner" style="display:none;">
+      <div class="tier-icon">🔒</div>
+      <div class="tier-text">
+        You're signing up for the <strong id="tier-banner-name"></strong> plan.
+        Create your account to continue to payment.
+      </div>
+    </div>
+
+    <!-- Auth tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
+      <button class="tab" id="tab-login" onclick="switchTab('login')">Sign in</button>
+    </div>
+
+    <!-- Form -->
+    <div class="form-group" id="group-name" style="display:none;">
+      <label for="input-name">Full name</label>
+      <input type="text" id="input-name" placeholder="Your name" autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label for="input-email">Email</label>
+      <input type="email" id="input-email" placeholder="you@email.com" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label for="input-password">Password</label>
+      <input type="password" id="input-password" placeholder="Min. 8 characters" autocomplete="new-password" />
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">Create account →</button>
+    <div class="msg" id="msg"></div>
+
+    <!-- Plan selection (shown after sign-up if no pre-selected tier) -->
+    <div class="plan-select" id="plan-select" style="display:none;">
+      <div class="divider">Choose your plan</div>
+      <div class="plan-btns">
+        <button class="plan-btn annual" onclick="startCheckout('annual')">
+          <span class="plan-name">Annual</span>
+          <span class="plan-price">€12.50/mo · Best value</span>
+        </button>
+        <button class="plan-btn monthly" onclick="startCheckout('monthly')">
+          <span class="plan-name">Monthly</span>
+          <span class="plan-price">€16.99/mo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="/pricing">Pricing</a> · <a href="https://soulgainz.app/privacy">Privacy</a> · <a href="https://soulgainz.app/terms">Terms</a>
+  <div style="margin-top:8px;">© 2026 SoulGainz</div>
+</footer>
+
+<script>
+  const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
+  const CHECKOUT_URL  = 'https://soulgainz.app/.netlify/functions/create-checkout';
+  const PRICE_IDS = {
+    // ⚠️ LAUNCH-DAY SWAP — TEST mode, must match pricing.html.
+    //   LIVE monthly: price_1U56lUGjmPEqu9q9Rgk9ZIDK
+    //   LIVE annual:  price_1U56lDGjmPEqu9q9xfEMKPAd
+    monthly: 'price_1TU83bGjmPEqu9q97qSe6xYd',  // TEST €16.99/mo
+    annual:  'price_1TXc8dGjmPEqu9q9sIA4RenP',  // TEST €150/yr
+  };
+
+  let sb = null;
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); }
+  catch(e) { console.warn('Supabase init failed', e); }
+
+  // Read tier from URL ?tier=annual or ?tier=monthly
+  const urlParams = new URLSearchParams(window.location.search);
+  const presetTier = urlParams.get('tier'); // "annual" | "monthly" | null
+
+  let currentTab = 'signup';
+  let authedSession = null;
+
+  // Init UI based on preset tier
+  if (presetTier === 'annual') {
+    document.getElementById('tier-banner').style.display = 'flex';
+    document.getElementById('tier-banner-name').textContent = 'Annual (€149.99/yr)';
+    document.getElementById('card-title').textContent = 'Almost there';
+    document.getElementById('card-sub').textContent = 'Create your account to continue to payment.';
+  } else if (presetTier === 'monthly') {
+    document.getElementById('tier-banner').style.display = 'flex';
+    document.getElementById('tier-banner-name').textContent = 'Monthly (€16.99/mo)';
+    document.getElementById('card-title').textContent = 'Almost there';
+    document.getElementById('card-sub').textContent = 'Create your account to continue to payment.';
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('group-name').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('submit-btn').textContent = tab === 'signup' ? 'Create account →' : 'Sign in →';
+    document.getElementById('input-password').autocomplete = tab === 'signup' ? 'new-password' : 'current-password';
+    document.getElementById('msg').textContent = '';
+    document.getElementById('msg').className = 'msg';
+    document.getElementById('badge-label').textContent = tab === 'signup' ? 'Create Account' : 'Welcome Back';
+  }
+  switchTab('signup');
+
+  async function handleSubmit() {
+    if (!sb) { showMsg('Auth service unavailable. Please try again later.', 'err'); return; }
+
+    const email    = document.getElementById('input-email').value.trim();
+    const password = document.getElementById('input-password').value;
+    const name     = document.getElementById('input-name').value.trim();
+    const btn      = document.getElementById('submit-btn');
+
+    if (!email) { showMsg('Email is required.', 'err'); return; }
+    if (!password) { showMsg('Password is required.', 'err'); return; }
+    if (currentTab === 'signup' && password.length < 8) { showMsg('Password must be at least 8 characters.', 'err'); return; }
+
+    btn.disabled = true;
+    btn.textContent = currentTab === 'signup' ? 'Creating account…' : 'Signing in…';
+
+    try {
+      let data, error;
+      if (currentTab === 'signup') {
+        ({ data, error } = await sb.auth.signUp({
+          email, password,
+          options: { data: { full_name: name || undefined } },
+        }));
+      } else {
+        ({ data, error } = await sb.auth.signInWithPassword({ email, password }));
+      }
+
+      if (error) throw error;
+
+      const session = data?.session;
+
+      // Email confirmation required — no session yet
+      if (currentTab === 'signup' && !session) {
+        showMsg('✓ Account created! Check your email to confirm, then sign in.', 'ok');
+        btn.disabled = false; btn.textContent = 'Create account →';
+        switchTab('login');
+        return;
+      }
+
+      authedSession = session;
+
+      if (presetTier) {
+        // Pre-selected tier → go straight to checkout
+        await startCheckout(presetTier, session);
+      } else {
+        // No preset tier → show plan selection
+        document.getElementById('plan-select').style.display = 'block';
+        document.getElementById('submit-btn').style.display = 'none';
+        document.querySelector('.tabs').style.display = 'none';
+        document.getElementById('group-name').style.display = 'none';
+        document.querySelector('.form-group:not([id])') && null; // hide email/pass groups
+        hideFormInputs();
+        showMsg('✓ Account ready. Choose your plan below.', 'ok');
+      }
+    } catch(err) {
+      showMsg(err.message || 'Something went wrong. Please try again.', 'err');
+      btn.disabled = false;
+      btn.textContent = currentTab === 'signup' ? 'Create account →' : 'Sign in →';
+    }
+  }
+
+  function hideFormInputs() {
+    document.querySelectorAll('.form-group').forEach(el => el.style.display = 'none');
+  }
+
+  async function startCheckout(tier, session) {
+    session = session || authedSession;
+    const btns = document.querySelectorAll('.plan-btn');
+    btns.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+    const btn = document.getElementById('submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirecting to payment…'; }
+
+    try {
+      const res = await fetch(CHECKOUT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: PRICE_IDS[tier],
+          tier,
+          email:  session?.user?.email || undefined,
+          userId: session?.user?.id    || undefined,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Checkout failed — status ' + res.status);
+      const { url } = await res.json();
+      if (url && url.startsWith('https://checkout.stripe.com/')) {
+        window.location.href = url;
+      } else {
+        throw new Error('Invalid checkout URL returned');
+      }
+    } catch(err) {
+      showMsg('Could not start checkout. Please try again or email support@soulgainz.app', 'err');
+      btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+      if (btn) { btn.disabled = false; btn.textContent = 'Continue to payment →'; }
+    }
+  }
+
+  function showMsg(text, type) {
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.className = 'msg' + (type ? ' ' + type : '');
+  }
+
+  // Enter key
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleSubmit(); });
+  });
+</script>
+</body>
+</html>

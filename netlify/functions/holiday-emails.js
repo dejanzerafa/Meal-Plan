@@ -14,7 +14,7 @@
 //   SUPABASE_URL         \u2014 https://xxxx.supabase.co
 //   SUPABASE_SERVICE_KEY \u2014 service_role key
 //   RESEND_API_KEY       \u2014 re_xxxx...
-//   FROM_EMAIL           \u2014 SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL           \u2014 SoulGainz <support@soulgainz.app>
 //   APP_URL              \u2014 https://soulgainz.app
 
 // \u2500\u2500 Fixed holidays (same date every year) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
@@ -101,7 +101,7 @@ exports.handler = async (event) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const resendKey   = process.env.RESEND_API_KEY;
-  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl      = process.env.APP_URL    || "https://soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey || !resendKey) {
@@ -481,7 +481,7 @@ function holidayTemplate({ firstName, appUrl, emoji, headline, subline, body, ct
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
               Cook once. Eat all week.<br>
-              <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

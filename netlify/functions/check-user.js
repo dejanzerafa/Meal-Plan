@@ -22,8 +22,8 @@ exports.handler = async (event) => {
 
   // Origin check — only allow requests from known app origins
   const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
-  const allowed = ["https://soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
-  if (origin && !allowed.some(o => origin.startsWith(o))) {
+  const allowed = ["https://soulgainz.app", "https://soulgainz.app", "http://localhost", "http://127.0.0.1"];
+  if (origin && !allowed.includes(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

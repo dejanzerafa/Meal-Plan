@@ -10,7 +10,7 @@
 //   SUPABASE_URL            — https://xxx.supabase.co
 //   SUPABASE_SERVICE_KEY    — service_role key
 //   RESEND_API_KEY          — re_...
-//   FROM_EMAIL              — SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL              — SoulGainz <support@soulgainz.app>
 //   APP_URL                 — https://soulgainz.app
 //   LAUNCH_SECRET           — any strong random string (e.g. openssl rand -hex 32)
 //
@@ -38,7 +38,7 @@ exports.handler = async (event) => {
 
   // ── Env checks ─────────────────────────────────────────────────────────────
   const resendKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl    = process.env.APP_URL     || "https://soulgainz.app";
 
   if (!resendKey) {

@@ -4,12 +4,25 @@
 //
 // Required env vars (Netlify -> Site -> Environment variables):
 //   RESEND_API_KEY   - re_xxxxxxxxxxxxxxxxxxxx
-//   FROM_EMAIL       - e.g. SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL       - e.g. SoulGainz <support@soulgainz.app>
 //   APP_URL          - e.g. https://soulgainz.app
+
+const { rateLimit, clientIp } = require("./_shared/auth");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  // Abuse control: this endpoint sends an email to a CALLER-SUPPLIED address and
+  // had no auth and no rate limit, so a loop against it bombs an arbitrary
+  // inbox from our domain and burns the Resend quota.
+  {
+    const _rl = await rateLimit(`welcome_${clientIp(event)}`, { max: 3, windowMs: 600000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: { "Retry-After": String(_rl.retryAfter || 600) },
+               body: JSON.stringify({ error: "Too many requests. Please wait a few minutes." }) };
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -30,7 +43,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
   }
 
-  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl = process.env.APP_URL || "https://soulgainz.app";
   // HTML-encode first name to prevent injection into email template
   const escHtml = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -124,7 +137,7 @@ function buildWelcomeEmail(firstName, appUrl) {
 
             <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:10px;padding:14px 18px;">
               <div style="font-size:12px;color:#4a3f33;line-height:1.7;">
-                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock full access from $14.99/mo &mdash; monthly, quarterly ($39.99), or annual ($89.99/yr). Every recipe, every future drop.
+                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock full access with a Monthly or Annual plan &mdash; every recipe, every future drop. Annual works out around 26% cheaper. See current pricing on the site.
               </div>
             </div>
           </td>
@@ -134,7 +147,7 @@ function buildWelcomeEmail(firstName, appUrl) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
               Cook once. Eat all week.<br>
-              Questions? Reply to this email or reach us at <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? Reply to this email or reach us at <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

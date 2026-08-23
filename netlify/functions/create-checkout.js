@@ -3,7 +3,7 @@
 //
 // Required environment variables (set in Netlify dashboard → Site → Environment):
 //   STRIPE_SECRET_KEY    — sk_test_... or sk_live_...
-//   APP_URL              — e.g. https://soulgainz.netlify.app
+//   APP_URL              — e.g. https://soulgainz.app
 //   ALLOWED_PRICE_IDS    — comma-separated list of valid Stripe price IDs (optional but recommended)
 
 const Stripe = require("stripe");
@@ -25,7 +25,7 @@ const SUBSCRIPTION_TIERS = ["monthly", "annual"];
 
 exports.handler = async (event) => {
   const requestOrigin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  const corsOrigin = ALLOWED_ORIGINS.some(o => requestOrigin.startsWith(o)) ? requestOrigin : "https://soulgainz.app";
+  const corsOrigin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : "https://soulgainz.app";
 
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -51,7 +51,7 @@ exports.handler = async (event) => {
 
   // ── Origin check ─────────────────────────────────────────────────────────
   const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
-  if (origin && !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
@@ -64,7 +64,7 @@ exports.handler = async (event) => {
   }
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
-  const appUrl = process.env.APP_URL || "https://soulgainz.netlify.app";
+  const appUrl = process.env.APP_URL || "https://soulgainz.app";
 
   let payload;
   try {
@@ -73,12 +73,17 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { priceId, tier, recipeId } = payload;
+  const { priceId, tier, recipeId, email, userId } = payload;
   if (!priceId || !tier) {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: "priceId and tier are required" }),
     };
+  }
+
+  // Validate email if provided (simple format check)
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid email" }) };
   }
 
   // ── Validate tier ─────────────────────────────────────────────────────────
@@ -114,11 +119,14 @@ exports.handler = async (event) => {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${appUrl}/success?tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/pricing`,
+      // Pre-fill checkout with the user's email if they're signed in
+      ...(email ? { customer_email: email } : {}),
       // Metadata flows through to webhook for unlock provisioning
       metadata: {
         tier,
         recipeId: recipeId || "",
-        priceId: priceId || "",   // stored so seasonal drop can be identified on success
+        priceId: priceId || "",
+        userId: userId || "",   // Supabase user ID — lets webhook do direct profile lookup
       },
       // Capture customer email (Stripe will prompt for it on checkout)
       customer_creation: mode === "payment" ? "always" : undefined,

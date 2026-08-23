@@ -7,6 +7,8 @@
 //   SUPABASE_URL         - https://xxxx.supabase.co
 //   SUPABASE_SERVICE_KEY - service_role key
 
+const { secretsMatch } = require("./_shared/auth");
+
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -41,7 +43,7 @@ exports.handler = async (event) => {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || payload.secret !== adminSecret) {
+  if (!adminSecret || !secretsMatch(payload.secret, adminSecret)) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: "Unauthorized" }) };
   }
 

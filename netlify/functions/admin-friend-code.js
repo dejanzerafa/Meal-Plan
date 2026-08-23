@@ -22,12 +22,14 @@
 //   STRIPE_SECRET_KEY         — sk_live_xxxx...
 //   STRIPE_FRIENDS_COUPON_ID  — 100% off coupon ID created in Stripe Dashboard
 //   RESEND_API_KEY            — re_xxxx...
-//   FROM_EMAIL                — SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL                — SoulGainz <support@soulgainz.app>
 //   APP_URL                   — https://soulgainz.app
 //
 // One-time Stripe setup:
 //   Dashboard → Coupons → Create coupon → 100% off → name "Friends & Family"
 //   Copy the coupon ID into STRIPE_FRIENDS_COUPON_ID env var.
+
+const { secretsMatch } = require("./_shared/auth");
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -56,14 +58,14 @@ exports.handler = async (event) => {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || payload.secret !== adminSecret) {
+  if (!adminSecret || !secretsMatch(payload.secret, adminSecret)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
   }
 
   const stripeKey  = process.env.STRIPE_SECRET_KEY;
   const couponId   = process.env.STRIPE_FRIENDS_COUPON_ID;
   const resendKey  = process.env.RESEND_API_KEY;
-  const fromEmail  = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail  = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl     = process.env.APP_URL    || "https://soulgainz.app";
 
   if (!stripeKey || !couponId) {
@@ -132,7 +134,11 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           from:    fromEmail,
           to:      friendEmail,
-          subject: `${friendName}, you've got lifetime access to SoulGainz 🎁`,
+          // NOT "lifetime access" — this code is 100% off, single use, and it
+          // expires. Terms 6.4 states no lifetime access is sold, and the email
+          // body itself says "expires ${expiryDate}", so the old subject line
+          // contradicted both the Terms and the message it was attached to.
+          subject: `${friendName}, you've got free access to SoulGainz 🎁`,
           html:    buildFriendEmail(friendName, promoCode, appUrl, expiryLabel, personalNote),
         }),
       });
@@ -271,7 +277,7 @@ function buildFriendEmail(name, promoCode, appUrl, expiryDate, personalNote) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
               Cook once. Eat all week.<br>
-              Questions? <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

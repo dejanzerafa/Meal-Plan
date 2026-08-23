@@ -5,13 +5,15 @@
 
 > **IMPORTANT NOTICE:** These Terms of Service constitute a legally binding agreement between you and SoulGainz. Please read them carefully before using the Service. By creating an account, making a purchase, or using the Service in any way, you agree to be bound by these Terms.
 >
-> *These Terms have been drafted to comply with Australian Consumer Law (ACL), the Australian Privacy Act 1988, and relevant international consumer protection frameworks. Nothing in these Terms limits rights you have under applicable consumer protection legislation that cannot be lawfully excluded.*
+> *These Terms are governed by the laws of the State of Qatar and reference international consumer protection frameworks, including the EU General Data Protection Regulation (GDPR) and EU/UK distance-selling rights. Nothing in these Terms limits rights you have under applicable consumer protection legislation that cannot be lawfully excluded.*
+>
+> *Jurisdiction: Qatar. Governing law is set in clause 17.1. Data protection is governed by Qatar's Personal Data Privacy Protection Law (Law No. 13 of 2016), with GDPR / UK GDPR applying additionally to users in the EEA and United Kingdom. Reviewed and aligned August 2026. Not a substitute for advice from a qualified lawyer.*
 
 ---
 
 ## 1. Parties and Definitions
 
-**"SoulGainz"**, **"we"**, **"us"**, or **"our"** refers to the operator of the SoulGainz application and website (soulgainz.netlify.app and any successor domains).
+**"SoulGainz"**, **"we"**, **"us"**, or **"our"** refers to the operator of the SoulGainz application and website (soulgainz.app and any successor domains).
 
 **"Service"** means the SoulGainz web application, mobile application, website, and all associated content, features, recipes, tools, and functionality made available to you.
 
@@ -55,7 +57,7 @@
 
 4.3 You must provide accurate and complete information during registration and keep your account information current.
 
-4.4 You must notify us immediately at support@soulgainz.com if you become aware of any unauthorised use of your account.
+4.4 You must notify us immediately at support@soulgainz.app if you become aware of any unauthorised use of your account.
 
 4.5 One account per person. You may not share account credentials with others or allow multiple individuals to access premium features through a single account.
 
@@ -69,7 +71,7 @@
 
 5.3 **Automatic renewal.** Subscriptions renew automatically at the end of each billing period unless cancelled before the renewal date. By subscribing, you authorise us to charge your payment method for each renewal period at the then-current subscription price.
 
-5.4 **Cancellation.** You may cancel your subscription at any time through the in-app billing management portal (ME tab → Manage Billing) or by contacting support@soulgainz.com. Cancellation takes effect at the end of the current paid billing period. You will retain access to premium features until that date. We do not provide pro-rata refunds for the unused portion of a subscription period, except where required by applicable law.
+5.4 **Cancellation.** You may cancel your subscription at any time through the in-app billing management portal (ME tab → Manage Account) or by contacting support@soulgainz.app. Cancellation takes effect at the end of the current paid billing period. You will retain access to premium features until that date. We do not provide pro-rata refunds for the unused portion of a subscription period, except where required by applicable law.
 
 5.5 **Price changes.** We may change subscription prices at any time by giving you at least 30 days' written notice by email. Price changes take effect at your next automatic renewal date. If you do not accept a price change, you may cancel your subscription before that renewal date with no additional charge.
 
@@ -105,13 +107,13 @@
 
 8.1 **Standard position.** We do not provide refunds for subscription fees already charged for the current billing period, except as set out in this clause.
 
-8.2 **30-day satisfaction guarantee.** New subscribers only (first-ever paid subscription, not renewals) are eligible for a full refund if they are not satisfied with the Service, provided the refund request is made within 30 days of the initial charge. To request a refund, contact support@soulgainz.com with your account email and reason. This guarantee applies once per customer.
+8.2 **14-day money-back guarantee.** All plans (Monthly and Annual) may be refunded in full within **14 days** of your first payment for that subscription. To request a refund, contact support@soulgainz.app from your account email address. This guarantee applies once per customer and does not apply to renewals.
 
-8.3 **Service outages.** If the Service experiences a significant and sustained outage (more than 72 consecutive hours) during a paid subscription period, you may be entitled to a pro-rata credit for the affected period. Contact support@soulgainz.com to request a credit.
+8.3 **Service outages.** If the Service experiences a significant and sustained outage (more than 72 consecutive hours) during a paid subscription period, you may be entitled to a pro-rata credit for the affected period. Contact support@soulgainz.app to request a credit.
 
-8.4 **Australian Consumer Law.** Nothing in this Refund Policy limits your rights under the Australian Consumer Law. If you are an Australian consumer, you have statutory guarantees that the Service will be of acceptable quality and fit for its described purpose. If the Service fails to meet a statutory guarantee and the failure is a major failure, you are entitled to remedies including a refund.
+8.4 **Statutory consumer rights.** Nothing in this Refund Policy limits any mandatory consumer protection rights you hold in your country of residence. In particular, if you are a consumer in the European Union or the United Kingdom, you may have a statutory right to withdraw from a distance contract for digital services within 14 days; the guarantee in clause 8.2 is intended to meet or exceed that right.
 
-8.5 **Chargebacks.** If you initiate a chargeback or payment dispute through your bank or payment provider without first contacting us at support@soulgainz.com to resolve the matter, we reserve the right to suspend your account pending resolution of the dispute.
+8.5 **Chargebacks.** If you initiate a chargeback or payment dispute through your bank or payment provider without first contacting us at support@soulgainz.app to resolve the matter, we reserve the right to suspend your account pending resolution of the dispute.
 
 ---
 
@@ -175,7 +177,7 @@
 
 13.2 We do not warrant that the Service will be uninterrupted, error-free, or free of harmful components, or that any defects will be corrected.
 
-13.3 Nothing in this clause excludes any guarantee or warranty implied by the Australian Consumer Law or any other applicable legislation that cannot lawfully be excluded.
+13.3 Nothing in this clause excludes any guarantee, warranty or right implied by applicable consumer protection legislation that cannot lawfully be excluded, including mandatory consumer rights in your country of residence.
 
 ---
 
@@ -187,7 +189,7 @@
 
 14.3 This limitation applies regardless of the legal basis for the claim and even if we have been advised of the possibility of such damages.
 
-14.4 To the extent that the Australian Consumer Law implies guarantees that cannot be excluded, our liability is limited to re-supplying the Service or paying the cost of re-supply.
+14.4 To the extent that applicable consumer protection legislation implies guarantees that cannot be excluded, our liability is limited, so far as that legislation permits, to re-supplying the Service or paying the cost of re-supply.
 
 14.5 **Health disclaimer.** We are not liable for any personal injury, illness, allergic reaction, or health outcome arising from your use of or reliance on any recipe, nutritional information, or dietary guidance provided through the Service.
 
@@ -201,7 +203,7 @@ You agree to indemnify and hold harmless SoulGainz and its operators from any cl
 
 ## 16. Termination
 
-16.1 **By you.** Cancel your subscription at any time via the in-app billing portal. To delete your account, contact support@soulgainz.com. We will delete your account and associated personal data within 30 days, subject to legal retention obligations.
+16.1 **By you.** Cancel your subscription at any time via the in-app billing portal. To delete your account, contact support@soulgainz.app. We will delete your account and associated personal data within 30 days, subject to legal retention obligations.
 
 16.2 **By us.** We may suspend or terminate your account at any time for breach of these Terms, non-payment, or if we discontinue the Service (subject to clause 11.3).
 
@@ -211,9 +213,9 @@ You agree to indemnify and hold harmless SoulGainz and its operators from any cl
 
 ## 17. Governing Law and Disputes
 
-17.1 These Terms are governed by the laws of the State of Victoria, Australia. The parties submit to the non-exclusive jurisdiction of the courts of Victoria.
+17.1 These Terms are governed by the laws of the State of Qatar. The parties submit to the exclusive jurisdiction of the courts of Qatar, without prejudice to any mandatory consumer protection rights you hold in your country of residence.
 
-17.2 Before commencing legal proceedings, you agree to contact support@soulgainz.com to attempt to resolve the dispute informally. We will respond within 14 days.
+17.2 Before commencing legal proceedings, you agree to contact support@soulgainz.app to attempt to resolve the dispute informally. We will respond within 14 days.
 
 17.3 If a dispute cannot be resolved informally, either party may refer it to mediation before commencing litigation. Nothing prevents either party from seeking urgent interlocutory relief from a court.
 
@@ -235,8 +237,8 @@ You agree to indemnify and hold harmless SoulGainz and its operators from any cl
 
 ## 19. Contact
 
-**Email:** support@soulgainz.com  
-**Website:** soulgainz.netlify.app
+**Email:** support@soulgainz.app  
+**Website:** soulgainz.app
 
 ---
 
@@ -249,13 +251,13 @@ You agree to indemnify and hold harmless SoulGainz and its operators from any cl
 
 **Last updated:** August 2026
 
-> SoulGainz is committed to protecting your personal information. This Privacy Policy explains what data we collect, why we collect it, how we use it, and your rights regarding it. It complies with the **Australian Privacy Act 1988 (Cth)** and the **Australian Privacy Principles (APPs)**, and references the **EU General Data Protection Regulation (GDPR)** for users in the European Economic Area.
+> SoulGainz is committed to protecting your personal information. This Privacy Policy explains what data we collect, why we collect it, how we use it, and your rights regarding it. SoulGainz is operated from Qatar and this Policy is written to comply with **Qatar's Personal Data Privacy Protection Law (Law No. 13 of 2016, the "PDPPL")**, and references the **EU General Data Protection Regulation (GDPR)** for users in the European Economic Area and the UK GDPR for users in the United Kingdom.
 
 ---
 
 ## 1. Who We Are
 
-SoulGainz operates the SoulGainz meal planning application and website. We are the data controller for personal information collected through the Service. Contact: support@soulgainz.com.
+SoulGainz operates the SoulGainz meal planning application and website. We are the data controller for personal information collected through the Service. Contact: support@soulgainz.app.
 
 ---
 
@@ -300,11 +302,15 @@ We do **not** use your personal information for third-party advertising or ad ta
 
 ---
 
-## 4. Legal Bases for Processing (GDPR — EEA Users)
+## 4. Legal Bases for Processing
+
+**All users (Qatar PDPPL).** We process personal data on the basis of your **consent**, given when you create an account and accept this Policy, and where processing is necessary to deliver the Service you have asked for. Special-nature data (health and body metrics) is processed only on your **explicit consent**, which you may withdraw at any time.
+
+**EEA and UK users (GDPR / UK GDPR).** In addition:
 
 - **Contract performance:** Processing necessary to deliver the Service
 - **Legitimate interests:** Service improvement, security, fraud prevention
-- **Consent:** Marketing emails (withdraw at any time)
+- **Consent:** Marketing emails, and health/body data under Article 9(2)(a) (withdraw at any time)
 - **Legal obligation:** Tax records, legal compliance
 
 ---
@@ -326,7 +332,7 @@ We do not share your data with any other third parties.
 
 ## 6. Health and Dietary Information
 
-Nutritional and body data you enter (weight, height, goals) is classified as sensitive information under the Australian Privacy Act. We collect it only with your consent, use it solely to provide the macro calculator and personalised meal planning features, and do not share it with third parties beyond what is necessary to operate the Service (database storage via Supabase).
+Nutritional and body data you enter (weight, height, goals) is treated as **personal data of a special nature** under Article 16 of the PDPPL, and as **special category health data** under Article 9 of the GDPR for EEA and UK users. We process it only with your explicit consent, use it solely to provide the macro calculator and personalised meal planning features, and do not share it with third parties beyond what is necessary to operate the Service (database storage via Supabase). You may withdraw that consent at any time by contacting support@soulgainz.app, and we will delete the data.
 
 ---
 
@@ -346,18 +352,22 @@ We implement reasonable technical and organisational security measures including
 
 ## 9. Your Rights
 
-**Australian users (Privacy Act 1988):**
-- Access the personal information we hold about you
-- Request correction of inaccurate or incomplete information
-- Complain to the **Office of the Australian Information Commissioner (OAIC)** at oaic.gov.au if you believe we have mishandled your information
+**All users (Qatar PDPPL, Law No. 13 of 2016):**
+- Be informed of how your personal data is processed
+- Access the personal data we hold about you
+- Request correction of inaccurate, incomplete or outdated data
+- Request erasure of your personal data
+- Object to processing, including processing for direct marketing
+- Withdraw your consent at any time, without affecting processing already carried out
+- Complain to the **National Cyber Governance and Assurance Affairs (NCGAA)** within Qatar's **National Cyber Security Agency (NCSA)** if you believe we have mishandled your data
 
-**EEA users (GDPR):**
+**EEA and UK users (GDPR / UK GDPR):**
 - Access, rectification, erasure, restriction, portability
 - Object to processing
 - Withdraw consent at any time
 - Lodge a complaint with your national data protection authority
 
-To exercise any right, email support@soulgainz.com. We will respond within 30 days.
+To exercise any right, email support@soulgainz.app. We will respond within 30 days.
 
 ---
 
@@ -375,7 +385,7 @@ The Service is not directed at anyone under 16. We do not knowingly collect pers
 
 ## 12. International Transfers
 
-The Service is operated from Australia. If you access it from outside Australia, your data may be processed in Australia or in the countries where our providers (Stripe, Supabase) operate. We take steps to ensure appropriate safeguards apply to any such transfers.
+The Service is operated from Qatar. If you access it from outside Qatar, your personal data may be processed in Qatar or in the countries where our processors (Stripe, Supabase, Netlify) operate, which may include the United States and the European Union. Where we transfer personal data across borders we take steps to ensure appropriate safeguards apply, including relying on our processors' standard contractual clauses and equivalent transfer mechanisms. Under the PDPPL, cross-border transfers are permitted where the transfer does not prejudice the protection of the personal data and appropriate safeguards are in place.
 
 ---
 
@@ -387,11 +397,15 @@ We will notify you of material changes by email and/or in-app notice at least 30
 
 ## 14. Contact and Complaints
 
-**Email:** support@soulgainz.com  
-**Website:** soulgainz.netlify.app
+**Email:** support@soulgainz.app  
+**Website:** soulgainz.app
 
-**Office of the Australian Information Commissioner (OAIC)**  
-oaic.gov.au · 1300 363 992
+If you are not satisfied with our response, you may lodge a complaint with the supervisory authority:
+
+**Qatar — National Cyber Governance and Assurance Affairs (NCGAA)**  
+National Cyber Security Agency (NCSA) · ncsa.gov.qa
+
+**EEA / UK users** may instead complain to their own national data protection authority.
 
 ---
 

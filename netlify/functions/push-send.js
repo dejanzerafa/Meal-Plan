@@ -18,12 +18,14 @@
 //   SUPABASE_SERVICE_KEY  - service_role key
 //   VAPID_PUBLIC_KEY      - generate with: npx web-push generate-vapid-keys
 //   VAPID_PRIVATE_KEY     - generate with: npx web-push generate-vapid-keys
-//   VAPID_EMAIL           - mailto:admin@soulgainz.app
+//   VAPID_EMAIL           - mailto:support@soulgainz.app
 //
 // ── One-time VAPID setup ──────────────────────────────────────────────────────
 // Run in your terminal:  npx web-push generate-vapid-keys
 // Copy both keys into Netlify → Site → Environment variables.
 // Paste the PUBLIC key into the app's VAPID_PUBLIC_KEY constant (index.html).
+
+const { secretsMatch } = require("./_shared/auth");
 
 const webpush = require("web-push");
 
@@ -43,7 +45,7 @@ exports.handler = async (event) => {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || payload.secret !== adminSecret) {
+  if (!adminSecret || !secretsMatch(payload.secret, adminSecret)) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: "Unauthorized" }) };
   }
 
@@ -51,7 +53,7 @@ exports.handler = async (event) => {
   const supabaseKey  = process.env.SUPABASE_SERVICE_KEY;
   const vapidPublic  = process.env.VAPID_PUBLIC_KEY;
   const vapidPrivate = process.env.VAPID_PRIVATE_KEY;
-  const vapidEmail   = process.env.VAPID_EMAIL || "mailto:admin@soulgainz.app";
+  const vapidEmail   = process.env.VAPID_EMAIL || "mailto:support@soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey || !vapidPublic || !vapidPrivate) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: "Missing env vars (SUPABASE or VAPID keys)" }) };

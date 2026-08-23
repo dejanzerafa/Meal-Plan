@@ -150,10 +150,14 @@
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.sentry-cdn.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob: https://www.google-analytics.com; connect-src 'self' https://checkout.stripe.com https://soulgainz.app/.netlify/functions/ https://soulgainz.netlify.app/.netlify/functions/ https://rjreunvnsfjclpighogp.supabase.co https://*.supabase.co https://fonts.googleapis.com https://*.sentry.io https://o*.ingest.sentry.io https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; worker-src 'self';"
 
 # ── Netlify function CORS pre-flight ─────────────────────────────────────────
+# NOTE: no Access-Control-Allow-Origin here on purpose.
+# A site-wide "*" previously overrode every function's own per-request CORS
+# policy, letting any website read responses from check-user (an account
+# existence oracle) and restore-account (name, email, subscription tier).
+# Each function sets its own origin header — leave this to them.
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "POST, GET, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
     Access-Control-Max-Age = "86400"

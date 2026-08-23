@@ -629,20 +629,20 @@ Rotate these across posts. Never use the same set twice in a row.
 
 **Set A — Reach (high volume)**
 ```
-#mealprep #highprotein #mealprepping #gymfood #batchcooking #sundaymealprep #proteinfood #mealplan #cleaneating #soulgainz
+#mealprep #highprotein #mealprepping #gymfood #batchcooking #sundaymealprep #proteinfood #mealplan #cleaneating #soulgainz #feedyoursoul #fuelyourgainz #soulgainz.app
 ```
 
 **Set B — Niche (targeted engagement)**
 ```
-#mealprepcommunity #macros #gymnutrition #proteinmeal #fitnessnutrition #highproteinmeals #mealpreptips #macrotracking #gymlifestyle #soulgainz
+#mealprepcommunity #macros #gymnutrition #proteinmeal #fitnessnutrition #highproteinmeals #mealpreptips #macrotracking #gymlifestyle #soulgainz #feedyoursoul #fuelyourgainz #soulgainz.app
 ```
 
 **Set C — Awareness (discovery)**
 ```
-#mealprepsunday #healthyeating #fitnessfood #nutritionadvice #gymlife #mealideas #foodprep #proteingoals #cleaneating #soulgainz
+#mealprepsunday #healthyeating #fitnessfood #nutritionadvice #gymlife #mealideas #foodprep #proteingoals #cleaneating #soulgainz #feedyoursoul #fuelyourgainz #soulgainz.app
 ```
 
-Always include `#soulgainz` and `#soulgainz.app` in every post as brand tags.
+Always include `#soulgainz`, `#feedyoursoul`, `#fuelyourgainz`, and `#soulgainz.app` in every post as core brand tags.
 
 ---
 

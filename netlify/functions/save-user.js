@@ -11,7 +11,7 @@
 //   SUPABASE_SERVICE_KEY - service_role key (not anon)
 //   RESEND_API_KEY       - re_xxxx...
 //   RESEND_AUDIENCE_ID   - (from Resend -> Audiences)
-//   FROM_EMAIL           - e.g. SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL           - e.g. SoulGainz <support@soulgainz.app>
 //   APP_URL              - e.g. https://soulgainz.app
 
 // Simple in-memory rate limiter: max 5 requests per email per 60 seconds
@@ -50,8 +50,8 @@ exports.handler = async (event) => {
 
   // Origin check — only allow requests from known app origins
   const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
-  const allowed = ["https://soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
-  if (origin && !allowed.some(o => origin.startsWith(o))) {
+  const allowed = ["https://soulgainz.app", "https://soulgainz.app", "http://localhost", "http://127.0.0.1"];
+  if (origin && !allowed.includes(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
@@ -76,7 +76,7 @@ exports.handler = async (event) => {
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const resendKey   = process.env.RESEND_API_KEY;
   const audienceId  = process.env.RESEND_AUDIENCE_ID;
-  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl      = process.env.APP_URL || "https://soulgainz.app";
 
   if (!supabaseUrl || !supabaseKey) {
@@ -167,7 +167,12 @@ exports.handler = async (event) => {
     // -- 3. Send email -----------------------------------------------------------
     // skip_email: true means this is a profile update (Me tab) — data saved, no email
     if (resendKey && !skip_email) {
-      const firstName = first_name || email.split("@")[0] || "there";
+      // ⚠️ MUST be escaped: this endpoint is unauthenticated and `to:` is the
+      // caller-supplied address, so an unescaped first_name lets anyone send
+      // arbitrary HTML from support@soulgainz.app — SPF/DKIM-aligned phishing
+      // riding our sending reputation. Same helper as send-welcome.js:36.
+      const escHtml = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const firstName = escHtml((first_name || email.split("@")[0] || "there")).slice(0, 50);
       const alreadySent = userData?.welcome_sent;
 
       // 3a. Brand-new user - send Welcome email
@@ -305,7 +310,7 @@ function buildWelcomeEmail(firstName, appUrl) {
 
             <div style="background:#ebe2d3;border:1px solid #c9bda9;border-radius:10px;padding:16px 18px;">
               <div style="font-size:12px;color:#4a3f33;line-height:1.7;">
-                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock any single recipe from $14.99/mo, or go lifetime for $149.99 &mdash; every recipe we&apos;ve ever made, plus every future drop.
+                <strong style="color:#1a1612;">Most recipes are free to browse.</strong> Unlock the full library from &euro;16.99/mo, or save with the annual plan at &euro;150/yr &mdash; every recipe we&apos;ve ever made, plus every future drop.
               </div>
             </div>
           </td>
@@ -315,7 +320,7 @@ function buildWelcomeEmail(firstName, appUrl) {
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
               Cook once. Eat all week.<br>
-              Questions? Reply to this email or reach us at <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? Reply to this email or reach us at <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>
@@ -376,7 +381,7 @@ function buildWelcomeBackEmail(firstName, appUrl) {
                 <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:24px;width:36px;">&#x1F513;</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:4px;">Unlock more recipes</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Monthly from $14.99, or go lifetime for $149.99 &mdash; every recipe, every future drop, forever.</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Monthly from &euro;16.99, or annual for &euro;150/yr &mdash; every recipe, every future drop.</div>
                 </td>
               </tr>
             </table>
@@ -402,7 +407,7 @@ function buildWelcomeBackEmail(firstName, appUrl) {
         <tr>
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
-              Questions? Reply to this email or reach us at <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? Reply to this email or reach us at <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

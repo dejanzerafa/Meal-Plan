@@ -16,8 +16,10 @@
 //   SUPABASE_URL         - https://xxxx.supabase.co
 //   SUPABASE_SERVICE_KEY - service_role key
 //   RESEND_API_KEY       - re_xxxx...
-//   FROM_EMAIL           - SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL           - SoulGainz <support@soulgainz.app>
 //   APP_URL              - https://soulgainz.app
+
+const { secretsMatch } = require("./_shared/auth");
 
 const RATE_LIMIT_MS = 300; // ms between sends (Resend free = ~2 req/s)
 
@@ -35,14 +37,14 @@ exports.handler = async (event) => {
 
   // -- Auth -------------------------------------------------------------------
   const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || payload.secret !== adminSecret) {
+  if (!adminSecret || !secretsMatch(payload.secret, adminSecret)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const resendKey   = process.env.RESEND_API_KEY;
-  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+  const fromEmail   = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
   const appUrl      = process.env.APP_URL || "https://soulgainz.app";
   const dryRun      = payload.dry_run === true;
   const targetEmail = payload.email || null;
@@ -186,7 +188,7 @@ function buildWelcomeBackEmail(firstName, appUrl) {
                 <td style="vertical-align:top;padding-right:14px;padding-bottom:16px;font-size:24px;width:36px;">&#x1F513;</td>
                 <td style="padding-bottom:16px;">
                   <div style="font-size:14px;font-weight:700;color:#1a1612;margin-bottom:4px;">Unlock more recipes</div>
-                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Monthly from $14.99, or go lifetime for $149.99 &mdash; every recipe, every future drop, forever.</div>
+                  <div style="font-size:13px;color:#4a3f33;line-height:1.6;">Choose Monthly or Annual &mdash; every recipe, every future drop. Annual works out around 26% cheaper. See current pricing on the site.</div>
                 </td>
               </tr>
             </table>
@@ -212,7 +214,7 @@ function buildWelcomeBackEmail(firstName, appUrl) {
         <tr>
           <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
             <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.8;">
-              Questions? Reply to this email or reach us at <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+              Questions? Reply to this email or reach us at <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
             </p>
           </td>
         </tr>

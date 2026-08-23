@@ -91,7 +91,11 @@ exports.handler = async (event) => {
   }
 
   // Return a signed token: base64(timestamp + ":" + last 8 chars of secret)
-  const token = Buffer.from(`${Date.now()}:${secret.slice(-8)}`).toString("base64");
+  // HMAC, not a slice of the secret. Base64 is encoding, not signing — the old
+  // token embedded the last 8 characters of ADMIN_SECRET verbatim, recoverable
+  // by anyone who saw it (browser history, proxies, extensions).
+  const _ts = Date.now();
+  const token = `${_ts}.${require("crypto").createHmac("sha256", secret).update(String(_ts)).digest("hex")}`;
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },

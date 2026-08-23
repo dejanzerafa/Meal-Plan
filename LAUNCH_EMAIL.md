@@ -34,8 +34,8 @@ Today it's live.
 
 **Two plans. No nonsense.**
 
-→ [Monthly Pro — $16.99/month](https://soulgainz.app)
-→ [Annual Pro — $150/year](https://soulgainz.app) *(best value — works out to $12.50/month)*
+→ [Monthly Pro — €16.99/month](https://soulgainz.app)
+→ [Annual Pro — €150/year](https://soulgainz.app) *(best value — works out to €12.50/month)*
 
 All sales are final. Cancel anytime before your next renewal.
 
@@ -71,8 +71,8 @@ If you've been on the free plan, here's what Pro unlocks:
 - Annual plan bonus: 11 exclusive recipes
 
 Two plans:
-- Monthly Pro: $16.99/month — soulgainz.app
-- Annual Pro: $150/year ($12.50/month) — soulgainz.app
+- Monthly Pro: €16.99/month — soulgainz.app
+- Annual Pro: €150/year (€12.50/month) — soulgainz.app
 
 All sales are final. Cancel before renewal to stop future charges.
 

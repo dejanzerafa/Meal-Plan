@@ -13,14 +13,14 @@
 //   SUPABASE_URL             — https://xxx.supabase.co
 //   SUPABASE_SERVICE_KEY     — service_role key (NEVER expose client-side)
 //   RESEND_API_KEY           — re_... (optional; emails silently skipped if missing)
-//   FROM_EMAIL               — e.g. SoulGainz <admin@soulgainz.app>
+//   FROM_EMAIL               — e.g. SoulGainz <support@soulgainz.app>
 //   APP_URL                  — e.g. https://soulgainz.app
 
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
 
 const APP_URL = process.env.APP_URL || "https://soulgainz.app";
-const FROM_EMAIL = process.env.FROM_EMAIL || "SoulGainz <admin@soulgainz.app>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
 const PORTAL_URL = `${APP_URL}/.netlify/functions/customer-portal`;
 
 exports.handler = async (event) => {
@@ -113,26 +113,38 @@ exports.handler = async (event) => {
             console.log("Duplicate checkout.session.completed skipped:", session.id);
             break;
           }
+          // Log but do NOT break — profile update must happen even if subscriptions table fails
           if (subInsertErr) {
-            console.error("Subscription insert error:", subInsertErr);
-            break; // Don't provision or email on unexpected insert failure
+            console.error("Subscription insert error (continuing to profile update):", subInsertErr);
           }
 
-          // 2b. Write tier into profiles so re-login on any device gets correct access
+          // 2b. Write tier into profiles.
+          // Use the Supabase auth UUID from checkout metadata (most reliable — avoids the
+          // users-table ID ≠ auth UUID mismatch). Fall back to users.id only when userId
+          // was not in metadata (e.g. user paid without being signed in).
+          const authUserId = session.metadata?.userId || null;
+          const profileId  = authUserId || user.id;
+
           const { error: profileErr } = await supabase
             .from("profiles")
-            .update({
+            .upsert({
+              id: profileId,
+              email,
               tier,
               tier_via: "stripe",
               tier_expires: realPeriodEnd,
-            })
-            .eq("email", email);
+            }, { onConflict: "id" });
           if (profileErr) {
-            // Profile row may not exist yet — upsert by auth user id isn't available here,
-            // log and continue so payment isn't lost
-            console.error("Profile tier update error:", profileErr);
+            console.error("Profile tier upsert error:", profileErr);
+            // Last-resort fallback: update by email (catches rows without a matching id)
+            const { error: emailProfileErr } = await supabase
+              .from("profiles")
+              .update({ tier, tier_via: "stripe", tier_expires: realPeriodEnd })
+              .eq("email", email);
+            if (emailProfileErr) console.error("Profile tier update-by-email fallback error:", emailProfileErr);
+            else console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
           } else {
-            console.log(`Profile tier set to "${tier}" for ${email}`);
+            console.log(`Profile tier upserted to "${tier}" for ${email} (id: ${profileId})`);
           }
         }
 
@@ -395,7 +407,7 @@ function sgFooter() {
       <td style="background:#0C0B0A;padding:20px 32px;text-align:center;">
         <p style="font-size:11px;color:#8C8279;margin:0;line-height:1.7;">
           Cook once. Eat all week.<br>
-          <a href="mailto:admin@soulgainz.app" style="color:#E07B2A;text-decoration:none;">admin@soulgainz.app</a>
+          <a href="mailto:support@soulgainz.app" style="color:#E07B2A;text-decoration:none;">support@soulgainz.app</a>
         </p>
       </td>
     </tr>`;
@@ -566,7 +578,7 @@ function getEmailBody(tier, recipeId, amount) {
               <div style="font-size:10px;font-weight:700;color:#b84a1f;letter-spacing:0.14em;margin-bottom:6px;">${d.badge}</div>
               <div style="font-size:17px;font-weight:700;color:#1a1612;margin-bottom:6px;">${d.label}</div>
               <div style="font-size:13px;color:#4a3f33;line-height:1.6;">${d.desc}</div>
-              ${amount ? `<div style="margin-top:12px;font-size:12px;color:#7a6d5e;">Amount charged: <strong style="color:#1a1612;">$${amount.toFixed(2)}</strong></div>` : ""}
+              ${amount ? `<div style="margin-top:12px;font-size:12px;color:#7a6d5e;">Amount charged: <strong style="color:#1a1612;">€${amount.toFixed(2)}</strong></div>` : ""}
             </td>
           </tr>
         </table>
