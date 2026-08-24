@@ -8804,6 +8804,45 @@ function safeSet(key, value) {
 // `authenticated` by supabase-security-fix.sql, so a brute-forced dev PIN can
 // never become real, server-verified access.
 const DEV_TIERS = ["free", "monthly", "annual", "dev"];
+
+// ── Testing resets ───────────────────────────────────────────────────────────
+// Module scope, not inside a component: these are used by the tier picker (the
+// only dev surface the 5-tap PIN actually opens) and by DevModal. They lived
+// inside DevModal, which nothing ever opened, so the resets were unreachable.
+
+// Full factory reset — the ONLY one that also signs you out of Supabase, so you
+// land on the real sign-up screen and can walk the whole new-user journey
+// (sign-up → onboarding → free tier → upgrade prompt → checkout).
+// Delegates to the ?reset=1 handler at the bottom of this file, which also
+// clears caches and unregisters the service worker, so it is a true fresh
+// install rather than just a signed-out session.
+function resetToNewUser() {
+    if (!window.confirm(
+        "Start completely fresh?\n\n" +
+        "• Signs you out\n" +
+        "• Clears all local data and caches\n" +
+        "• Unregisters the service worker\n" +
+        "• Clears any dev tier simulation\n\n" +
+        "You'll land on the sign-up screen as a brand-new user."
+    )) return;
+    window.location.href = "/?reset=1";
+}
+// Local data only — the Supabase session survives, so you stay signed in on
+// your real tier and just replay onboarding.
+function resetLocalData() {
+    if (!window.confirm("Clear local data? You stay signed in on your current tier.")) return;
+    try {
+        Object.keys(localStorage)
+            .filter(k => k.startsWith("mp_") || k.startsWith("sg_"))
+            .forEach(k => localStorage.removeItem(k));
+    } catch (_) {}
+    window.location.reload();
+}
+function resetOnboardingOnly() {
+    if (!window.confirm("Reset onboarding only? Meal and profile data kept.")) return;
+    try { ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k)); } catch (_) {}
+    window.location.reload();
+}
 function getDevOverride() {
     try {
         const v = localStorage.getItem("mp_dev_override");
@@ -9530,33 +9569,6 @@ function DevModal({ onClose, onApplyTier }) {
         if (match) { onApplyTier(match.tier, match.allRecipes); onClose(); }
         else { setError(true); setPreview(null); setTimeout(() => setError(false), 1500); }
     };
-    const resetAll = () => {
-        if (!window.confirm("Reset to first-time user? All data will be cleared.")) return;
-        try { Object.keys(localStorage).filter(k => k.startsWith('mp_') || k.startsWith('sg_')).forEach(k => localStorage.removeItem(k)); } catch(_) {}
-        window.location.reload();
-    };
-    // Full factory reset — the ONLY one that also signs you out of Supabase,
-    // so you land on the real sign-up screen and can walk the whole new-user
-    // journey (onboarding → free tier → upgrade prompt → checkout).
-    // resetAll() above only clears mp_/sg_ local keys, so the Supabase session
-    // survives and you stay logged in with your existing tier.
-    // Delegates to the ?reset=1 handler at the bottom of this file, which also
-    // clears caches and unregisters the service worker.
-    const resetToNewUser = () => {
-        if (!window.confirm(
-            "Start completely fresh?\n\n" +
-            "• Signs you out\n" +
-            "• Clears all local data and caches\n" +
-            "• Unregisters the service worker\n\n" +
-            "You'll land on the sign-up screen as a brand-new user."
-        )) return;
-        window.location.href = "/?reset=1";
-    };
-    const resetOnboarding = () => {
-        if (!window.confirm("Reset onboarding only? Meal/profile data kept.")) return;
-        ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k));
-        window.location.reload();
-    };
     const TIER_COLORS = { free: C.sub, monthly: "#60a5fa", annual: C.accent, dev: "#f59e0b" };
     return (React.createElement("div", { style: { position: "fixed", top: 0, right: 0, bottom: 0, left: 0, background: "rgba(0,0,0,0.92)", zIndex: 500,
             display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" } },
@@ -9588,9 +9600,9 @@ function DevModal({ onClose, onApplyTier }) {
                 React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 10 } }, "\uD83E\uDDEA TESTING RESETS"),
                 React.createElement("button", { onClick: resetToNewUser, style: { width: "100%", background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.45)", borderRadius: 8, padding: "10px", color: "#ef4444", fontSize: 12, fontWeight: 800, cursor: "pointer", marginBottom: 4 } }, "\uD83D\uDEAA Brand-New User \u2014 Sign Out & Wipe All"),
                 React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 10, lineHeight: 1.45 } }, "Full journey: sign-up \u2192 onboarding \u2192 free tier \u2192 upgrade prompt \u2192 checkout."),
-                React.createElement("button", { onClick: resetAll, style: { width: "100%", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, padding: "9px", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", marginBottom: 4 } }, "\uD83C\uDD95 First-Time User \u2014 Clear Local Data"),
+                React.createElement("button", { onClick: resetLocalData, style: { width: "100%", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, padding: "9px", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", marginBottom: 4 } }, "\uD83C\uDD95 First-Time User \u2014 Clear Local Data"),
                 React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 10, lineHeight: 1.45 } }, "Keeps you signed in \u2014 you stay on your current tier."),
-                React.createElement("button", { onClick: resetOnboarding, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
+                React.createElement("button", { onClick: resetOnboardingOnly, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
 const FILTER_MAP = {}; // Cooking method filter removed
 const PROTEIN_FILTERS = ["All", "🍗 Chicken", "🥩 Beef", "🐟 Fish", "🦃 Turkey", "🐷 Pork", "🦐 Shrimp", "🌱 Veg", "🥚 Eggs", "🌙 Lamb"];
@@ -14605,8 +14617,11 @@ function App() {
                 annual:  "Annual — All recipes available for annual membership",
                 dev:     "Dev — Full access"
             };
-            return React.createElement("div", { style:{ position:"fixed", inset:0, background:"rgba(0,0,0,0.92)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 24px" } },
-                React.createElement("div", { style:{ background:C.card, borderRadius:16, padding:"24px 20px", maxWidth:300, width:"100%" } },
+            return React.createElement("div", { style:{ position:"fixed", inset:0, background:"rgba(0,0,0,0.92)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"24px" } },
+                // Scrollable and height-capped: with the reset section added this card
+                // is taller than a phone viewport, and a fixed overlay clips rather
+                // than scrolls — the Cancel button would sit off-screen with no way back.
+                React.createElement("div", { style:{ background:C.card, borderRadius:16, padding:"24px 20px", maxWidth:300, width:"100%", maxHeight:"88vh", overflowY:"auto", WebkitOverflowScrolling:"touch" } },
                     React.createElement("div", { style:{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.12em", marginBottom:4 } }, "⚙️ SET ACCESS TIER"),
                     React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:18 } }, "Simulates the exact experience of that user type. Saved until you change it."),
                     ["free","monthly","annual","dev"].map(t => {
@@ -14635,7 +14650,29 @@ function App() {
                         onClick: () => { clearDevTier(); setShowDevTierPicker(false); },
                         style:{ width:"100%", marginTop:4, padding:"10px", borderRadius:8, border:"1px solid rgba(239,68,68,0.4)", background:"rgba(239,68,68,0.10)", color:"#ef4444", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }
                     }, "↩︎ Stop simulating — use my real tier"),
-                    React.createElement("button", { onClick:() => setShowDevTierPicker(false), style:{ width:"100%", marginTop:6, padding:"9px", borderRadius:8, border:"1px solid "+C.dim, background:"none", color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" } }, "Cancel")
+                    // ── Testing resets ────────────────────────────────────────
+                    // These live here because this picker is the only dev surface
+                    // the 5-tap PIN opens. They were previously only inside
+                    // DevModal, which nothing ever opened, so they were dead code.
+                    React.createElement("div", { style:{ borderTop:`1px solid ${C.dim}`, marginTop:14, paddingTop:14 } },
+                        React.createElement("div", { style:{ fontSize:9, fontWeight:700, color:C.muted, letterSpacing:"0.12em", marginBottom:10 } }, "🧪 TESTING RESETS"),
+                        React.createElement("button", {
+                            onClick: resetToNewUser,
+                            style:{ width:"100%", background:"rgba(239,68,68,0.18)", border:"1px solid rgba(239,68,68,0.45)", borderRadius:8, padding:"11px", color:"#ef4444", fontSize:12, fontWeight:800, cursor:"pointer", marginBottom:4, fontFamily:"inherit" }
+                        }, "🚪 Brand-New User — Sign Out & Wipe All"),
+                        React.createElement("div", { style:{ fontSize:10, color:C.muted, marginBottom:10, lineHeight:1.45 } },
+                            "Signs out, clears all data, caches and the service worker. Full journey: sign-up → onboarding → free tier → upgrade prompt → checkout."),
+                        React.createElement("button", {
+                            onClick: resetLocalData,
+                            style:{ width:"100%", background:"rgba(239,68,68,0.10)", border:"1px solid rgba(239,68,68,0.28)", borderRadius:8, padding:"9px", color:"#ef4444", fontSize:12, fontWeight:700, cursor:"pointer", marginBottom:4, fontFamily:"inherit" }
+                        }, "🆕 First-Time User — Clear Local Data"),
+                        React.createElement("div", { style:{ fontSize:10, color:C.muted, marginBottom:10, lineHeight:1.45 } },
+                            "Keeps you signed in on your current tier."),
+                        React.createElement("button", {
+                            onClick: resetOnboardingOnly,
+                            style:{ width:"100%", background:C.card2, border:`1px solid ${C.dim}`, borderRadius:8, padding:"9px", color:C.sub, fontSize:12, cursor:"pointer", fontFamily:"inherit" }
+                        }, "🔄 Repeat User — Reset Onboarding Only")),
+                    React.createElement("button", { onClick:() => setShowDevTierPicker(false), style:{ width:"100%", marginTop:14, padding:"9px", borderRadius:8, border:"1px solid "+C.dim, background:"none", color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" } }, "Cancel")
                 )
             );
         })(),
