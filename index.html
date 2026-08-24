@@ -13775,9 +13775,27 @@ function App() {
         catch (e) { }
     };
     // How long a server-confirmed tier stays trusted without a fresh check.
-    // Long enough to cover a holiday with no signal; short enough that a
-    // cancellation takes effect promptly once the device is online again.
-    const UNLOCK_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
+    //
+    // 30 days, not 7. The window only ever applies to someone who cannot reach
+    // the server, because ANY successful read re-verifies and overwrites it. So
+    // a shorter window does almost nothing to a freeloader — they would have to
+    // keep the app permanently offline — while a longer one protects a paying
+    // subscriber travelling, at sea, or on a bad connection. Getting this wrong
+    // in the strict direction means locking a customer out of something they
+    // have paid for, which is the worse error.
+    const UNLOCK_GRACE_MS = 30 * 24 * 60 * 60 * 1000;
+    // True when we are holding back access from someone who looks like a
+    // subscriber, purely because we have not been able to reach the server.
+    // Distinct from "this person is on the free tier", and the user needs to be
+    // told which of the two it is.
+    const _verificationLapsed = () =>
+        !!currentUser &&
+        !unlocks._serverVerified &&
+        ["monthly", "annual"].includes(unlocks.tier) &&
+        unlocks._verifiedFor === currentUser.id &&
+        typeof unlocks._verifiedAt === "number" &&
+        (Date.now() - unlocks._verifiedAt) >= UNLOCK_GRACE_MS;
+
     const _withinGrace = () =>
         !!currentUser &&
         unlocks._verifiedFor === currentUser.id &&
@@ -14843,6 +14861,28 @@ function App() {
                 color: "#000", cursor: "pointer", zIndex: 400, letterSpacing: "0.08em",
                 boxShadow: "0 2px 8px rgba(34,197,94,0.4)" } },
             "\uD83D\uDD13 " + (unlocks.tier || "dev").toUpperCase() + " \u00B7 TAP TO SWITCH")),
+        // ── Subscription could not be verified ───────────────────────────
+        // Without this, a paying subscriber who has been offline past the grace
+        // window opens the app to find every recipe locked and a "Get access"
+        // button — indistinguishable from having been cut off. Tell them what
+        // has actually happened and give them a way to fix it.
+        _verificationLapsed() && React.createElement('div', {
+            style: { position:'fixed', bottom: swUpdateReady ? 64 : 0, left:'50%', transform:'translateX(-50%)',
+                width:'100%', maxWidth:520, background:'#78350f', color:'#fff',
+                padding:'11px 16px', zIndex:301, fontSize:12, lineHeight:1.5,
+                display:'flex', alignItems:'center', gap:10 }
+        },
+            React.createElement('span', { style:{fontSize:16} }, '\uD83D\uDCF6'),
+            React.createElement('div', { style:{flex:1} },
+                "We haven't been able to confirm your ",
+                React.createElement('strong', null, (unlocks.tier || '') + ' membership'),
+                " for a while. Your subscription is fine \u2014 connect to the internet once and your recipes come straight back."),
+            React.createElement('button', {
+                onClick: () => { if (currentUser) loadUserData(currentUser.id, currentUser.email); },
+                style:{ background:'rgba(255,255,255,0.16)', border:'1px solid rgba(255,255,255,0.3)',
+                    color:'#fff', fontSize:11, fontWeight:800, cursor:'pointer',
+                    padding:'6px 12px', borderRadius:8, whiteSpace:'nowrap', fontFamily:'inherit' }
+            }, 'Retry now')),
         storageFull && React.createElement('div', {
             style: { position:'fixed', bottom: swUpdateReady ? 64 : 0, left:'50%', transform:'translateX(-50%)',
                 width:'100%', maxWidth:520, background:'#7f1d1d', color:'#fff',
