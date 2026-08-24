@@ -4227,7 +4227,7 @@ const RECIPES = [
     },
     {
         category: "breakfast", id: "bf24",
-        name: "🍌 Almond Butter Banana Wrap",
+        name: "🥜 Peanut Butter Banana Wrap",
         subtitle: "No cook · 5 min",
         badge: "🥗 No-Cook", carb: "🌮 Tortilla",
         portions: 1,
@@ -5813,7 +5813,7 @@ const PENDING_RECIPES = [
             { key: "v11_cabbage", label: "Cabbage / coleslaw mix (shredded)", qty: 400, unit: "g", cat: "Veg", ingId: 125, role: "veg", share: 1 },
             { key: "v11_pb", label: "Natural peanut butter (no added sugar)", qty: 40, unit: "g", cat: "Fat", ingId: 166, role: "fat", share: 1 },
             { key: "v11_soy", label: "Soy sauce / tamari", qty: 60, unit: "mL", cat: "Flavour", ingId: 180, role: "flavour", baseQty: 15 },
-            { key: "v11_honey", label: "Maple syrup (or honey)", qty: 30, unit: "g", cat: "Carbs", ingId: 195, role: "carbs", share: 1 },
+            { key: "v11_honey", label: "Maple syrup", qty: 30, unit: "g", cat: "Carbs", ingId: 195, role: "carbs", share: 1 },
             { key: "v11_lime", label: "Lime juice", qty: 60, unit: "mL", cat: "Flavour", ingId: 151, role: "flavour", baseQty: 15 },
             { key: "v11_garlic", label: "Garlic (minced)", qty: 15, unit: "g", cat: "Flavour", ingId: 108, role: "flavour", baseQty: 3.75 },
         ],
@@ -7867,44 +7867,115 @@ function TotalBar({ total, targets, profileName }) {
         })));
 }
 // ─── ALLERGEN DETECTION ────────────────────────────────────────────────────
+// ── ALLERGENS ────────────────────────────────────────────────────────────────
+// Rewritten after the full 191-recipe audit. Three faults were found, all live:
+//
+//  1. Only 9 of the EU FIC 14 were implemented. Celery, mustard, sulphites,
+//     lupin and molluscs had no category at all, so a Dijon-and-Worcestershire
+//     recipe reported "no allergens".
+//  2. Composite foods were invisible. "Brioche bun" contains wheat, egg and
+//     butter but matched no term, so three burger recipes were actively badged
+//     GLUTEN-FREE and EGG-FREE. Same for granola, English muffin, macaroni,
+//     Corn Flakes (spaced, so the "cornflake" term missed), hummus and
+//     Worcestershire sauce.
+//  3. Substring matching fired on innocent words: "eggPLANT" → egg,
+//     "butterNUT" → tree nuts, "coconut MILK" → dairy, "peanut BUTTER" → dairy
+//     AND tree nuts. Those denied recipes the dairy-free and nut-free badges
+//     they had earned.
+//
+// EXCLUSIONS run first and win. Order matters.
 const ALLERGEN_MAP = [
-    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","tortilla","bagel","soy sauce","wheat","oat","cornflake","breadcrumb","wrap","noodle","pita","couscous","bulgur","seitan","panko"] },
-    { name: "Dairy",          icon: "🧀", terms: ["cheese","milk","butter","cream","yogurt","yoghurt","whey","cheddar","parmesan","mozzarella","ricotta","feta","ghee","lactose","sour cream","half-and-half"] },
-    { name: "Eggs",           icon: "🥚", terms: ["egg","eggs"] },
-    { name: "Soy",            icon: "🫘", terms: ["soy","tofu","edamame","miso","tempeh","tamari"] },
-    { name: "Peanuts",        icon: "🥜", terms: ["peanut","peanut butter","groundnut"] },
-    { name: "Tree Nuts",      icon: "🌰", terms: ["almond","cashew","walnut","pecan","pistachio","hazelnut","macadamia","brazil nut","pine nut","nut butter"] },
-    { name: "Sesame",         icon: "🌿", terms: ["sesame","tahini"] },
-    { name: "Fish",           icon: "🐟", terms: ["salmon","tuna","cod","tilapia","fish sauce","anchov","sardine","mackerel","trout","mahi","snapper","bass","bream","haddock"] },
-    { name: "Shellfish",      icon: "🦐", terms: ["shrimp","prawn","crab","lobster","scallop","clam","oyster","mussel","squid","octopus"] },
+    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","macaroni","spaghetti","penne","fusilli","linguine","orzo","farfalle","rigatoni","lasagne","lasagna","tortilla","bagel","brioche","bun","roll","ciabatta","focaccia","naan","pita","bao","croissant","muffin","crumpet","soy sauce","worcestershire","wheat","barley","malt","rye","spelt","semolina","oat","granola","muesli","cornflake","corn flake","cereal","cracker","pancake mix","baking mix","batter mix","breadcrumb","panko","wrap","noodle","couscous","bulgur","seitan","pastry","biscuit","cookie","crouton","stock cube","bouillon"],
+      not: ["coconut flour","almond flour","chickpea flour","rice flour","buckwheat","rice cake","gluten-free","gluten free","corn tortilla","tamari"] },
+    { name: "Dairy",          icon: "🧀", terms: ["cheese","milk","butter","cream","yogurt","yoghurt","whey","casein","cheddar","parmesan","parmigiano","mozzarella","ricotta","feta","halloumi","mascarpone","ghee","lactose","custard","brioche"],
+      not: ["peanut butter","almond butter","cashew butter","nut butter","coconut milk","almond milk","oat milk","soy milk","soya milk","rice milk","coconut cream","cocoa butter","shea butter","buttermilk substitute","butternut","butter bean","butterhead"] },
+    { name: "Eggs",           icon: "🥚", terms: ["egg","mayonnaise","mayo","aioli","meringue","brioche","custard"],
+      not: ["eggplant","aubergine","egg-free","egg free","eggless"] },
+    { name: "Soy",            icon: "🫘", terms: ["soy","soya","tofu","edamame","miso","tempeh","tamari","hoisin","teriyaki","lecithin"],
+      not: ["soy-free","soy free"] },
+    { name: "Peanuts",        icon: "🥜", terms: ["peanut","groundnut","pb2","pbfit","satay"], not: [] },
+    { name: "Tree Nuts",      icon: "🌰", terms: ["almond","cashew","walnut","pecan","pistachio","hazelnut","macadamia","brazil nut","pine nut","praline","marzipan","nutella","granola","muesli","trail mix"],
+      // "nut butter" removed as a term: it is a substring of "peanut butter",
+      // so every peanut recipe falsely declared tree nuts and lost Nut-Free.
+      not: ["butternut","nutmeg","coconut","water chestnut","nutritional yeast","nut-free","nut free"] },
+    { name: "Sesame",         icon: "🌿", terms: ["sesame","tahini","hummus","houmous","baba ganoush","halva","za'atar","zaatar","falafel","gomashio","everything bagel"], not: [] },
+    { name: "Fish",           icon: "🐟", terms: ["salmon","tuna","cod","tilapia","fish sauce","fish stock","anchov","sardine","mackerel","trout","mahi","snapper","bass","bream","haddock","barramundi","pollock","hake","halibut","perch","catfish","basa","swordfish","herring","worcestershire","caesar dressing"], not: [] },
+    { name: "Crustaceans",    icon: "🦐", terms: ["shrimp","prawn","crab","lobster","crayfish","langoustine"], not: [] },
+    { name: "Molluscs",       icon: "🦪", terms: ["oyster","mussel","clam","scallop","squid","calamari","octopus","snail","cuttlefish"], not: [] },
+    // ── The five that were missing entirely ──────────────────────────────────
+    { name: "Celery",         icon: "🥬", terms: ["celery","celeriac","stock cube","bouillon","bone broth","vegetable broth","chicken broth","beef broth","taco seasoning","peri peri","peri-peri"], not: [] },
+    { name: "Mustard",        icon: "🌭", terms: ["mustard","dijon","wholegrain mustard","relish","mayonnaise","mayo"], not: [] },
+    { name: "Sulphites",      icon: "🍷", terms: ["balsamic","wine","vinegar","dried apricot","sriracha","peri peri","peri-peri","relish","gherkin","pickle"],
+      not: ["rice vinegar","apple cider vinegar"] },
+    { name: "Lupin",          icon: "🌱", terms: ["lupin","lupine"], not: [] },
 ];
 
-// Dietary suitability tags — computed from what the recipe does NOT contain
-function getDietaryTags(recipe) {
-    if (!recipe || !recipe.batchItems) return [];
-    const all = recipe.batchItems.map(i => (i.name || i.label || "").toLowerCase()).join(" ");
-    const tags = [];
-    const hasGluten = ["flour","bread","pasta","tortilla","bagel","soy sauce","wheat","oat","wrap","noodle","pita","couscous","bulgur","seitan","panko","rice cake"].some(t => all.includes(t));
-    const hasDairy  = ["cheese","milk","butter","cream","yogurt","yoghurt","whey","cheddar","parmesan","mozzarella","ricotta","feta","ghee","lactose","sour cream"].some(t => all.includes(t));
-    const hasEgg    = ["egg"].some(t => all.includes(t));
-    const hasNut    = ["peanut","almond","cashew","walnut","pecan","pistachio","hazelnut","macadamia","pine nut","nut butter"].some(t => all.includes(t));
-    const hasSoy    = ["soy","tofu","edamame","miso","tempeh","tamari"].some(t => all.includes(t));
-    if (!hasGluten) tags.push({ label: "Gluten-Free", color: "#b45309", bg: "rgba(180,83,9,0.10)", border: "rgba(180,83,9,0.25)" });
-    if (!hasDairy)  tags.push({ label: "Dairy-Free",  color: "#0891b2", bg: "rgba(8,145,178,0.10)", border: "rgba(8,145,178,0.25)" });
-    if (!hasEgg)    tags.push({ label: "Egg-Free",    color: "#d97706", bg: "rgba(217,119,6,0.10)", border: "rgba(217,119,6,0.25)" });
-    if (!hasNut)    tags.push({ label: "Nut-Free",    color: "#65a30d", bg: "rgba(101,163,13,0.10)", border: "rgba(101,163,13,0.25)" });
-    if (!hasSoy)    tags.push({ label: "Soy-Free",    color: C.purple, bg: "rgba(124,58,237,0.10)", border: "rgba(124,58,237,0.25)" });
-    return tags;
+// Word-aware matcher. Runs the `not` list first so an exclusion always wins,
+// then requires the term to sit on a word boundary — "egg" must not match
+// inside "eggplant" and "oat" must not match inside "goat".
+function _allergenHit(text, entry) {
+    let t = " " + String(text || "").toLowerCase() + " ";
+    for (const ex of (entry.not || [])) {
+        if (!ex) continue;
+        t = t.split(ex).join(" ");           // remove excluded phrases entirely
+    }
+    return (entry.terms || []).some(term => {
+        if (!term) return false;
+        const isWordChar = c => c !== undefined && /[a-z0-9]/.test(c);
+        let i = -1;
+        while ((i = t.indexOf(term, i + 1)) >= 0) {
+            if (isWordChar(t[i - 1])) continue;
+            // Allow a plural on the term itself: "corn flake" must match
+            // "Corn Flakes", which is how the cereal is actually labelled.
+            let after = i + term.length;
+            if (t[after] === "s") after += 1;
+            else if (t[after] === "e" && t[after + 1] === "s") after += 2;
+            if (!isWordChar(t[after])) return true;
+        }
+        return false;
+    });
 }
 
 function detectAllergens(recipe) {
     if (!recipe || !recipe.batchItems) return [];
-    const allLabels = recipe.batchItems.map(i => (i.name || i.label || "").toLowerCase()).join(" ");
-    const found = [];
-    ALLERGEN_MAP.forEach(a => {
-        if (a.terms.some(t => allLabels.includes(t))) found.push(a);
-    });
-    return found;
+    // Scan the METHOD and the subtitle as well as the ingredient list.
+    //
+    // Several recipes instruct you to add something that is not in batchItems —
+    // "top with crushed almonds", "add wonton skins", "stir in fish sauce". The
+    // detector only read batchItems, so those recipes kept a Nut-Free or
+    // Gluten-Free badge while the method told the user to add the allergen.
+    // Reading the steps over-warns in the worst case and under-warns in none,
+    // which is the only acceptable direction of error for an allergen.
+    const text = [
+        recipe.batchItems.map(i => (i.name || i.label || "")).join(" "),
+        (recipe.steps || []).join(" "),
+        recipe.subtitle || "",
+    ].join(" ");
+    return ALLERGEN_MAP.filter(a => _allergenHit(text, a));
+}
+
+// Dietary suitability — the exact inverse of detectAllergens, from the SAME
+// term lists.
+//
+// These were two independent copies and they disagreed: getDietaryTags listed
+// "rice cake" as a gluten trigger and ALLERGEN_MAP did not, so a rice-cake
+// recipe showed no gluten allergen AND no Gluten-Free badge simultaneously.
+// Deriving one from the other makes that contradiction impossible.
+const DIETARY_TAGS = [
+    { allergen: "Gluten / Wheat", label: "Gluten-Free", color: "#b45309", bg: "rgba(180,83,9,0.10)",  border: "rgba(180,83,9,0.25)" },
+    { allergen: "Dairy",          label: "Dairy-Free",  color: "#0891b2", bg: "rgba(8,145,178,0.10)", border: "rgba(8,145,178,0.25)" },
+    { allergen: "Eggs",           label: "Egg-Free",    color: "#d97706", bg: "rgba(217,119,6,0.10)", border: "rgba(217,119,6,0.25)" },
+    { allergen: "Tree Nuts",      label: "Nut-Free",    color: "#65a30d", bg: "rgba(101,163,13,0.10)",border: "rgba(101,163,13,0.25)" },
+    { allergen: "Soy",            label: "Soy-Free",    color: null,      bg: "rgba(124,58,237,0.10)",border: "rgba(124,58,237,0.25)" },
+];
+function getDietaryTags(recipe) {
+    if (!recipe || !recipe.batchItems) return [];
+    const present = new Set(detectAllergens(recipe).map(a => a.name));
+    // Nut-Free must also clear peanuts. Peanut allergy is the most common
+    // severe one and "Tree Nuts" alone does not cover it.
+    return DIETARY_TAGS
+        .filter(t => !present.has(t.allergen) && !(t.label === "Nut-Free" && present.has("Peanuts")))
+        .map(t => ({ label: t.label, color: t.color || C.purple, bg: t.bg, border: t.border }));
 }
 
 // ─── REACT ERROR BOUNDARY ────────────────────────────────────────────────────
