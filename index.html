@@ -720,6 +720,13 @@ const ING_FLAT = [
   {id:332, name:"Balsamic Glaze", cat:"Condiments & Sauces", kcal:280, p:0.5, c:68, f:0},
   {id:333, name:"Whole Milk (fresh)", cat:"Dairy & Eggs", kcal:61, p:3.2, c:4.8, f:3.3, unitG:240},
   {id:334, name:"Papaya", cat:"Fruits", kcal:43, p:0.5, c:11, f:0.3},
+  // Added during the recipe audit. Four recipes were pointing v1_coco /
+  // sm3_coconut / sm7_coconut / m79_coconut at ingId 177 (Pumpkin Seeds,
+  // 559 kcal) because no light-coconut-milk row existed. Values match the
+  // INGREDIENT_MACROS entries those recipes already used.
+  {id:336, name:"Coconut Milk (light, canned)", cat:"Dairy & Alternatives", kcal:77, p:0.8, c:3.3, f:7},
+  // m23 was pointing m23_pepp (turkey mince) at ingId 29, Squid / Calamari.
+  {id:337, name:"Ground Turkey (95% lean, raw)", cat:"Meat & Poultry", kcal:163, p:20, c:0, f:9},
 ];
 // O(1) ingredient lookup by id — built once at module load
 const ING_MAP = new Map(ING_FLAT.map(i => [i.id, i]));
@@ -1309,7 +1316,7 @@ const RECIPES = [
         name: "🥚 Egg White Frittata & Roasted Potatoes",
         subtitle: "Liquid egg whites · whole eggs · baby potatoes · spinach · pepper",
         badge: "🌬️ Oven", carb: "🥔 Potato", portions: 7,
-        perPortion: {kcal:294,protein:33,carbs:26,fat:6.2},
+        perPortion: {kcal:318, protein:33.5, carbs:25.4, fat:8.6},
         locked: true,
         batchItems: [
             { key: "m43_ew", label: "Liquid egg whites", qty: 1400, unit: "g", cat: "Protein" , ingId: 41 , role: "protein", share: 0.5},
@@ -1422,7 +1429,7 @@ const RECIPES = [
         name: "🍗 Greek Chicken & Orzo Bowl",
         subtitle: "Chicken breast · orzo · cucumber · tomato · olives · lemon-herb",
         badge: "🌬️ Oven", carb: "🍝 Orzo", portions: 7,
-        perPortion: {kcal:596, protein:53.1, carbs:58.6, fat:15.3},
+        perPortion: {kcal:580, protein:53.2, carbs:59.2, fat:13.2},
         locked: true,
         batchItems: [
             { key: "m46_chk", label: "Chicken breast (raw)", qty: 1260, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1448,7 +1455,7 @@ const RECIPES = [
         id: "v4", category: "main", portions: 5,
         name: "🥗 Greek Yogurt Egg & Veggie Protein Bowl", subtitle: "Scrambled eggs · cottage cheese · roasted veggies · quinoa",
         badge: "🌬️ Oven", carb: "🌾 Quinoa",
-        perPortion: {kcal:618,protein:44,carbs:62,fat:21.9},
+        perPortion: {kcal:640, protein:43.7, carbs:62, fat:24.2},
         batchItems: [
             { key: "v4_eggs",   label: "Large eggs",                   qty: 10,  unit: "whole", cat: "Protein"    , ingId: 40 , role: "protein", share: 0.5},
             { key: "v4_cot",    label: "Cottage cheese (low fat)",     qty: 400, unit: "g",    cat: "Dairy"       , ingId: 43 , role: "protein", share: 0.339},
@@ -1474,7 +1481,7 @@ const RECIPES = [
     {
         category: "main", id: "m11", name: "🍗 Green Pepper & Onion Pasta", subtitle: "Chicken · sautéed green peppers · creamy + tomato sauce",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
-        perPortion: {kcal:752,protein:62.3,carbs:77.6,fat:19.8},
+        perPortion: {kcal:736, protein:62.3, carbs:77.6, fat:17.9},
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1300, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.895127},
             { key: "pasta_regular", label: "Pasta (spaghetti or any)", qty: 615, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1540,7 +1547,7 @@ const RECIPES = [
         name: "🦃 Ground Turkey Taco Bowl",
         subtitle: "Turkey mince · jasmine rice · black beans · salsa · cumin",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
-        perPortion: {kcal:769, protein:64.7, carbs:79.7, fat:20.7},
+        perPortion: {kcal:821, protein:65, carbs:80.9, fat:26},
         locked: true,
         batchItems: [
             { key: "m39_turk", label: "93/7 turkey mince (raw)", qty: 1925, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
@@ -1891,7 +1898,7 @@ const RECIPES = [
     {
         category: "main", id: "m62", name: "🐟 Salmon, Avocado & Spinach Bowl", subtitle: "Baked Atlantic salmon · fresh avocado · wilted spinach · lemon",
         badge: "🌬️ Oven", carb: "—", portions: 5,
-        perPortion: {kcal:563, protein:46.6, carbs:10.8, fat:36.4},
+        perPortion: {kcal:538, protein:46.6, carbs:10.8, fat:33.5},
         batchItems: [
             { key: "m62_salmon", label: "Salmon (Atlantic, raw)",         qty: 1050, unit: "g",     cat: "Protein",   ingId: 20,  role: "protein", share: 1.0   },
             { key: "m62_avo",    label: "Avocado",                        qty: 188,  unit: "g",     cat: "Fats",      ingId: 149, role: "fat",     share: 0.737 },
@@ -2239,7 +2246,7 @@ const RECIPES = [
         batchItems: [
             { key: "v1_lent",   label: "Red lentils (dry)",            qty: 700, unit: "g",    cat: "Carbs"      , ingId: 92 , role: "carbs", share: 1},
             { key: "v1_spin",   label: "Frozen spinach",               qty: 400, unit: "g",    cat: "Vegetables"  , ingId: 101 , role: "veg", baseQty: 57.14},
-            { key: "v1_coco",   label: "Light coconut milk",           qty: 200, unit: "g", cat: "Dairy"      , ingId: 177 , role: "fixed", baseQty: 0.14},
+            { key: "v1_coco",   label: "Light coconut milk",           qty: 200, unit: "g", cat: "Dairy"      , ingId:336 , role: "fixed", baseQty: 0.14},
             { key: "v1_tom",    label: "Crushed tomatoes (400g can)",  qty: 2,   unit: "whole", cat: "Vegetables"  , ingId: 187 , role: "veg", baseQty: 0.29},
             { key: "v1_onion",  label: "Large onion (diced)",          qty: 2,   unit: "whole", cat: "Vegetables"  , ingId: 106 , role: "veg", baseQty: 0.29},
             { key: "v1_gar",    label: "Garlic cloves (minced)",       qty: 6,   unit: "whole", cat: "Vegetables"  , ingId: 108 , role: "veg", baseQty: 0.86},
@@ -2332,7 +2339,7 @@ const RECIPES = [
         batchItems: [
             { key: "m23_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.613},
             { key: "m23_tsaus", label: "Lean turkey sausage", qty: 450, unit: "g", cat: "Protein" , ingId: 17 , role: "protein", share: 0.277},
-            { key: "m23_pepp", label: "Turkey mince (lean 5% fat)", qty: 198, unit: "g", cat: "Protein" , ingId: 29 , role: "protein", share: 0.109},
+            { key: "m23_pepp", label: "Turkey mince (lean 5% fat)", qty: 198, unit: "g", cat: "Protein" , ingId:337 , role: "protein", share: 0.109},
             { key: "m23_pasta", label: "High-protein pasta", qty: 320, unit: "g", cat: "Carbs" , ingId: 67 , role: "carbs", share: 1},
             { key: "m23_cheese", label: "2% Mexican 4-cheese blend", qty: 280, unit: "g", cat: "Dairy" , ingId: 51 , role: "fat", share: 0.794},
             { key: "m23_sauce", label: "Low-cal pizza sauce", qty: 560, unit: "g", cat: "Sauces" , ingId: 187 , role: "fixed", baseQty: 56},
@@ -2416,7 +2423,7 @@ const RECIPES = [
         subtitle: "Lean beef · potatoes · ranch sauce",
         portions: 3,
         badge: "🍳 Stovetop", carb: "🍚 Rice",
-        perPortion: {kcal:559, protein:56.2, carbs:56.6, fat:11.2},
+        perPortion: {kcal:561, protein:56.6, carbs:55.3, fat:12.1},
         batchItems: [
             { key: "m2-beef", label: "95/5 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.796},
             { key: "m2-rice", label: "Wholegrain brown rice (dry)", qty: 125, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -2505,7 +2512,7 @@ const RECIPES = [
         id: "m19", category: "main", portions: 1,
         name: "🥑 Salmon & Avocado Burrito", subtitle: "Crispy wrap · Air fryer",
         badge: "💨 Air Fryer", carb: "🌯 Wrap",
-        perPortion: {kcal:567, protein:51.2, carbs:51.5, fat:15.9},
+        perPortion: {kcal:756, protein:51.2, carbs:51.5, fat:36.9},
         batchItems: [
             { key: "m19_salm", label: "Salmon loin (cubed, raw)", qty: 150, unit: "g", cat: "Protein" , ingId: 20 , role: "protein", share: 0.69},
             { key: "m19_avo", label: "Ripe avocado (quarter)", qty: 0.25, unit: "whole", cat: "Vegetables" , ingId: 149 , role: "veg", baseQty: 0.5},
@@ -2608,7 +2615,7 @@ const RECIPES = [
         name: "🍯 Slow Cooker Honey Cashew Chicken", subtitle: "Slow cooker · 6 hr",
         portions: 5,
         badge: "🥘 Crockpot", carb: "🥜 Cashew",
-        perPortion: { kcal:334, protein:45.0, carbs:16.0, fat:9.5 },
+        perPortion: {kcal:343, protein:45.3, carbs:18.1, fat:9.6},
         batchItems: [
             { key: "m24_chk", label: "Chicken breast (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.969},
             { key: "m24_honey", label: "Honey", qty: 30, unit: "g", cat: "Sauces" , ingId: 195 , role: "fixed", baseQty: 6},
@@ -2948,7 +2955,7 @@ const RECIPES = [
         name: "🧀 Paneer Tikka Masala Bowl", subtitle: "Paneer · basmati rice · tomato-cream masala",
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 7, locked: true,
-        perPortion: {kcal:446, protein:33.1, carbs:53.1, fat:12.0},
+        perPortion: {kcal:466, protein:33.1, carbs:53.1, fat:14.2},
         batchItems: [
             { key: "v5_pan",   label: "Paneer (cubed)",               qty: 300, unit: "g",    cat: "Protein"    , ingId: 276 , role: "protein", share: 0.25},
             { key: "v5_rice",  label: "Wholegrain brown rice (dry)",           qty: 280, unit: "g",    cat: "Carbs"      , ingId: 62 , role: "carbs", share: 1},
@@ -3631,7 +3638,7 @@ const RECIPES = [
         name: "🥜 Rice Cake & Peanut Butter Stack",
         subtitle: "Rice cakes · peanut butter · banana · honey",
         badge: "🥗 No-Cook", carb: "🍌 Banana",
-        perPortion: { kcal: 290, protein: 8, carbs: 48, fat: 9 },
+        perPortion: {kcal:288, protein:6.6, carbs:50.7, fat:8.7},
         batchItems: [
             { key: "pw_ricecake", label: "Plain rice cakes", qty: 14, unit: "whole", cat: "Carbs" , ingId: 84 , role: "carbs", share: 0.5},
             { key: "pw_pb", label: "Natural peanut butter", qty: 112, unit: "g", cat: "Fats" , ingId: 166 , role: "fat", share: 1},
@@ -3703,7 +3710,7 @@ const RECIPES = [
             { key: "sm3_pine", label: "Pineapple (chunks)", qty: 100, unit: "g", cat: "Carbs", ingId: 147, role: "carbs", share: 0.333333},
             { key: "sm3_kale", label: "Kale (raw)", qty: 40, unit: "g", cat: "Vegetables", ingId: 102, role: "veg", share: 1},
             { key: "sm3_spinach", label: "Baby spinach", qty: 30, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", share: 1},
-            { key: "sm3_coconut", label: "Light coconut milk", qty: 80, unit: "ml", cat: "Fats", ingId: 177, role: "fats", share: 1},
+            { key: "sm3_coconut", label: "Light coconut milk", qty: 80, unit: "ml", cat: "Fats", ingId:336, role: "fats", share: 1},
             { key: "sm3_pb", label: "Peanut butter (natural)", qty: 20, unit: "g", cat: "Fats", ingId: 166, role: "fats", share: 1},
             { key: "sm3_dates", label: "Medjool dates (pitted)", qty: 10, unit: "g", cat: "Carbs", ingId: 154, role: "carbs", share: 0.333334},
             { key: "sm3_protein", label: "Whey protein powder", qty: 40, unit: "g", cat: "Supplements", ingId: 210, role: "protein", share: 1},
@@ -3763,7 +3770,7 @@ const RECIPES = [
         subtitle: "Blend · 5 min",
         badge: "🌀 Blender", carb: "🍌 Banana",
         portions: 1,
-        perPortion: {kcal:305, protein:23.7, carbs:34.3, fat:8.4},
+        perPortion: {kcal:353, protein:37.4, carbs:38.6, fat:8.2},
         batchItems: [
             { key: "sm6_milk", label: "Almond Milk (unsweetened)", qty: 300, unit: "ml", cat: "Dairy", ingId: 58, role: "carbs", share: 0.5},
             { key: "sm6_banana", label: "Banana (medium)", qty: 80, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.5},
@@ -3786,7 +3793,7 @@ const RECIPES = [
         portions: 1,
         perPortion: {kcal:509.4, protein:50.9, carbs:58.1, fat:10.1},
         batchItems: [
-            { key: "sm7_coconut", label: "Light coconut milk", qty: 100, unit: "ml", cat: "Fats", ingId: 177, role: "fats", share: 1},
+            { key: "sm7_coconut", label: "Light coconut milk", qty: 100, unit: "ml", cat: "Fats", ingId:336, role: "fats", share: 1},
             { key: "sm7_mango", label: "Mango", qty: 80, unit: "g", cat: "Carbs", ingId: 146, role: "carbs", share: 0.333333},
             { key: "sm7_banana", label: "Banana (medium)", qty: 100, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.333333},
             { key: "sm7_dates", label: "Medjool dates (pitted)", qty: 20, unit: "g", cat: "Carbs", ingId: 154, role: "carbs", share: 0.333334},
@@ -3894,7 +3901,7 @@ const RECIPES = [
         subtitle: "No cook · 5 min · carb-only pre-workout fuel",
         badge: "🥗 No-Cook", carb: "🍓 Fruit",
         portions: 1,
-        perPortion: {kcal: 120, protein: 1.5, carbs: 30, fat: 0.5},
+        perPortion: {kcal:171, protein:2.4, carbs:43.6, fat:1.1},
         batchItems: [
             { key: "sn3_mango", label: "Mango", qty: 100, unit: "g", cat: "Fruits", ingId: 146, role: "carbs", share: 0.25},
             { key: "sn3_papaya", label: "Papaya", qty: 80, unit: "g", cat: "Fruits", ingId: 334, role: "carbs", share: 0.25},
@@ -3918,7 +3925,7 @@ const RECIPES = [
         subtitle: "No cook · 10 min · with cottage cheese dip",
         badge: "🥗 No-Cook", carb: "🥗 Veg",
         portions: 1,
-        perPortion: {kcal: 162, protein: 19, carbs: 20, fat: 1},
+        perPortion: {kcal:222, protein:23.1, carbs:31.4, fat:1.1},
         batchItems: [
             { key: "sn4_cucumber", label: "Cucumber", qty: 100, unit: "g", cat: "Vegetables", ingId: 111, role: "veg", share: 1},
             { key: "sn4_carrot", label: "Carrot", qty: 80, unit: "g", cat: "Vegetables", ingId: 117, role: "veg", share: 1},
@@ -3965,7 +3972,7 @@ const RECIPES = [
         subtitle: "Stovetop · 15 min",
         badge: "🍳 Stovetop", carb: "—",
         portions: 1,
-        perPortion: {kcal: 222.9, protein: 38.3, carbs: 12.4, fat: 3.2},
+        perPortion: {kcal:296, protein:48.1, carbs:12, fat:5.6},
         batchItems: [
             { key: "sn6_chicken", label: "Chicken breast (skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1},
             { key: "sn6_lettuce", label: "Lettuce (romaine)", qty: 80, unit: "g", cat: "Vegetables", ingId: 112, role: "veg", share: 1},
@@ -4201,7 +4208,7 @@ const RECIPES = [
         subtitle: "Stovetop · 20 min",
         badge: "🍳 Stovetop", carb: "🥞 Pancake",
         portions: 1,
-        perPortion: {kcal:603, protein:52.5, carbs:70.9, fat:10.9},
+        perPortion: {kcal:703, protein:52.6, carbs:70.9, fat:22.3},
         batchItems: [
             { key: "bf23_mix", label: "Protein pancake mix", qty: 120, unit: "g", cat: "Baking", ingId: 257, role: "carbs", share: 0.333333},
             { key: "bf23_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 1},
@@ -4272,7 +4279,7 @@ const RECIPES = [
         subtitle: "Stovetop · 15 min",
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
-        perPortion: {kcal:616, protein:51.3, carbs:39.8, fat:26.9},
+        perPortion: {kcal:706, protein:60.4, carbs:47.3, fat:29.2},
         batchItems: [
             { key: "bf26_salmon", label: "Salmon (Atlantic, raw)", qty: 80, unit: "g", cat: "Protein", ingId: 20, role: "protein", share: 0.25},
             { key: "bf26_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.25},
@@ -4400,7 +4407,7 @@ const RECIPES = [
         subtitle: "Stovetop · 12 min",
         badge: "🍳 Stovetop", carb: "🍞 GF Toast",
         portions: 1,
-        perPortion: {kcal: 368.6, protein: 29.6, carbs: 31.7, fat: 14.8},
+        perPortion: {kcal:389, protein:39.2, carbs:38.5, fat:9.3},
         batchItems: [
             { key: "bf31_whites", label: "Egg whites (raw)", qty: 200, unit: "g", cat: "Protein", ingId: 41, role: "protein", share: 0.5},
             { key: "bf31_spinach", label: "Baby spinach", qty: 60, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", share: 1},
@@ -4424,7 +4431,7 @@ const RECIPES = [
         subtitle: "Stovetop · 30 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 1,
-        perPortion: {kcal:597, protein:47.4, carbs:50.7, fat:24.9},
+        perPortion: {kcal:501, protein:58.5, carbs:38.7, fat:11.4},
         batchItems: [
             { key: "bf32_chicken", label: "Chicken breast (skinless, raw)", qty: 150, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333},
             { key: "bf32_rice", label: "Brown rice (dry)", qty: 40, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -4559,7 +4566,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "—",
         portions: 2,
         tags: ["snack"],
-        perPortion: {kcal:384, protein:51.1, carbs:12.5, fat:14.5},
+        perPortion: {kcal:395, protein:51.8, carbs:14.8, fat:14.7},
         batchItems: [
             { key: "m67_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.473684},
             { key: "m67_avocado", label: "Avocado", qty: 120, unit: "g", cat: "Fats", ingId: 149, role: "fats", share: 1},
@@ -4586,7 +4593,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "—",
         portions: 2,
         tags: ["snack"],
-        perPortion: {kcal: 471, protein: 55.2, carbs: 28.6, fat: 16.7},
+        perPortion: {kcal:455, protein:52.3, carbs:15.6, fat:20.5},
         batchItems: [
             { key: "m68_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m68_cabbage", label: "Cabbage (white)", qty: 150, unit: "g", cat: "Vegetables", ingId: 125, role: "veg", share: 1},
@@ -4621,7 +4628,7 @@ const RECIPES = [
             { key: "m69_tortilla", label: "Tortilla (flour, 25cm)", qty: 60, unit: "g", cat: "Carbs", ingId: 72, role: "carbs", share: 0.5},
             { key: "m69_cumin", label: "Cumin (ground)", qty: 3, unit: "g", cat: "Spices", ingId: 222, role: "flavour", baseQty: 1.5 },
             { key: "m69_lemon", label: "Lemon juice", qty: 15, unit: "ml", cat: "Sauces", ingId: 150, role: "flavour", baseQty: 7.5 },
-            { key: "m69_chk", label: "Chickpeas (canned, drained)", qty: 400, unit: "g", cat: "Legumes", ingId: 73, role: "protein", share: 0.25},
+            { key: "m69_chk", label: "Chickpeas (canned, drained)", qty: 400, unit: "g", cat: "Legumes", ingId:91, role: "protein", share: 0.25},
             { key: "m69_cot", label: "Fat-free cottage cheese", qty: 200, unit: "g", cat: "Dairy", ingId: 42, role: "protein", share: 0.25},
         ],
         steps: [
@@ -4638,7 +4645,7 @@ const RECIPES = [
         subtitle: "Stovetop · 20 min",
         badge: "🍳 Stovetop", carb: "🥔 Potato",
         portions: 1,
-        perPortion: {kcal: 362, protein: 46.3, carbs: 17.5, fat: 12.1},
+        perPortion: {kcal:553, protein:49.2, carbs:37.6, fat:24.1},
         batchItems: [
             { key: "m70_steak", label: "Lean beef tenderloin (raw)", qty: 200, unit: "g", cat: "Protein", ingId: 11, role: "protein", share: 1},
             { key: "m70_beans", label: "Asparagus", qty: 120, unit: "g", cat: "Vegetables", ingId: 114, role: "veg", share: 1},
@@ -4692,7 +4699,7 @@ const RECIPES = [
         subtitle: "Stovetop · 20 min",
         badge: "🍳 Stovetop", carb: "🥔 Potato",
         portions: 1,
-        perPortion: {kcal: 252, protein: 35.1, carbs: 19.9, fat: 4.0},
+        perPortion: {kcal:404, protein:45.2, carbs:40.2, fat:6.6},
         batchItems: [
             { key: "m72_fish", label: "Barramundi (raw)", qty: 180, unit: "g", cat: "Protein", ingId: 317, role: "protein", share: 1},
             { key: "m72_potato", label: "Sweet potato (raw)", qty: 150, unit: "g", cat: "Carbs", ingId: 68, role: "carbs", share: 1},
@@ -4717,7 +4724,7 @@ const RECIPES = [
         subtitle: "Stovetop · 25 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
-        perPortion: {kcal:601, protein:51.8, carbs:65.7, fat:14.6},
+        perPortion: {kcal:649, protein:56.3, carbs:84.1, fat:8.7},
         batchItems: [
             { key: "m73_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m73_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -4741,7 +4748,7 @@ const RECIPES = [
         subtitle: "Stovetop · 25 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
-        perPortion: {kcal: 748, protein: 58.6, carbs: 88.8, fat: 17.6},
+        perPortion: {kcal:816, protein:59.3, carbs:99.9, fat:19.6},
         batchItems: [
             { key: "m74_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m74_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -4822,7 +4829,7 @@ const RECIPES = [
         subtitle: "Stovetop · 25 min",
         badge: "🍳 Stovetop", carb: "🍜 Soba Noodles",
         portions: 2,
-        perPortion: {kcal:642, protein:44.8, carbs:72.4, fat:19.2},
+        perPortion: {kcal:631, protein:46.3, carbs:75.2, fat:21.6},
         batchItems: [
             { key: "m77_tempeh", label: "Tempeh", qty: 200, unit: "g", cat: "Protein", ingId: 315, role: "protein", share: 0.333333},
             { key: "m77_tofu", label: "Tofu (firm)", qty: 200, unit: "g", cat: "Protein", ingId: 97, role: "protein", share: 0.333333},
@@ -4874,12 +4881,12 @@ const RECIPES = [
         subtitle: "Stovetop · 30 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
-        perPortion: {kcal:511, protein:40.3, carbs:35.4, fat:22.8},
+        perPortion: {kcal:650, protein:46.7, carbs:57.2, fat:26.7},
         batchItems: [
             { key: "m79_chicken", label: "Chicken thigh (boneless, skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 2, role: "protein", share: 1.0},
             { key: "m79_rice", label: "Brown rice (dry)", qty: 120, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
             { key: "m79_lemon", label: "Lemongrass (fresh)", qty: 20, unit: "g", cat: "Herbs", ingId: 318, role: "flavour", share: 1},
-            { key: "m79_coconut", label: "Light coconut milk", qty: 80, unit: "ml", cat: "Fats", ingId: 177, role: "fats", share: 1},
+            { key: "m79_coconut", label: "Light coconut milk", qty: 80, unit: "ml", cat: "Fats", ingId:336, role: "fats", share: 1},
             { key: "m79_cabbage", label: "Cabbage (white)", qty: 120, unit: "g", cat: "Vegetables", ingId: 125, role: "veg", share: 1},
             { key: "m79_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
             { key: "m79_garlic", label: "Garlic", qty: 10, unit: "g", cat: "Vegetables", ingId: 108, role: "flavour", share: 1 },
@@ -4927,7 +4934,7 @@ const RECIPES = [
         subtitle: "Stovetop · 20 min",
         badge: "🍳 Stovetop", carb: "🍞 Brioche Bun",
         portions: 1,
-        perPortion: {kcal: 733, protein: 63.8, carbs: 47.1, fat: 33.0},
+        perPortion: {kcal:652, protein:63.7, carbs:51.6, fat:20.6},
         batchItems: [
             { key: "m81_chicken", label: "Chicken breast (skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333},
             { key: "m81_bun", label: "Brioche bun", qty: 90, unit: "g", cat: "Carbs", ingId: 321, role: "carbs", share: 1},
@@ -5080,7 +5087,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 10,
         locked: true,
-        perPortion: {kcal:600, protein:67, carbs:45, fat:18},
+        perPortion: {kcal:579, protein:62.1, carbs:45.8, fat:16.1},
         batchItems: [
             { key: "m85_beef",    label: "Lean ground beef (96/4)", qty: 1360, unit: "g",      cat: "Protein", ingId: 6,   role: "protein", share: 0.5},
             { key: "m85_bacon",   label: "Beef bacon",               qty: 20,   unit: "slices", cat: "Protein", ingId: 283, role: "protein", share: 0.136364},
@@ -5115,7 +5122,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 5,
         locked: true,
-        perPortion: {kcal:538, protein:64, carbs:48, fat:10},
+        perPortion: {kcal:584, protein:60.8, carbs:55.1, fat:13.4},
         batchItems: [
             { key: "m86_beef",   label: "Extra lean beef mince (96/4)", qty: 1000, unit: "g", cat: "Protein", ingId: 6,   role: "protein", share: 0.486381},
             { key: "m86_pasta",  label: "Chickpea / high-protein pasta", qty: 350,  unit: "g", cat: "Carbs",   ingId: 67,  role: "carbs", share: 1},
@@ -5167,7 +5174,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🫓 English Muffin",
         portions: 10,
         locked: true,
-        perPortion: {kcal:475, protein:38, carbs:35, fat:18.3},
+        perPortion: {kcal:486, protein:37.7, carbs:36.3, fat:20},
         batchItems: [
             { key: "bf33_eggs",    label: "Large eggs",                    qty: 12,  unit: "whole",  cat: "Protein",    ingId: 40,  role: "protein", share: 0.31},
             { key: "bf33_cc",      label: "Fat-free cottage cheese",       qty: 227, unit: "g",      cat: "Dairy",      ingId: 42,  role: "protein", share: 0.07},
@@ -5196,7 +5203,7 @@ const RECIPES = [
         portions: 7,
         tags: ["snack"],
         badge: "🥗 No-Cook", carb: "🥯 Bagel",
-        perPortion: {kcal:416, protein:11, carbs:89, fat:3},
+        perPortion: {kcal:429, protein:11.7, carbs:91.4, fat:3.5},
         batchItems: [
             { key: "pw7_bagel",  label: "Whole grain bagel", qty: 7,   unit: "whole", cat: "Carbs",  ingId: 293, role: "carbs", share: 0.5},
             { key: "pw7_banana", label: "Ripe banana",       qty: 7,   unit: "whole", cat: "Fruits", ingId: 140, role: "carbs", share: 0.5},
@@ -5216,7 +5223,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🌾 Oat Flour",
         portions: 8,
         tags: ["snack"],
-        perPortion: {kcal:180, protein:12.4, carbs:22.3, fat:4.9},
+        perPortion: {kcal:182, protein:14.2, carbs:22.1, fat:4.6},
         batchItems: [
             { key: "ds5_banana", label: "Banana (medium)", qty: 300, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.5},
             { key: "ds5_oat", label: "Oat flour", qty: 120, unit: "g", cat: "Carbs", ingId: 80, role: "carbs", share: 0.5},
@@ -5267,7 +5274,7 @@ const RECIPES = [
         subtitle: "Single serve · baked · banana protein oats",
         badge: "🌬️ Oven", carb: "🌾 Oats",
         portions: 1,
-        perPortion: {kcal:268, protein:23.2, carbs:32.7, fat:4.7},
+        perPortion: {kcal:278, protein:23, carbs:39.7, fat:3.9},
         batchItems: [
             { key: "bf34_banana", label: "Ripe banana",               qty: 50,  unit: "g",  cat: "Carbs",       ingId: 140, role: "carbs",   share: 0.5 },
             { key: "bf34_oats",   label: "Rolled oats (dry)",         qty: 35,  unit: "g",  cat: "Carbs",       ingId: 64,  role: "carbs",   share: 0.5 },
@@ -5292,7 +5299,7 @@ const RECIPES = [
         subtitle: "Stovetop · 20 min · oat flour base",
         badge: "🍳 Stovetop", carb: "🌾 Oat Flour",
         portions: 4,
-        perPortion: {kcal: 258, protein: 21, carbs: 29, fat: 6},
+        perPortion: {kcal:299, protein:28.2, carbs:30.3, fat:7.2},
         batchItems: [
             { key: "bf35_oatfl",  label: "Oat flour (blended from oats)", qty: 100, unit: "g",  cat: "Carbs",       ingId: 80,  role: "carbs",   share: 0.333333 },
             { key: "bf35_prot",   label: "Vanilla whey protein (3 scoops)", qty: 90, unit: "g", cat: "Supplements", ingId: 210, role: "protein", share: 0.333333 },
@@ -6076,6 +6083,12 @@ const EMPTY_MACROS = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
 // INGREDIENT_MACROS — per 100g (or per 100mL for liquids; unitG = grams per whole unit)
 // Auto-generated from 458 ingredient keys across all recipes
 const INGREDIENT_MACROS = {
+  // Added during the recipe audit. Both were missing, so they contributed 0 to
+  // the bottom-up macros while `covered >= 3` kept the result trusted:
+  // sn4 published 114 kcal / 4.5 g protein instead of its declared 162 / 19,
+  // with a subtitle promising a cottage-cheese dip it was not counting.
+  "sn4_cc": {kcal:72.0, p:12.4, c:4.3, f:0.3},
+  "m81_mozz": {kcal:180.0, p:20.0, c:1.0, f:11.0},
   "alfredo_sauce": {kcal:130.0, p:3.0, c:5.0, f:11.0},
   "bf9_bread": {kcal:265.0, p:9.0, c:49.0, f:3.2, unitG:40.0},
   "bf9_coffee": {kcal:5.0, p:0.3, c:1.0, f:0.0, unitG:60.0},
@@ -6698,7 +6711,7 @@ const INGREDIENT_MACROS = {
   "v5_tom": {kcal:27.0, p:1.3, c:6.3, f:0.2, unitG:400.0},  // Passata (tomato sauce)
   "v5_yog": {kcal:59.0, p:10.0, c:3.6, f:0.4},  // Greek Yogurt (0% fat)
   "v6_chick": {kcal:164.0, p:8.9, c:27.0, f:2.6, unitG:240.0},  // Chickpeas (canned, drained)
-  "v6_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:15.0},  // Chili Flakes / Red Pepper Flakes
+  "v6_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:2.5},  // Chili Flakes / Red Pepper Flakes
   "v6_cmin": {kcal:375.0, p:17.8, c:44.0, f:22.0, unitG:2.5},  // Cumin (ground)
   "v6_eggs": {kcal:143.0, p:12.6, c:0.7, f:9.5, unitG:60.0},  // Eggs (whole, large, raw)
   "v6_feta": {kcal:264.0, p:14.0, c:4.1, f:21.0},  // Feta Cheese
@@ -6725,7 +6738,7 @@ const INGREDIENT_MACROS = {
   "v7_yog": {kcal:59.0, p:10.0, c:3.6, f:0.4},  // Greek Yogurt (0% fat)
   "v7_cottage": {kcal:72, p:12.4, c:4.3, f:0.3},
   "v8_bean": {kcal:130.0, p:9.0, c:24.0, f:0.5, unitG:240},  // Butter Beans (canned, drained), 240g drained per 400g can
-  "v8_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:15.0},  // Chili Flakes / Red Pepper Flakes
+  "v8_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:2.5},  // Chili Flakes / Red Pepper Flakes
   "v8_cot": {kcal:90.0, p:12.0, c:4.0, f:2.5},  // Low-Fat Cottage Cheese (2%)
   "v8_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
   "v8_lemon": {kcal:22.0, p:0.4, c:6.9, f:0.2, unitG:50.0},  // Lemon (juice)
@@ -6854,7 +6867,7 @@ const INGREDIENT_MACROS = {
         "m59_ronion":  {kcal:40.0,  p:1.1,  c:9.3,  f:0.1},
         "m59_parsley": {kcal:36.0,  p:3.0,  c:6.3,  f:0.8},
         "m60_tomato":  {kcal:18.0,  p:0.9,  c:3.9,  f:0.2},
-        "m60_pepper":  {kcal:20.0,  p:0.9,  c:4.6,  f:0.2},
+        "m60_pepper": {kcal:31.0, p:1.0, c:6.0, f:0.3},
         "m60_chilli":  {kcal:282.0, p:12.3, c:50.0, f:14.3},
         "m61_scallion":{kcal:32.0,  p:1.8,  c:7.3,  f:0.2},
         "m61_bpepper": {kcal:20.0,  p:0.9,  c:4.6,  f:0.2},
@@ -7042,7 +7055,7 @@ const INGREDIENT_MACROS = {
   "bf28_spinach": {kcal:23, p:2.9, c:3.6, f:0.4},
   "bf28_tomato": {kcal:18, p:0.9, c:3.9, f:0.2},
       "bf28_egg_whites": {kcal:52, p:11, c:0.7, f:0.2},
-    "bf28_cottage": {kcal:98, p:11.0, c:3.4, f:0.3},
+    "bf28_cottage": {kcal:72.0, p:12.4, c:4.3, f:0.3},   // was {98, 11, 3.4, 0.3}: Atwater sums to 60 kcal, a 63% overstatement with no fibre or polyol to explain it. ingId 42 and every other cottage cheese in this file agree on these values.
     "bf28_wrap": {kcal:280, p:9, c:49, f:5},
   "bf29_avocado": {kcal:160, p:2, c:9, f:15},
   "bf29_egg_whites": {kcal:52, p:11, c:0.7, f:0.2},
@@ -7188,7 +7201,7 @@ const INGREDIENT_MACROS = {
   "m74_honey": {kcal:304, p:0.3, c:82, f:0},
   "m74_rice": {kcal:370, p:8, c:77, f:2.9},
   "m74_soy": {kcal:53, p:8.1, c:4.9, f:0.1},
-  "m75_beans": {kcal:20, p:2.2, c:3.9, f:0.1},
+  "m75_beans": {kcal:31.0, p:1.8, c:7.0, f:0.1},  // matched ingId 115 (raw green beans),
   "m75_beef": {kcal:137, p:21.4, c:0, f:5.6},
   "m75_egg": {kcal:143, p:12.6, c:0.7, f:9.5, unitG:60},
   "m75_rice": {kcal:370, p:8, c:77, f:2.9},
@@ -12438,10 +12451,26 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
     // Only show recipes the user can actually access — prevents free users swapping to locked recipes
     var viewableRecipes = canView ? allRecipes.filter(function(r) { return canView(r.id); }) : allRecipes;
 
+    // Single source of truth for every macro shown in this sheet.
+    // These used to read `r.perPortion` directly, while the meal plan renders
+    // computePerPortion(r) — derived from the ingredients. The audit found 35
+    // recipes where the two disagreed, so the picker could quote 567 kcal and
+    // the plan 756 kcal for the same recipe, one tap apart. The stale rows are
+    // corrected now; routing both through the same function is what stops them
+    // drifting apart again.
+    function swapMacros(r) {
+        try {
+            const m = computePerPortion(r);
+            if (m && m.kcal) return m;
+        } catch (_) {}
+        return r.perPortion || { kcal: r.kcal || 0, protein: r.protein || 0, carbs: r.carbs || 0, fat: r.fat || 0 };
+    }
+
     // Macro distance for sorting (closer = better match)
     function dist(r) {
-        var dk = currentKcal > 0 ? Math.abs(((r.perPortion?r.perPortion.kcal:r.kcal)||0) - currentKcal) / currentKcal : 0;
-        var dp = currentProt > 0 ? Math.abs(((r.perPortion?r.perPortion.protein:r.protein)||0) - currentProt) / currentProt : 0;
+        var _m = swapMacros(r);
+        var dk = currentKcal > 0 ? Math.abs((_m.kcal||0) - currentKcal) / currentKcal : 0;
+        var dp = currentProt > 0 ? Math.abs((_m.protein||0) - currentProt) / currentProt : 0;
         return dk * 0.5 + dp * 0.5;
     }
 
@@ -12494,10 +12523,11 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
                 !filtered.length && React.createElement("div", { style:{textAlign:"center",padding:"32px 0",color:C.muted,fontSize:13} },
                     search.trim() ? "No recipes match \""+search+"\"." : "No recipes available."),
                 filtered.map(function(r) {
-                    var kcalDiff = (((r.perPortion?r.perPortion.kcal:r.kcal)||0) - currentKcal);
-                    var protDiff = (((r.perPortion?r.perPortion.protein:r.protein)||0) - currentProt);
+                    var _m = swapMacros(r);
+                    var kcalDiff = ((_m.kcal||0) - currentKcal);
+                    var protDiff = ((_m.protein||0) - currentProt);
                     var diffColor = Math.abs(kcalDiff) < 80 ? C.green : C.accent;
-                    var pq = proteinQuality(r.perPortion?r.perPortion.kcal:r.kcal, r.perPortion?r.perPortion.protein:r.protein);
+                    var pq = proteinQuality(_m.kcal, _m.protein);
                     return React.createElement("div", { key:r.id, style:{background:C.card,border:"1px solid "+C.dim,borderRadius:12,padding:"12px 14px",marginBottom:10} },
                         React.createElement("div", { style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8} },
                             React.createElement("div", { style:{flex:1,paddingRight:8} },
@@ -12506,10 +12536,10 @@ function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwa
                                     React.createElement("div", { style:{fontSize:13,fontWeight:700,color:C.text} }, r.name)),
                                 React.createElement("div", { style:{fontSize:11,color:C.sub} }, r.subtitle||"")),
                             React.createElement("div", { style:{textAlign:"right",flexShrink:0} },
-                                React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.accent} }, ((r.perPortion?r.perPortion.kcal:r.kcal)||0)+" kcal"),
+                                React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.accent} }, ((_m.kcal)||0)+" kcal"),
                                 React.createElement("div", { style:{fontSize:10,color:diffColor} }, (kcalDiff>=0?"+":"")+Math.round(kcalDiff)+" cal · "+(protDiff>=0?"+":"")+Math.round(protDiff)+"g P"))),
                         React.createElement("div", { style:{display:"flex",gap:10,marginBottom:10} },
-                            [{label:"P",v:r.perPortion?r.perPortion.protein:r.protein,c:C.prot},{label:"C",v:r.perPortion?r.perPortion.carbs:r.carbs,c:C.carb},{label:"F",v:r.perPortion?r.perPortion.fat:r.fat,c:C.fat}].map(function(m){
+                            [{label:"P",v:_m.protein,c:C.prot},{label:"C",v:_m.carbs,c:C.carb},{label:"F",v:_m.fat,c:C.fat}].map(function(m){
                                 return React.createElement("div",{key:m.label,style:{flex:1,textAlign:"center",background:C.card2,borderRadius:6,padding:"5px 4px"}},
                                     React.createElement("div",{style:{fontSize:11,fontWeight:800,color:m.c}},Math.round(m.v||0)+"g"),
                                     React.createElement("div",{style:{fontSize:9,color:C.muted,letterSpacing:"0.05em"}},m.label));
