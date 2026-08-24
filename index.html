@@ -8791,6 +8791,48 @@ function safeSet(key, value) {
     }
 }
 
+// ── Dev tier override ────────────────────────────────────────────────────────
+// A dev-selected tier is a LOCAL simulation, but loadUserData is authoritative
+// and re-applies the server row on every focus and visibility change. Without a
+// persisted flag the selection was overwritten within seconds — and because
+// dismissing the PIN prompt fires `focus`, a refresh was often ALREADY IN
+// FLIGHT when the tier was tapped, so its late setUnlocks() landed on top and
+// the tier appeared never to change at all.
+//
+// Storing it means loadUserData can honour it instead of fighting it. This is
+// local-only and never written to Supabase: `tier` is revoked from
+// `authenticated` by supabase-security-fix.sql, so a brute-forced dev PIN can
+// never become real, server-verified access.
+const DEV_TIERS = ["free", "monthly", "annual", "dev"];
+function getDevOverride() {
+    try {
+        const v = localStorage.getItem("mp_dev_override");
+        return DEV_TIERS.includes(v) ? v : null;
+    } catch (_) { return null; }
+}
+function setDevOverride(tier) {
+    try {
+        if (tier && DEV_TIERS.includes(tier)) safeSet("mp_dev_override", tier);
+        else localStorage.removeItem("mp_dev_override");
+    } catch (_) {}
+}
+// Shape a dev tier into the same object loadUserData builds from a profile row,
+// so every downstream check behaves exactly as it would for a real user.
+function devUnlockShape(tier) {
+    const paid = ["monthly", "annual", "dev"].includes(tier);
+    return {
+        calculator: true,
+        allRecipes: paid,
+        recipes: [],
+        tier: tier === "free" ? null : tier,
+        // via:"dev" only for the dev tier — free/monthly/annual simulate a real
+        // account, so no dev badge shows and the experience is identical.
+        via: tier === "dev" ? "dev" : "account",
+        label: tier.charAt(0).toUpperCase() + tier.slice(1),
+        _serverVerified: true,
+    };
+}
+
 function getSB() {
     if (!_sbClient && window.supabase) {
         _sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -13103,6 +13145,12 @@ function App() {
             const sb = getSB();
             if (!sb) { setAuthReady(true); return; }
 
+            // A dev tier override wins over the server row for the whole of this
+            // call. Read once up front so a refresh that is already in flight when
+            // the tier is picked cannot land stale data on top of the new choice.
+            const _devTier = getDevOverride();
+            const _applyDev = () => setUnlocks(devUnlockShape(_devTier));
+
             // Sync email cross-device so canUseCalculator works without re-onboarding
             if (userEmail) { try { safeSet("mp_acc_email", userEmail.toLowerCase().trim()); } catch(_) {} }
             try {
@@ -13158,7 +13206,10 @@ function App() {
                     }
                     // Stamp last_seen_at on every sign-in (fire-and-forget, never blocks)
                     try { sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", userId).then(() => {}).catch(() => {}); } catch(_) {}
-                    if (row.tier) {
+                    if (_devTier) {
+                        // Dev simulation active — ignore the server tier entirely.
+                        _applyDev();
+                    } else if (row.tier) {
                         // Check if promo/subscription tier has expired — if so, downgrade to free
                         const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();
                         const effectiveTier = tierExpired ? "free" : row.tier;
@@ -13192,7 +13243,8 @@ function App() {
                     }
                 } else {
                     // No profile row yet — create stub with all available local data
-                    setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: true, _serverVerified: true }));
+                    if (_devTier) _applyDev();
+                    else setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: true, _serverVerified: true }));
                     try {
                         const _fn = localStorage.getItem("mp_acc_first_name") || null;
                         const _ln = localStorage.getItem("mp_acc_last_name")  || null;
@@ -13263,7 +13315,10 @@ function App() {
             }
                 // On Supabase failure for an authenticated user, do NOT keep potentially
                 // spoofed localStorage unlocks. Reset to free until next successful verify.
-                setUnlocksState(prev => ({
+                // Exception: an active dev override is a deliberate local simulation, so a
+                // Supabase error must not silently cancel it mid-test.
+                if (_devTier) _applyDev();
+                else setUnlocksState(prev => ({
                     calculator: false, allRecipes: false, recipes: [],
                     tier: null, _serverVerified: false
                 }));
@@ -13606,16 +13661,22 @@ function App() {
         }
         else setLogoTaps(t);
     };
-    // Dev unlock: full access to everything (calculator + all recipes)
-    const applyDevTier = (tier, _allRecipes) => setUnlocks({
-        calculator: true,
-        allRecipes: true,  // dev always gets full access
-        recipes: [],
-        tier: tier || "dev",
-        _serverVerified: true,  // dev unlock is intentional — bypass server check
-    });
-    const devUnlock = () => applyDevTier("dev", true); // legacy compat
-    const devLock = () => setUnlocks({ calculator: false, allRecipes: false, recipes: [], tier: null });
+    // Dev unlock: applies the chosen tier as a local simulation.
+    // Persisting the override is what makes it stick — loadUserData re-applies the
+    // server row on every focus and visibility change and would otherwise wipe it.
+    const applyDevTier = (tier) => {
+        const t = DEV_TIERS.includes(tier) ? tier : "dev";
+        setDevOverride(t);
+        setUnlocks(devUnlockShape(t));
+    };
+    const clearDevTier = () => {
+        setDevOverride(null);
+        // Re-read the real tier from the server so the UI corrects itself immediately.
+        if (currentUser) loadUserData(currentUser.id, currentUser.email);
+        else setUnlocks({ calculator: false, allRecipes: false, recipes: [], tier: null });
+    };
+    const devUnlock = () => applyDevTier("dev"); // legacy compat
+    const devLock = () => clearDevTier();
     const unlockRecipe = (id) => {
         const newRecipes = unlocks.recipes.includes(id) ? unlocks.recipes : [...unlocks.recipes, id];
         setUnlocks(Object.assign(Object.assign({}, unlocks), { recipes: newRecipes, _serverVerified: true }));
@@ -14549,26 +14610,31 @@ function App() {
                     React.createElement("div", { style:{ fontSize:10, fontWeight:700, color:C.sub, letterSpacing:"0.12em", marginBottom:4 } }, "⚙️ SET ACCESS TIER"),
                     React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:18 } }, "Simulates the exact experience of that user type. Saved until you change it."),
                     ["free","monthly","annual","dev"].map(t => {
-                        const _cur = (t === "free" && !unlocks.tier) || unlocks.tier === t;
+                        // Tick the ACTIVE OVERRIDE, not the rendered tier. Those differ for
+                        // a real subscriber previewing another tier, and the tick must show
+                        // what the picker will keep applying, not what happens to be on screen.
+                        const _ov = getDevOverride();
+                        const _cur = _ov ? _ov === t : ((t === "free" && !unlocks.tier) || unlocks.tier === t);
                         return React.createElement("button", {
                             key: t,
-                            onClick: async () => {
-                                const _paid = ["monthly","annual","dev"].includes(t);
-                                // via:"dev" only for dev tier — free/monthly/annual use "account" so
-                                // no dev badge shows and the experience is identical to a real user
-                                const _via = t === "dev" ? "dev" : "account";
-                                setUnlocks({ calculator:true, allRecipes:_paid, recipes:[], tier:t === "free" ? null : t, via:_via, label:t.charAt(0).toUpperCase()+t.slice(1), _serverVerified:true });
-                                // Deliberately does NOT write the tier to Supabase.
-                                // It used to upsert profiles.tier with the anon key, which
-                                // turned a brute-forced dev PIN into permanent, server-
-                                // verified "annual". supabase-security-fix.sql revokes that
-                                // column from `authenticated`, so the write would now fail
-                                // anyway — this is a local-only preview that resets on reload.
+                            onClick: () => {
+                                // Persists to mp_dev_override. Deliberately NOT written to
+                                // Supabase: it used to upsert profiles.tier with the anon key,
+                                // which turned a brute-forced dev PIN into permanent,
+                                // server-verified "annual". supabase-security-fix.sql revokes
+                                // that column from `authenticated`, so this stays local-only.
+                                applyDevTier(t);
                                 setShowDevTierPicker(false);
                             },
                             style:{ width:"100%", marginBottom:8, padding:"12px 14px", borderRadius:10, border:"2px solid "+(_cur ? _tc[t] : C.dim), background:_cur ? _tc[t]+"18" : C.card2, color:_tc[t], fontSize:13, fontWeight:700, cursor:"pointer", textAlign:"left", fontFamily:"inherit" }
                         }, (_cur ? "✓ " : "") + _tl[t]);
                     }),
+                    // Without this there is no way back to your real subscription short of a
+                    // full wipe — the override survives reloads by design.
+                    getDevOverride() && React.createElement("button", {
+                        onClick: () => { clearDevTier(); setShowDevTierPicker(false); },
+                        style:{ width:"100%", marginTop:4, padding:"10px", borderRadius:8, border:"1px solid rgba(239,68,68,0.4)", background:"rgba(239,68,68,0.10)", color:"#ef4444", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }
+                    }, "↩︎ Stop simulating — use my real tier"),
                     React.createElement("button", { onClick:() => setShowDevTierPicker(false), style:{ width:"100%", marginTop:6, padding:"9px", borderRadius:8, border:"1px solid "+C.dim, background:"none", color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" } }, "Cancel")
                 )
             );
