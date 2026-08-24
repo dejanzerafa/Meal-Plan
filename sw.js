@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v218
+// SoulGainz — Service Worker v219
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v218';
+const CACHE_NAME = 'meal-plan-v219';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [

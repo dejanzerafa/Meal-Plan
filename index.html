@@ -7544,173 +7544,6 @@ function getPortions(recipe, globalPortions) {
 // into the running `used` budget so every subsequent step sees the true
 // remaining room.  This prevents double-counting and keeps totals clean.
 // ══════════════════════════════════════════════════════════════════
-function computeIngredientQtys(recipe, slotMacros, portions) {
-    if (!recipe || !Array.isArray(recipe.batchItems)) return {};
-    var p  = portions || 7;
-    var sm = slotMacros || {};
-
-    function findIng(ingId) {
-        return ingId ? (ING_MAP.get(ingId) || null) : null;
-    }
-
-    // Running per-portion macro budget consumed so far
-    var used = { p: 0, c: 0, f: 0 };
-    var qtys = {};
-
-    // ── VEG + FIXED: always included, batch-scaled, macros tracked ────────────
-    // These are nutritional constants (vegetables, aromatics, condiments).
-    // Their macro contribution is subtracted from targets before any macro step.
-    // baseQty = per-portion quantity. Fallback: stored batch qty / recipe portions.
-    var recipePortions = recipe.portions || 7;
-    recipe.batchItems.forEach(function(item) {
-        var role = item.role || 'fixed';
-        if (role !== 'veg' && role !== 'fixed') return;
-        var bq = (item.baseQty != null && item.baseQty > 0)
-            ? item.baseQty
-            : (item.qty || 0) / recipePortions;
-        var qty = item.unit === 'whole' ? Math.ceil(bq * p) : Math.round(bq * p);
-        qtys[item.key] = qty;
-        var ing = findIng(item.ingId);
-        if (ing && item.unit === 'g' && bq > 0) {
-            used.p += (ing.p / 100) * bq;
-            used.c += (ing.c / 100) * bq;
-            used.f += (ing.f / 100) * bq;
-        }
-    });
-
-    var targetP = sm.protein || 0;
-    var targetF = sm.fat     || 0;
-    var targetC = sm.carbs   || 0;
-
-    // ── STEP 02 — PROTEIN: sized to hit protein target ────────────────────────
-    // Share values are auto-derived from each ingredient's macro efficiency
-    // (protein-per-calorie for protein role, etc.) so leaner/more-efficient
-    // ingredients naturally receive a larger portion of the total batch quantity.
-    // A 50/50 equal-gram split is impossible — leaner proteins always dominate.
-    // ALL macros an ingredient brings (including its fat) flow into `used`.
-    // Whole-unit items (eggs, cans) use unitG from ING_FLAT for macro math.
-    // Fallback always uses recipePortions (NOT p) so scaling is correct.
-    var totalPEff = 0; // sum of p/kcal efficiency across protein-role items
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
-    .forEach(function(item) {
-        var ing = findIng(item.ingId);
-        if (ing && ing.kcal > 0 && ing.p > 0) totalPEff += ing.p / ing.kcal;
-    });
-    var remainP = Math.max(0, targetP - used.p);
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'protein'; })
-    .forEach(function(item) {
-        var ing   = findIng(item.ingId);
-        // Auto-derive share from macro efficiency (p/kcal); leaner sources get more grams.
-        // Falls back to stored share or equal split if macro data is missing.
-        var share;
-        if (totalPEff > 0 && ing && ing.kcal > 0 && ing.p > 0)
-            share = (ing.p / ing.kcal) / totalPEff;
-        else
-            share = item.share != null ? item.share : 1.0;
-        var perPortion;
-        if (ing && item.unit === 'g' && ing.p > 0) {
-            // Gram-weighted: solve directly from protein density
-            perPortion = (remainP * share) / (ing.p / 100);
-        } else if (ing && item.unit === 'whole' && ing.unitG && ing.p > 0) {
-            // Whole-unit (eggs, cans): use per-unit protein to count units
-            var pPerUnit = (ing.p / 100) * ing.unitG;
-            perPortion = pPerUnit > 0 ? (remainP * share) / pPerUnit : (item.qty || 0) / recipePortions;
-        } else {
-            // No macro data — scale from original recipe proportionally
-            perPortion = (item.qty || 0) / recipePortions;
-        }
-        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
-        qtys[item.key] = batchQty;
-        // Carry forward ALL macros this ingredient contributes per portion
-        if (ing) {
-            var gPerPortion = item.unit === 'whole' ? perPortion * (ing.unitG || 0) : perPortion;
-            used.p += (ing.p / 100) * gPerPortion;
-            used.c += (ing.c / 100) * gPerPortion;
-            used.f += (ing.f / 100) * gPerPortion;
-        }
-    });
-
-    // ── STEP 03 — FAT: fill remaining fat budget (after protein sources) ──────
-    // Lean-food preference: fat from protein sources already counted in `used`.
-    // If remainF = 0 (protein sources covered the fat target), oil shows 0 —
-    // this is intentional: the recipe is already fat-sufficient.
-    var totalFEff = 0; // sum of f/kcal efficiency across fat-role items
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
-    .forEach(function(item) {
-        var ing = findIng(item.ingId);
-        if (ing && ing.kcal > 0 && ing.f > 0) totalFEff += ing.f / ing.kcal;
-    });
-    var remainF = Math.max(0, targetF - used.f);
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'fat'; })
-    .forEach(function(item) {
-        var ing   = findIng(item.ingId);
-        var share;
-        if (totalFEff > 0 && ing && ing.kcal > 0 && ing.f > 0)
-            share = (ing.f / ing.kcal) / totalFEff;
-        else
-            share = item.share != null ? item.share : 1.0;
-        var perPortion;
-        if (ing && item.unit === 'g' && ing.f > 0) {
-            perPortion = (remainF * share) / (ing.f / 100);
-        } else if (ing && item.unit === 'whole' && ing.unitG && ing.f > 0) {
-            var fPerUnit = (ing.f / 100) * ing.unitG;
-            perPortion = fPerUnit > 0 ? (remainF * share) / fPerUnit : (item.qty || 0) / recipePortions;
-        } else {
-            perPortion = (item.qty || 0) / recipePortions;
-        }
-        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
-        qtys[item.key] = batchQty;
-        if (ing) {
-            var gPerPortion = item.unit === 'whole' ? perPortion * (ing.unitG || 0) : perPortion;
-            used.p += (ing.p / 100) * gPerPortion;
-            used.c += (ing.c / 100) * gPerPortion;
-            used.f += (ing.f / 100) * gPerPortion;
-        }
-    });
-
-    // ── STEP 04 — CARBS: fill whatever calorie room remains ───────────────────
-    // Never set first — always the residual lever. Scales freely.
-    var totalCEff = 0; // sum of c/kcal efficiency across carbs-role items
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
-    .forEach(function(item) {
-        var ing = findIng(item.ingId);
-        if (ing && ing.kcal > 0 && ing.c > 0) totalCEff += ing.c / ing.kcal;
-    });
-    var remainC = Math.max(0, targetC - used.c);
-    recipe.batchItems.filter(function(i) { return (i.role || 'fixed') === 'carbs'; })
-    .forEach(function(item) {
-        var ing   = findIng(item.ingId);
-        var share;
-        if (totalCEff > 0 && ing && ing.kcal > 0 && ing.c > 0)
-            share = (ing.c / ing.kcal) / totalCEff;
-        else
-            share = item.share != null ? item.share : 1.0;
-        var perPortion;
-        if (ing && item.unit === 'g' && ing.c > 0) {
-            perPortion = (remainC * share) / (ing.c / 100);
-        } else if (ing && item.unit === 'whole' && ing.unitG && ing.c > 0) {
-            var cPerUnit = (ing.c / 100) * ing.unitG;
-            perPortion = cPerUnit > 0 ? (remainC * share) / cPerUnit : (item.qty || 0) / recipePortions;
-        } else {
-            perPortion = (item.qty || 0) / recipePortions;
-        }
-        var batchQty = item.unit === 'whole' ? Math.ceil(perPortion * p) : Math.round(perPortion * p);
-        qtys[item.key] = batchQty;
-        // (No need to update `used` — carbs are the final step)
-    });
-
-    // ── PASSTHROUGH — any item not yet resolved keeps stored qty ──────────────
-    recipe.batchItems.forEach(function(item) {
-        if (qtys[item.key] == null) { qtys[item.key] = item.qty || 0; }
-    });
-
-    return qtys;
-}
-
-// Derives per-portion macros from computed ingredient quantities (bottom-up).
-// Use instead of hardcoded perPortion when slot macros are available.
-// Build slot macro targets from daily effectiveTargets + slot kcal fraction.
-// slotFraction = 0–1 (e.g. 0.35 for lunch).
 function slotMacrosFromTargets(effectiveTargets, slotFraction) {
     var f = slotFraction || 0.35;
     return {
@@ -8134,9 +7967,12 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
     // portions:1 = single-serve assembled recipe (e.g. b0 breakfast) — skip dynamic scaling
     // so ingredient quantities stay proportional to the base recipe (base qty × batch days),
     // matching what the dashboard and shopping list show.
-    const dynQtys = (slotMacros && r.portions !== 1 && r.category !== 'preworkout' && r.batchItems && r.batchItems.some(function(i) { return i.role && i.role !== 'fixed'; }))
-        ? computeIngredientQtys(r, slotMacros, p)
-        : null;
+    // computeIngredientQtys used to run here — 167 lines of macro-fitting whose
+    // result was assigned to `dynQtys` and then read by nothing. It executed on
+    // every render of every expanded recipe card and was discarded. Removed.
+    // The ingredient list is scaled proportionally at the render site below
+    // (base qty x scale), which is what the dashboard and shopping list also do,
+    // so all three agree.
 
     // Display macros — always use computePerPortion (reads INGREDIENT_MACROS, correctly handles
     // whole-unit items with unitG, falls back to perPortion if <3 ingredients are mapped).
@@ -8240,6 +8076,13 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                 })(),
                 React.createElement("div", { style: { display: "flex", gap: 4, alignItems: "center" } },
                 toggleFavourite && React.createElement("button", { onClick: e => { e.stopPropagation(); toggleFavourite(r.id); }, title: favourites && favourites.has(r.id) ? "Remove from favourites" : "Add to favourites", style: { padding: "7px 9px", fontSize: 14, borderRadius: 8, border: "1px solid " + C.dim, cursor: "pointer", background: "none", lineHeight: 1 } }, favourites && favourites.has(r.id) ? "\u2764\uFE0F" : "\uD83E\uDD0D"),
+                toggleCooked && React.createElement("button", { onClick: e => { e.stopPropagation(); toggleCooked(r.id); },
+                    title: cookedRecipes && cookedRecipes.has(r.id) ? "Cooked — tap to undo" : "Mark as cooked",
+                    "aria-pressed": !!(cookedRecipes && cookedRecipes.has(r.id)),
+                    style: { padding: "7px 9px", fontSize: 14, borderRadius: 8, cursor: "pointer", lineHeight: 1,
+                        border: "1px solid " + (cookedRecipes && cookedRecipes.has(r.id) ? "rgba(34,197,94,0.45)" : C.dim),
+                        background: cookedRecipes && cookedRecipes.has(r.id) ? "rgba(34,197,94,0.12)" : "none" } },
+                    cookedRecipes && cookedRecipes.has(r.id) ? "\u2705" : "\uD83C\uDF73"),
                 r.isCustom && onDeleteCustom && React.createElement("button", { onClick: e => { e.stopPropagation(); onDeleteCustom(r.id); }, title: "Delete custom recipe", style: { padding: "7px 9px", fontSize: 14, borderRadius: 8, border: "1px solid " + C.dim, cursor: "pointer", background: "none", color: C.muted, lineHeight: 1 } }, "\uD83D\uDDD1\uFE0F"),
                 React.createElement("button", { onClick: () => setOpen(o => !o), 'aria-expanded': open, 'aria-label': open ? 'Collapse recipe details' : 'Expand recipe details', style: { padding: "7px 10px", fontSize: 12, borderRadius: 8, border: `1px solid ${C.dim}`,
                         cursor: "pointer", background: "none", color: C.sub } }, open ? "▲" : "▼")))),
@@ -8255,7 +8098,11 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
             view === "ingredients" && (React.createElement("div", null,
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" } },
                     React.createElement("span", null, "1 PORTION"),
-                    Math.abs(ps - 1) > 0.05 && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your macros")),
+                    // "Scaled to your macros" overstated it: quantities are scaled by a
+                    // single calorie ratio, not fitted to your protein/carb/fat split.
+                    // The code that attempted the latter never had its result used and
+                    // has been removed, so the label now describes what actually happens.
+                    Math.abs(ps - 1) > 0.05 && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your calorie target")),
                 CAT_ORDER.map((cat, index) => {
                     const catItems = (r.batchItems || []).filter(i => i.cat === cat);
                     if (!catItems.length)
@@ -13009,7 +12856,9 @@ function App() {
             const adding = !next.has(id);
             adding ? next.add(id) : next.delete(id);
             try { safeSet("sg_cooked", JSON.stringify([...next])); } catch(e) {}
-            if (adding) syncCooked(id);
+            // Both directions. It only ever synced the add, so un-marking a recipe
+            // came back on the next device sync — the toggle looked broken.
+            syncCooked(id, adding);
             return next;
         });
     };
@@ -13707,9 +13556,15 @@ function App() {
             else await sb.from("favourites").delete().eq("user_id", currentUser.id).eq("recipe_id", recipeId);
         } catch(e) { console.warn("SG: fav sync", e); }
     }
-    async function syncCooked(recipeId) {
+    async function syncCooked(recipeId, adding) {
         if (!currentUser || !getSB()) return;
-        try { await getSB().from("cooked_it").upsert({ user_id:currentUser.id, recipe_id:recipeId }, { onConflict:"user_id,recipe_id", ignoreDuplicates:true }); }
+        try {
+            if (adding === false) {
+                await getSB().from("cooked_it").delete().eq("user_id", currentUser.id).eq("recipe_id", recipeId);
+            } else {
+                await getSB().from("cooked_it").upsert({ user_id:currentUser.id, recipe_id:recipeId }, { onConflict:"user_id,recipe_id", ignoreDuplicates:true });
+            }
+        }
         catch(e) { console.warn("SG: cooked sync", e); }
     }
 

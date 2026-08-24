@@ -74,6 +74,14 @@ grant insert (
 
 -- 3. Do the same for UPDATE, derived from the same list, so part 2 and part 3
 --    cannot drift apart as the client changes.
+--
+--    `id` appears in this list and that is deliberate: the client upserts on
+--    conflict (id), so PostgREST needs it. It is safe because the existing
+--    policy is
+--        for update using (auth.uid() = id) with check (auth.uid() = id)
+--    — the WITH CHECK is what stops a user rewriting id to someone else's uid
+--    and taking over their row. If you ever rewrite that policy, keep the
+--    WITH CHECK or drop `id` from this grant.
 revoke update on public.profiles from authenticated;
 revoke update on public.profiles from anon;
 grant update (
