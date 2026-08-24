@@ -5320,7 +5320,13 @@ const RECIPES = [
 ];
 // Always keep RECIPES in alphabetical order at source level.
 // Emoji are stripped before comparison so "🥩 Marry Me Chicken" sorts as "M".
-const _stripEmoji = s => s.replace(/^[\p{Emoji}\s]+/u, '').trim();
+// Strip everything before the first letter or digit, not just \p{Emoji}.
+// \p{Emoji} does NOT match U+FE0F (variation selector), U+200D (ZWJ) or skin-tone
+// modifiers, so "🍽️ All-American…" stripped the 🍽 and left the invisible U+FE0F
+// in front. Three main courses therefore sorted ahead of every "B" name — the
+// recipe list looked alphabetical apart from a few entries that appeared to be
+// in the wrong place for no visible reason.
+const _stripEmoji = s => String(s == null ? '' : s).replace(/^[^\p{L}\p{N}]+/u, '').trim();
 RECIPES.sort((a, b) => _stripEmoji(a.name).localeCompare(_stripEmoji(b.name)));
 
 // ─── PENDING RELEASE RECIPES ─────────────────────────────────────────────────
@@ -9095,8 +9101,8 @@ function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isAnn
         // Unlock CTA bar
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "10px 12px 12px", borderTop: `1px solid ${C.dim}` } },
             isAnnualExclusive
-                ? React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#b45309", cursor: "pointer" } }, "\u2B50 Annual plan \u2192")
-                : React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Unlock All \u2192")));
+                ? React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#b45309", cursor: "pointer" } }, "\uD83D\uDD13 Get access \u2192")
+                : React.createElement("button", { onClick: onUnlock, style: { flex: 1, background: C.accent, border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 11, fontWeight: 800, color: "#000", cursor: "pointer" } }, "\uD83D\uDD13 Get access \u2192")));
 }
 // ─── SOULFOOD SEASONAL BUNDLE POPUP ───────────────────────────────────────────
 function SeasonalPopup({ show, onClose, onBuy }) {
@@ -9609,7 +9615,11 @@ function DevModal({ onClose, onApplyTier }) {
                 React.createElement("button", { onClick: resetOnboardingOnly, style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "9px", color: C.sub, fontSize: 12, cursor: "pointer" } }, "\uD83D\uDD04 Repeat User \u2014 Reset Onboarding Only")))));
 }
 const FILTER_MAP = {}; // Cooking method filter removed
-const PROTEIN_FILTERS = ["All", "🍗 Chicken", "🥩 Beef", "🐟 Fish", "🦃 Turkey", "🐷 Pork", "🦐 Shrimp", "🌱 Veg", "🥚 Eggs", "🌙 Lamb"];
+// Ordered by library coverage (Veg 56, Chicken 44, Beef 28, Eggs 21, Fish 11,
+// Turkey 5, Pork 3, Shrimp 2, Lamb 2) so the filters worth tapping are
+// reachable without scrolling the strip. Previously in arbitrary order, which
+// buried Veg — the single largest group — off the right-hand edge.
+const PROTEIN_FILTERS = ["All", "🌱 Veg", "🍗 Chicken", "🥩 Beef", "🥚 Eggs", "🐟 Fish", "🦃 Turkey", "🐷 Pork", "🦐 Shrimp", "🌙 Lamb"];
 function getProteinType(r) {
     const n = r.name || "";
     // Check NAME emoji first — most reliable signal (avoids false positives from subtitle secondary ingredients)
@@ -12909,7 +12919,10 @@ function App() {
     });
     const [filter, setFilter] = useState(null); // cooking method filter removed, kept for compat
     const [proteinFilter, setProteinFilter] = useState(null);
-    const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "breakfast");
+    // Defaults to "all". It used to open on "breakfast", so the tab appeared to
+    // hold only a handful of recipes and the rest of the library was invisible
+    // until you noticed the category strip.
+    const [recipeCat, setRecipeCat] = useState(() => localStorage.getItem("mp_recipeCat") || "all");
     const [recipeQuery, setRecipeQuery] = useState(() => {
         // Recipe deep-link: parse ?recipe=rXX synchronously at mount to avoid race with useEffect
         try {
@@ -12920,7 +12933,6 @@ function App() {
     });
     const [recipeShowCount, setRecipeShowCount] = useState(15);
     const [dietaryFilter, setDietaryFilter] = useState(null);
-    const [dietaryExpanded, setDietaryExpanded] = useState(false);
     const [recipeView, setRecipeView] = useState(() => localStorage.getItem("mp_recipeView") || "recipes"); // "recipes" | "foods"
     React.useEffect(() => { safeSet("mp_recipeView", recipeView); }, [recipeView]);
     // Reset pagination when category/search changes
@@ -13901,17 +13913,14 @@ function App() {
         if (recipeCat !== "main")
             return true;
         return true;
-    }).sort((a, b) => {
-        // Active (selected) recipes float to top, then unlocked A-Z, then locked A-Z.
-        const activeIds = [lunch, dinner, breakfastRecipe, dessert, preRecipe].filter(Boolean);
-        const aActive = activeIds.includes(a.id) ? 0 : 1;
-        const bActive = activeIds.includes(b.id) ? 0 : 1;
-        if (aActive !== bActive) return aActive - bActive;
-        const aLocked = canView(a.id) ? 0 : 1;
-        const bLocked = canView(b.id) ? 0 : 1;
-        if (aLocked !== bLocked) return aLocked - bLocked;
-        return _stripEmoji(a.name).localeCompare(_stripEmoji(b.name));
-    }), [recipeCat, recipeQuery, dietaryFilter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes, unlocks]);
+    }).sort((a, b) =>
+        // Strictly A-Z within whichever category is showing.
+        // This previously floated the selected recipes to the top and pushed
+        // locked ones to the bottom, which meant a recipe's position moved as
+        // you used the app and the same list never read the same way twice.
+        // Emoji are stripped first, or every name sorts by its leading icon.
+        _stripEmoji(a.name).localeCompare(_stripEmoji(b.name), undefined, { sensitivity: "base", numeric: true })
+    ), [recipeCat, recipeQuery, dietaryFilter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes, unlocks]);
     const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -14044,22 +14053,35 @@ function App() {
                         recipeQuery && (React.createElement("button", { onClick: () => setRecipeQuery(""), style: { position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
                                 background: "none", border: "none", color: C.muted, fontSize: 18, cursor: "pointer",
                                 padding: "0 6px", lineHeight: 1 } }, "\u2715"))),
-                    React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap", alignItems: "center" } },
-                        React.createElement("button", { onClick: () => setDietaryExpanded(x => !x),
-                            style: { flexShrink: 0, padding: "8px 14px", fontSize: 11, fontWeight: 700, borderRadius: 20,
+                    // ── Dietary restrictions: a native <select> ───────────────
+                    // Was a "Dietary ▾" button that expanded five more chips into
+                    // the same wrapping row, so choosing one reflowed the whole
+                    // filter block and pushed the recipe list down the screen.
+                    // A native select opens the platform picker instead, costs one
+                    // line of vertical space, and states the current choice without
+                    // having to expand anything.
+                    React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8, alignItems: "center" } },
+                        React.createElement("select", {
+                            value: dietaryFilter || "",
+                            onChange: e => setDietaryFilter(e.target.value || null),
+                            "aria-label": "Filter by dietary restriction",
+                            style: { flex: 1, minWidth: 0, minHeight: 36, padding: "8px 30px 8px 12px", fontSize: 12, fontWeight: 700,
+                                borderRadius: 10, fontFamily: "inherit", cursor: "pointer",
                                 border: `1px solid ${dietaryFilter ? C.accentBorder : C.dim}`,
-                                background: dietaryFilter ? C.accentDim : C.card2,
-                                color: dietaryFilter ? C.accent : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em",
-                                minHeight: 36, WebkitTapHighlightColor: "transparent" } },
-                            dietaryFilter ? `✓ ${dietaryFilter}` : "Dietary ▾"),
-                        dietaryExpanded && [["Gluten-Free", "#b45309"], ["Dairy-Free", "#0891b2"], ["Egg-Free", "#d97706"], ["Nut-Free", "#65a30d"], ["Soy-Free", C.purple]].map(([lbl, col]) => {
-                            const active = dietaryFilter === lbl;
-                            return React.createElement("button", { key: lbl, onClick: () => { setDietaryFilter(active ? null : lbl); setDietaryExpanded(false); },
-                                style: { flexShrink: 0, padding: "8px 14px", fontSize: 11, fontWeight: 700, borderRadius: 20, border: `1px solid ${active ? col : C.dim}`,
-                                    background: active ? `rgba(${col === "#b45309" ? "180,83,9" : col === "#0891b2" ? "8,145,178" : col === "#d97706" ? "217,119,6" : col === "#65a30d" ? "101,163,13" : "124,58,237"},0.15)` : C.card2,
-                                    color: active ? col : C.sub, cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.03em",
-                                    minHeight: 36, WebkitTapHighlightColor: "transparent" } }, lbl);
-                        })),
+                                background: (dietaryFilter ? C.accentDim : C.card2) +
+                                    ` url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%238a8580' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") no-repeat right 10px center`,
+                                backgroundSize: "12px 8px",
+                                color: dietaryFilter ? C.accent : C.sub,
+                                WebkitAppearance: "none", MozAppearance: "none", appearance: "none",
+                                WebkitTapHighlightColor: "transparent" } },
+                            React.createElement("option", { value: "" }, "All dietary needs"),
+                            ["Gluten-Free", "Dairy-Free", "Egg-Free", "Nut-Free", "Soy-Free"].map(lbl =>
+                                React.createElement("option", { key: lbl, value: lbl }, lbl))),
+                        dietaryFilter && React.createElement("button", {
+                            onClick: () => setDietaryFilter(null),
+                            "aria-label": "Clear dietary filter",
+                            style: { flexShrink: 0, minHeight: 36, padding: "0 12px", borderRadius: 10, fontSize: 12, fontWeight: 700,
+                                border: `1px solid ${C.dim}`, background: C.card2, color: C.muted, cursor: "pointer", fontFamily: "inherit" } }, "Clear")),
                     React.createElement("div", { style: { display: "flex", gap: 5, marginBottom: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
                         PROTEIN_FILTERS.map(p => {
                             const val = p === "All" ? null : p.split(" ").slice(1).join(" ");

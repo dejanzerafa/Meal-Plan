@@ -180,6 +180,8 @@
       cursor: pointer; border: none; transition: opacity 0.15s; margin-bottom: 22px;
     }
     .plan-btn:hover { opacity: 0.88; }
+    /* The Free CTA is an <a> so it still works with JavaScript disabled. */
+    a.plan-btn { display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
     .plan-btn.btn-free { background: var(--midgrey); color: var(--cream); }
     .plan-btn.btn-monthly { background: rgba(242,237,230,0.1); color: var(--cream); border: 1px solid rgba(242,237,230,0.15); }
     .plan-btn.btn-annual { background: var(--orange); color: var(--black); }
@@ -417,7 +419,7 @@
       </div>
       <div class="plan-subprice">&nbsp;</div>
       <div class="plan-desc">Get started with a curated selection of recipes. No credit card required.</div>
-      <button class="plan-btn btn-free" onclick="window.location.href='https://soulgainz.app/waitlist'">Join waitlist</button>
+      <a class="plan-btn btn-free" href="https://soulgainz.app/waitlist" role="button">Join waitlist</a>
       <hr class="plan-divider">
       <ul class="plan-features">
         <li><span class="check">✓</span><span><span class="feat-label">14 starter recipes</span></span></li>
@@ -437,7 +439,7 @@
       </div>
       <div class="plan-subprice" id="monthly-subprice">Cancel anytime</div>
       <div class="plan-desc">85+ high-protein recipes with verified macros. Everything you need to build the habit.</div>
-      <button class="plan-btn btn-monthly" id="btn-monthly" onclick="event.stopPropagation(); handleCheckout('monthly')">Subscribe</button>
+      <button class="plan-btn btn-monthly" id="btn-monthly" type="button" data-checkout="monthly">Subscribe</button>
       <div class="plan-guarantee">14-day money-back guarantee</div>
       <hr class="plan-divider">
       <ul class="plan-features">
@@ -459,7 +461,7 @@
       </div>
       <div class="plan-subprice" id="annual-subprice">Billed €149.99/year · <span>Save €54</span></div>
       <div class="plan-desc">The full 160+ recipe library. Best value for serious meal preppers.</div>
-      <button class="plan-btn btn-annual" id="btn-annual" onclick="event.stopPropagation(); handleCheckout('annual')">Subscribe</button>
+      <button class="plan-btn btn-annual" id="btn-annual" type="button" data-checkout="annual">Subscribe</button>
       <div class="plan-guarantee">14-day money-back guarantee</div>
       <hr class="plan-divider">
       <ul class="plan-features">
@@ -634,6 +636,16 @@
         <div class="modal-error" id="auth-error" role="alert" aria-live="assertive"></div>
       </div>
     </div>
+  </div>
+
+
+  <!-- Visible failure surface. Without this, every JS problem on this page —
+       a parse error, a blocked SDK, a thrown listener — presents to the user as
+       "the button does nothing", which is unreportable and undiagnosable. -->
+  <div id="jsFail" role="alert" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;
+       background:#7f1d1d;color:#fff;font:600 13px/1.5 'Instrument Sans',sans-serif;padding:12px 16px;text-align:center;">
+    <span id="jsFailMsg">Something went wrong loading this page.</span>
+    <a href="mailto:support@soulgainz.app" style="color:#fecaca;text-decoration:underline;margin-left:8px;">Email support</a>
   </div>
 
   <script>
@@ -959,6 +971,48 @@
       resetPlanBtn('monthly');
       resetPlanBtn('annual');
     });
+
+
+    // ── Failure surface ─────────────────────────────────────────────────────
+    function showFail(msg) {
+      var el = document.getElementById('jsFail');
+      var m  = document.getElementById('jsFailMsg');
+      if (m)  m.textContent = msg;
+      if (el) el.style.display = 'block';
+    }
+    // Any uncaught error anywhere on the page becomes visible rather than silent.
+    window.addEventListener('error', function (e) {
+      showFail('Checkout is unavailable in this browser (' + (e.message || 'script error') + '). Try another browser, or email support.');
+    });
+    window.addEventListener('unhandledrejection', function () {
+      showFail('Checkout could not start. Please check your connection and try again, or email support.');
+    });
+
+    // ── Bind the plan buttons ───────────────────────────────────────────────
+    // Runs at the very end of the script, so reaching it proves every function
+    // above was defined. If the script died earlier, the boot check fires.
+    (function bindPlanButtons() {
+      var btns = document.querySelectorAll('[data-checkout]');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          try {
+            handleCheckout(this.getAttribute('data-checkout'));
+          } catch (err) {
+            showFail('Could not start checkout: ' + (err && err.message ? err.message : err));
+          }
+        });
+      }
+      window.__sgCheckoutReady = btns.length > 0;
+    })();
+
+    // If binding never happened, say so instead of presenting a dead button.
+    setTimeout(function () {
+      if (!window.__sgCheckoutReady) {
+        showFail('The checkout script did not load. Please reload the page, or email support@soulgainz.app.');
+      }
+    }, 2500);
 
     // FAQ needs no JavaScript — it uses native <details>/<summary>.
   </script>
