@@ -7744,7 +7744,7 @@ function MealCard({ meal, macros, slot, profileScale, portions, onSkip, onSwap }
                     border: "none", cursor: "pointer", padding: 0, letterSpacing: "0.05em" } }, open ? "▲ Hide ingredients" : "▼ 🍱 Fridge pull — batch ingredients")),
             (onSkip || onSwap) && React.createElement("div", { style:{display:"flex",gap:8,marginTop:8} },
                 onSwap && React.createElement("button", { onClick: onSwap, style: { fontSize: 10, fontWeight: 700, color: C.accent, background: C.accentDim,
-                    border: `1px solid ${C.accentBorder}`, borderRadius: 6, cursor: "pointer", padding: "3px 10px", letterSpacing: "0.05em" } }, "🔄 Swap"),
+                    border: `1px solid ${C.accentBorder}`, borderRadius: 6, cursor: "pointer", padding: "3px 10px", letterSpacing: "0.05em" } }, "🔄 Change"),
                 onSkip && React.createElement("button", { onClick: onSkip, style: { fontSize: 10, fontWeight: 700, color: C.muted, background: "none",
                     border: `1px solid ${C.dim}`, borderRadius: 6, cursor: "pointer", padding: "3px 10px", letterSpacing: "0.05em" } }, "⏭ Skip")),
             !isRecipe && meal.items && (React.createElement("button", { onClick: () => setOpen(o => !o), style: { fontSize: 11, color: C.sub, background: "none",
@@ -12442,113 +12442,15 @@ function SuppModal({ C, data, mode, onSave, onClose }) {
 }
 
 
-// ── SwapModal — full recipe browser with category tabs + search ───────────────
-function SwapModal({ C, currentRecipe, slot, allRecipes, effectiveTargets, onSwap, onClose, canView }) {
-    const [search, setSearch] = React.useState("");
-    const [activeTab, setActiveTab] = React.useState("all");
-    const currentKcal = (currentRecipe.perPortion ? currentRecipe.perPortion.kcal : currentRecipe.kcal) || 0;
-    const currentProt = (currentRecipe.perPortion ? currentRecipe.perPortion.protein : currentRecipe.protein) || 0;
-    // Only show recipes the user can actually access — prevents free users swapping to locked recipes
-    var viewableRecipes = canView ? allRecipes.filter(function(r) { return canView(r.id); }) : allRecipes;
-
-    // Single source of truth for every macro shown in this sheet.
-    // These used to read `r.perPortion` directly, while the meal plan renders
-    // computePerPortion(r) — derived from the ingredients. The audit found 35
-    // recipes where the two disagreed, so the picker could quote 567 kcal and
-    // the plan 756 kcal for the same recipe, one tap apart. The stale rows are
-    // corrected now; routing both through the same function is what stops them
-    // drifting apart again.
-    function swapMacros(r) {
-        try {
-            const m = computePerPortion(r);
-            if (m && m.kcal) return m;
-        } catch (_) {}
-        return r.perPortion || { kcal: r.kcal || 0, protein: r.protein || 0, carbs: r.carbs || 0, fat: r.fat || 0 };
-    }
-
-    // Macro distance for sorting (closer = better match)
-    function dist(r) {
-        var _m = swapMacros(r);
-        var dk = currentKcal > 0 ? Math.abs((_m.kcal||0) - currentKcal) / currentKcal : 0;
-        var dp = currentProt > 0 ? Math.abs((_m.protein||0) - currentProt) / currentProt : 0;
-        return dk * 0.5 + dp * 0.5;
-    }
-
-    var SWAP_CATS = [
-        ["all", "All"],
-        ["main", "🍽️ Mains"],
-        ["breakfast", "🌅 Breakfast"],
-        ["salad", "🥗 Salads"],
-        ["smoothie", "🥤 Smoothies"],
-        ["preworkout", "⚡ Pre-Workout"],
-        ["dessert", "🍰 Dessert"],
-    ];
-
-    var filtered = viewableRecipes.filter(function(r) {
-        if (r.id === currentRecipe.id) return false;
-        if (activeTab !== "all" && r.category !== activeTab) return false;
-        if (search.trim()) {
-            var q = search.trim().toLowerCase();
-            return (r.name||"").toLowerCase().includes(q) || (r.subtitle||"").toLowerCase().includes(q);
-        }
-        return true;
-    }).sort(function(a,b){ return dist(a)-dist(b); });
-
-    return React.createElement("div", { style:{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:8600,display:"flex",alignItems:"flex-end",justifyContent:"center"} },
-        React.createElement("div", { style:{background:C.bg,borderRadius:"20px 20px 0 0",width:"100%",maxWidth:440,boxShadow:"0 -20px 60px rgba(0,0,0,0.5)",display:"flex",flexDirection:"column",maxHeight:"88vh"} },
-            // ── Header + controls ──
-            React.createElement("div", { style:{padding:"18px 18px 0",flexShrink:0} },
-                React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6} },
-                    React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.text} }, "🔄 Swap Recipe"),
-                    React.createElement("button", { onClick:onClose, "aria-label":"Close", style:{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer",padding:"0 4px",lineHeight:1} }, "✕")),
-                React.createElement("div", { style:{fontSize:11,color:C.sub,marginBottom:10} },
-                    "Replacing: ", React.createElement("b",{style:{color:C.text}},currentRecipe.name)),
-                // Search bar
-                React.createElement("input", {
-                    value:search,
-                    onChange:function(e){setSearch(e.target.value);},
-                    placeholder:"Search any recipe…",
-                    "aria-label": "Search recipes",
-                    style:{width:"100%",padding:"10px 14px",background:C.card2,border:"1.5px solid "+C.dim,borderRadius:10,color:C.text,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",marginBottom:10} }),
-                // Category tabs
-                React.createElement("div", { style:{display:"flex",gap:6,overflowX:"auto",paddingBottom:12,WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"} },
-                    SWAP_CATS.map(function(ct) {
-                        var isA = activeTab === ct[0];
-                        return React.createElement("button", { key:ct[0], onClick:function(){setActiveTab(ct[0]);},
-                            style:{flexShrink:0,padding:"6px 12px",borderRadius:20,border:"1.5px solid "+(isA?C.accent:C.dim),background:isA?C.accent:"transparent",color:isA?"#000":C.sub,fontSize:11,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"} },
-                            ct[1]);
-                    }))),
-            // ── Scrollable recipe list ──
-            React.createElement("div", { style:{overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"4px 18px",paddingBottom:"max(24px,calc(env(safe-area-inset-bottom)+16px))",flex:1} },
-                !filtered.length && React.createElement("div", { style:{textAlign:"center",padding:"32px 0",color:C.muted,fontSize:13} },
-                    search.trim() ? "No recipes match \""+search+"\"." : "No recipes available."),
-                filtered.map(function(r) {
-                    var _m = swapMacros(r);
-                    var kcalDiff = ((_m.kcal||0) - currentKcal);
-                    var protDiff = ((_m.protein||0) - currentProt);
-                    var diffColor = Math.abs(kcalDiff) < 80 ? C.green : C.accent;
-                    var pq = proteinQuality(_m.kcal, _m.protein);
-                    return React.createElement("div", { key:r.id, style:{background:C.card,border:"1px solid "+C.dim,borderRadius:12,padding:"12px 14px",marginBottom:10} },
-                        React.createElement("div", { style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8} },
-                            React.createElement("div", { style:{flex:1,paddingRight:8} },
-                                React.createElement("div", { style:{display:"flex",alignItems:"center",gap:6,marginBottom:2} },
-                                    pq && React.createElement("span",{style:{width:7,height:7,borderRadius:"50%",background:pq.dot,display:"inline-block",flexShrink:0},title:pq.tip}),
-                                    React.createElement("div", { style:{fontSize:13,fontWeight:700,color:C.text} }, r.name)),
-                                React.createElement("div", { style:{fontSize:11,color:C.sub} }, r.subtitle||"")),
-                            React.createElement("div", { style:{textAlign:"right",flexShrink:0} },
-                                React.createElement("div", { style:{fontSize:14,fontWeight:800,color:C.accent} }, ((_m.kcal)||0)+" kcal"),
-                                React.createElement("div", { style:{fontSize:10,color:diffColor} }, (kcalDiff>=0?"+":"")+Math.round(kcalDiff)+" cal · "+(protDiff>=0?"+":"")+Math.round(protDiff)+"g P"))),
-                        React.createElement("div", { style:{display:"flex",gap:10,marginBottom:10} },
-                            [{label:"P",v:_m.protein,c:C.prot},{label:"C",v:_m.carbs,c:C.carb},{label:"F",v:_m.fat,c:C.fat}].map(function(m){
-                                return React.createElement("div",{key:m.label,style:{flex:1,textAlign:"center",background:C.card2,borderRadius:6,padding:"5px 4px"}},
-                                    React.createElement("div",{style:{fontSize:11,fontWeight:800,color:m.c}},Math.round(m.v||0)+"g"),
-                                    React.createElement("div",{style:{fontSize:9,color:C.muted,letterSpacing:"0.05em"}},m.label));
-                            })),
-                        React.createElement("button", { onClick:function(){ onSwap(r.id); onClose(); },
-                            style:{width:"100%",background:C.accent,border:"none",borderRadius:8,padding:"9px",fontSize:13,fontWeight:700,color:"#000",cursor:"pointer"} },
-                            "Swap to This →"));
-                }))))
-}
+// SwapModal removed. It offered a macro-matched replacement sheet for lunch and
+// dinner only, which meant two different routes to fill the same slot with two
+// different behaviours — the sheet skipped the handlers that reset the slot's
+// portion scale, and it read a different macro source to the meal plan, so the
+// same recipe could be quoted at two calorie counts one tap apart.
+//
+// Replacing a meal now uses the one route that already existed and already
+// worked for breakfast, dessert and pre-workout: jump to the Recipes tab with
+// the slot pending, pick anything, done.
 
 // ── SavePlanModal ─────────────────────────────────────────────────────────────
 function SavePlanModal({ C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, onSave, onClose }) {
@@ -13729,8 +13631,6 @@ function App() {
     const [showPlansDrawer, setShowPlansDrawer] = useState(false);
     // ── Guided Prep Flow ─────────────────────────────────────────────────────
     const [showPrepFlow, setShowPrepFlow] = useState(false);
-    // ── Swap recipe modal ────────────────────────────────────────────────────
-    const [swapSlot, setSwapSlot] = useState(null); // "lunch" | "dinner" | null
     const [logoTaps, setLogoTaps] = useState(0);
     const tapLogo = () => {
         const t = logoTaps + 1;
@@ -14313,8 +14213,8 @@ function App() {
                                         preSkipped ? React.createElement(EmptySlotCard, { slot: "preworkout", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("preworkout"); setRecipeCat("preworkout"); setRecipeQuery(""); setTab("recipes"); } })
                     : preRecipe && prer ? React.createElement(MealCard, { meal: prer, macros: PRE_M, slot: "preworkout", profileScale: profileScale, portions: portions, onSkip: () => setPreSkipped(true) })
                     : React.createElement(MealCard, { meal: PRE, macros: PRE, profileScale: profileScale, portions: portions, onSkip: () => setPreSkipped(true) }),
-                                        lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions, onSkip: () => setLunch(null), onSwap: () => setSwapSlot("lunch") })) : React.createElement(EmptySlotCard, { slot: "lunch", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
-                                        dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions, onSkip: () => setDinner(null), onSwap: () => setSwapSlot("dinner") })) : React.createElement(EmptySlotCard, { slot: "dinner", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dinner"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
+                                        lr ? (React.createElement(MealCard, { meal: lr, macros: L, slot: "lunch", profileScale: profileScale, portions: portions, onSkip: () => setLunch(null), onSwap: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } })) : React.createElement(EmptySlotCard, { slot: "lunch", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("lunch"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
+                                        dr ? (React.createElement(MealCard, { meal: dr, macros: D, slot: "dinner", profileScale: profileScale, portions: portions, onSkip: () => setDinner(null), onSwap: () => { setPendingSlot("dinner"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } })) : React.createElement(EmptySlotCard, { slot: "dinner", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dinner"); setRecipeCat("main"); setRecipeQuery(""); setTab("recipes"); } }),
                     dessert && desr
                         ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions, onSkip: () => setDessert(null), onSwap: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } })
                         : React.createElement(EmptySlotCard, { slot: "dessert", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } }),
@@ -14681,14 +14581,6 @@ function App() {
                     // ── Legal (collapsed) ─────────────────────────────────────────────
                     React.createElement(LegalAccordion, { C: C })),
         ))),
-        swapSlot && (swapSlot==="lunch" ? lr : dr) && React.createElement(SwapModal, { C, currentRecipe: swapSlot==="lunch" ? lr : dr, slot: swapSlot, allRecipes, effectiveTargets, canView,
-            // Must use the handlers, not the raw setters. Going through setLunch/setDinner
-            // skipped setLunchScale(1)/setDinnerScale(1), so a 1.4x scale calibrated for a
-            // 600 kcal lunch stayed applied to a 900 kcal replacement — 1260 kcal the user
-            // never asked for. It also skipped the recipe_selected analytics event, and
-            // meant the two routes to the same slot produced different totals.
-            onSwap: id => { (swapSlot === "lunch" ? handleSetLunch : handleSetDinner)(id); setSwapSlot(null); },
-            onClose: () => setSwapSlot(null) }),
         showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets,
             breakfastSkipped, preSkipped,
             onGotoRecipes:(slot)=>{ if(slot==="breakfast") setBreakfastSkipped(false); if(slot==="preworkout") setPreSkipped(false); setPendingSlot(slot); setRecipeCat(slot==="main"?"main":slot); setRecipeQuery(""); setTab("recipes"); },
