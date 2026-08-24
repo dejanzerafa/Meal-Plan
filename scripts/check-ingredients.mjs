@@ -130,9 +130,12 @@ for (const it of items) {
 }
 
 // ── 6. Declared macros must match the ingredients ───────────────────────────
-// Legitimate exceptions: fibre-discounted energy for cacao, cocoa and tempeh,
-// where the declared figure was computed with Atwater factors.
-const ATWATER_EXEMPT = new Set(["d1", "sm2", "sn1"]);
+// Legitimate exception: fibre-discounted energy for cocoa, where the declared
+// figure was computed with Atwater factors.
+// d1 and sm2 declare kcal from Atwater factors while the ingredient bank uses
+// real, fibre-discounted energy for cocoa. Both describe the same food.
+// (sn1 was the third, exempt because of tempeh — that recipe has been removed.)
+const ATWATER_EXEMPT = new Set(["d1", "sm2"]);
 for (const r of [...RECIPES, ...PENDING]) {
   const d = r.perPortion; if (!d || !d.kcal) continue;
   let k = 0, p = 0, c = 0, f = 0, covered = 0;

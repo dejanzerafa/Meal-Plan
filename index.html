@@ -705,7 +705,6 @@ const ING_FLAT = [
   {id:183, name:"Yellow Mustard", cat:"Condiments", kcal:60, p:4, c:5.8, f:3.6},
   {id:103, name:"Zucchini / Courgette", cat:"Vegetables", kcal:17, p:1.2, c:3.1, f:0.3, unitG:200},
   {id:314, name:"Milk Chocolate Chips", cat:"Baking", kcal:535, p:5.9, c:59.2, f:30.2},
-  {id:315, name:"Tempeh", cat:"Legumes", kcal:193, p:19, c:9, f:11},
   {id:316, name:"Miso Paste", cat:"Condiments", kcal:200, p:12, c:26, f:6},
   {id:317, name:"Barramundi (raw)", cat:"Fish & Seafood", kcal:125, p:22, c:0, f:3.2},
   {id:318, name:"Lemongrass (fresh)", cat:"Herbs & Spices", kcal:99, p:1.8, c:25, f:0.5},
@@ -1435,7 +1434,7 @@ const RECIPES = [
             "Cook brown rice in rice cooker (brown rice needs 1.25× water ratio and ~35 min).",
             "Slice peppers and zucchini into thin strips. Mince garlic and grate ginger.",
             "Pat shrimp dry. Season with salt and pepper.",
-            "Heat a large wok or pan over high heat. Add cooking spray. Stir-fry shrimp 2 min per side until pink. Remove and set aside.",
+            "Heat a large wok or pan over high heat. Add the sesame oil. Stir-fry shrimp 2 min per side until pink. Remove and set aside.",
             "In the same pan, stir-fry vegetables with garlic and ginger for 4–5 min until tender-crisp.",
             "Return shrimp to pan, add soy sauce and snap peas. Toss 1 min.",
             "Weigh total stir-fry, divide equally. Portion with brown rice into containers.",
@@ -1649,7 +1648,7 @@ const RECIPES = [
         steps: [
             "Cook brown rice the night before and refrigerate — cold rice is essential for fried rice.",
             "Cut steak into bite-sized cubes. Season with salt, pepper, and a splash of soy sauce. Set aside.",
-            "Heat a large skillet over high heat. Add cooking spray, then cold rice, sliced zucchini, sliced mushrooms, and diced onion. Stir-fry for 5–10 mins. Add soy sauce and toss to coat.",
+            "Heat a large skillet over high heat. Add the sesame oil, then cold rice, sliced zucchini, sliced mushrooms, and diced onion. Stir-fry for 5–10 mins. Add soy sauce and toss to coat.",
             "Push rice to the edges. Crack eggs into the centre and scramble until cooked, then mix into the rice.",
             "Remove rice from pan. Sear steak cubes over high heat until medium-rare (130–140°F internal).",
             "Mix the yum-yum sauce cold: 105 g light mayonnaise, Frank's Red Hot to taste, and a squeeze of lime. Keep it out of the hot pan — it goes on at portioning.",
@@ -2137,8 +2136,8 @@ const RECIPES = [
             "Cook brown rice in rice cooker.",
             "Blanch broccoli in boiling water 3 min until just tender-crisp. Drain and set aside.",
             "Brown ground beef in a large wok or pan over high heat, breaking it up, 8–10 min. Drain excess fat.",
-            "Add garlic and ginger, cook 1 min. Add snap peas and sliced mushrooms; stir-fry 3 min. Add soy sauce, oyster sauce, and cooking spray. Toss to coat.",
-            "Add broccoli to the wok and toss everything together over high heat for 2 min.",
+            "Add garlic and ginger, cook 1 min. Add snap peas and sliced mushrooms; stir-fry 3 min. Add soy sauce and oyster sauce. Toss to coat.",
+            "Add broccoli to the wok and toss everything together over high heat for 2 min, then take it off the heat and stir the sesame oil through — added at the end so its aroma survives.",
             "Weigh beef-broccoli mixture, divide equally. Portion with brown rice into containers.",
             "🟡 Add ¼ tsp turmeric and a pinch of black pepper while cooking — activates curcumin absorption (piperine effect) for anti-inflammatory benefit."
         ],
@@ -2841,7 +2840,7 @@ const RECIPES = [
         steps: [
             "Press tofu for at least 30 min (or overnight wrapped in a towel with a heavy pan on top). Cut into 2cm cubes.",
             "Cook brown rice according to package directions. Set aside.",
-            "Heat cooking spray in a large non-stick pan over high heat. Add tofu cubes — do not move them for 3–4 min until a golden crust forms. Flip and brown all sides. Remove from pan.",
+            "Heat the sesame oil in a large non-stick pan over high heat. Add tofu cubes — do not move them for 3–4 min until a golden crust forms. Flip and brown all sides. Remove from pan.",
             "In the same pan, sauté garlic 1 min. Add broccoli florets and stir-fry 4 min until bright green and tender-crisp.",
             "Add edamame and cook 2 min until heated through.",
             "Return tofu to the pan. Pour teriyaki sauce and soy sauce over everything. Toss to coat and cook 2 min until sauce thickens.",
@@ -3425,7 +3424,7 @@ const RECIPES = [
             { key: "d5_date",  label: "Medjool dates, pitted",   qty: 34,  unit: "g",     cat: "Carbs"   , ingId: 154, role: "fixed",   baseQty: 3.8},
             { key: "d5_prot",  label: "Chocolate whey protein",  qty: 2,   unit: "whole", cat: "Protein" , ingId: 210, role: "protein", share: 0.5},
             { key: "d5_flour", label: "Almond flour",            qty: 60,  unit: "g",     cat: "Carbs"   , ingId: 81,  role: "carbs",   share: 0.143},
-            { key: "d5_coc",   label: "Cocoa powder",            qty: 10,  unit: "g",     cat: "Sauces"  , ingId: 254, role: "fixed",   baseQty: 1.1},
+            { key: "d5_coc",   label: "Cocoa powder (unsweetened)",            qty: 10,  unit: "g",     cat: "Sauces"  , ingId: 254, role: "fixed",   baseQty: 1.1},
             { key: "d5_bak",   label: "Baking powder",           qty: 5,   unit: "g",     cat: "Sauces"  , ingId: 250, role: "fixed",   baseQty: 0.6},
             { key: "d5_chips", label: "Milk chocolate chips",    qty: 15,  unit: "g",     cat: "Sauces"  , ingId: 314, role: "fixed",   baseQty: 1.7},
         ],
@@ -3505,7 +3504,7 @@ const RECIPES = [
             { key: "d1_flr", label: "Self-rising flour", qty: 30, unit: "g", cat: "Carbs" , ingId: 277 , role: "carbs", share: 0.5},
             { key: "d1_coc", label: "Coconut flour", qty: 42, unit: "g", cat: "Carbs" , ingId: 82 , role: "carbs", share: 0.5},
             { key: "d1_prot", label: "Chocolate brownie protein powder", qty: 1, unit: "whole", cat: "Protein" , ingId: 210 , role: "protein", share: 0.333333},
-            { key: "d1_cacao", label: "70% cacao powder", qty: 90, unit: "g", cat: "Sauces" , ingId: 254 , role: "fixed", baseQty: 22.5},
+            { key: "d1_cocoa", label: "Cocoa powder (unsweetened)", qty: 90, unit: "g", cat: "Sauces" , ingId: 254 , role: "fixed", baseQty: 22.5},
             { key: "d1_sug", label: "Brown sugar alternative", qty: 1, unit: "whole", cat: "Sauces" , ingId: 260 , role: "fixed", baseQty: 0.25},
             { key: "d1_egg", label: "Large egg", qty: 1, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333334},
             { key: "d1_van", label: "Real vanilla extract", qty: 1, unit: "whole", cat: "Sauces" , ingId: 252 , role: "fixed", baseQty: 0.25},
@@ -3514,7 +3513,7 @@ const RECIPES = [
         ],
         steps: [
             "Preheat oven to 180°C (350°F). Line a baking sheet with parchment paper.",
-            "In a large bowl, mix together: Greek yogurt, pumpkin purée, self-rising flour, coconut flour, cacao powder, protein powder, baking powder, vanilla extract, Truvia brown sugar, and egg.",
+            "In a large bowl, mix together: Greek yogurt, pumpkin purée, self-rising flour, coconut flour, cocoa powder, protein powder, baking powder, vanilla extract, Truvia brown sugar, and egg.",
             "Add almond milk one tablespoon at a time until you reach a cookie dough consistency (not too wet).",
             "Scoop equal portions onto the parchment-lined baking sheet. Flatten slightly.",
             "Bake at 180°C for 20 minutes until set. Remove and allow to cool completely.",
@@ -3867,31 +3866,7 @@ const RECIPES = [
             "Serve immediately.",
         ],
     },
-    {
-        category: "main", id: "sn1",
-        name: "🥢 Balinese Peanut Tempeh Skewers",
-        subtitle: "Stovetop · 20 min",
-        badge: "🍳 Stovetop", carb: "—",
-        portions: 1,
-        perPortion: {kcal:406, protein:28.1, carbs:26.5, fat:20.8},
-        batchItems: [
-            { key: "sn1_tempeh", label: "Tempeh", qty: 120, unit: "g", cat: "Protein", ingId: 315, role: "protein", share: 1},
-            { key: "sn1_pb", label: "Peanut butter (natural)", qty: 15, unit: "g", cat: "Fats", ingId: 166, role: "fats", share: 1},
-            { key: "sn1_soy", label: "Soy sauce (low sodium)", qty: 15, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
-            { key: "sn1_lemon", label: "Lemongrass (fresh)", qty: 10, unit: "g", cat: "Herbs", ingId: 318, role: "flavour", share: 1},
-            { key: "sn1_lime", label: "Lime (juice)", qty: 15, unit: "ml", cat: "Fruits", ingId: 151, role: "flavour", share: 1},
-            { key: "sn1_honey", label: "Honey", qty: 10, unit: "g", cat: "Baking", ingId: 195, role: "flavour", share: 1},
-        ],
-        steps: [
-            "Slice tempeh into cubes and thread onto skewers.",
-            "Mix peanut butter, soy sauce, minced lemongrass, honey, and lime juice.",
-            "Brush marinade over tempeh skewers.",
-            "Grill or pan-fry on medium-high 3–4 min per side until golden.",
-            "Serve with remaining peanut sauce and fresh herbs.",
-            "💡 Add 1 tsp fresh grated ginger (or ½ tsp ground) — reduces post-workout muscle soreness (DOMS) and supports digestion.",
-        ],
-    },
-    {
+{
         category: "main", id: "sn2",
         name: "🥟 Steamed Chicken Power Bao",
         subtitle: "Steam · 20 min · high-calorie bulk option",
@@ -4547,7 +4522,7 @@ const RECIPES = [
         ],
         steps: [
             "Cook pasta al dente, reserve 1 cup pasta water.",
-            "Sauté sliced mushrooms and garlic in cooking spray over high heat until golden.",
+            "Sauté sliced mushrooms and garlic in the sesame oil over high heat until golden.",
             "Whisk miso paste with pasta water to make sauce.",
             "Toss pasta with mushrooms and miso sauce.",
             "Stir in cottage cheese off heat — it thickens the sauce and adds ~18 g protein per portion.",
@@ -4632,7 +4607,7 @@ const RECIPES = [
         steps: [
             "Poach chicken breast in seasoned water 15 min. Cool and shred.",
             "Shred cabbage into thin ribbons.",
-            "Make Asian vinaigrette: cooking spray, soy sauce, lime, rice vinegar, ginger.",
+            "Make Asian vinaigrette: sesame oil, soy sauce, lime, rice vinegar, ginger.",
             "Toss shredded chicken and cabbage with vinaigrette.",
             "Top with crushed cashews and wonton skin strips (baked, not fried)."
         ],
@@ -4791,7 +4766,7 @@ const RECIPES = [
             "Whisk honey, soy sauce, ginger, and garlic for glaze.",
             "Marinate chicken 30 min. Grill or pan-fry 6–8 min per side, basting with glaze.",
             "Cook rice per package.",
-            "Sauté bok choy and mixed veggies in cooking spray.",
+            "Sauté bok choy and mixed veggies in the sesame oil.",
             "Build bowl: rice, sliced glazed chicken, veggies, pickled slaw, and crushed cashews.",
             "🟡 Add ¼ tsp turmeric and a pinch of black pepper while cooking — activates curcumin absorption (piperine effect) for anti-inflammatory benefit."
         ],
@@ -4843,41 +4818,14 @@ const RECIPES = [
         steps: [
             "Cook rice day before — cold cooked rice works best for fried rice.",
             "Dice and grill chicken until cooked through.",
-            "Stir-fry cold rice in cooking spray with garlic, shallots, and chili paste.",
+            "Stir-fry cold rice in the sesame oil with garlic, shallots, and chili paste.",
             "Add the soy sauce, the 100 g bok choy (stems and leaves, roughly chopped), and the chicken. Toss 3 min on high heat until the bok choy just wilts.",
             "Top each bowl with a fried egg, crispy shallots, and pickles.",
             "🟡 Add ¼ tsp turmeric and a pinch of black pepper while cooking — activates curcumin absorption (piperine effect) for anti-inflammatory benefit.",
             "💡 Add 1 tsp fresh grated ginger (or ½ tsp ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
         ],
     },
-    {
-        category: "main", id: "m77",
-        name: "🥢 Teriyaki Tofu & Soba Bowl",
-        subtitle: "Stovetop · 25 min",
-        badge: "🍳 Stovetop", carb: "🍜 Soba Noodles",
-        portions: 2,
-        perPortion: {kcal:631, protein:46.3, carbs:75.2, fat:21.6},
-        batchItems: [
-            { key: "m77_tempeh", label: "Tempeh", qty: 200, unit: "g", cat: "Protein", ingId: 315, role: "protein", share: 0.333333},
-            { key: "m77_tofu", label: "Tofu (firm)", qty: 200, unit: "g", cat: "Protein", ingId: 97, role: "protein", share: 0.333333},
-            { key: "m77_soba", label: "Soba noodles (dry)", qty: 150, unit: "g", cat: "Carbs", ingId: 328, role: "carbs", share: 1},
-            { key: "m77_edamame", label: "Edamame (shelled)", qty: 100, unit: "g", cat: "Protein", ingId: 96, role: "protein", share: 0.333334},
-            { key: "m77_tahini", label: "Tahini", qty: 10, unit: "g", cat: "Fats", ingId: 320, role: "fats", share: 1},
-            { key: "m77_soy", label: "Soy sauce (low sodium)", qty: 20, unit: "ml", cat: "Sauces", ingId: 180, role: "flavour", share: 1},
-            { key: "m77_bokchoy", label: "Bok choy", qty: 200, unit: "g", cat: "Vegetables", ingId: 313, role: "veg", share: 1 },
-            { key: "m77_lime", label: "Lime juice", qty: 15, unit: "ml", cat: "Sauces", ingId: 151, role: "flavour", baseQty: 7.5 },
-        ],
-        steps: [
-            "Press and cube tofu. Slice tempeh.",
-            "Pan-fry both in cooking spray until golden, then glaze with teriyaki.",
-            "Cook soba noodles, rinse cold.",
-            "Steam edamame and bok choy.",
-            "Make the tahini dressing: 10 g tahini, the 20 ml low-sodium soy sauce, the 15 ml lime juice, and a splash of water. Whisk until pourable.",
-            "Build bowls: soba, tofu, tempeh, edamame, bok choy. Drizzle dressing.",
-            "💡 Add 1 tsp fresh grated ginger (or ½ tsp ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
-        ],
-    },
-    {
+{
         category: "main", id: "m78",
         name: "🌶 Peri Peri Grilled Chicken Plate",
         subtitle: "Oven · 25 min",
@@ -5290,7 +5238,7 @@ const RECIPES = [
             "Blend cottage cheese, cocoa powder, maple syrup, vanilla extract, and a pinch of salt until completely smooth and mousse-like (about 60 seconds).",
             "Taste and adjust sweetness — add another tsp maple syrup if needed.",
             "Transfer to a glass container or small dish.",
-            "Melt dark chocolate chips with cooking spray in a microwave-safe bowl in 20-second bursts, stirring between each, until smooth.",
+            "Melt dark chocolate chips with the coconut oil in a microwave-safe bowl in 20-second bursts, stirring between each, until smooth.",
             "Pour melted chocolate evenly over the mousse.",
             "Refrigerate until the chocolate shell hardens (about 20 min). Crack through and enjoy!"
         ],
@@ -5564,7 +5512,7 @@ const PENDING_RECIPES = [
             "Season chicken with garlic powder and black pepper. Cook in a non-stick pan over medium-high heat — no oil needed — 5–6 min per side until golden and cooked through. Slice and set aside.",
             "In the same pan over high heat, add garlic and stir 30 sec. Add cold rice — press flat and let sit 2 min without stirring to get crispy. Toss and repeat.",
             "Push rice to one side. Crack eggs in and scramble until just set, then fold through the rice. Add soy sauce and toss well.",
-            "Divide into 4 containers and top with sliced chicken and spring onion. Finish with a tiny drizzle of cooking spray (just 2 g per serving) for authentic flavour.",
+            "Divide into 4 containers and top with sliced chicken and spring onion. Finish with a tiny drizzle of sesame oil (just 2 g per serving) for authentic flavour.",
             "💡 Add 1 tsp fresh grated ginger (or ½ tsp ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
         ],
     },
@@ -6334,7 +6282,7 @@ const INGREDIENT_MACROS = {
   "m21_spray": {kcal:47.0, p:0.0, c:0.0, f:4.7},
   "m05_cream_ch": {kcal:231.0, p:9.0, c:5.0, f:20.0},
   "d1_bak": {kcal:53.0, p:0.0, c:27.7, f:0.0, unitG:4.0},
-  "d1_cacao": {kcal:228.0, p:19.6, c:57.9, f:13.7},
+  "d1_cocoa": {kcal:228.0, p:19.6, c:57.9, f:13.7},
   "d1_coc": {kcal:400.0, p:20.0, c:60.0, f:15.0},
   "d1_egg": {kcal:143.0, p:12.6, c:0.7, f:9.5, unitG:60.0},
   "d1_flr": {kcal:364.0, p:10.0, c:76.0, f:1.0},
@@ -6361,7 +6309,6 @@ const INGREDIENT_MACROS = {
   "d5_water": {kcal:61.0, p:3.2, c:4.8, f:3.3},
   "d5_yog": {kcal:59.0, p:10.0, c:3.6, f:0.4},
   "dijon_mustard": {kcal:66.0, p:3.8, c:5.1, f:4.0},
-  "ds1-cacao": {kcal:228,p:20.0,c:54.0,f:14.0},
   "ds1-coconut": {kcal:400,p:20.0,c:60.0,f:15.0},
   "ds1-egg": {kcal:147,p:13.0,c:0.7,f:10.0,unitG:60},
   "ds1-flour": {kcal:361,p:10.0,c:75.0,f:1.0},
@@ -7376,12 +7323,6 @@ const INGREDIENT_MACROS = {
   "m76_rice": {kcal:370, p:8, c:77, f:2.9},
   "m76_sesame": {kcal:884, p:0, c:0, f:100},
   "m76_soy": {kcal:53, p:8.1, c:4.9, f:0.1},
-  "m77_edamame": {kcal:121, p:11, c:8.9, f:5.2},
-  "m77_soba": {kcal:336, p:14, c:74, f:0.4},
-  "m77_soy": {kcal:53, p:8.1, c:4.9, f:0.1},
-  "m77_tahini": {kcal:595, p:17, c:21, f:54},
-  "m77_tempeh": {kcal:193, p:19, c:9, f:11},
-  "m77_tofu": {kcal:76, p:8.1, c:1.9, f:4.8},
   "m78_chicken": {kcal:177, p:19.7, c:0, f:11},
   "m78_garlic": {kcal:149, p:6.4, c:33, f:0.5},
   "m78_pepper": {kcal:31, p:1, c:6, f:0.3},
@@ -7498,12 +7439,6 @@ const INGREDIENT_MACROS = {
   "sm9_dates": {kcal:277, p:1.8, c:75, f:0.2},
   "sm9_milk": {kcal:61, p:3.2, c:4.8, f:3.3},
   "sm9_protein": {kcal:400, p:80, c:8, f:4},
-  "sn1_honey": {kcal:304, p:0.3, c:82, f:0},
-  "sn1_lemon": {kcal:99, p:1.8, c:25, f:0.5},
-  "sn1_lime": {kcal:25, p:0.4, c:8.4, f:0.1},
-  "sn1_pb": {kcal:588, p:25, c:20, f:50},
-  "sn1_soy": {kcal:53, p:8.1, c:4.9, f:0.1},
-  "sn1_tempeh": {kcal:193, p:19, c:9, f:11},
   "sn2_bao": {kcal:223, p:7, c:45, f:2.5},
   "sn2_carrot": {kcal:41, p:0.9, c:9.6, f:0.2},
   "sn2_chicken": {kcal:177, p:19.7, c:0, f:11},
@@ -7642,9 +7577,6 @@ const INGREDIENT_MACROS = {
   "m74_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
   "m74_sesoil": {kcal:884, p:0, c:0, f:100},
   "m76_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
-  "m77_sesoil": {kcal:884, p:0, c:0, f:100},
-  "m77_bokchoy": {kcal:13, p:1.5, c:2.2, f:0.2},
-  "m77_lime": {kcal:25, p:0.4, c:8.4, f:0.1, unitG:30},
   "m78_lemon": {kcal:22, p:0.4, c:6.9, f:0.2, unitG:50},
   "m78_corn": {kcal:86, p:3.2, c:19, f:1.2},
   "m79_garlic": {kcal:149, p:6.4, c:33, f:0.5, unitG:3},
@@ -8054,6 +7986,8 @@ const ALLERGEN_MAP = [
       not: ["peanut butter","almond butter","cashew butter","nut butter","coconut milk","almond milk","oat milk","soy milk","soya milk","rice milk","coconut cream","cocoa butter","shea butter","buttermilk substitute","butternut","butter bean","butterhead"] },
     { name: "Eggs",           icon: "🥚", terms: ["egg","mayonnaise","mayo","aioli","meringue","brioche","custard"],
       not: ["eggplant","aubergine","egg-free","egg free","eggless"] },
+    // "tempeh" stays even though no recipe uses it — detectAllergens reads the
+    // method text, so a future step mentioning it must still declare soy.
     { name: "Soy",            icon: "🫘", terms: ["soy","soya","tofu","edamame","miso","tempeh","tamari","hoisin","teriyaki","lecithin"],
       not: ["soy-free","soy free"] },
     { name: "Peanuts",        icon: "🥜", terms: ["peanut","groundnut","pb2","pbfit","satay"], not: [] },
@@ -8693,17 +8627,18 @@ function IngredientBrowser() {
 // ─── FREEMIUM ───────────────────────────────────────────────────────────────
 // ── Recipe tier access system ─────────────────────────────────────────────────
 // Free     (14):  enough for one full week of meal prep across all categories
-// Monthly  (85 cumulative):  ~50% of full library — breakfasts, mains, snacks, pre-workout
-// Annual   (163 cumulative): the full published library.
+// Monthly  (84 cumulative):  ~50% of full library — breakfasts, mains, snacks, pre-workout
+// Annual   (161 cumulative): the full published library.
 //          The 10 SoulFood recipes are NOT included in this count — they sit in
 //          RECIPE_TIER_PENDING and release on special occasions, annual-only.
 //          Public copy says "160+" so it stays true both before and after that.
+//          Was 163 until the two tempeh recipes (sn1, m77) were removed.
 // Pending  (28): 18 staged + 10 SoulFood — hidden from every tier until released
 // Seasonal (hol): staged in PENDING. The one-time seasonal purchase tier was
 //          retired — create-checkout.js sells monthly and annual only.
-const RECIPE_TIER_FREE    = new Set(["bf1", "bf2", "bf3", "d5", "ds2", "m13", "m37", "m40", "pw0", "pw2", "sm1", "sn1", "sn2", "v3"]);
-const RECIPE_TIER_MONTHLY = new Set(["bf10", "bf11", "bf12", "bf13", "bf14", "bf15", "bf16", "bf17", "bf18", "bf19", "bf20", "bf21", "bf22", "bf23", "bf24", "bf25", "bf26", "bf27", "bf28", "bf29", "bf30", "bf31", "bf32", "bf33", "bf34", "bf35", "bf4", "bf5", "bf6", "bf7", "bf8", "bf9", "d1", "d4", "ds3", "ds4", "ds5", "ds6", "m01", "m02", "m03", "m04", "m05", "m06", "m07", "m08", "m09", "m10", "m11", "m12", "m14", "m15", "m16", "m18", "m19", "m20", "m22", "m23", "m24", "m25", "m27", "m29", "m30", "m32", "m33", "m34", "m36", "m41", "m42", "m44", "m47"]);
-const RECIPE_TIER_ANNUAL  = new Set(["m21", "m26", "m28", "m31", "m35", "m38", "m39", "m43", "m45", "m46", "m48", "m49", "m50", "m51", "m52", "m53", "m54", "m55", "m56", "m57", "m58", "m59", "m60", "m61", "m62", "m63", "m64", "m65", "m66", "m67", "m68", "m69", "m70", "m71", "m72", "m73", "m74", "m75", "m76", "m77", "m78", "m79", "m80", "m81", "m82", "m83", "m84", "m85", "m86", "pw1", "pw3", "pw4", "pw5", "pw6", "pw7", "sm2", "sm3", "sm4", "sm5", "sm6", "sm7", "sm8", "sm9", "sn3", "sn4", "sn5", "sn6", "sn7", "sn8", "sn9", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v9"]);
+const RECIPE_TIER_FREE    = new Set(["bf1", "bf2", "bf3", "d5", "ds2", "m13", "m37", "m40", "pw0", "pw2", "sm1", "m27", "sn2", "v3"]);
+const RECIPE_TIER_MONTHLY = new Set(["bf10", "bf11", "bf12", "bf13", "bf14", "bf15", "bf16", "bf17", "bf18", "bf19", "bf20", "bf21", "bf22", "bf23", "bf24", "bf25", "bf26", "bf27", "bf28", "bf29", "bf30", "bf31", "bf32", "bf33", "bf34", "bf35", "bf4", "bf5", "bf6", "bf7", "bf8", "bf9", "d1", "d4", "ds3", "ds4", "ds5", "ds6", "m01", "m02", "m03", "m04", "m05", "m06", "m07", "m08", "m09", "m10", "m11", "m12", "m14", "m15", "m16", "m18", "m19", "m20", "m22", "m23", "m24", "m25", "m29", "m30", "m32", "m33", "m34", "m36", "m41", "m42", "m44", "m47"]);
+const RECIPE_TIER_ANNUAL  = new Set(["m21", "m26", "m28", "m31", "m35", "m38", "m39", "m43", "m45", "m46", "m48", "m49", "m50", "m51", "m52", "m53", "m54", "m55", "m56", "m57", "m58", "m59", "m60", "m61", "m62", "m63", "m64", "m65", "m66", "m67", "m68", "m69", "m70", "m71", "m72", "m73", "m74", "m75", "m76", "m78", "m79", "m80", "m81", "m82", "m83", "m84", "m85", "m86", "pw1", "pw3", "pw4", "pw5", "pw6", "pw7", "sm2", "sm3", "sm4", "sm5", "sm6", "sm7", "sm8", "sm9", "sn3", "sn4", "sn5", "sn6", "sn7", "sn8", "sn9", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v9"]);
 // Pending release — staged recipes not yet published to any tier
 // Add new recipe IDs here when building them; move to RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL to release
 const RECIPE_TIER_PENDING = new Set([
