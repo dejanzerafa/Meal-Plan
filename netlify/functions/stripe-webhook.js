@@ -109,12 +109,18 @@ exports.handler = async (event) => {
             current_period_end: realPeriodEnd,
             amount_paid: amount,
           });
+          // 23505 = the subscriptions row already exists, i.e. Stripe is retrying.
+          // This used to `break` here, which skipped the profile write below. Any
+          // first delivery that inserted the subscription and then failed before
+          // granting the tier (network blip, Supabase timeout, the events-table
+          // TypeError that used to live further down) left the customer paid in
+          // Stripe and free in the app — and every retry exited here, so it could
+          // never repair itself. Fall through instead: the profile upsert is
+          // idempotent, so re-running it is safe and is exactly what a retry is for.
           if (subInsertErr?.code === "23505") {
-            console.log("Duplicate checkout.session.completed skipped:", session.id);
-            break;
-          }
-          // Log but do NOT break — profile update must happen even if subscriptions table fails
-          if (subInsertErr) {
+            console.log("Duplicate checkout.session.completed — re-asserting entitlement for:", session.id);
+          } else if (subInsertErr) {
+            // Log but do NOT stop — the entitlement matters more than the log row.
             console.error("Subscription insert error (continuing to profile update):", subInsertErr);
           }
 
@@ -137,23 +143,41 @@ exports.handler = async (event) => {
           if (profileErr) {
             console.error("Profile tier upsert error:", profileErr);
             // Last-resort fallback: update by email (catches rows without a matching id)
-            const { error: emailProfileErr } = await supabase
+            // `.select()` matters: PostgREST returns 200 with zero rows when nothing
+            // matched, so without it a buyer whose Stripe email differs from their
+            // app email was logged as "updated" while nothing was written. Treat a
+            // zero-row result as a hard failure so Stripe retries and it is visible.
+            const { data: emailRows, error: emailProfileErr } = await supabase
               .from("profiles")
               .update({ tier, tier_via: "stripe", tier_expires: realPeriodEnd })
-              .eq("email", email);
-            if (emailProfileErr) console.error("Profile tier update-by-email fallback error:", emailProfileErr);
-            else console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
+              .eq("email", email)
+              .select("id");
+            if (emailProfileErr) {
+              console.error("Profile tier update-by-email fallback error:", emailProfileErr);
+              return { statusCode: 500, body: "entitlement write failed" };
+            }
+            if (!emailRows || emailRows.length === 0) {
+              console.error(`UNMATCHED PURCHASE: paid ${tier} for ${email} but no profiles row matched. Manual grant required.`);
+              return { statusCode: 500, body: "no matching account for this purchase" };
+            }
+            console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
           } else {
             console.log(`Profile tier upserted to "${tier}" for ${email} (id: ${profileId})`);
           }
         }
 
         // 3. Log event
-        await supabase.from("events").insert({
+        // NOT .catch(). PostgrestBuilder is PromiseLike with `then` only, so
+        // `.catch(...)` was calling undefined — a synchronous TypeError that the
+        // outer try swallowed into a 500. The tier had already been written, but
+        // the welcome email below never sent and Stripe saw every single
+        // checkout.session.completed fail and retried it forever.
+        const { error: eventErr } = await supabase.from("events").insert({
           user_id: user.id,
           event_type: "payment_succeeded",
           metadata: { tier, recipeId, amount },
-        }).catch(e => console.error("Event log error:", e));
+        });
+        if (eventErr) console.error("Event log error:", eventErr);
 
         // 4. Welcome / receipt email
         await sendEmail({
@@ -347,6 +371,9 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
   const { error } = await supabase
     .from("profiles")
     .update({ tier: null, tier_via: null, tier_label: null, tier_expires: null })
+    // Only revoke what Stripe granted. Without this, cancelling a subscription
+    // also wiped a promo or friend-code tier held by the same person.
+    .eq("tier_via", "stripe")
     .eq("email", email);
 
   if (error) {

@@ -18,25 +18,15 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
-const { escHtml } = require("./_shared/auth");
+const { escHtml, rateLimit, clientIp } = require("./_shared/auth");
 
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
-const _rateLimitMap = new Map();
-function _checkRateLimit(email) {
-  const now = Date.now();
-  const key = email.toLowerCase().trim();
-  const entry = _rateLimitMap.get(key) || { count: 0, windowStart: now };
-  if (now - entry.windowStart > 60000) {
-    _rateLimitMap.set(key, { count: 1, windowStart: now });
-    return true;
-  }
-  if (entry.count >= 5) return false;
-  entry.count++;
-  _rateLimitMap.set(key, entry);
-  return true;
-}
+// Rate limiting moved to the shared Blobs-backed limiter.
+// The in-memory Map this replaces was per-container and reset on every cold
+// start, so it effectively never applied — which matters because this endpoint
+// is unauthenticated, writes a caller-supplied email, and can send mail.
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -72,7 +62,8 @@ exports.handler = async (event) => {
 
   const { email, first_name, last_name, marketing_opt_in = true, skip_email = false, calc_used } = payload;
 
-  if (email && !_checkRateLimit(email)) {
+  const _rl = await rateLimit(`saveuser_${(email || "").toLowerCase().trim()}_${clientIp(event)}`, { max: 5, windowMs: 60000 });
+  if (email && !_rl.ok) {
     return { statusCode: 429, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
   }
 

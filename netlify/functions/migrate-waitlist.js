@@ -82,8 +82,20 @@ exports.handler = async (event) => {
 
       try {
         // ── 2. Check if auth account exists ──────────────────────────────────
-        // getUserByEmail requires Supabase JS v2 admin API + service_role key
-        const { data: { user: existingUser } = {}, error: euErr } = await sb.auth.admin.getUserByEmail(email).catch(() => ({ data: {}, error: null }));
+        // `admin.getUserByEmail` does not exist in supabase-js v2 (verified:
+        // typeof is undefined). Calling it threw "not a function", and the
+        // trailing `.catch()` could not rescue it because the throw happened
+        // first — so this whole migration aborted on its first row. v2 exposes
+        // listUsers, which does not filter by email, so match on the page.
+        let existingUser = null;
+        try {
+          const { data: listed, error: listErr } = await sb.auth.admin.listUsers({ page: 1, perPage: 200 });
+          if (listErr) console.error("listUsers failed:", listErr.message);
+          const needle = email.toLowerCase();
+          existingUser = (listed?.users || []).find(u => (u.email || "").toLowerCase() === needle) || null;
+        } catch (e) {
+          console.error("auth lookup failed for", email, e.message);
+        }
 
         if (existingUser) {
           // ── 3a. User has account → sync name to profiles if missing ────────

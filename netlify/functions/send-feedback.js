@@ -11,6 +11,8 @@
 //   RESEND_API_KEY       — re_xxxx...
 //   FROM_EMAIL           — SoulGainz <support@soulgainz.app>
 
+const { rateLimit } = require("./_shared/auth");
+
 // ── Allowed origins ───────────────────────────────────────────────────────────
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
@@ -32,21 +34,11 @@ const ALLOWED_ORIGINS = [
 // so these map directly onto the Gmail labels used to triage support.
 const VALID_CATEGORIES = ["Bug", "Feature", "Recipe", "Content", "Billing", "Other"];
 
-// ── IP rate limit: max 3 feedbacks per IP per 10 minutes ─────────────────────
-const _ipRateMap = new Map();
-function _checkRateLimit(ip) {
-  if (!ip) return true;
-  const now = Date.now();
-  const entry = _ipRateMap.get(ip) || { count: 0, windowStart: now };
-  if (now - entry.windowStart > 600000) {
-    _ipRateMap.set(ip, { count: 1, windowStart: now });
-    return true;
-  }
-  if (entry.count >= 3) return false;
-  entry.count++;
-  _ipRateMap.set(ip, entry);
-  return true;
-}
+// ── IP rate limit ────────────────────────────────────────────────────────────
+// Uses the shared Blobs-backed limiter. The in-memory Map this replaces was
+// per-container and reset on every cold start, so it never actually limited
+// anything — which matters because this endpoint is unauthenticated and sends
+// mail. Applied at the top of the handler below.
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -89,7 +81,7 @@ exports.handler = async (event) => {
     event.headers["client-ip"] ||
     (event.headers["x-forwarded-for"] || "").split(",").pop()
   ) || "").trim();
-  if (!_checkRateLimit(clientIp)) {
+  if (!(await rateLimit(`feedback_${clientIp}`, { max: 5, windowMs: 300000 })).ok) {
     return { statusCode: 429, headers, body: JSON.stringify({ error: "Too many submissions. Please wait a few minutes." }) };
   }
 

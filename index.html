@@ -6025,23 +6025,46 @@ function mergeAllItems(lr, dr, bfr, desr, prer, portions, bfSkipped, preSkipped,
             // Whole-unit items (eggs, slices, wraps…): always round up so you never buy too few.
             // Gram / mL items: keep one decimal so small quantities stay accurate.
             const qty = i.unit === 'whole' ? Math.ceil(rawQty) : +rawQty.toFixed(1);
-            const nk  = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
+            // The merge key MUST include the unit.
+            //
+            // Merging on ingId alone added the numbers across incompatible units
+            // and kept whichever unit arrived first: 7 wraps + 420 g of the same
+            // tortilla became "427 High-fiber tortilla wraps", and 280 g of mashed
+            // banana + 7 whole bananas became "287 g Ripe bananas, mashed" — about
+            // 840 g of pre-workout bananas simply vanished from the shopping list.
+            // Keeping them as separate lines is honest and always buyable; silently
+            // adding them is neither.
+            const _unit = String(i.unit || 'g').toLowerCase();
+            const _base = i.ingId ? ('ing_' + i.ingId) : normKey(i.key, i.label);
+            const nk  = _base + '__' + _unit;
             if (map[nk]) map[nk] = Object.assign({}, map[nk], { qty: map[nk].qty + qty });
             else         map[nk] = Object.assign({}, i, { key: nk, qty });
         });
     };
 
-    // Lunch + Dinner — same recipe both slots → multiply base by 2
+    // Per-slot scaling.
+    //
+    // The seven scale arguments above were declared and then never used in this
+    // function body: only `portions` and `profileScale` were applied. So
+    // Auto-Balance, the Auto/Balanced/Custom split and every "reduce lunch 20%"
+    // suggestion moved the macro totals while leaving the shopping list
+    // byte-identical. On the default plan at scale 1.5 the app told the user to
+    // eat 3120 kcal a day and had them buy food for 2080 — they would run out
+    // of ingredients partway through the week with no idea why.
+    const _s = v => (typeof v === "number" && isFinite(v) && v > 0 ? v : 1);
+
+    // Same recipe in both slots: add the two scales rather than hard-coding ×2,
+    // which silently assumed both slots were still at 1.0.
     if (lr && dr && lr.id === dr.id) {
-        addSlot(lr, 2);
+        addSlot(lr, _s(lunchScale) + _s(dinnerScale));
     } else {
-        addSlot(lr);
-        addSlot(dr);
+        addSlot(lr, _s(lunchScale));
+        addSlot(dr, _s(dinnerScale));
     }
 
-    if (!bfSkipped && bfr) addSlot(bfr);
-    if (desr)               addSlot(desr);
-    if (!preSkipped && prer) addSlot(prer);
+    if (!bfSkipped && bfr) addSlot(bfr,  _s(bfScale));
+    if (desr)              addSlot(desr, _s(desScale));
+    if (!preSkipped && prer) addSlot(prer, _s(preScale));
 
     const grouped = {};
     CAT_ORDER.forEach(c => { grouped[c] = []; });
@@ -6623,8 +6646,8 @@ const INGREDIENT_MACROS = {
   "cb_ricecake": {kcal:385.0, p:7.0, c:83.0, f:1.8, unitG:9.0},  // Rice Cakes (plain)
   "v1_broth": {kcal:7.0, p:0.5, c:1.0, f:0.0},  // Vegetable Broth (low-sodium)
   "v1_coco": {kcal:77, p:0.8, c:3.3, f:7},  // Light coconut milk
-  "v1_cor": {kcal:298.0, p:12.0, c:55.0, f:18.0},  // Coriander (ground)
-  "v1_cur": {kcal:375.0, p:17.8, c:44.0, f:22.0},  // Cumin (ground)
+  "v1_cor": {kcal:298.0, p:12.0, c:55.0, f:18.0, unitG:2.5},  // Coriander (ground)
+  "v1_cur": {kcal:375.0, p:17.8, c:44.0, f:22.0, unitG:2.5},  // Cumin (ground)
   "v1_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
   "v1_ging": {kcal:80.0, p:1.8, c:18.0, f:0.8},  // Ginger (fresh root)
   "v1_lent": {kcal:352.0, p:25.0, c:60.0, f:1.0},  // Lentils (red, dry)
@@ -6632,7 +6655,7 @@ const INGREDIENT_MACROS = {
   "v1_onion": {kcal:40.0, p:1.1, c:9.3, f:0.1, unitG:150.0},  // Onion
   "v1_spin": {kcal:23.0, p:2.9, c:3.6, f:0.4},  // Spinach (fresh)
   "v1_tom": {kcal:27.0, p:1.3, c:6.3, f:0.2, unitG:400.0},  // Passata (tomato sauce)
-  "v1_tum": {kcal:354.0, p:7.8, c:65.0, f:9.9},  // Turmeric (ground)
+  "v1_tum": {kcal:354.0, p:7.8, c:65.0, f:9.9, unitG:2.5},  // Turmeric (ground)
   "v2_broc": {kcal:34.0, p:2.8, c:6.6, f:0.4},  // Broccoli
   "v2_edam": {kcal:121.0, p:11.0, c:8.9, f:5.2},  // Edamame (shelled)
   "v2_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
@@ -6659,7 +6682,7 @@ const INGREDIENT_MACROS = {
   "v4_chees": {kcal:431.0, p:38.0, c:3.2, f:29.0},  // Parmesan
   "v4_cot": {kcal:90.0, p:12.0, c:4.0, f:2.5},  // Low-Fat Cottage Cheese (2%)
   "v4_eggs": {kcal:143.0, p:12.6, c:0.7, f:9.5, unitG:60.0},  // Eggs (whole, large, raw)
-  "v4_gar": {kcal:331.0, p:16.6, c:73.0, f:0.7},  // Garlic Powder
+  "v4_gar": {kcal:331.0, p:16.6, c:73.0, f:0.7, unitG:2.5},  // Garlic Powder
   "v4_kale": {kcal:49.0, p:4.3, c:8.8, f:0.9},  // Kale
   "v4_oil": {kcal:884.0, p:0.0, c:0.0, f:100.0},  // Olive Oil (extra virgin)
   "v4_quin": {kcal:368.0, p:14.0, c:64.0, f:6.0},  // Quinoa (dry)
@@ -6676,7 +6699,7 @@ const INGREDIENT_MACROS = {
   "v5_yog": {kcal:59.0, p:10.0, c:3.6, f:0.4},  // Greek Yogurt (0% fat)
   "v6_chick": {kcal:164.0, p:8.9, c:27.0, f:2.6, unitG:240.0},  // Chickpeas (canned, drained)
   "v6_chil": {kcal:282.0, p:12.3, c:50.0, f:14.3, unitG:15.0},  // Chili Flakes / Red Pepper Flakes
-  "v6_cmin": {kcal:375.0, p:17.8, c:44.0, f:22.0},  // Cumin (ground)
+  "v6_cmin": {kcal:375.0, p:17.8, c:44.0, f:22.0, unitG:2.5},  // Cumin (ground)
   "v6_eggs": {kcal:143.0, p:12.6, c:0.7, f:9.5, unitG:60.0},  // Eggs (whole, large, raw)
   "v6_feta": {kcal:264.0, p:14.0, c:4.1, f:21.0},  // Feta Cheese
   "v6_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
@@ -6690,7 +6713,7 @@ const INGREDIENT_MACROS = {
   "v7_bean": {kcal:132.0, p:8.9, c:24.0, f:0.5, unitG:240.0},  // Black Beans (canned, drained)
   "v7_chees": {kcal:403.0, p:22.9, c:3.4, f:33.0, unitG:30.0},  // Cheddar Cheese
   "v7_corn": {kcal:86.0, p:3.2, c:19.0, f:1.2},  // Corn / Sweetcorn
-  "v7_cumin": {kcal:375.0, p:17.8, c:44.0, f:22.0},  // Cumin (ground)
+  "v7_cumin": {kcal:375.0, p:17.8, c:44.0, f:22.0, unitG:2.5},  // Cumin (ground)
   "v7_gar": {kcal:149.0, p:6.4, c:33.0, f:0.5, unitG:3.0},  // Garlic
   "v7_lime": {kcal:25.0, p:0.4, c:8.4, f:0.1, unitG:30.0},  // Lime (juice)
   "v7_oil": {kcal:884.0, p:0.0, c:0.0, f:100.0},  // Olive Oil (extra virgin)
@@ -7049,7 +7072,7 @@ const INGREDIENT_MACROS = {
   "bf32_spring": {kcal:32, p:1.8, c:7.3, f:0.2},
   "bf32_egg_whites": {kcal:52, p:11, c:0.7, f:0.2},
   "bf33_cc": {kcal:72, p:12.4, c:4.3, f:0.3},
-  "bf33_cheese": {kcal:250, p:24, c:2.5, f:16},
+  "bf33_cheese": {kcal:250, p:24, c:2.5, f:16, unitG:20.0},
   "bf33_chicken": {kcal:143, p:17.4, c:0, f:8.1},
   "bf33_eggs": {kcal:143, p:12.6, c:0.7, f:9.5, unitG:60},
   "bf33_maple": {kcal:260, p:0, c:67, f:0.1},
@@ -7226,7 +7249,7 @@ const INGREDIENT_MACROS = {
   "m84_tomato": {kcal:18, p:0.9, c:3.9, f:0.2},
   "m84_wrap": {kcal:280, p:9, c:49, f:5},
   "m84_yogurt": {kcal:59, p:10, c:3.6, f:0.4},
-  "m85_bacon": {kcal:230, p:14, c:1, f:18},
+  "m85_bacon": {kcal:230, p:14, c:1, f:18, unitG:12.0},
   "m85_beef": {kcal:137, p:21.4, c:0, f:5.6},
   "m85_cc": {kcal:72, p:12.4, c:4.3, f:0.3},
   "m85_cream": {kcal:231, p:9, c:5, f:20},
@@ -7351,7 +7374,7 @@ const INGREDIENT_MACROS = {
   "sn8_tortilla": {kcal:312, p:8, c:52, f:7.8},
   "sn9_cuke": {kcal:15, p:0.7, c:3.6, f:0.1},
   "sn9_tomato": {kcal:18, p:0.9, c:3.9, f:0.2},
-  "sn9_tuna": {kcal:109, p:25.5, c:0, f:0.8},
+  "sn9_tuna": {kcal:109, p:25.5, c:0, f:0.8, unitG:160.0},
   "hol6_cumin": {kcal:375, p:17.8, c:44, f:22},
   "hol6_spap": {kcal:282, p:14.1, c:54, f:13},
   "hol6_onpow": {kcal:341, p:10.4, c:79.1, f:1},
@@ -7754,14 +7777,25 @@ function computePerPortion(recipe, scale, globalPortions) {
     items.forEach(item => {
         const md = INGREDIENT_MACROS[item.key];
         if (!md) return;
+        // Units other than g/mL are COUNTS, not grams. The old `else` branch
+        // assumed grams for anything it did not recognise, so 2 cans of tuna
+        // became 2 g and 20 rashers of bacon became 20 g. sn9 declares
+        // 524 kcal / 89 g protein and displayed 146 kcal / 7 g — on an app whose
+        // core promise is macros verified to the gram.
+        //
+        // An unknown unit with no unitG is now SKIPPED rather than guessed, and
+        // deliberately not counted toward `covered`, so the recipe falls back to
+        // its declared perPortion instead of silently publishing a wrong number.
         let grams = 0;
-        if (item.unit === 'whole') {
-            const unitG = md.unitG || 0;
-            grams = item.qty * unitG;
-        } else if (item.unit === 'mL') {
-            grams = item.qty; // treat mL as g (water-like density for broths)
+        const _u = String(item.unit || 'g').toLowerCase();
+        if (_u === 'g') {
+            grams = item.qty;
+        } else if (_u === 'ml') {
+            grams = item.qty; // water-like density; also catches lowercase 'ml'
         } else {
-            grams = item.qty; // g
+            const unitG = md.unitG || 0;
+            if (!unitG) { console.warn('SG: no unitG for', item.key, '(' + item.unit + ') — skipping'); return; }
+            grams = item.qty * unitG;
         }
         if (grams <= 0) return;
         totalKcal += (md.kcal / 100) * grams;
@@ -8223,7 +8257,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                     React.createElement("span", null, "1 PORTION"),
                     Math.abs(ps - 1) > 0.05 && React.createElement("span", { style: { color: C.accent, fontSize: 9, fontWeight: 600 } }, "\u26A1 Scaled to your macros")),
                 CAT_ORDER.map((cat, index) => {
-                    const catItems = r.batchItems.filter(i => i.cat === cat);
+                    const catItems = (r.batchItems || []).filter(i => i.cat === cat);
                     if (!catItems.length)
                         return null;
                     const catIndex = CAT_ORDER.filter(c => r.batchItems.some(i => i.cat === c)).indexOf(cat);
@@ -8262,7 +8296,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                         "STEPS \u2014 ",
                         doneCount,
                         "/",
-                        r.steps.length,
+                        (r.steps || []).length,
                         " done"),
                     doneCount > 0 && (React.createElement("button", { onClick: () => setStepsDone({}), style: { fontSize: 10, color: C.muted, background: "none", border: `1px solid ${C.dim}`,
                             borderRadius: 6, padding: "2px 8px", cursor: "pointer" } }, "Reset"))),
@@ -8853,7 +8887,24 @@ function resetOnboardingOnly() {
     try { ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k)); } catch (_) {}
     window.location.reload();
 }
+// The override only counts if the PIN was entered IN THIS SESSION.
+//
+// Persisting the chosen tier to localStorage — needed so it survives the server
+// refresh — meant that `localStorage.mp_dev_override = "annual"` on its own
+// granted the full library with _serverVerified:true. One line in a console,
+// far cheaper than brute-forcing the PIN, and it defeated the whole
+// canTrustUnlocks model. Gating on a sessionStorage flag that only the PIN
+// handler writes restores the intent: the persisted value is a preference, the
+// session flag is the authorisation.
+const DEV_SESSION_KEY = "sg_dev_unlocked";
+function markDevSessionUnlocked() {
+    try { sessionStorage.setItem(DEV_SESSION_KEY, "1"); } catch (_) {}
+}
+function devSessionUnlocked() {
+    try { return sessionStorage.getItem(DEV_SESSION_KEY) === "1"; } catch (_) { return false; }
+}
 function getDevOverride() {
+    if (!devSessionUnlocked()) return null;
     try {
         const v = localStorage.getItem("mp_dev_override");
         return DEV_TIERS.includes(v) ? v : null;
@@ -10006,14 +10057,12 @@ function CalcMacroBar({ label, val, max, color }) {
 function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade }) {
     const isRecalc = !!initialProfile;
     const [step, setStep] = useState(0);
-    const [showRecalcGate, setShowRecalcGate] = React.useState(isRecalc && !canRecalc);
-    if (showRecalcGate) return React.createElement("div", { style: { padding: "20px 16px" } },
-        React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
-            React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "📊"),
-            React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, color: C.text, fontWeight: 700, marginBottom: 8 } }, "Recalculate Your Macros"),
-            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your free plan includes one macro calculation, and you've used it. Any paid plan gives you unlimited recalculations, so your targets can move as your weight, activity and goal do. Your existing targets stay saved either way."),
-            React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 10 } }, "Unlock Recalculation →"),
-            React.createElement("button", { onClick: () => setShowRecalcGate(false), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, color: C.muted, borderRadius: 12, padding: "12px", fontSize: 12, cursor: "pointer" } }, "I already have a plan — continue")));
+    // Gate on the entitlement alone, not on `isRecalc`.
+    // It used to require an existing profile, but "🗑 Clear all data" sets profile
+    // to null — so a free user who had spent their one calculation could clear,
+    // land in the "first run" branch with isRecalc false, and recalculate freely.
+    // `=== false` matters: an omitted prop must not gate a genuine first run.
+    const [showRecalcGate, setShowRecalcGate] = React.useState(canRecalc === false);
     const [form, setForm] = useState(() => {
         // Pull name from account — set at onboarding, no need to re-enter in the calculator
         const storedFirst = (() => { try { return localStorage.getItem("mp_acc_first_name") || ""; } catch(e){ return ""; } })();
@@ -10056,6 +10105,42 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         };
     });
     const [result, setResult] = useState(null);
+
+    // MUST stay below every hook.
+    //
+    // This early return used to sit above `form` and `result`, so the render
+    // that showed the gate ran 2 hooks and the render after "continue" ran 4.
+    // React throws "Rendered more hooks than during the previous render", which
+    // the error boundary catches as the full-screen "Something went wrong" page
+    // — and its only other button wipes every mp_/sg_ key, i.e. all the user's
+    // data. Reachable by any free user who taps Recalculate then continues.
+    if (showRecalcGate) return React.createElement("div", { style: { padding: "20px 16px" } },
+        React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
+            React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "📊"),
+            React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, color: C.text, fontWeight: 700, marginBottom: 8 } }, "Recalculate Your Macros"),
+            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your free plan includes one macro calculation, and you've used it. Any paid plan gives you unlimited recalculations, so your targets can move as your weight, activity and goal do. Your existing targets stay saved either way."),
+            React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 10 } }, "Unlock Recalculation →"),
+            // This used to be `onClick: () => setShowRecalcGate(false)` — an
+            // unconditional "no thanks" shown to every free user, which simply
+            // dismissed the paywall and opened the full calculator. It exists for
+            // the real case of a slow webhook after paying, so make it actually
+            // re-check with the server rather than take the user's word for it.
+            React.createElement("button", { onClick: async () => {
+                    const btnEl = typeof document !== "undefined" ? document.activeElement : null;
+                    if (btnEl) { btnEl.disabled = true; btnEl.textContent = "Checking…"; }
+                    let ok = false;
+                    try {
+                        const sb = getSB();
+                        const { data: { session } } = await withTimeout(sb.auth.getSession(), 8000, "Sign-in check");
+                        if (session?.user?.id) {
+                            const { data: row } = await sb.from("profiles").select("tier,tier_expires").eq("id", session.user.id).single();
+                            ok = !!row && ["monthly","annual","dev"].includes(row.tier);
+                        }
+                    } catch (_) { /* fall through to the failure message */ }
+                    if (ok) { setShowRecalcGate(false); return; }
+                    if (btnEl) { btnEl.disabled = false; btnEl.textContent = "I already have a plan — check again"; }
+                    alert("We could not find an active plan on this account yet.\n\nIf you have just paid, give it a moment and tap again — it can take up to a minute to come through. Still stuck? Email support@soulgainz.app.");
+                }, style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, color: C.muted, borderRadius: 12, padding: "12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "I already have a plan — check again")));
     const set = (k, v) => setForm(f => (Object.assign(Object.assign({}, f), { [k]: v })));
     const calcAge = (dob) => {
         if (!dob)
@@ -10313,7 +10398,11 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
 }
 
 // ─── MANUAL MACRO INPUT ──────────────────────────────────────────────────
-function ManualMacroInput({ C, onSave }) {
+function ManualMacroInput({ C, onSave, canRecalc, setShowUpgrade }) {
+    // The recalc paywall lived only inside MacroCalculator, so a free user who
+    // had used their calculation could tap "✏️ Set Manually" and type targets
+    // in, unlimited, forever. Same gate, same rule, both routes.
+    const _blocked = canRecalc === false;
     // Pre-populate from calculator.html bridge (sg_calc_results in localStorage)
     // Uses useState lazy initializers (not useMemo) — guaranteed to run exactly once at mount
     function _readCalcSeed() {
@@ -10398,9 +10487,22 @@ function ManualMacroInput({ C, onSave }) {
         // Keep basics in sync
         if (bodyStatsComplete) saveUserBasics({ dob, gender, weight, weightUnit, height, heightUnit, ftFt:"", ftIn:"" });
         track('calc_completed', { method: 'manual' });
-        try { const e = (localStorage.getItem("mp_acc_email") || "").toLowerCase().trim(); if (e) { safeSet("mp_calc_used_email", e); try { void fetch("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: e, calc_used: true, skip_email: true }) }).catch(() => {}); } catch(_2) {} } } catch(_) {}
+        // Deliberately does NOT consume the free calculation. Typing your own
+        // numbers is not a calculation, and burning the quota here silently took
+        // away the one benefit the paywall copy promises.
         onSave(profile);
     };
+    // Below every hook, for the same reason the calculator's gate is: a
+    // conditional return above them changes the hook count between renders,
+    // which React treats as a fatal error.
+    if (_blocked) return React.createElement("div", { style: { padding: "20px 16px", textAlign: "center" } },
+        React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "📊"),
+        React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, color: C.text, fontWeight: 700, marginBottom: 8 } }, "Update Your Targets"),
+        React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } },
+            "Your free plan includes one set of macro targets, and you've set them. Any paid plan lets you change them whenever your weight, activity or goal moves. Your current targets stay saved and in use either way."),
+        React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true),
+            style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" } },
+            "🔓 Get access →"));
     return React.createElement("div", null,
         React.createElement("div", { style: { background: C.card, border: "1px solid " + C.dim, borderRadius: 14, padding: "18px 20px", marginBottom: 14 } },
             React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 16 } }, "SET YOUR TARGETS"),
@@ -10944,7 +11046,12 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             React.createElement("div", { style: { display: "flex", background: C.card2, borderRadius: 10, padding: 4, marginBottom: 20, border: "1px solid " + C.dim } },
                 React.createElement("button", { onClick: () => setInputMode("calc"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "calc" ? C.accent : "transparent", color: inputMode === "calc" ? "#000" : C.sub, transition: "all 0.2s" } }, "\uD83E\uDDEE Calculate"),
                 React.createElement("button", { onClick: () => setInputMode("manual"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "manual" ? C.accent : "transparent", color: inputMode === "manual" ? "#000" : C.sub, transition: "all 0.2s" } }, "\u270F\uFE0F Set Manually")),
-            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave })));
+            // canRecalc must be passed here too. This is the "no profile yet" branch, and
+            // "🗑 Clear all data" reaches it by setting profile to null — so a free user
+            // who had spent their calculation could clear, land here ungated, and
+            // recalculate freely. canUseCalculator still consults mp_calc_used_email and
+            // the server flag, so a genuine first run is unaffected.
+            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave, canRecalc: canUse, setShowUpgrade: setShowUpgrade }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave, canRecalc: canUse, setShowUpgrade: setShowUpgrade })));
     // Recalc mode: show pre-filled calculator with identity preserved
     if (recalcMode)
         return (React.createElement("div", { className: "tab-anim" },
@@ -10954,7 +11061,7 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
             React.createElement("div", { style: { display: "flex", background: C.card2, borderRadius: 10, padding: 4, marginBottom: 20, border: "1px solid " + C.dim } },
                 React.createElement("button", { onClick: () => setInputMode("calc"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "calc" ? C.accent : "transparent", color: inputMode === "calc" ? "#000" : C.sub, transition: "all 0.2s" } }, "\uD83E\uDDEE Calculate"),
                 React.createElement("button", { onClick: () => setInputMode("manual"), style: { flex: 1, padding: "9px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: inputMode === "manual" ? C.accent : "transparent", color: inputMode === "manual" ? "#000" : C.sub, transition: "all 0.2s" } }, "\u270F\uFE0F Set Manually")),
-            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave, initialProfile: profile, canRecalc: canUse, setShowUpgrade: setShowUpgrade }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave })));
+            inputMode === "calc" ? React.createElement(MacroCalculator, { C: C, onSave: handleSave, initialProfile: profile, canRecalc: canUse, setShowUpgrade: setShowUpgrade }) : React.createElement(ManualMacroInput, { C: C, onSave: handleSave, canRecalc: canUse, setShowUpgrade: setShowUpgrade })));
     const r = profile.result;
     const macros = (r === null || r === void 0 ? void 0 : r.macros) || {};
     const goalLabel = profile.goal === "lose" ? "Fat Loss" : profile.goal === "gain" ? "Muscle Gain" : "Maintenance";
@@ -11515,7 +11622,12 @@ function OnboardingSignup({ onDone }) {
             // Flag auth listener to upload local data instead of overwriting it
             window._sg_upload_on_auth = true;
             setStatus("success");
-            setTimeout(() => finishOnboarding("macros"), 1400);
+            // "macros" is the tab id of the FOODS ingredient browser, NOT the macro
+            // calculator — the calculator lives in the ME tab ("profile"). New users
+            // were dropped into a food-database search list straight after
+            // "Setting up your profile…", and the first calculator run that the
+            // whole onboarding promises was never presented at all.
+            setTimeout(() => finishOnboarding("profile"), 1400);
         } catch(e) {
             console.error("[SG signup error]", e);
             setStatus("error");
@@ -11954,17 +12066,33 @@ function CustomRecipeBuilder({ C, onSave, onClose }) {
     function handleSave() {
         if (!name.trim()) { setErr("Recipe name is required."); return; }
         if (!kcal || !p)  { setErr("At least kcal and protein are required."); return; }
+        const _k = parseFloat(kcal)||0, _p = parseFloat(p)||0,
+              _c = parseFloat(carb)||0, _f = parseFloat(fat)||0;
         const recipe = {
             id: "custom_" + Date.now(),
             name: name.trim(),
             cat,
             category: CAT_MAP[cat] || "main",
-            kcal: parseFloat(kcal)||0,
-            p: parseFloat(p)||0,
-            c: parseFloat(carb)||0,
-            f: parseFloat(fat)||0,
+            kcal: _k, p: _p, c: _c, f: _f,
             notes: notes.trim(),
             isCustom: true,
+            // Everything below is what the rest of the app actually reads.
+            //
+            // Custom recipes stored ONLY kcal/p/c/f, but every consumer goes
+            // through computePerPortion, which returns `recipe.perPortion` and
+            // falls back to all zeros when there are no items. So a custom recipe
+            // showed "0g P · 0 kcal" on its card and contributed nothing to the
+            // day's totals — while the swap sheet, the one place that reads
+            // `r.kcal`, showed the real number. The builder even tells the user
+            // "Macros entered here are per serving", so this was a broken promise.
+            perPortion: { kcal: _k, protein: _p, carbs: _c, fat: _f },
+            // batchItems/steps must exist: RecipeCard does r.batchItems.filter(...)
+            // and r.steps.length unguarded, so expanding a custom recipe threw
+            // "Cannot read properties of undefined (reading 'filter')" and dropped
+            // the user on the full-screen error page.
+            batchItems: [],
+            steps: [],
+            portions: 1,
         };
         onSave(recipe);
         onClose();
@@ -12765,11 +12893,16 @@ function App() {
     // ── Persistent selections via localStorage ──────────────────────────────
     const [breakfastSkipped, setBreakfastSkippedState] = useState(() => localStorage.getItem("mp_bfast_skip") === "1");
     const [preSkipped, setPreSkippedState] = useState(() => localStorage.getItem("mp_pre_skip") === "1");
-    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || "pw1");
+    const [preRecipe, setPreRecipeState] = useState(() => localStorage.getItem("mp_preworkout") || "pw0");
     const [pendingSlot, setPendingSlot] = useState(null); // null | "lunch" | "dinner" | "breakfast" | "dessert"
     // "" = explicitly cleared by user; null key = first-ever load (use default)
-    const [lunch, setLunchState] = useState(() => { const v = localStorage.getItem("mp_lunch"); return v === null ? "m01" : v === "" ? null : v; });
-    const [dinner, setDinnerState] = useState(() => { const v = localStorage.getItem("mp_dinner"); return v === null ? "m04" : v === "" ? null : v; });
+    // Defaults MUST be free-tier ids (RECIPE_TIER_FREE). m01/m04/pw1 are paid:
+    // the Today tab renders meal slots without a canView check, so a brand-new
+    // free user saw three premium recipes in full — ingredients, method, macros —
+    // while the same recipes showed as locked one tab over. A paywall leak, and
+    // their starting plan was un-shoppable because the Shop tab is gated.
+    const [lunch, setLunchState] = useState(() => { const v = localStorage.getItem("mp_lunch"); return v === null ? "m13" : v === "" ? null : v; });
+    const [dinner, setDinnerState] = useState(() => { const v = localStorage.getItem("mp_dinner"); return v === null ? "m37" : v === "" ? null : v; });
     const [breakfastRecipe, setBreakfastRecipeState] = useState(() => localStorage.getItem("mp_breakfast") || "bf1");
     const [dessert, setDessertState] = useState(() => localStorage.getItem("mp_dessert") || null);
     const [lunchScale, setLunchScale] = useState(1);
@@ -12784,7 +12917,21 @@ function App() {
     const [showFeedback, setShowFeedback] = useState(false);
     // ── Custom recipes (premium) ────────────────────────────────────────────
     const [customRecipes, setCustomRecipesState] = useState(() => {
-        try { return JSON.parse(localStorage.getItem("sg_custom_recipes") || "[]"); } catch(e) { return []; }
+        try {
+            const raw = JSON.parse(localStorage.getItem("sg_custom_recipes") || "[]");
+            // Backfill recipes saved by the older builder, which stored only
+            // kcal/p/c/f. Without perPortion they read as 0 kcal everywhere, and
+            // without batchItems/steps expanding one crashed the app.
+            return (Array.isArray(raw) ? raw : []).map(r => Object.assign({
+                batchItems: [], steps: [], portions: 1,
+                perPortion: { kcal: r.kcal || 0, protein: r.p || 0, carbs: r.c || 0, fat: r.f || 0 },
+            }, r, {
+                batchItems: Array.isArray(r.batchItems) ? r.batchItems : [],
+                steps:      Array.isArray(r.steps)      ? r.steps      : [],
+                portions:   r.portions || 1,
+                perPortion: r.perPortion || { kcal: r.kcal || 0, protein: r.p || 0, carbs: r.c || 0, fat: r.f || 0 },
+            }));
+        } catch(e) { return []; }
     });
     const saveCustomRecipe = (recipe) => {
         setCustomRecipesState(prev => {
@@ -13241,7 +13388,15 @@ function App() {
                         _applyDev();
                     } else if (row.tier) {
                         // Check if promo/subscription tier has expired — if so, downgrade to free
-                        const tierExpired = row.tier_expires && new Date(row.tier_expires + "T23:59:59") < new Date();
+                        // The webhook writes a full ISO timestamp and redeem-promo writes
+                        // a bare date, but this concatenated "T23:59:59" onto both — so a
+                        // Stripe row became "...T10:00:00.000ZT23:59:59" → Invalid Date →
+                        // the comparison was always false and no Stripe tier ever expired.
+                        // Take the date part only, and treat it as end-of-day UTC so the
+                        // expiry lands at the same instant for every timezone.
+                        const _expiryRaw = row.tier_expires ? String(row.tier_expires).slice(0, 10) : null;
+                        const _expiry = _expiryRaw ? new Date(_expiryRaw + "T23:59:59Z") : null;
+                        const tierExpired = !!_expiry && !isNaN(_expiry.getTime()) && _expiry < new Date();
                         const effectiveTier = tierExpired ? "free" : row.tier;
                         if (tierExpired && row.tier !== "free") {
                             // NOTE: deliberately does NOT write tier:"free" back to Supabase.
@@ -13650,10 +13805,28 @@ function App() {
             // Strip _serverVerified before persisting — it must always be earned from the server,
             // never trusting what was stored on the client (prevents localStorage spoofing).
             const { _serverVerified: _sv, ...toStore } = next;
+            // Record WHEN and FOR WHOM the server last confirmed this, so an offline
+            // start can honour a recent confirmation instead of locking a paying
+            // subscriber out of everything they bought. Not a security hole: it is
+            // only trusted for GRACE_MS, only for the same signed-in user id, and any
+            // successful server read overwrites it.
+            if (_sv && currentUser && currentUser.id) {
+                toStore._verifiedAt = Date.now();
+                toStore._verifiedFor = currentUser.id;
+            }
             safeSet("mp_unlocks", JSON.stringify(toStore));
         }
         catch (e) { }
     };
+    // How long a server-confirmed tier stays trusted without a fresh check.
+    // Long enough to cover a holiday with no signal; short enough that a
+    // cancellation takes effect promptly once the device is online again.
+    const UNLOCK_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
+    const _withinGrace = () =>
+        !!currentUser &&
+        unlocks._verifiedFor === currentUser.id &&
+        typeof unlocks._verifiedAt === "number" &&
+        (Date.now() - unlocks._verifiedAt) < UNLOCK_GRACE_MS;
     // Derived: is anything unlocked at all? (used for nav/upsell visibility)
     const unlocked = unlocks.allRecipes || (unlocks.recipes && unlocks.recipes.length > 0) || unlocks.calculator;
     const [showUpgrade, setShowUpgrade] = useState(false);
@@ -13685,6 +13858,8 @@ function App() {
                 .then(buf => {
                     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
                     if (hash === "0e465f7ccdb023f35c37a5770c4aca439c6fe2a4ab36d603988687ff3ad4dd87") {
+                        // Sole caller. Everything else only READS this flag.
+                        markDevSessionUnlocked();
                         setShowDevTierPicker(true);
                     }
                 });
@@ -13729,7 +13904,7 @@ function App() {
         // library with no account at all. The same inversion fired for signed-in
         // users any time getSession() was slow enough to hit the 5s authReady
         // fallback, because the app renders with currentUser === null.
-        const canTrustUnlocks = !!currentUser && !!unlocks._serverVerified;
+        const canTrustUnlocks = !!currentUser && (!!unlocks._serverVerified || _withinGrace());
         const tier = unlocks.tier || "free";
         // NOTE: the SoulFood/seasonal gate that used to sit here has been removed.
         // Those 10 hol* IDs are now in RECIPE_TIER_PENDING, which returns false
@@ -13766,7 +13941,7 @@ function App() {
         // so editing localStorage granted unlimited calculator use even while
         // the recipe gate correctly refused.
         const tier = unlocks.tier || "free";
-        const trusted = !!currentUser && !!unlocks._serverVerified;
+        const trusted = !!currentUser && (!!unlocks._serverVerified || _withinGrace());
         if (trusted && (tier === "monthly" || tier === "annual" || tier === "dev")) return true;
         // Free tier: 1 use per email — check server state first
         if (serverCalcUsed) return false;
@@ -14551,8 +14726,15 @@ function App() {
                         // Stripe-originated subscriptions ONLY. customer-portal resolves a
                         // stripe_customer_id, which dev-code and promo-granted accounts do
                         // not have — they hit a 404 alert on a button we had offered them.
+                        // The webhook writes tier_via:"stripe" (never "account", which
+                        // nothing has ever written), so requiring "account" hid this row
+                        // from 100% of paying subscribers — leaving no in-app way to
+                        // cancel, while the in-app Terms told them to use exactly this
+                        // button. It passed testing only because the dev simulation
+                        // hardcodes via:"account". Exclude what genuinely has no Stripe
+                        // customer instead: promo grants and dev simulations.
                         ["monthly","annual"].includes(unlocks && unlocks.tier)
-                          && (!unlocks.via || unlocks.via === "account")
+                          && unlocks.via !== "promo" && unlocks.via !== "dev"
                           && React.createElement("button", { onClick: openBillingPortal, style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: "pointer" } },
                             React.createElement("span", { style: { fontSize: 20 } }, "⚙️"),
                             React.createElement("div", { style: { flex: 1 } },
@@ -14615,7 +14797,12 @@ function App() {
                     React.createElement(LegalAccordion, { C: C })),
         ))),
         swapSlot && (swapSlot==="lunch" ? lr : dr) && React.createElement(SwapModal, { C, currentRecipe: swapSlot==="lunch" ? lr : dr, slot: swapSlot, allRecipes, effectiveTargets, canView,
-            onSwap: id => { if (swapSlot==="lunch") setLunch(id); else setDinner(id); setSwapSlot(null); },
+            // Must use the handlers, not the raw setters. Going through setLunch/setDinner
+            // skipped setLunchScale(1)/setDinnerScale(1), so a 1.4x scale calibrated for a
+            // 600 kcal lunch stayed applied to a 900 kcal replacement — 1260 kcal the user
+            // never asked for. It also skipped the recipe_selected analytics event, and
+            // meant the two routes to the same slot produced different totals.
+            onSwap: id => { (swapSlot === "lunch" ? handleSetLunch : handleSetDinner)(id); setSwapSlot(null); },
             onClose: () => setSwapSlot(null) }),
         showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets,
             breakfastSkipped, preSkipped,
