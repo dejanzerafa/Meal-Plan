@@ -11,7 +11,7 @@
 | Positioning | "Cook once. Eat all week." |
 | Palette | Black `#0C0B0A` · Orange `#E07B2A` · Cream `#F2EDE6` |
 | Tone | Direct, no-fluff, premium, motivating |
-| Core hook | 173 high-protein recipes · batch cooking · verified macros |
+| Core hook | 160+ high-protein recipes · batch cooking · verified macros |
 | Audience | Gym-goers who want to eat clean without spending hours in the kitchen |
 
 Every reel should feel dark, cinematic, and premium — not bright pastel food-blogger energy. Think **Nike meets meal prep**.
@@ -100,7 +100,7 @@ Your audience is batch cookers. A row of 7 identical glass containers lined up i
 - Syncs with desktop Premiere if you ever want to do more complex edits on a laptop.
 
 **Unfold or Canva (Brand overlays)**
-- For static text overlays: macro numbers, recipe name, "173 recipes" callouts.
+- For static text overlays: macro numbers, recipe name, "160+ recipes" callouts.
 - Build 3–4 reusable text card templates in your brand colours. Drop them in as PNG overlays in CapCut.
 
 **DaVinci Resolve (Desktop — free, advanced)**
@@ -229,7 +229,7 @@ Reel brief:
 Recipe: [name]
 Hook text (on screen): "[first 2 seconds text]"
 Macro callout: [X kcal · Xg protein · Xg carbs · Xg fat]
-CTA text: "173 recipes at soulgainz.app"
+CTA text: "160+ recipes at soulgainz.app"
 Vibe: Dark, premium, cinematic. No bright filters. No jump cuts.
 Audio: [link to trending audio OR "editor's choice — dark/gym energy"]
 Length: 20–30 seconds
@@ -280,7 +280,7 @@ These are ordered from highest-effort to lowest, mixed across content pillars.
 **Format:** Time-lapse / sped-up prep session with voiceover.
 **Hook text:** "One session. Seven days of food. Watch."
 **Structure:** Raw fridge (empty) → ingredients out → cooking montage (4–6 cuts) → containers filled → fridge packed → macro label pop.
-**CTA:** "173 recipes at soulgainz.app"
+**CTA:** "160+ recipes at soulgainz.app"
 **Why it works:** Aspirational prep content is the highest-performing format in the fitness niche. It triggers saves, shares, and follows from people who want to do this but haven't started.
 **Length:** 30–45 seconds.
 
@@ -321,7 +321,7 @@ These are ordered from highest-effort to lowest, mixed across content pillars.
 **Format:** Text-forward, CapCut animated numbers.
 **Hook text:** "Most people are 80g short. Every. Single. Day."
 **Structure:** Stat appears → "The average person eats ~70g protein" → "If you're training, you need 150–180g" → "That's 80g you're not hitting" → "That's why results stall" → SoulGainz solution.
-**CTA:** "86% of our 173 recipes hit 30g+ protein per serving."
+**CTA:** "86% of our 160+ recipes hit 30g+ protein per serving."
 **Why it works:** Education content with a clear villain (the gap) and a clear solution. Gets shares from people tagging training partners.
 **Length:** 20–25 seconds.
 
@@ -331,7 +331,7 @@ These are ordered from highest-effort to lowest, mixed across content pillars.
 **Format:** Recipe walkthrough, fast and efficient.
 **Hook text:** "One recipe. Five days of lunch. Done."
 **Structure:** Ingredients laid flat (2 sec) → cooking highlight (4–5 cuts, 8 sec total) → portioning into 5 containers (3 sec) → macro callout per container → containers stacked in fridge (2 sec).
-**CTA:** "Full method in the app. 173 recipes."
+**CTA:** "Full method in the app. 160+ recipes."
 **Why it works:** Practical, actionable. People who are on the fence about batch cooking see how achievable it is.
 **Length:** 20–30 seconds.
 
@@ -361,7 +361,7 @@ These are ordered from highest-effort to lowest, mixed across content pillars.
 **Format:** Vlog-style, casual but edited.
 **Hook text:** "Solo founder. Built an app. Still preps his own food."
 **Structure:** Short clips of the actual prep session with a brief voiceover about the app — why it was built, the problem it solved, one honest moment about the solo founder grind.
-**Voiceover example:** "Built SoulGainz because I was spending three hours on Sundays just figuring out what to cook. Now it's 90 minutes, seven days sorted. 173 recipes later — this is what Sunday looks like."
+**Voiceover example:** "Built SoulGainz because I was spending three hours on Sundays just figuring out what to cook. Now it's 90 minutes, seven days sorted. 160+ recipes later — this is what Sunday looks like."
 **Why it works:** Authenticity is underused in this niche. The founder story builds parasocial trust that no ad can replicate.
 **Length:** 30–45 seconds.
 

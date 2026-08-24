@@ -106,14 +106,14 @@ Each day = 3–5 story slides. Run stories every day including non-post days.
 **Slide 2 — Quiz sticker:** *"How much protein per lb of bodyweight?"* A) 0.3g  B) 0.5g  C) 0.8–1g ✅
 **Slide 3 — Text card:** *"Most people are 40–60g short every day. That's why progress stalls."*
 **Slide 4 — Text card:** *"86% of SoulGainz recipes hit 30g+ protein per serving."*
-**Slide 5 — Link sticker:** *"173 high-protein recipes → soulgainz.app/waitlist"*
+**Slide 5 — Link sticker:** *"160+ high-protein recipes → soulgainz.app/waitlist"*
 
 ---
 
 ### DAY 4 — No post (buffer day)
 *Theme: Behind the scenes. Keep account active.*
 
-**Slide 1 — Text card:** *"173 recipes. Every macro verified to the gram. 🧮"*
+**Slide 1 — Text card:** *"160+ recipes. Every macro verified to the gram. 🧮"*
 **Slide 2 — Question box:** *"What's your go-to protein source for meal prep?"*
 **Slide 3 — Teaser text:** *"Recipe drop tomorrow. 89g protein. One bowl. 👀"*
 
@@ -125,7 +125,7 @@ Each day = 3–5 story slides. Run stories every day including non-post days.
 **Slide 1 — Re-share post:** Add sticker: *"Would you eat this? 🍯🌶️"*
 **Slide 2 — Poll:** *"614 kcal. 89g protein. Would you prep this?"* ABSOLUTELY 🔥 / Not for me 😅
 **Slide 3 — Text card:** *"Honey + chipotle glazed chicken. Jasmine rice. Greek yoghurt drizzle."*
-**Slide 4 — Text card:** *"One of 173 recipes inside the app. Every macro verified."*
+**Slide 4 — Text card:** *"One of 160+ recipes inside the app. Every macro verified."*
 **Slide 5 — Link sticker:** *"Join the waitlist → soulgainz.app/waitlist"*
 
 ---
@@ -144,7 +144,7 @@ Each day = 3–5 story slides. Run stories every day including non-post days.
 *Theme: Product. Features. Drive waitlist sign-ups.*
 
 **Slide 1 — Re-share post:** Add sticker: *"This is the whole system 👇"*
-**Slide 2 — Text card:** *"Feature 1: 173 high-protein recipes. Verified macros — not estimates."*
+**Slide 2 — Text card:** *"Feature 1: 160+ high-protein recipes. Verified macros — not estimates."*
 **Slide 3 — Text card:** *"Feature 2: Auto-generated grocery list from your weekly picks. One list. One shop."*
 **Slide 4 — Text card:** *"Feature 3: Weekly planner + personalised macro targets."*
 **Slide 5 — Link sticker:** *"Get early access → soulgainz.app/waitlist"*
@@ -178,7 +178,7 @@ Each day = 3–5 story slides. Run stories every day including non-post days.
 **Slide 1 — Quiz sticker:** *"Guess this recipe: 78g protein, 494 kcal, rosemary + sweet potato"*
 Options: Beef stir fry / Turkey cranberry bowl ✅ / Chicken Caesar / Salmon rice
 **Slide 2 — Reveal:** *"Rosemary Turkey & Cranberry Sweet Potato Bowl. 78g protein."*
-**Slide 3 — Text card:** *"One of 173 inside the app. Every macro verified."*
+**Slide 3 — Text card:** *"One of 160+ inside the app. Every macro verified."*
 **Slide 4 — Teaser:** *"The numbers tomorrow. You'll want to see this. 📊"*
 
 ---

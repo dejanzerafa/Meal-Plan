@@ -27,7 +27,7 @@ social/
 |------|-------|--------|
 | sg_post1_pain.png | Pain point — "You're not failing at diet, you're failing at prep" | ✅ Posted |
 | sg_post2_solution.png | Solution reveal — app introduction | ✅ Posted |
-| sg_post3_stats.png | Stats — 173 recipes, verified macros | ✅ Scheduled |
+| sg_post3_stats.png | Stats — 160+ recipes, verified macros | ✅ Scheduled |
 | sg_post4_teaser.png | Identity — "For the ones who do the work" | ✅ Scheduled |
 | sg_post5_recipe.png | Recipe — Honey Chipotle Chicken Bowl | ✅ Scheduled |
 | sg_post6_bts.png | Behind the scenes — founder story | ✅ Scheduled |

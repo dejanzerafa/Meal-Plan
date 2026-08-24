@@ -79,7 +79,7 @@ Follow. Something's coming.
 
 We built the meal prep app we always wanted. 🔥
 
-173 verified recipes — macros checked to the gram. 📊
+160+ verified recipes — macros checked to the gram. 📊
 One auto-generated grocery list based on your meals. 🛒
 A weekly planner so you cook once and you're done. 📅
 
@@ -104,7 +104,7 @@ SoulGainz is coming soon — link in bio to stay in the loop. 👇
 
 **Caption:**
 
-173 recipes. 📋
+160+ recipes. 📋
 1 shopping list. 🛒
 7 days of food. 🗓️
 
@@ -166,7 +166,7 @@ Honey Chipotle Chicken Bowl. 🍯🌶️
 
 That's not a cheat meal — that's a prep win.
 
-This is one of 173 high-protein recipes inside SoulGainz. Each one built with ingredient-level macro accuracy — not estimates, not approximations.
+This is one of 160+ high-protein recipes inside SoulGainz. Each one built with ingredient-level macro accuracy — not estimates, not approximations.
 
 How it works:
 🍚 Jasmine rice base
@@ -201,7 +201,7 @@ We were tired of the same problem: clean macros on paper, total chaos in the kit
 
 So we built SoulGainz.
 
-173 recipes — every macro verified. One shopping list. One cook session. Seven days of real food, ready to go. 🔥
+160+ recipes — every macro verified. One shopping list. One cook session. Seven days of real food, ready to go. 🔥
 
 Still building. Still refining. But it's close.
 
@@ -241,7 +241,7 @@ SoulGainz was built around hitting that number. 86% of our recipes land at 30g+ 
 
 Food should do the work. You just have to eat it. 🍱
 
-173 high-protein recipes → link in bio
+160+ high-protein recipes → link in bio
 
 .
 .

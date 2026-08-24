@@ -62,10 +62,31 @@
   to = "/waitlist.html"
   status = 200
 
+# Pricing lives ONLY on the marketing site.
+#
+# soulgainz.app/pricing used to serve its own pricing.html: full €16.99/€150
+# price cards and a working Stripe checkout, on the app's own domain and inside
+# the PWA's scope. That is precisely what moving payments to
+# marketing.soulgainz.app was meant to prevent, and because it was a second copy
+# of the same page the two drifted apart in wording, recipe counts and feature
+# lists.
+#
+# 301 (not 200) so it is a real redirect: the browser leaves soulgainz.app, the
+# URL changes, search engines consolidate onto one canonical pricing page, and
+# no price or buy button is ever served from the app domain. Existing links and
+# bookmarks keep working.
 [[redirects]]
   from = "/pricing"
-  to = "/pricing.html"
-  status = 200
+  to = "https://marketing.soulgainz.app/pricing"
+  status = 301
+  force = true
+
+# Same for anyone hitting the old file path directly.
+[[redirects]]
+  from = "/pricing.html"
+  to = "https://marketing.soulgainz.app/pricing"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/about"

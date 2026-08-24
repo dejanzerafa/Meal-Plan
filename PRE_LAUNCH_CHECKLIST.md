@@ -20,7 +20,7 @@ Track everything that needs to be done before going live on the App Store and Go
 - [x] Email automation suite (welcome, renewal reminder, birthday, holiday)
 - [x] Shopping list, pantry tab, custom recipe builder
 - [x] Favourites, cooked-it tracking, prep calendar
-- [x] 173 recipes — all macros verified ingredient by ingredient
+- [x] 160+ recipes — all macros verified ingredient by ingredient
 - [x] _mobile/ Capacitor scaffold ready (see _mobile/LAUNCH_GUIDE.md)
 
 ---

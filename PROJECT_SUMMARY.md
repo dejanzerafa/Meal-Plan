@@ -23,7 +23,7 @@
 | `netlify.toml` | Build config — downloads React via curl into `/vendor/` at deploy time |
 | `manifest.json` | PWA manifest |
 | `offline.html` | Shown when user is offline |
-| `recipe-image-prompts.html` | Interactive prompt sheet for AI image generation (all 173 recipes) |
+| `recipe-image-prompts.html` | Interactive prompt sheet for AI image generation (all 160+ recipes) |
 | `recipe-image-prompts.csv` | Same data as CSV (columns: ID, Category, Name, Visual Ingredients, Filename, Prompt) |
 | `RECIPE_AUDIT_REPORT.md` | Full science-backed audit of all recipes with ratings and improvement notes |
 | `STANDARDS.md` | App content and coding standards |
@@ -41,7 +41,7 @@
 
 ## Recipe Library (Current State)
 
-**173 total recipes** across 6 categories:
+**160+ total recipes** across 6 categories:
 
 | Category | Count | IDs |
 |----------|-------|-----|
@@ -141,7 +141,7 @@ These were added during quality fixes:
 | Task | Status | Notes |
 |------|--------|-------|
 | Push git changes to main | ⏳ USER ACTION REQUIRED | Run: `git -C "/Users/dejanzerafa/Desktop/Cowork/MEAL PREP APP" push origin main` |
-| Generate 173 recipe images | ⏳ In progress | Use `recipe-image-prompts.html` with Google AI Studio or Ideogram |
+| Generate 160+ recipe images | ⏳ In progress | Use `recipe-image-prompts.html` with Google AI Studio or Ideogram |
 | Integrate images into app | ⏳ Not started | Save as `recipes/[id].jpg`, then wire up `<img src="recipes/{recipe.id}.jpg">` in the recipe card UI |
 | v3 protein still low | ⚠️ Flagged | v3 (Chickpea Couscous) protein = 30.3g (22% of kcal) — acceptable but could improve further |
 | hol3 fat still high | ⚠️ Flagged | 37.8g fat — above 30g target, accepted for holiday recipe |
@@ -239,5 +239,5 @@ Paste this document at the start of the new chat, then say what you want to work
 2. **Bash path:** `/sessions/[session]/mnt/MEAL PREP APP/` maps to macOS `/Users/dejanzerafa/Desktop/Cowork/MEAL PREP APP/`
 3. **Push is manual:** Claude cannot push git — you must run `git push` from your terminal
 4. **Service worker:** Always bump `CACHE_NAME` in `sw.js` after any deploy
-5. **Recipe count:** 173 recipes in the app as of this summary
+5. **Recipe count:** 160+ recipes in the app as of this summary
 6. **Image prompts:** `recipe-image-prompts.html` is ready — use Google AI Studio or Ideogram.ai to generate, save as `recipes/[id].jpg`

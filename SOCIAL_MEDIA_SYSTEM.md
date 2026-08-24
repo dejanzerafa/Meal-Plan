@@ -10,7 +10,7 @@
 A first-time visitor lands on your profile. They have 3 seconds before they decide to follow or leave. In those 3 seconds they need to know:
 1. What you do ("meal prep app")
 2. Who it's for ("gym-goers, macro trackers")
-3. Why you're different ("173 recipes, verified macros, batch-optimised")
+3. Why you're different ("160+ recipes, verified macros, batch-optimised")
 
 ### Profile photo
 **Recommendation:** Use the SoulGainz logomark (icon, not the wordmark). Should be the orange flame/icon on black background — no text, no gradient border. At 40px Instagram profile size, the wordmark is illegible. The icon alone reads instantly.
@@ -21,18 +21,18 @@ Instagram bios have 150 characters. Most brands waste them on vague mission stat
 **Bio to use:**
 ```
 Cook once. Eat all week. 🍗
-173 high-protein meal prep recipes
+160+ high-protein meal prep recipes
 Verified macros · Batch portions
 👇 Free macro calculator
 soulgainz.app
 ```
-This hits: what you do, the proof point (173), the differentiator (verified macros), a free hook (calculator), and the link.
+This hits: what you do, the proof point (160+), the differentiator (verified macros), a free hook (calculator), and the link.
 
 ### Link in bio
 Use a single link to `soulgainz.app` or a Linktree with:
 - "Try the free macro calculator"
 - "Browse the recipe library"
-- "Get PRO — 173 recipes"
+- "Get full access — 160+ recipes"
 
 ### Highlights
 Create 5 Highlight covers (dark background, orange icon):
@@ -47,7 +47,7 @@ Create 5 Highlight covers (dark background, orange icon):
 ## SECTION 2 — PROFILE DIAGNOSIS
 
 ### What's helping growth
-- **"173 recipes"** — a concrete, credible number. Use it in every caption.
+- **"160+ recipes"** — a concrete, credible number. Use it in every caption.
 - **Dark cinematic aesthetic** — stands out in a feed dominated by bright pastel food content.
 - **Batch cooking angle** — underserved niche within fitness food. High save rate content.
 - **MENA/Qatar angle** — geographic specificity builds authenticity and a community of regional followers.
@@ -234,7 +234,7 @@ amazing, incredible, delicious, yummy, obsessed, life-changing, hack, vibe, jour
 72. "Day in the life" — a full day of eating, timestamped
 73. "The Sunday reset" — weekly prep session montage
 74. "App feature spotlight" — 60-second walkthrough
-75. "Recipe spotlight" — choose one from 173, reveal macros
+75. "Recipe spotlight" — choose one from 160+, reveal macros
 76. "Batch cook timer" — what 90 minutes looks like in fast-forward
 77. "5 things I eat every week" — personal, relatable
 78. "Grocery haul" — what's in the bag and why
@@ -339,7 +339,7 @@ Honey Chipotle Chicken Bowl — batch of 5.
 
 If you're training seriously, this is what lunch should look like.
 
-173 recipes at soulgainz.app 🔗 in bio.
+160+ recipes at soulgainz.app 🔗 in bio.
 
 #mealprep #highprotein #mealprepping
 ```
@@ -355,7 +355,7 @@ If you're training seriously, this is what lunch should look like.
 
 [One line connecting to audience pain — "If you're cutting / bulking / in a rush"]
 
-Find it in the app. 173 recipes at soulgainz.app 🔗
+Find it in the app. 160+ recipes at soulgainz.app 🔗
 
 [Hashtags]
 ```
@@ -463,7 +463,7 @@ Spend 15 minutes/day:
 1. **Collab Reels** — find 3 gym/fitness creators in Qatar or MENA with 5k–50k followers. Offer to co-create one Reel (you bring the food angle, they bring the training angle). Tag each other.
 2. **Save-bait posts** — at least 1 post per week should be explicitly designed to be saved ("save this for Sunday"). Saves are the growth signal Instagram rewards most.
 3. **Trending audio every time** — check Instagram Trending audio tab weekly. Never post without trending audio on Reels.
-4. **Send 10 DMs per week** to relevant fitness accounts offering a free PRO code in exchange for a story mention.
+4. **Send 10 DMs per week** to relevant fitness accounts offering a free access code in exchange for a story mention.
 
 ### Medium-term (3–6 months)
 5. **UGC (User-Generated Content)** — once you have 50+ active users, invite them to share their prep photos tagged @soulgainz.app. Repost with credit. Social proof compounds.
@@ -531,7 +531,7 @@ Run this once, then leave it:
 **Step 2 — Update bio (150 chars):**
 ```
 Cook once. Eat all week. 🍗
-173 high-protein meal prep recipes
+160+ high-protein meal prep recipes
 Verified macros · Batch portions
 👇 Free macro calculator
 ```
@@ -540,7 +540,7 @@ Verified macros · Batch portions
 Set to `soulgainz.app` directly, or use a Linktree landing page with 3 options:
 - Free macro calculator
 - Browse recipes
-- Get PRO
+- Get full access
 
 **Step 4 — Pinned posts:**
 Pin your 3 best-performing Reels. They should represent:

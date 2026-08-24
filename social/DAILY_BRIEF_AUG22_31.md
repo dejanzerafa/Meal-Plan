@@ -109,11 +109,11 @@ Use `stories/story_app_coming_soon.png` — add link sticker: `GET EARLY ACCESS 
 ## WED 26 AUG — The Numbers Speak
 
 ### FEED POST ✅ PRE-SCHEDULED
-**Theme:** Stats and proof — 173 recipes, verified macros, one session
+**Theme:** Stats and proof — 160+ recipes, verified macros, one session
 - Already scheduled — goes live automatically
 
 ### STORY 📱
-**Use from phone archive:** "173 high-protein recipes. Macros verified. Grocery list built. One app. 🔥 GET EARLY ACCESS"
+**Use from phone archive:** "160+ high-protein recipes. Macros verified. Grocery list built. One app. 🔥 GET EARLY ACCESS"
 
 **Post at:** 7:30am
 
@@ -196,7 +196,7 @@ Honey chipotle glazed chicken, jasmine rice, roasted capsicum, Greek yogurt driz
 
 Prep it Sunday. Open it Monday. Repeat all week. No stress, no guessing. 🔥
 
-This is one of 173 recipes inside SoulGainz — every macro verified, one grocery list built automatically.
+This is one of 160+ recipes inside SoulGainz — every macro verified, one grocery list built automatically.
 
 Join the waitlist → link in bio 👇
 

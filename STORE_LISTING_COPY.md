@@ -53,7 +53,7 @@ SoulGainz was built for gym-goers, busy professionals, and anyone who wants to s
 ── PLANS ──
 
 Free: macro calculator + limited recipe access
-Monthly Pro: all 173 recipes, meal planning, shopping list, and every feature
+Monthly Pro: all 163 recipes, meal planning, shopping list, and every feature
 Annual Pro: everything in Monthly + 11 exclusive recipes, best value
 
 All sales are final. Cancel anytime before your next renewal to avoid the next charge.
@@ -139,7 +139,7 @@ SoulGainz was built for gym-goers, busy professionals, and anyone who wants to s
 PLANS
 
 • Free: macro calculator + limited recipe access
-• Monthly Pro: all 173 recipes, meal planning, shopping list, and every feature
+• Monthly Pro: all 163 recipes, meal planning, shopping list, and every feature
 • Annual Pro: everything in Monthly + 11 exclusive recipes, best value
 
 All purchases are final. Cancel anytime before your next renewal.

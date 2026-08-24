@@ -12,7 +12,7 @@
 | **Stories** | Daily — briefs by week below |
 | **Cadence** | 4 Reels/week, 1–2 Stories/day |
 | **Hashtag sets** | 3 rotating sets (see bottom) |
-| **CTA always** | "173 recipes at soulgainz.app" |
+| **CTA always** | "160+ recipes at soulgainz.app" |
 
 ---
 
@@ -31,7 +31,7 @@
 - Macro numbers animate in one by one: 847 kcal · **88.8g protein** · carbs · fat
 - Cut to ingredients flat-lay (chicken breast, chipotle sauce, rice, black beans, Greek yoghurt)
 - Container row shot — 5 identical bowls lined up
-- End card: "Find it in the app. 173 recipes."
+- End card: "Find it in the app. 160+ recipes."
 
 **Caption:**
 ```
@@ -42,7 +42,7 @@ Chipotle Chicken Bowl — batch of 5.
 
 This is the kind of meal that makes hitting your targets feel effortless.
 
-173 high-protein recipes at soulgainz.app 🔗 in bio.
+160+ high-protein recipes at soulgainz.app 🔗 in bio.
 
 #mealprep #highprotein #proteinmeal #chipotle #chickenbowl #mealprepping #gymfood #bulkingmeals #mealplan #soulgainz
 ```
@@ -73,7 +73,7 @@ That's an 80–110g gap — every single day.
 It's not willpower. It's not discipline.
 It's just not having the right food ready.
 
-SoulGainz fixes that. 173 recipes, verified macros, all batch-cookable in under 90 minutes on Sunday.
+SoulGainz fixes that. 160+ recipes, verified macros, all batch-cookable in under 90 minutes on Sunday.
 
 Link in bio.
 
@@ -119,7 +119,7 @@ soulgainz.app — cook once, eat all week.
 - Cooking montage: 4–5 cuts — chicken searing, rice simmering, sauce being poured
 - Portioning into 7 containers (overhead slow drift)
 - Fridge packed and full
-- Final text: "173 recipes · soulgainz.app"
+- Final text: "160+ recipes · soulgainz.app"
 - Length: 30–45 seconds
 
 **Caption:**
@@ -186,7 +186,7 @@ How much protein do you think is in one serving?
 
 Comment what you guessed — I'll reply to everyone 👀
 
-173 recipes at soulgainz.app
+160+ recipes at soulgainz.app
 
 #mealprep #proteinmeal #macros #gymfood #highproteinmeals #mealprepcommunity #guessthemacros #soulgainz
 ```
@@ -214,7 +214,7 @@ Same fridge.
 
 This is what happens when you stop winging it and start meal prepping.
 
-soulgainz.app — 173 recipes, all batch-optimised, macros calculated.
+soulgainz.app — 160+ recipes, all batch-optimised, macros calculated.
 
 Link in bio 🔗
 
@@ -282,7 +282,7 @@ More fibre. Slower energy release. Better for satiety.
 
 Every SoulGainz recipe already uses the right swaps. So you don't have to think about it.
 
-soulgainz.app — 173 recipes, verified macros.
+soulgainz.app — 160+ recipes, verified macros.
 
 #nutritionhacks #mealprep #proteinswaps #healthyfood #macros #gymnutrition #cleaneating #highprotein #fitnessnutrition #soulgainz
 ```
@@ -347,7 +347,7 @@ Find it at soulgainz.app 🔗
 **Hook:** `"Solo founder. Built an app. Still preps his own food."`  
 **Script/structure:**
 - Casual vlog-style clips from actual Sunday prep session
-- Short voiceover: "I built SoulGainz because I was spending three hours every Sunday just figuring out what to cook. 173 recipes later — this is what Sunday looks like for me now. 90 minutes. Seven days sorted. Every single week."
+- Short voiceover: "I built SoulGainz because I was spending three hours every Sunday just figuring out what to cook. 160+ recipes later — this is what Sunday looks like for me now. 90 minutes. Seven days sorted. Every single week."
 - End: logo + "soulgainz.app"
 - Length: 30–40 seconds
 
@@ -359,7 +359,7 @@ Three hours every week: deciding what to cook, cross-referencing macros, scaling
 
 It was exhausting. So I built SoulGainz.
 
-173 high-protein, batch-optimised recipes. Every macro already calculated. Every portion already scaled.
+160+ high-protein, batch-optimised recipes. Every macro already calculated. Every portion already scaled.
 
 Now Sundays take 90 minutes. And I actually enjoy them.
 
@@ -488,7 +488,7 @@ These are the Protein Brownie Cookies from the SoulGainz app. Batch bake 12 in o
 
 Drop your guess in the comments 👇
 
-soulgainz.app — 173 recipes including 15+ desserts that actually hit your macros.
+soulgainz.app — 160+ recipes including 15+ desserts that actually hit your macros.
 
 #proteinbrownie #proteinsnacks #highprotein #mealprep #proteincookies #guessthemacros #gymsnacks #proteindessert #healthybaking #soulgainz
 ```
@@ -505,7 +505,7 @@ soulgainz.app — 173 recipes including 15+ desserts that actually hit your macr
 - Reason 1: "You pick recipes too complicated to batch"
 - Reason 2: "You don't pre-portion — you just cook in bulk and eyeball"
 - Reason 3: "You get bored by Wednesday because you picked one recipe"
-- Fix: "SoulGainz: 173 batch-optimised recipes, portion sizes built in, rotate every week"
+- Fix: "SoulGainz: 160+ batch-optimised recipes, portion sizes built in, rotate every week"
 
 **Caption:**
 ```
@@ -519,7 +519,7 @@ It's failing for one of these three reasons:
 
 SoulGainz fixes all three.
 
-173 batch-optimised recipes. Every portion pre-calculated. Swap between 5+ recipes each week.
+160+ batch-optimised recipes. Every portion pre-calculated. Swap between 5+ recipes each week.
 
 soulgainz.app — link in bio.
 
@@ -572,7 +572,7 @@ soulgainz.app — all macros verified and included.
 **Hook:** `"September. Four Sundays. Here's what that looked like."`  
 **Script/structure:**
 - Quick montage of best clips from the month (10–15 clips, 1–2 sec each)
-- Text overlaid: "4 Sundays · 16 Reels · Same app · 173 recipes"
+- Text overlaid: "4 Sundays · 16 Reels · Same app · 160+ recipes"
 - End on fridge check shot
 - Text: "October starts Thursday. You ready?"
 - CTA
@@ -587,7 +587,7 @@ Zero weekday cooking.
 
 This is what consistency actually looks like — not motivation, not discipline, just a system that works.
 
-173 high-protein recipes waiting at soulgainz.app.
+160+ high-protein recipes waiting at soulgainz.app.
 
 October starts Thursday. Let's go. 🔗 in bio.
 
@@ -657,7 +657,7 @@ Always include `#soulgainz`, `#feedyoursoul`, `#fuelyourgainz`, and `#soulgainz.
 [One sentence on why it matters for the audience]
 
 [CTA — always one of these:]
-- "173 recipes at soulgainz.app 🔗 in bio"
+- "160+ recipes at soulgainz.app 🔗 in bio"
 - "Find it in the app. Link in bio."
 - "soulgainz.app — cook once, eat all week."
 
@@ -672,7 +672,7 @@ Always include `#soulgainz`, `#feedyoursoul`, `#fuelyourgainz`, and `#soulgainz.
 Recipe: [name]
 Hook text (first 2 sec): "[text]"
 Macro callout: [X kcal · Xg protein · Xg carbs · Xg fat]
-CTA text: "173 recipes at soulgainz.app"
+CTA text: "160+ recipes at soulgainz.app"
 Vibe: Dark, premium, cinematic. No bright filters. No jump cuts.
 Palette: Black #0C0B0A · Orange #E07B2A · Cream #F2EDE6
 Audio: [trending audio OR dark cinematic / gym trap]

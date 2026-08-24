@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SoulGainz — High-Protein Meal Prep</title>
-  <meta name="description" content="170+ high-protein meal prep recipes. Macros, grocery lists, and weekly plans — all in one app." />
+  <meta name="description" content="160+ high-protein meal prep recipes. Macros, grocery lists, and weekly plans — all in one app." />
   <meta property="og:title" content="SoulGainz — High-Protein Meal Prep" />
-  <meta property="og:description" content="170+ high-protein meal prep recipes. Macros, grocery lists, and weekly plans." />
+  <meta property="og:description" content="160+ high-protein meal prep recipes. Macros, grocery lists, and weekly plans." />
   <meta property="og:image" content="https://soulgainz.app/og-image.png" />
   <meta property="og:url" content="https://soulgainz.app" />
   <meta property="og:type" content="website" />
@@ -8560,9 +8560,13 @@ function IngredientBrowser() {
 // ── Recipe tier access system ─────────────────────────────────────────────────
 // Free     (14):  enough for one full week of meal prep across all categories
 // Monthly  (85 cumulative):  ~50% of full library — breakfasts, mains, snacks, pre-workout
-// Annual   (163 cumulative + 10 seasonal = 173): full library + SoulFood seasonal bundle
-// Pending  ( 0): staged — add new recipe IDs here; move to Monthly/Annual to drop them live
-// Seasonal (hol): included for annual tier; separate purchase for monthly/free
+// Annual   (163 cumulative): the full published library.
+//          The 10 SoulFood recipes are NOT included in this count — they sit in
+//          RECIPE_TIER_PENDING and release on special occasions, annual-only.
+//          Public copy says "160+" so it stays true both before and after that.
+// Pending  (28): 18 staged + 10 SoulFood — hidden from every tier until released
+// Seasonal (hol): staged in PENDING. The one-time seasonal purchase tier was
+//          retired — create-checkout.js sells monthly and annual only.
 const RECIPE_TIER_FREE    = new Set(["bf1", "bf2", "bf3", "d5", "ds2", "m13", "m37", "m40", "pw0", "pw2", "sm1", "sn1", "sn2", "v3"]);
 const RECIPE_TIER_MONTHLY = new Set(["bf10", "bf11", "bf12", "bf13", "bf14", "bf15", "bf16", "bf17", "bf18", "bf19", "bf20", "bf21", "bf22", "bf23", "bf24", "bf25", "bf26", "bf27", "bf28", "bf29", "bf30", "bf31", "bf32", "bf33", "bf34", "bf35", "bf4", "bf5", "bf6", "bf7", "bf8", "bf9", "d1", "d4", "ds3", "ds4", "ds5", "ds6", "m01", "m02", "m03", "m04", "m05", "m06", "m07", "m08", "m09", "m10", "m11", "m12", "m14", "m15", "m16", "m18", "m19", "m20", "m22", "m23", "m24", "m25", "m27", "m29", "m30", "m32", "m33", "m34", "m36", "m41", "m42", "m44", "m47"]);
 const RECIPE_TIER_ANNUAL  = new Set(["m21", "m26", "m28", "m31", "m35", "m38", "m39", "m43", "m45", "m46", "m48", "m49", "m50", "m51", "m52", "m53", "m54", "m55", "m56", "m57", "m58", "m59", "m60", "m61", "m62", "m63", "m64", "m65", "m66", "m67", "m68", "m69", "m70", "m71", "m72", "m73", "m74", "m75", "m76", "m77", "m78", "m79", "m80", "m81", "m82", "m83", "m84", "m85", "m86", "pw1", "pw3", "pw4", "pw5", "pw6", "pw7", "sm2", "sm3", "sm4", "sm5", "sm6", "sm7", "sm8", "sm9", "sn3", "sn4", "sn5", "sn6", "sn7", "sn8", "sn9", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v9"]);
@@ -8771,7 +8775,7 @@ function withTimeout(promise, ms, label) {
     ]).finally(() => clearTimeout(t));
 }
 
-// localStorage.setItem THROWS when the quota is exceeded. With 170+ recipes plus
+// localStorage.setItem THROWS when the quota is exceeded. With 160+ recipes plus
 // notes, step-checks, pantry and calendar logs, Safari's ~5 MB cap is genuinely
 // reachable — and an unguarded write inside a render or a state updater takes
 // the whole app down to the error boundary, where the only escape button wipes
@@ -9216,7 +9220,7 @@ function SeasonalPopup({ show, onClose, onBuy }) {
                 // Deliberately shows NO price and no in-app purchase. Apple
                 // rejects apps that display prices or sell directly; all
                 // purchasing happens on the website. This block previously
-                // rendered "$4.99 · one-time" with an "Unlock This Season"
+                // rendered "€4.99 · one-time" with an "Unlock This Season"
                 // buy button — it is dormant (setShowSeasonalPopup is never
                 // called) but shipped in the bundle, and "seasonal" is not a
                 // purchasable tier any more (see KNOWN_TIERS in
@@ -9516,7 +9520,7 @@ function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
 // Subscription is managed at marketing.soulgainz.app/pricing — app reads status from Supabase.
 function UpgradeModal({ onClose }) {
     var features = [
-        ["\u2713", "All 170+ high-protein recipes"],
+        ["\u2713", "All 160+ high-protein recipes"],
         ["\u2713", "Auto grocery list builder"],
         ["\u2713", "Weekly meal planner"],
         ["\u2713", "Verified macros to the gram"],
@@ -9595,7 +9599,7 @@ function DevModal({ onClose, onApplyTier }) {
                 ["free","monthly","annual","dev"].map(t =>
                     React.createElement("div", { key: t, style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 0", fontSize: 11 } },
                         React.createElement("span", { style: { color: TIER_COLORS[t] || C.sub, fontWeight: 600, textTransform: "capitalize" } }, t),
-                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "Limited recipes" : t === "monthly" ? "85 recipes" : t === "annual" ? "170+ recipes" : "Full dev access")))),
+                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "Limited recipes" : t === "monthly" ? "85 recipes" : t === "annual" ? "160+ recipes" : "Full dev access")))),
             React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 14 } },
                 React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 10 } }, "\uD83E\uDDEA TESTING RESETS"),
                 React.createElement("button", { onClick: resetToNewUser, style: { width: "100%", background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.45)", borderRadius: 8, padding: "10px", color: "#ef4444", fontSize: 12, fontWeight: 800, cursor: "pointer", marginBottom: 4 } }, "\uD83D\uDEAA Brand-New User \u2014 Sign Out & Wipe All"),
@@ -9997,7 +10001,7 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } },
             React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "📊"),
             React.createElement("div", { style: { fontFamily: "Georgia,serif", fontSize: 20, color: C.text, fontWeight: 700, marginBottom: 8 } }, "Recalculate Your Macros"),
-            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your first calculation was free. To update your targets as your body changes, unlock the calculator — included with any plan."),
+            React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Your free plan includes one macro calculation, and you've used it. Any paid plan gives you unlimited recalculations, so your targets can move as your weight, activity and goal do. Your existing targets stay saved either way."),
             React.createElement("button", { onClick: () => setShowUpgrade && setShowUpgrade(true), style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 10 } }, "Unlock Recalculation →"),
             React.createElement("button", { onClick: () => setShowRecalcGate(false), style: { width: "100%", background: "none", border: `1px solid ${C.dim}`, color: C.muted, borderRadius: 12, padding: "12px", fontSize: 12, cursor: "pointer" } }, "I already have a plan — continue")));
     const [form, setForm] = useState(() => {
@@ -10916,7 +10920,9 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
         }
     };
 
-    // Calculator is free for all users — no paywall needed
+    // Free tier gets ONE calculation (see canUseCalculator); paid tiers are
+    // unlimited. The recalc gate above enforces it — this branch is the
+    // first-run path, where no profile exists yet, so it is always allowed.
     // First-time: no profile saved (premium user)
     if (!profile)
         return (React.createElement("div", { className: "tab-anim" },
@@ -11343,10 +11349,10 @@ function OnboardingStory({ onNext }) {
         React.createElement("h1", { style: { fontFamily: "Georgia,'Times New Roman',serif",
             fontSize: "clamp(24px,6vw,36px)", fontWeight: 700, color: "#1a1008",
             textAlign: "center", lineHeight: 1.18, margin: "0 0 24px" } },
-            "Stop spending ", React.createElement("em", { style: { color: "#B85C10" } }, "$10,000 a year"),
+            "Stop spending ", React.createElement("em", { style: { color: "#B85C10" } }, "€10,000 a year"),
             React.createElement("br", null), "on food you don't love."),
         React.createElement("div", { style: { display: "flex", width: "100%", background: "#EDE3D6", borderRadius: 16, overflow: "hidden", marginBottom: 24 } },
-            [["30+", "Recipes"], ["≤10", "Ingredients"], ["$300", "Per Fortnight"]].map(([num, label], i) =>
+            [["30+", "Recipes"], ["≤10", "Ingredients"], ["€300", "Per Fortnight"]].map(([num, label], i) =>
                 React.createElement("div", { key: i, style: { flex: 1, textAlign: "center",
                     borderRight: i < 2 ? "1px solid #C4A98A" : "none", padding: "16px 4px" } },
                     React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: "#1a1008",
@@ -11391,7 +11397,7 @@ function OnboardingStory({ onNext }) {
             width: "100%", boxSizing: "border-box", marginBottom: 20 } },
             React.createElement("div", { style: { fontSize: 28, marginBottom: 12, textAlign: "center" } }, "\u201C"),
             React.createElement("p", { style: { fontSize: 14, color: "#5A3C20", lineHeight: 1.75, fontStyle: "italic", margin: "0 0 14px", textAlign: "center" } },
-                "I got tired of spending a fortune on food that didn't satisfy me. So I built this: 30+ real recipes, max 10 ingredients, a full week of meals under $300. One cook session. No powders. Just food worth eating."),
+                "I got tired of spending a fortune on food that didn't satisfy me. So I built this: 30+ real recipes, max 10 ingredients, a full week of meals under €300. One cook session. No powders. Just food worth eating."),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
                 React.createElement("div", { style: { width: 36, height: 36, borderRadius: "50%", background: "#C4A98A",
                     display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 } }, "👨‍🍳"),

@@ -11,13 +11,19 @@
 
 **Product type:** Consumer SaaS/PWA (web + iOS/Android)
 
-**Business model:**
-- Free tier: 14 recipes (enough for a full week trial)
-- Monthly subscription: €16.99/mo → 53 recipes
-- Annual subscription: €12.50/mo (billed €150/yr) → 173 recipes — saves 2 months vs monthly
-- Single-recipe purchase: $1.99 each
-- Seasonal/SoulFood bundle: explicit one-off purchase (holiday recipes)
-- Wave2 library: 66 recipes held back — released in periodic content drops to create ongoing engagement
+**Business model:** — all prices EUR. Two subscriptions only; every one-off purchase tier has been retired.
+- Free tier: 14 recipes (a full week's trial) + **one** macro calculation
+- Monthly subscription: €16.99/mo → 85 recipes, unlimited macro calculator
+- Annual subscription: €12.50/mo (billed €149.99/yr) → the full 163-recipe library, unlimited calculator, early access to new drops. Saves €54 a year vs monthly.
+- 14-day money-back guarantee on every plan.
+
+**Copy rules — read before writing any marketing text:**
+- Say **"160+ recipes"**, never 170+ or 173. 163 are published; the older figures counted the 10 unreleased SoulFood recipes and overstate the library.
+- Monthly is **"85+ recipes"**.
+- Never advertise a seasonal/SoulFood bundle or single-recipe purchase — neither is sold. `create-checkout.js` accepts monthly and annual only.
+- Never call a tier "Pro". The tiers are Free, Monthly and Annual.
+- Prices and checkout appear **only** on marketing.soulgainz.app. Nothing on the app domain may show a price or a buy button (Apple review).
+- 28 recipes are staged and unreleased: 18 new + 10 SoulFood. SoulFood releases on special occasions, to annual only.
 
 ## Target Audience
 **Target users:** Fitness-oriented individuals (gym-goers, bodybuilders, weight-loss focused, body recomposition) who are time-poor during the week but motivated on weekends to cook.

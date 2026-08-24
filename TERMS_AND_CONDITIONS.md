@@ -185,7 +185,7 @@
 
 14.1 To the maximum extent permitted by applicable law, SoulGainz and its operators, directors, employees, and agents will not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of or inability to use the Service.
 
-14.2 Our total aggregate liability to you for any claim is limited to the greater of: (a) the total subscription fees paid by you in the 12 months before the event giving rise to the claim; or (b) AUD $50.
+14.2 Our total aggregate liability to you for any claim is limited to the greater of: (a) the total subscription fees paid by you in the 12 months before the event giving rise to the claim; or (b) €50.
 
 14.3 This limitation applies regardless of the legal basis for the claim and even if we have been advised of the possibility of such damages.
 
