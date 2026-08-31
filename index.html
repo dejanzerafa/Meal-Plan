@@ -12105,14 +12105,41 @@ function ProfileTab({ C, canUse, onSave, setShowUpgrade, onUnlockCalc, macroNudg
     }, [profileData, profile]);
     const [recalcMode, setRecalcMode] = useState(false);
     const [inputMode, setInputMode] = React.useState("calc"); // "calc" | "manual"
-    const fullReset = () => {
-        if (!window.confirm("Clear all your profile data including name and date of birth?"))
+    const fullReset = async () => {
+        if (!window.confirm("Clear all your profile data including name and date of birth?\n\nThis clears it on this device AND on our servers."))
             return;
-        localStorage.removeItem("mp_profile");
+        // This used to remove ONE localStorage key and call onSave(null), which
+        // threw inside profileToSbRow on the null and was swallowed by a catch. So
+        // the server row survived, mp_basics (dob, gender, weight, height) survived,
+        // and within ten seconds loadUserData re-downloaded the row and rewrote
+        // mp_profile. The user confirmed a destructive action, saw their data
+        // vanish, and watched it come back.
+        try {
+            ["mp_profile", "mp_basics", "mp_acc_name", "mp_acc_first_name",
+             "mp_acc_last_name", "sg_calc_results"].forEach(k => localStorage.removeItem(k));
+        } catch (_) {}
+        // Clear the server row too. Column-level GRANTs allow a user to null their
+        // own profile fields; tier columns are server-only and deliberately untouched.
+        try {
+            // currentUser is not a prop of this component, so read the id from the
+            // session directly rather than reaching for a binding that is not here.
+            const sb = getSB();
+            let _uid = null;
+            if (sb) {
+                try { const { data } = await sb.auth.getUser(); _uid = data && data.user ? data.user.id : null; } catch (_) {}
+            }
+            if (sb && _uid) {
+                await sb.from("profiles").update({
+                    first_name: null, last_name: null, dob: null, gender: null,
+                    height_cm: null, weight_kg: null, goal: null, activity: null,
+                    kcal_target: null, protein_g: null, carb_g: null, fat_g: null,
+                    macro_mode: null, p_nudge: null, c_nudge: null, f_nudge: null,
+                }).eq("id", _uid);
+            }
+        } catch (e) { console.warn("SG: profile clear (server)", e); }
         setProfile(null);
         setRecalcMode(false);
-        if (onSave)
-            onSave(null);
+        if (onSave) onSave(null);
     };
     const handleSave = (p) => {
         setProfile(p);
@@ -12765,8 +12792,13 @@ function OnboardingSignup({ onDone }) {
         setStatus("loading"); setErrMsg("");
         try {
             const sb = getSB();
+            // MUST land on the app, not "/". "/" 301-redirects to landing.html,
+            // which contains no Supabase client — so the recovery token arrived on
+            // a page that could not consume it, and password reset was a dead end
+            // end to end. landing.html also loads Google Tag Manager, and any
+            // script on the page can read location.hash.
             const { error } = await sb.auth.resetPasswordForEmail(em,
-                { redirectTo: window.location.origin + "/" });
+                { redirectTo: window.location.origin + "/index.html?recovery=1" });
             if (error) throw error;
             setStatus("sent");
         } catch(e) { setStatus("error"); setErrMsg(sbErrMsg(e, "Could not send reset email.")); }
@@ -13919,6 +13951,17 @@ function EmptySlotCard({ slot, targets, C: colors, onAssign, onRestore }) {
 function App() {
     // ── Supabase auth state ────────────────────────────────────────────────
     const [currentUser, setCurrentUser] = React.useState(null);
+    // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
+    // ?recovery=1 query param as a fallback for the case where Supabase processes
+    // the hash and fires the event before this listener is attached.
+    const [_newPw, _setNewPw]   = React.useState("");
+    const [_newPw2, _setNewPw2] = React.useState("");
+    const [_pwMsg, _setPwMsg]   = React.useState("");
+    const [_pwBusy, _setPwBusy] = React.useState(false);
+    const [showSetPassword, setShowSetPassword] = React.useState(() => {
+        try { return new URLSearchParams(window.location.search).get("recovery") === "1"; }
+        catch (_) { return false; }
+    });
     // Mirrors currentUser for closures created at render 0 (see setUnlocks).
     React.useEffect(() => { currentUserRef.current = currentUser; }, [currentUser]);
     const [authReady,   setAuthReady]   = React.useState(false);
@@ -13999,6 +14042,21 @@ function App() {
     const setCalLogs = (newLogs) => {
         setCalLogsState(newLogs);
         try { safeSet("mp_cal_logs", JSON.stringify(newLogs)); } catch(e) {}
+        // ── Sync to Supabase ──────────────────────────────────────────────────
+        // saveMealLogToSupabase and removeMealLogFromSupabase were fully written
+        // and had ZERO callers. So meal_logs was a read-only table: loadUserData
+        // merged rows back in on every focus, but nothing ever wrote one. Two
+        // consequences the user actually saw — prep days never appeared on a
+        // second device, and un-logging a day locally did not stick, because the
+        // next focus merged the server row straight back in.
+        try {
+            if (currentUser && currentUser.id) {
+                const prev = new Set((calLogs || []).map(l => l.date));
+                const next = new Set((newLogs || []).map(l => l.date));
+                for (const l of (newLogs || [])) if (!prev.has(l.date)) saveMealLogToSupabase(l);
+                for (const d of prev) if (!next.has(d)) removeMealLogFromSupabase(d);
+            }
+        } catch (_) { /* sync is best-effort; local state is authoritative */ }
         // ── Prep ending reminder: detect newly added log date ─────────────────
         try {
             const prevDates = new Set((calLogs || []).map(function(l){ return l.date; }));
@@ -14509,14 +14567,21 @@ function App() {
                     setCalLogsState(merged);
                     try { safeSet("mp_cal_logs", JSON.stringify(merged)); } catch(_) {}
                 }
-                const { data: favs } = await sb.from("favourites").select("recipe_id").eq("user_id", userId);
-                if (favs && favs.length) {
+                // `!== null`, NOT `.length`. Checking length meant a legitimately
+                // EMPTY server result was treated as "no data, keep what we have"
+                // — so removing your last favourite on the phone never reached the
+                // iPad, which kept showing it indefinitely and never re-uploaded
+                // it either. An empty array is an authoritative answer: the user
+                // has none. (meal_logs above already got this right; these two
+                // did not, in the same function.)
+                const { data: favs, error: favErr } = await sb.from("favourites").select("recipe_id").eq("user_id", userId);
+                if (!favErr && favs !== null && favs !== undefined) {
                     const ids = favs.map(f => f.recipe_id);
                     setFavouritesState(new Set(ids));
                     try { safeSet("sg_favourites", JSON.stringify(ids)); } catch(_) {}
                 }
-                const { data: cooked } = await sb.from("cooked_it").select("recipe_id").eq("user_id", userId);
-                if (cooked && cooked.length) {
+                const { data: cooked, error: cookErr } = await sb.from("cooked_it").select("recipe_id").eq("user_id", userId);
+                if (!cookErr && cooked !== null && cooked !== undefined) {
                     const ids = [...new Set(cooked.map(c => c.recipe_id))];
                     setCookedState(new Set(ids));
                     try { safeSet("sg_cooked", JSON.stringify(ids)); } catch(_) {}
@@ -14575,6 +14640,12 @@ function App() {
                 } else {
                     loadUserData(session.user.id, session.user.email);
                 }
+            } else if (event === "PASSWORD_RECOVERY") {
+                // Supabase consumes the recovery hash and signs the user in with a
+                // short-lived session. Without this branch nothing happened: the
+                // user was silently signed in and their password never changed.
+                setCurrentUser(session && session.user ? session.user : null);
+                setShowSetPassword(true);
             } else if (event === "SIGNED_OUT") {
                 // Full clear — covers external revocation (another device, token expiry)
                 clearSessionState();
@@ -15903,6 +15974,53 @@ function App() {
                     React.createElement("button", { onClick: () => { try { localStorage.removeItem('mp_new_unlock'); } catch(_) {} setShowWelcomeUnlock(false); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Go to Recipes →")))),
         React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); setShowUpgrade(true); } }),
         showAdminPanel && currentUser && React.createElement(AdminPanel, { C:C, currentUser:currentUser, onClose:()=>setShowAdminPanel(false) }),
+        // ── Set a new password (recovery) ──────────────────────────────────────
+        // Before this existed, "Forgot your password?" was a dead end end-to-end:
+        // the email arrived, the link signed the user in, and the password was
+        // never changed. There was no PASSWORD_RECOVERY handler and no updateUser
+        // call anywhere in the app.
+        showSetPassword && (() => {
+            const _ok = _newPw.length >= 8 && _newPw === _newPw2;
+            return React.createElement("div", { style:{ position:"fixed", inset:0, zIndex:11000, background:"rgba(0,0,0,0.75)", display:"flex", alignItems:"center", justifyContent:"center", padding:20 } },
+                React.createElement("div", { style:{ background:C.card, borderRadius:16, padding:24, width:"100%", maxWidth:400, border:`1px solid ${C.dim}` } },
+                    React.createElement("div", { style:{ fontSize:17, fontWeight:800, color:C.text, marginBottom:6 } }, "Choose a new password"),
+                    React.createElement("div", { style:{ fontSize:12, color:C.muted, marginBottom:16 } }, "You are signed in from your reset link. Set a password to finish."),
+                    React.createElement("input", { type:"password", value:_newPw, autoComplete:"new-password", "aria-label":"New password",
+                        onChange:e=>_setNewPw(e.target.value), placeholder:"New password (min 8 characters)",
+                        style:{ width:"100%", padding:"13px 14px", marginBottom:10, borderRadius:10, border:`1.5px solid ${C.dim}`, background:C.card2, color:C.text, fontSize:14, fontFamily:"inherit", boxSizing:"border-box" } }),
+                    React.createElement("input", { type:"password", value:_newPw2, autoComplete:"new-password", "aria-label":"Confirm new password",
+                        onChange:e=>_setNewPw2(e.target.value), placeholder:"Confirm new password",
+                        style:{ width:"100%", padding:"13px 14px", marginBottom:6, borderRadius:10, border:`1.5px solid ${C.dim}`, background:C.card2, color:C.text, fontSize:14, fontFamily:"inherit", boxSizing:"border-box" } }),
+                    _pwMsg && React.createElement("div", { style:{ fontSize:12, color: _pwMsg.startsWith("Password updated") ? C.accent : "#ef4444", margin:"6px 0 10px" } }, _pwMsg),
+                    !_pwMsg && _newPw && _newPw.length < 8 && React.createElement("div", { style:{ fontSize:11, color:C.muted, marginBottom:10 } }, "At least 8 characters."),
+                    !_pwMsg && _newPw2 && _newPw !== _newPw2 && React.createElement("div", { style:{ fontSize:11, color:"#ef4444", marginBottom:10 } }, "Passwords do not match."),
+                    React.createElement("button", { disabled: !_ok || _pwBusy,
+                        onClick: async () => {
+                            _setPwBusy(true); _setPwMsg("");
+                            try {
+                                const sb = getSB();
+                                if (!sb) throw new Error("Auth unavailable. Check your connection.");
+                                const { error } = await sb.auth.updateUser({ password: _newPw });
+                                if (error) throw error;
+                                _setPwMsg("Password updated. You are signed in.");
+                                // Drop ?recovery=1 so a refresh does not reopen this.
+                                try { const u=new URL(window.location.href); u.searchParams.delete("recovery"); window.history.replaceState({}, "", u.toString()); } catch(_) {}
+                                setTimeout(() => { setShowSetPassword(false); _setNewPw(""); _setNewPw2(""); _setPwMsg(""); }, 1400);
+                            } catch (e) {
+                                _setPwMsg(sbErrMsg ? sbErrMsg(e, "Could not update password.") : (e.message || "Could not update password."));
+                            } finally { _setPwBusy(false); }
+                        },
+                        style:{ width:"100%", padding:"13px", borderRadius:10, border:"none", background: _ok && !_pwBusy ? C.accent : C.dim, color: _ok && !_pwBusy ? "#000" : C.muted, fontSize:14, fontWeight:800, cursor: _ok && !_pwBusy ? "pointer" : "not-allowed", fontFamily:"inherit" } },
+                        _pwBusy ? "Saving..." : "Save password"),
+                    React.createElement("button", { onClick: () => {
+                            setShowSetPassword(false);
+                            try { const u=new URL(window.location.href); u.searchParams.delete("recovery"); window.history.replaceState({}, "", u.toString()); } catch(_) {}
+                        },
+                        style:{ width:"100%", marginTop:8, padding:"10px", borderRadius:8, border:"none", background:"none", color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" } },
+                        "Skip for now")
+                ));
+        })(),
+
         showDevTierPicker && (() => {
             const _tc = { free:C.sub, monthly:"#60a5fa", annual:C.accent, dev:"#f59e0b" };
             const _tl = {
@@ -16076,7 +16194,20 @@ function showOnScreenError(msg, src, line) {
     var title = document.createElement('div'); title.style.cssText='font-size:16px;font-weight:700;margin-bottom:8px;color:#f3ece0;'; title.textContent='App error';
     var msgEl = document.createElement('div'); msgEl.style.cssText='font-size:12px;color:#b84a1f;margin-bottom:8px;word-break:break-all;max-width:400px;'; msgEl.textContent=String(msg);
     var reloadBtn = document.createElement('button'); reloadBtn.style.cssText='background:#c0602a;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;'; reloadBtn.textContent='Reload'; reloadBtn.onclick=function(){location.reload();};
-    var clearBtn = document.createElement('button'); clearBtn.style.cssText='background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;'; clearBtn.textContent='Clear Cache & Reload'; clearBtn.onclick=function(){Object.keys(localStorage).forEach(function(k){localStorage.removeItem(k)});location.reload();};
+    // This button used to do Object.keys(localStorage).forEach(removeItem) — an
+    // unconfirmed wipe of EVERYTHING, including custom recipes, the pantry, saved
+    // plans and every recipe note. None of those exist on the server, so it was
+    // permanent data loss, one tap away, on a screen that any unhandled rejection
+    // could summon. Now it clears only the app's own caches, keeps user-generated
+    // content, and asks first.
+    var clearBtn = document.createElement('button'); clearBtn.style.cssText='background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;'; clearBtn.textContent='Clear cache & reload';
+    clearBtn.onclick=function(){
+        if (!window.confirm('Clear cached app data and reload?\n\nYour custom recipes, pantry, saved plans and notes are kept.')) return;
+        var KEEP=/^(sg_custom_recipes|sg_pantry|mp_saved_plans|mp_note_|mp_steps_|sg_supplements|mp_cal_logs|mp_basics|mp_profile|sb-.*-auth-token)/;
+        try { Object.keys(localStorage).forEach(function(k){ if(!KEEP.test(k)) localStorage.removeItem(k); }); } catch(_) {}
+        try { if (window.caches && caches.keys) caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }); } catch(_) {}
+        location.reload();
+    };
     wrap.appendChild(icon); wrap.appendChild(title); wrap.appendChild(msgEl);
     if (src) { var srcEl=document.createElement('div'); srcEl.style.cssText='font-size:11px;color:#888;margin-bottom:20px;'; srcEl.textContent=String(src)+(line?' line '+line:''); wrap.appendChild(srcEl); }
     wrap.appendChild(reloadBtn); wrap.appendChild(clearBtn);
@@ -16091,6 +16222,27 @@ window.onerror = function(msg, src, line, col, err) {
 };
 window.onunhandledrejection = function(e) {
     const msg = (e.reason && typeof e.reason.message === 'string') ? e.reason.message : 'Promise rejected';
+    // Do NOT replace a working app because a fetch failed.
+    //
+    // This used to call showOnScreenError unconditionally, which wipes #root and
+    // renders an error page. Offline is exactly when rejections proliferate — a
+    // failed Supabase read, a background sync, a clipboard write — so the app
+    // would destroy itself at the moment the offline handling was working.
+    // Anything recoverable gets logged and swallowed; only a genuine programming
+    // error still surfaces.
+    const RECOVERABLE = /failed to fetch|networkerror|network request failed|load failed|the operation was aborted|aborterror|timeout|timed out|quota|notallowederror|permission denied|document is not focused|clipboard|user denied|the user aborted|cancelled|canceled|abort/i;
+    if (RECOVERABLE.test(msg)) {
+        try { console.warn('[recoverable rejection]', msg); } catch (_) {}
+        return;
+    }
+    // TypeError/ReferenceError are real bugs and worth showing. Anything else
+    // unrecognised is logged rather than shown, because a blank error screen is
+    // worse than a working app with one broken background task.
+    const isProgrammerError = e.reason instanceof TypeError || e.reason instanceof ReferenceError;
+    if (!isProgrammerError) {
+        try { console.warn('[unhandled rejection, suppressed]', msg); } catch (_) {}
+        return;
+    }
     showOnScreenError('Unhandled promise: ' + msg);
 };
 
