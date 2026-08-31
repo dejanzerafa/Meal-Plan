@@ -1,0 +1,5131 @@
+[
+ {
+  "key": "fat free cottage cheese",
+  "label": "Fat-free cottage cheese",
+  "kcal": 72,
+  "p": 12.4,
+  "c": 4.3,
+  "f": 0.3,
+  "uses": 49,
+  "cats": [
+   "Dairy",
+   "Protein"
+  ]
+ },
+ {
+  "key": "chicken breast",
+  "label": "Chicken breast (raw)",
+  "kcal": 120,
+  "p": 22.5,
+  "c": 0,
+  "f": 2.6,
+  "uses": 45,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "garlic",
+  "label": "Garlic",
+  "kcal": 149,
+  "p": 6.4,
+  "c": 33,
+  "f": 0.5,
+  "unitG": 3,
+  "uses": 41,
+  "cats": [
+   "Aromatics",
+   "Vegetables",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "garlic cloves",
+  "label": "Garlic cloves",
+  "kcal": 149,
+  "p": 6.4,
+  "c": 33,
+  "f": 0.5,
+  "unitG": 3,
+  "uses": 38,
+  "cats": [
+   "Aromatics",
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "cherry tomatoes",
+  "label": "Cherry tomatoes",
+  "kcal": 18,
+  "p": 0.9,
+  "c": 3.9,
+  "f": 0.2,
+  "uses": 37,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "baby spinach",
+  "label": "Baby spinach",
+  "kcal": 23,
+  "p": 2.9,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 37,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "large eggs",
+  "label": "Large eggs",
+  "kcal": 143,
+  "p": 12.6,
+  "c": 0.7,
+  "f": 9.5,
+  "unitG": 60,
+  "uses": 31,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "wholegrain brown rice",
+  "label": "Wholegrain brown rice (dry)",
+  "kcal": 370,
+  "p": 8,
+  "c": 77,
+  "f": 2.9,
+  "uses": 26,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "% greek yogurt",
+  "label": "0% Greek yogurt (ranch base)",
+  "kcal": 59,
+  "p": 10,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 26,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "whey protein powder",
+  "label": "Whey protein powder (1 scoop)",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 23,
+  "cats": [
+   "Protein",
+   "Supplements"
+  ]
+ },
+ {
+  "key": "olive oil",
+  "label": "Olive oil",
+  "kcal": 884,
+  "p": 0,
+  "c": 0,
+  "f": 100,
+  "uses": 21,
+  "cats": [
+   "Fats",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "/ lean ground beef",
+  "label": "95/5 lean ground beef (raw)",
+  "kcal": 137,
+  "p": 21.4,
+  "c": 0,
+  "f": 5.6,
+  "uses": 20,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "greek yogurt",
+  "label": "Greek yogurt",
+  "kcal": 73,
+  "p": 9,
+  "c": 3.9,
+  "f": 1.9,
+  "uses": 19,
+  "cats": [
+   "Dairy",
+   "Protein"
+  ]
+ },
+ {
+  "key": "honey",
+  "label": "Honey",
+  "kcal": 304,
+  "p": 0.3,
+  "c": 82,
+  "f": 0,
+  "uses": 18,
+  "cats": [
+   "Sauces",
+   "Baking",
+   "Condiments",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "parmesan",
+  "label": "Parmesan",
+  "kcal": 431,
+  "p": 38,
+  "c": 3.2,
+  "f": 29,
+  "uses": 17,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "onion",
+  "label": "Onion",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 17,
+  "cats": [
+   "Aromatics",
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "broccoli florets",
+  "label": "Broccoli florets",
+  "kcal": 34,
+  "p": 2.8,
+  "c": 6.6,
+  "f": 0.4,
+  "uses": 17,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "lemon juice",
+  "label": "Lemon juice",
+  "kcal": 22,
+  "p": 0.4,
+  "c": 6.9,
+  "f": 0.2,
+  "unitG": 50,
+  "uses": 16,
+  "cats": [
+   "Aromatics",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "banana",
+  "label": "Banana (sliced, half)",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "unitG": 120,
+  "uses": 15,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "smoked paprika",
+  "label": "Smoked Paprika",
+  "kcal": 282,
+  "p": 14.1,
+  "c": 54,
+  "f": 13,
+  "uses": 14,
+  "cats": [
+   "Spices",
+   "Aromatics",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "sweet potato",
+  "label": "Sweet potato (raw)",
+  "kcal": 86,
+  "p": 1.6,
+  "c": 20,
+  "f": 0.1,
+  "uses": 14,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "brown rice",
+  "label": "Brown rice (uncooked)",
+  "kcal": 370,
+  "p": 8,
+  "c": 77,
+  "f": 2.9,
+  "uses": 14,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "mushrooms",
+  "label": "Mushrooms (sliced)",
+  "kcal": 22,
+  "p": 3.1,
+  "c": 3.3,
+  "f": 0.3,
+  "uses": 13,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "pasta",
+  "label": "Pasta (any shape)",
+  "kcal": 371,
+  "p": 13,
+  "c": 74,
+  "f": 1.5,
+  "uses": 12,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "garlic powder",
+  "label": "Garlic Powder",
+  "kcal": 331,
+  "p": 16.6,
+  "c": 73,
+  "f": 0.7,
+  "uses": 12,
+  "cats": [
+   "Spices",
+   "Sauces",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "broccoli",
+  "label": "Broccoli",
+  "kcal": 34,
+  "p": 2.8,
+  "c": 6.6,
+  "f": 0.4,
+  "uses": 11,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "cinnamon",
+  "label": "Cinnamon",
+  "kcal": 247,
+  "p": 4,
+  "c": 81,
+  "f": 1.2,
+  "uses": 11,
+  "cats": [
+   "Spices",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "cumin",
+  "label": "Cumin",
+  "kcal": 375,
+  "p": 17.8,
+  "c": 44,
+  "f": 22,
+  "uses": 10,
+  "cats": [
+   "Spices",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "pr sident light mozzarella",
+  "label": "Président Light mozzarella",
+  "kcal": 180,
+  "p": 20,
+  "c": 1,
+  "f": 11,
+  "uses": 10,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "egg whites",
+  "label": "Egg whites (liquid)",
+  "kcal": 52,
+  "p": 11,
+  "c": 0.7,
+  "f": 0.2,
+  "uses": 10,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "lemons",
+  "label": "Lemons",
+  "kcal": 22,
+  "p": 0.4,
+  "c": 6.9,
+  "f": 0.2,
+  "unitG": 50,
+  "uses": 9,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "cucumber",
+  "label": "Cucumber (diced, for serving)",
+  "kcal": 15,
+  "p": 0.7,
+  "c": 3.6,
+  "f": 0.1,
+  "unitG": 300,
+  "uses": 9,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "feta cheese",
+  "label": "Feta cheese",
+  "kcal": 264,
+  "p": 14,
+  "c": 4.1,
+  "f": 21,
+  "uses": 9,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "low sodium soy sauce",
+  "label": "Low-sodium soy sauce",
+  "kcal": 53,
+  "p": 8.1,
+  "c": 4.9,
+  "f": 0.1,
+  "uses": 9,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "sesame oil",
+  "label": "Sesame oil",
+  "kcal": 884,
+  "p": 0,
+  "c": 0,
+  "f": 100,
+  "uses": 9,
+  "cats": [
+   "Fats",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "quinoa",
+  "label": "Quinoa (dry)",
+  "kcal": 368,
+  "p": 14,
+  "c": 64,
+  "f": 6,
+  "uses": 9,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "avocado",
+  "label": "Avocado",
+  "kcal": 160,
+  "p": 2,
+  "c": 9,
+  "f": 15,
+  "uses": 9,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "soy sauce",
+  "label": "Soy Sauce",
+  "kcal": 53,
+  "p": 8.1,
+  "c": 4.9,
+  "f": 0.1,
+  "uses": 9,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "yellow onion",
+  "label": "Yellow onion (large)",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 8,
+  "cats": [
+   "Aromatics",
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "black beans",
+  "label": "Black beans (canned, drained)",
+  "kcal": 132,
+  "p": 8.9,
+  "c": 24,
+  "f": 0.5,
+  "unitG": 240,
+  "uses": 8,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "lime",
+  "label": "Lime",
+  "kcal": 25,
+  "p": 0.4,
+  "c": 8.4,
+  "f": 0.1,
+  "unitG": 30,
+  "uses": 8,
+  "cats": [
+   "Aromatics",
+   "Sauces",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "red onion",
+  "label": "Red onion (diced)",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 8,
+  "cats": [
+   "Vegetables",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "bell pepper red",
+  "label": "Bell pepper, red (sliced)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "uses": 8,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "rolled oats",
+  "label": "Rolled oats",
+  "kcal": 389,
+  "p": 17,
+  "c": 66,
+  "f": 7,
+  "uses": 8,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "diced tomatoes",
+  "label": "Diced tomatoes (canned)",
+  "kcal": 18,
+  "p": 0.9,
+  "c": 3.9,
+  "f": 0.2,
+  "uses": 7,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "onion powder",
+  "label": "Onion Powder",
+  "kcal": 341,
+  "p": 10.4,
+  "c": 79.1,
+  "f": 1,
+  "uses": 7,
+  "cats": [
+   "Spices",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "lime juice",
+  "label": "Lime juice",
+  "kcal": 25,
+  "p": 0.4,
+  "c": 8.4,
+  "f": 0.1,
+  "unitG": 30,
+  "uses": 7,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "minced garlic",
+  "label": "Minced garlic",
+  "kcal": 149,
+  "p": 6.4,
+  "c": 33,
+  "f": 0.5,
+  "unitG": 3,
+  "uses": 7,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "fat free mozzarella",
+  "label": "Fat-free mozzarella (shredded)",
+  "kcal": 163,
+  "p": 36,
+  "c": 3,
+  "f": 0.5,
+  "uses": 7,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "cocoa powder",
+  "label": "Cocoa powder (unsweetened)",
+  "kcal": 228,
+  "p": 19.6,
+  "c": 57.9,
+  "f": 13.7,
+  "uses": 7,
+  "cats": [
+   "Sauces",
+   "Baking"
+  ]
+ },
+ {
+  "key": "zucchini",
+  "label": "Zucchini (sliced)",
+  "kcal": 17,
+  "p": 1.2,
+  "c": 3.1,
+  "f": 0.3,
+  "unitG": 200,
+  "uses": 6,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "corn",
+  "label": "Corn (canned, drained)",
+  "kcal": 86,
+  "p": 3.2,
+  "c": 19,
+  "f": 1.2,
+  "uses": 6,
+  "cats": [
+   "Vegetables",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "fresh parsley",
+  "label": "Fresh parsley (chopped)",
+  "kcal": 36,
+  "p": 3,
+  "c": 6.3,
+  "f": 0.8,
+  "uses": 6,
+  "cats": [
+   "Vegetables",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "lemon",
+  "label": "Lemon (juice of 2)",
+  "kcal": 22,
+  "p": 0.4,
+  "c": 6.9,
+  "f": 0.2,
+  "unitG": 50,
+  "uses": 6,
+  "cats": [
+   "Sauces",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "cucumbers",
+  "label": "Cucumbers",
+  "kcal": 15,
+  "p": 0.7,
+  "c": 3.6,
+  "f": 0.1,
+  "unitG": 300,
+  "uses": 6,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "paprika",
+  "label": "Paprika (sprinkle on CC)",
+  "kcal": 282,
+  "p": 14.1,
+  "c": 54,
+  "f": 13,
+  "uses": 6,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "skimmed milk",
+  "label": "Skimmed milk",
+  "kcal": 34,
+  "p": 3.4,
+  "c": 4.9,
+  "f": 0.2,
+  "uses": 6,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "mixed berries",
+  "label": "Mixed berries (fresh or frozen)",
+  "kcal": 49,
+  "p": 0.7,
+  "c": 12,
+  "f": 0.4,
+  "uses": 6,
+  "cats": [
+   "Carbs",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "unsweetened almond milk",
+  "label": "Unsweetened almond milk",
+  "kcal": 15,
+  "p": 0.6,
+  "c": 1.5,
+  "f": 0.7,
+  "unitG": 30,
+  "uses": 6,
+  "cats": [
+   "Liquids",
+   "Dairy"
+  ]
+ },
+ {
+  "key": "medjool dates",
+  "label": "Medjool dates (pitted)",
+  "kcal": 277,
+  "p": 1.8,
+  "c": 75,
+  "f": 0.2,
+  "uses": 6,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "mixed bell peppers",
+  "label": "Mixed bell peppers (diced)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 5,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "baby potatoes",
+  "label": "Baby potatoes (halved)",
+  "kcal": 77,
+  "p": 2,
+  "c": 17,
+  "f": 0.1,
+  "uses": 5,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "green beans",
+  "label": "Green beans (fresh or frozen)",
+  "kcal": 31,
+  "p": 1.8,
+  "c": 7,
+  "f": 0.1,
+  "uses": 5,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "bone broth or low sodium chicken broth",
+  "label": "Bone broth (chicken) or low-sodium chicken broth",
+  "kcal": 10,
+  "p": 2.3,
+  "c": 0,
+  "f": 0,
+  "uses": 5,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "bone broth or chicken stock",
+  "label": "Bone broth or chicken stock (2 Knorr cubes + 1L water)",
+  "kcal": 10,
+  "p": 2.3,
+  "c": 0,
+  "f": 0,
+  "uses": 5,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "fresh ginger",
+  "label": "Fresh ginger (grated)",
+  "kcal": 80,
+  "p": 1.8,
+  "c": 18,
+  "f": 0.8,
+  "uses": 5,
+  "cats": [
+   "Aromatics",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "italian herb seasoning",
+  "label": "Italian herb seasoning",
+  "kcal": 265,
+  "p": 13,
+  "c": 44,
+  "f": 7,
+  "uses": 5,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "tomato paste",
+  "label": "Tomato paste",
+  "kcal": 82,
+  "p": 4.3,
+  "c": 18.9,
+  "f": 0.5,
+  "uses": 5,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "high protein pasta",
+  "label": "High-protein pasta",
+  "kcal": 348,
+  "p": 14,
+  "c": 68,
+  "f": 2.5,
+  "uses": 5,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "oat flour",
+  "label": "Oat flour",
+  "kcal": 404,
+  "p": 15,
+  "c": 66,
+  "f": 9,
+  "uses": 5,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "peanut butter",
+  "label": "Peanut butter",
+  "kcal": 588,
+  "p": 25,
+  "c": 20,
+  "f": 50,
+  "uses": 5,
+  "cats": [
+   "Protein",
+   "Fats"
+  ]
+ },
+ {
+  "key": "baking powder",
+  "label": "Baking powder",
+  "kcal": 53,
+  "p": 0,
+  "c": 27.7,
+  "f": 0,
+  "uses": 5,
+  "cats": [
+   "Sauces",
+   "Baking"
+  ]
+ },
+ {
+  "key": "almond butter",
+  "label": "Almond butter",
+  "kcal": 614,
+  "p": 21,
+  "c": 19,
+  "f": 56,
+  "uses": 5,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "mango",
+  "label": "Mango",
+  "kcal": 60,
+  "p": 0.8,
+  "c": 15,
+  "f": 0.4,
+  "uses": 5,
+  "cats": [
+   "Carbs",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "lettuce",
+  "label": "Lettuce (romaine)",
+  "kcal": 17,
+  "p": 1.2,
+  "c": 3.3,
+  "f": 0.3,
+  "uses": 5,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "sourdough bread",
+  "label": "Sourdough bread",
+  "kcal": 237,
+  "p": 6.4,
+  "c": 49.7,
+  "f": 1.1,
+  "uses": 5,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "jasmine rice",
+  "label": "Jasmine rice (dry)",
+  "kcal": 365,
+  "p": 7.1,
+  "c": 80,
+  "f": 0.7,
+  "uses": 5,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "chipotle peppers in adobo",
+  "label": "Chipotle peppers in adobo",
+  "kcal": 120,
+  "p": 3,
+  "c": 20,
+  "f": 3,
+  "uses": 4,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "baladna skimmed milk",
+  "label": "Baladna skimmed milk",
+  "kcal": 34,
+  "p": 3.4,
+  "c": 4.9,
+  "f": 0.2,
+  "uses": 4,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "raw honey",
+  "label": "Raw honey",
+  "kcal": 304,
+  "p": 0.3,
+  "c": 82,
+  "f": 0,
+  "uses": 4,
+  "cats": [
+   "Sauces",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "low fat greek yogurt",
+  "label": "Low-fat Greek yogurt",
+  "kcal": 73,
+  "p": 9,
+  "c": 3.9,
+  "f": 1.9,
+  "uses": 4,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "dijon mustard",
+  "label": "Dijon mustard",
+  "kcal": 66,
+  "p": 3.8,
+  "c": 5.1,
+  "f": 4,
+  "uses": 4,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "cottage cheese",
+  "label": "Cottage cheese",
+  "kcal": 90,
+  "p": 12,
+  "c": 4,
+  "f": 2.5,
+  "uses": 4,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "thyme",
+  "label": "Thyme",
+  "kcal": 101,
+  "p": 5.6,
+  "c": 24.4,
+  "f": 1.7,
+  "uses": 4,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "butter",
+  "label": "Butter",
+  "kcal": 717,
+  "p": 0.9,
+  "c": 0.1,
+  "f": 81,
+  "unitG": 14,
+  "uses": 4,
+  "cats": [
+   "Dairy",
+   "Fats"
+  ]
+ },
+ {
+  "key": "sun dried tomatoes",
+  "label": "Sun-dried tomatoes",
+  "kcal": 258,
+  "p": 14,
+  "c": 55,
+  "f": 3,
+  "uses": 4,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "taco seasoning",
+  "label": "Taco seasoning",
+  "kcal": 285,
+  "p": 11,
+  "c": 49,
+  "f": 8,
+  "uses": 4,
+  "cats": [
+   "Aromatics",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "spring onion / scallion",
+  "label": "Spring onion / scallion",
+  "kcal": 32,
+  "p": 1.8,
+  "c": 7.3,
+  "f": 0.2,
+  "uses": 4,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "strawberries",
+  "label": "Strawberries (hulled, halved)",
+  "kcal": 32,
+  "p": 0.7,
+  "c": 7.7,
+  "f": 0.3,
+  "uses": 4,
+  "cats": [
+   "Vegetables",
+   "Carbs",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "plain nonfat greek yogurt",
+  "label": "Plain nonfat Greek yogurt",
+  "kcal": 59,
+  "p": 10,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 4,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "light coconut milk",
+  "label": "Light coconut milk",
+  "kcal": 77,
+  "p": 0.8,
+  "c": 3.3,
+  "f": 7,
+  "uses": 4,
+  "cats": [
+   "Dairy",
+   "Fats"
+  ]
+ },
+ {
+  "key": "spring onion",
+  "label": "Spring onion",
+  "kcal": 32,
+  "p": 1.8,
+  "c": 7.3,
+  "f": 0.2,
+  "unitG": 150,
+  "uses": 4,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "bok choy",
+  "label": "Bok choy (halved)",
+  "kcal": 13,
+  "p": 1.5,
+  "c": 2.2,
+  "f": 0.2,
+  "uses": 4,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "edamame",
+  "label": "Edamame (frozen, shelled)",
+  "kcal": 121,
+  "p": 11,
+  "c": 8.9,
+  "f": 5.2,
+  "uses": 4,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "chia seeds",
+  "label": "Chia seeds",
+  "kcal": 486,
+  "p": 17,
+  "c": 42,
+  "f": 31,
+  "uses": 4,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "coconut water",
+  "label": "Coconut water",
+  "kcal": 19,
+  "p": 0.7,
+  "c": 3.7,
+  "f": 0.2,
+  "uses": 4,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "bell pepper",
+  "label": "Bell pepper (red)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "uses": 4,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "granola",
+  "label": "Granola (low-sugar)",
+  "kcal": 380,
+  "p": 9,
+  "c": 65,
+  "f": 9,
+  "uses": 4,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "maple syrup",
+  "label": "Maple syrup",
+  "kcal": 260,
+  "p": 0,
+  "c": 67,
+  "f": 0.1,
+  "uses": 4,
+  "cats": [
+   "Baking",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "ginger",
+  "label": "Ginger (fresh root)",
+  "kcal": 80,
+  "p": 1.8,
+  "c": 18,
+  "f": 0.8,
+  "uses": 4,
+  "cats": [
+   "Herbs"
+  ]
+ },
+ {
+  "key": "beef bacon",
+  "label": "Beef bacon (raw — cook and crumble)",
+  "kcal": 230,
+  "p": 14,
+  "c": 1,
+  "f": 18,
+  "unitG": 28,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "carrots",
+  "label": "Carrots (diced)",
+  "kcal": 41,
+  "p": 0.9,
+  "c": 9.6,
+  "f": 0.2,
+  "unitG": 100,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "chickpeas in water",
+  "label": "Chickpeas in water (400g can)",
+  "kcal": 138,
+  "p": 7,
+  "c": 22.9,
+  "f": 2.5,
+  "unitG": 240,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "beef bone broth",
+  "label": "Beef bone broth",
+  "kcal": 14,
+  "p": 3.2,
+  "c": 0,
+  "f": 0,
+  "uses": 3,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "red bell pepper",
+  "label": "Red bell pepper",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "light cream cheese",
+  "label": "Light cream cheese (Philadelphia Light)",
+  "kcal": 231,
+  "p": 9,
+  "c": 5,
+  "f": 20,
+  "uses": 3,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "snap peas",
+  "label": "Snap peas",
+  "kcal": 34,
+  "p": 2.8,
+  "c": 7,
+  "f": 0.4,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "bell peppers",
+  "label": "Bell peppers (red & yellow)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "kalamata olives",
+  "label": "Kalamata olives (pitted)",
+  "kcal": 230,
+  "p": 1.4,
+  "c": 4,
+  "f": 23,
+  "uses": 3,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "red capsicum",
+  "label": "Red capsicum (diced)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "/ turkey mince",
+  "label": "93/7 turkey mince (raw)",
+  "kcal": 150,
+  "p": 18.7,
+  "c": 0,
+  "f": 8,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "limes",
+  "label": "Limes",
+  "kcal": 25,
+  "p": 0.4,
+  "c": 8.4,
+  "f": 0.1,
+  "unitG": 30,
+  "uses": 3,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "asparagus spears",
+  "label": "Asparagus spears",
+  "kcal": 20,
+  "p": 2.2,
+  "c": 3.9,
+  "f": 0.1,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "frozen peas",
+  "label": "Frozen peas",
+  "kcal": 81,
+  "p": 5.4,
+  "c": 14,
+  "f": 0.4,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "beef mince",
+  "label": "Beef mince (5% fat)",
+  "kcal": 137,
+  "p": 21.4,
+  "c": 0,
+  "f": 5.6,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "chili flakes",
+  "label": "Chili flakes",
+  "kcal": 282,
+  "p": 12.3,
+  "c": 50,
+  "f": 14.3,
+  "uses": 3,
+  "cats": [
+   "Aromatics",
+   "Sauces"
+  ]
+ },
+ {
+  "key": "sweet potatoes",
+  "label": "Sweet potatoes (cubed)",
+  "kcal": 86,
+  "p": 1.6,
+  "c": 20,
+  "f": 0.1,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "fat free cheddar",
+  "label": "Fat-free cheddar (shredded)",
+  "kcal": 163,
+  "p": 36,
+  "c": 3,
+  "f": 0.5,
+  "uses": 3,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "crushed tomatoes",
+  "label": "Crushed tomatoes (400g can)",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "large onion",
+  "label": "Large onion (diced)",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "spinach",
+  "label": "Spinach",
+  "kcal": 23,
+  "p": 2.9,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "asparagus",
+  "label": "Asparagus (trimmed)",
+  "kcal": 20,
+  "p": 2.2,
+  "c": 3.9,
+  "f": 0.1,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "salmon fillets",
+  "label": "Salmon fillets (skin-on)",
+  "kcal": 208,
+  "p": 20,
+  "c": 0,
+  "f": 13,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "whole wheat wrap",
+  "label": "Whole wheat wrap",
+  "kcal": 280,
+  "p": 9,
+  "c": 49,
+  "f": 5,
+  "unitG": 70,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "cashews",
+  "label": "Cashews",
+  "kcal": 553,
+  "p": 18,
+  "c": 30,
+  "f": 44,
+  "uses": 3,
+  "cats": [
+   "Protein",
+   "Fats"
+  ]
+ },
+ {
+  "key": "teriyaki sauce",
+  "label": "Teriyaki sauce",
+  "kcal": 89,
+  "p": 2.5,
+  "c": 19,
+  "f": 0.1,
+  "uses": 3,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "blueberries",
+  "label": "Blueberries",
+  "kcal": 57,
+  "p": 0.7,
+  "c": 14,
+  "f": 0.3,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "on rich chocolate whey",
+  "label": "ON Rich Chocolate whey (1 scoop)",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "greek yogurt %",
+  "label": "Greek yogurt 0%",
+  "kcal": 59,
+  "p": 10,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 3,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "bananas",
+  "label": "Bananas (ripe, frozen)",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "unitG": 120,
+  "uses": 3,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "almond milk",
+  "label": "Almond milk (unsweetened)",
+  "kcal": 15,
+  "p": 0.6,
+  "c": 1.5,
+  "f": 0.7,
+  "uses": 3,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "pineapple",
+  "label": "Pineapple (chunks)",
+  "kcal": 50,
+  "p": 0.5,
+  "c": 13,
+  "f": 0.1,
+  "uses": 3,
+  "cats": [
+   "Carbs",
+   "Fruits"
+  ]
+ },
+ {
+  "key": "kale",
+  "label": "Kale (raw)",
+  "kcal": 49,
+  "p": 4.3,
+  "c": 8.8,
+  "f": 0.9,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "whole milk",
+  "label": "Whole milk (fresh)",
+  "kcal": 61,
+  "p": 3.2,
+  "c": 4.8,
+  "f": 3.3,
+  "uses": 3,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "chicken thigh",
+  "label": "Chicken thigh (boneless, skinless, raw)",
+  "kcal": 177,
+  "p": 19.7,
+  "c": 0,
+  "f": 11,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "carrot",
+  "label": "Carrot",
+  "kcal": 41,
+  "p": 0.9,
+  "c": 9.6,
+  "f": 0.2,
+  "uses": 3,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "chickpeas",
+  "label": "Chickpeas (canned, drained)",
+  "kcal": 138,
+  "p": 7,
+  "c": 22.9,
+  "f": 2.5,
+  "uses": 3,
+  "cats": [
+   "Legumes",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "tortilla",
+  "label": "Tortilla (flour, 25cm)",
+  "kcal": 312,
+  "p": 8,
+  "c": 52,
+  "f": 7.8,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "oats",
+  "label": "Oats (rolled, dry)",
+  "kcal": 389,
+  "p": 17,
+  "c": 66,
+  "f": 7,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "lean beef tenderloin",
+  "label": "Lean beef tenderloin (raw)",
+  "kcal": 143,
+  "p": 21.2,
+  "c": 0,
+  "f": 6.2,
+  "uses": 3,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "brioche bun",
+  "label": "Brioche bun",
+  "kcal": 276,
+  "p": 8.4,
+  "c": 44.8,
+  "f": 6.3,
+  "uses": 3,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "ripe banana",
+  "label": "Ripe banana",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "unitG": 120,
+  "uses": 3,
+  "cats": [
+   "Fruits",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "bone broth or low sodium beef broth",
+  "label": "Bone broth (beef) or low-sodium beef broth",
+  "kcal": 14,
+  "p": 3.2,
+  "c": 0,
+  "f": 0,
+  "uses": 2,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "light sour cream",
+  "label": "Light sour cream",
+  "kcal": 133,
+  "p": 3.5,
+  "c": 7,
+  "f": 11,
+  "uses": 2,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "orange bell peppers",
+  "label": "Orange bell peppers",
+  "kcal": 27,
+  "p": 1,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 150,
+  "uses": 2,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "rosemary",
+  "label": "Rosemary (dried)",
+  "kcal": 131,
+  "p": 3.3,
+  "c": 20.7,
+  "f": 5.9,
+  "uses": 2,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "yellow mustard",
+  "label": "Yellow mustard",
+  "kcal": 60,
+  "p": 4,
+  "c": 5.8,
+  "f": 3.6,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "hidden valley fat free ranch",
+  "label": "Hidden Valley Fat-Free Ranch",
+  "kcal": 88,
+  "p": 1.5,
+  "c": 18,
+  "f": 0.9,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "white onion",
+  "label": "White onion (diced)",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 2,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "light mayonnaise",
+  "label": "Light mayonnaise",
+  "kcal": 170,
+  "p": 0,
+  "c": 4,
+  "f": 17,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "red lentils",
+  "label": "Red lentils (dry)",
+  "kcal": 352,
+  "p": 25,
+  "c": 60,
+  "f": 1,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "fat free cream cheese",
+  "label": "Fat-free cream cheese",
+  "kcal": 105,
+  "p": 14,
+  "c": 8,
+  "f": 0.5,
+  "uses": 2,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "double espresso",
+  "label": "Double espresso (60ml)",
+  "kcal": 5,
+  "p": 0.3,
+  "c": 1,
+  "f": 0,
+  "unitG": 60,
+  "uses": 2,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "canned sweet corn",
+  "label": "Canned sweet corn (drained)",
+  "kcal": 86,
+  "p": 3.2,
+  "c": 19,
+  "f": 1.2,
+  "uses": 2,
+  "cats": [
+   "Vegetables",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "flank steak",
+  "label": "Flank steak (raw, trimmed)",
+  "kcal": 165,
+  "p": 21,
+  "c": 0,
+  "f": 8,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "fat free evaporated milk",
+  "label": "Fat-free evaporated milk",
+  "kcal": 78,
+  "p": 7.7,
+  "c": 11,
+  "f": 0.2,
+  "uses": 2,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "ground chicken",
+  "label": "Ground chicken (formed into balls)",
+  "kcal": 143,
+  "p": 17.4,
+  "c": 0,
+  "f": 8.1,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "liquid egg whites",
+  "label": "Liquid egg whites",
+  "kcal": 52,
+  "p": 11,
+  "c": 0.7,
+  "f": 0.2,
+  "unitG": 30,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "worcestershire sauce",
+  "label": "Worcestershire sauce",
+  "kcal": 78,
+  "p": 0,
+  "c": 19,
+  "f": 0,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "beef stock",
+  "label": "Beef stock (1 Knorr cube + 750mL water)",
+  "kcal": 14,
+  "p": 3.2,
+  "c": 0,
+  "f": 0,
+  "uses": 2,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "fresh thyme",
+  "label": "Fresh thyme",
+  "kcal": 101,
+  "p": 5.6,
+  "c": 24.4,
+  "f": 1.7,
+  "uses": 2,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "sirloin steak",
+  "label": "Sirloin steak (lean, raw, trimmed)",
+  "kcal": 185,
+  "p": 22,
+  "c": 0,
+  "f": 10,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "passata",
+  "label": "Passata (tomato sauce)",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 2,
+  "cats": [
+   "Sauces",
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "zucchini / courgette",
+  "label": "Zucchini / courgette",
+  "kcal": 17,
+  "p": 1.2,
+  "c": 3.1,
+  "f": 0.3,
+  "uses": 2,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "eggs",
+  "label": "Eggs (whole, large)",
+  "kcal": 143,
+  "p": 12.6,
+  "c": 0.7,
+  "f": 9.5,
+  "unitG": 60,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "salmon",
+  "label": "Salmon (Atlantic, raw)",
+  "kcal": 208,
+  "p": 20,
+  "c": 0,
+  "f": 13,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "capers",
+  "label": "Capers (in brine, drained)",
+  "kcal": 23,
+  "p": 2,
+  "c": 2,
+  "f": 1,
+  "uses": 2,
+  "cats": [
+   "Sauces",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "fresh dill",
+  "label": "Fresh dill",
+  "kcal": 43,
+  "p": 3.5,
+  "c": 7,
+  "f": 1.1,
+  "uses": 2,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "tomato sauce",
+  "label": "Tomato sauce",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "oyster sauce",
+  "label": "Oyster sauce",
+  "kcal": 91,
+  "p": 3.5,
+  "c": 18,
+  "f": 0.3,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "lean ground beef",
+  "label": "Lean ground beef (5% fat)",
+  "kcal": 137,
+  "p": 21.4,
+  "c": 0,
+  "f": 5.6,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "jalape o",
+  "label": "Jalapeño (optional, sliced)",
+  "kcal": 29,
+  "p": 0.9,
+  "c": 6.5,
+  "f": 0.4,
+  "uses": 2,
+  "cats": [
+   "Vegetables",
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "turmeric",
+  "label": "Turmeric (tsp)",
+  "kcal": 354,
+  "p": 7.8,
+  "c": 65,
+  "f": 9.9,
+  "unitG": 2.5,
+  "uses": 2,
+  "cats": [
+   "Sauces",
+   "Spices"
+  ]
+ },
+ {
+  "key": "mangoes",
+  "label": "Mangoes (ripe)",
+  "kcal": 60,
+  "p": 0.8,
+  "c": 15,
+  "f": 0.4,
+  "unitG": 200,
+  "uses": 2,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "fresh cilantro",
+  "label": "Fresh cilantro",
+  "kcal": 23,
+  "p": 2.1,
+  "c": 3.7,
+  "f": 0.5,
+  "uses": 2,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "turkey breast",
+  "label": "Turkey breast (raw)",
+  "kcal": 114,
+  "p": 23.3,
+  "c": 0,
+  "f": 2.3,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "sugar free cranberry sauce",
+  "label": "Sugar-free cranberry sauce",
+  "kcal": 17,
+  "p": 0,
+  "c": 4,
+  "f": 0,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "tomato passata",
+  "label": "Tomato passata",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 2,
+  "cats": [
+   "Sauces",
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "coriander",
+  "label": "Coriander (ground)",
+  "kcal": 298,
+  "p": 12,
+  "c": 55,
+  "f": 18,
+  "uses": 2,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "extra firm tofu",
+  "label": "Extra-firm tofu (pressed)",
+  "kcal": 144,
+  "p": 17.3,
+  "c": 2.8,
+  "f": 8.7,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "tuna in spring water",
+  "label": "Tuna in spring water (480g)",
+  "kcal": 116,
+  "p": 26,
+  "c": 0,
+  "f": 0.5,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "reduced fat feta",
+  "label": "Reduced-fat feta (crumbled)",
+  "kcal": 264,
+  "p": 14,
+  "c": 4.1,
+  "f": 21,
+  "uses": 2,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "tomato",
+  "label": "Tomato (fresh, sliced)",
+  "kcal": 18,
+  "p": 0.9,
+  "c": 3.9,
+  "f": 0.2,
+  "uses": 2,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "large egg",
+  "label": "Large egg",
+  "kcal": 143,
+  "p": 12.6,
+  "c": 0.7,
+  "f": 9.5,
+  "unitG": 60,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "wholegrain bread slice",
+  "label": "Wholegrain bread slice",
+  "kcal": 247,
+  "p": 13,
+  "c": 41,
+  "f": 3.4,
+  "unitG": 40,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "matcha powder",
+  "label": "Matcha powder (2 dessert spoons)",
+  "kcal": 324,
+  "p": 30,
+  "c": 38,
+  "f": 5,
+  "unitG": 6,
+  "uses": 2,
+  "cats": [
+   "Sauces",
+   "Supplements"
+  ]
+ },
+ {
+  "key": "coconut flour",
+  "label": "Coconut flour",
+  "kcal": 400,
+  "p": 20,
+  "c": 60,
+  "f": 15,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "whey or plant protein powder",
+  "label": "Whey or plant protein powder (vanilla)",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "plain rice cakes",
+  "label": "Plain rice cakes",
+  "kcal": 385,
+  "p": 7,
+  "c": 83,
+  "f": 1.8,
+  "unitG": 9,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "natural peanut butter",
+  "label": "Natural peanut butter",
+  "kcal": 588,
+  "p": 25,
+  "c": 20,
+  "f": 50,
+  "uses": 2,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "watermelon",
+  "label": "Watermelon",
+  "kcal": 30,
+  "p": 0.6,
+  "c": 7.6,
+  "f": 0.2,
+  "uses": 2,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "eggplant / aubergine",
+  "label": "Eggplant / Aubergine",
+  "kcal": 25,
+  "p": 1,
+  "c": 6,
+  "f": 0.2,
+  "uses": 2,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "cheddar cheese",
+  "label": "Cheddar cheese",
+  "kcal": 403,
+  "p": 22.9,
+  "c": 3.4,
+  "f": 33,
+  "uses": 2,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "bread",
+  "label": "Bread (whole wheat)",
+  "kcal": 247,
+  "p": 13,
+  "c": 41,
+  "f": 3.4,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "pumpkin",
+  "label": "Pumpkin",
+  "kcal": 26,
+  "p": 1,
+  "c": 6.5,
+  "f": 0.1,
+  "uses": 2,
+  "cats": [
+   "Vegetables",
+   "Carbs"
+  ]
+ },
+ {
+  "key": "fresh basil",
+  "label": "Fresh Basil",
+  "kcal": 23,
+  "p": 3.2,
+  "c": 2.7,
+  "f": 0.6,
+  "uses": 2,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "soba noodles",
+  "label": "Soba noodles (dry)",
+  "kcal": 336,
+  "p": 14,
+  "c": 74,
+  "f": 0.4,
+  "uses": 2,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "cabbage",
+  "label": "Cabbage (white)",
+  "kcal": 25,
+  "p": 1.3,
+  "c": 5.8,
+  "f": 0.1,
+  "uses": 2,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "vanilla whey protein",
+  "label": "Vanilla whey protein",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "uses": 2,
+  "cats": [
+   "Supplements"
+  ]
+ },
+ {
+  "key": "sirloin steak lean",
+  "label": "Sirloin steak lean (raw)",
+  "kcal": 143,
+  "p": 21.4,
+  "c": 0,
+  "f": 5.6,
+  "uses": 2,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "soy sauce / tamari",
+  "label": "Soy sauce / tamari",
+  "kcal": 60,
+  "p": 10.5,
+  "c": 5.6,
+  "f": 0.1,
+  "unitG": 16,
+  "uses": 2,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "skinless boneless chicken breast",
+  "label": "Skinless boneless chicken breast (raw)",
+  "kcal": 120,
+  "p": 22.5,
+  "c": 0,
+  "f": 2.6,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "fresh rosemary or thyme",
+  "label": "Fresh rosemary or thyme",
+  "kcal": 131,
+  "p": 3.3,
+  "c": 20.7,
+  "f": 5.9,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "cod fillets",
+  "label": "Cod fillets (raw)",
+  "kcal": 82,
+  "p": 18,
+  "c": 0,
+  "f": 0.7,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "sugar free bbq sauce",
+  "label": "Sugar-free BBQ sauce",
+  "kcal": 172,
+  "p": 1.2,
+  "c": 38,
+  "f": 0.6,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "dried dill",
+  "label": "Dried dill",
+  "kcal": 43,
+  "p": 3.5,
+  "c": 7,
+  "f": 1.1,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "white potato",
+  "label": "White potato (raw)",
+  "kcal": 77,
+  "p": 2,
+  "c": 17,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "red bell peppers",
+  "label": "Red bell peppers",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "chopped tomatoes",
+  "label": "Chopped tomatoes (canned)",
+  "kcal": 18,
+  "p": 0.9,
+  "c": 3.9,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "sugar free ketchup",
+  "label": "Sugar-free ketchup",
+  "kcal": 25,
+  "p": 0.5,
+  "c": 5,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "sweet relish",
+  "label": "Sweet relish",
+  "kcal": 100,
+  "p": 0,
+  "c": 24,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "dill pickles / gherkins",
+  "label": "Dill pickles / gherkins (sliced)",
+  "kcal": 11,
+  "p": 0.3,
+  "c": 2.3,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "butternut pumpkin",
+  "label": "Butternut pumpkin (cubed)",
+  "kcal": 45,
+  "p": 1,
+  "c": 11.7,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "chipotle chilli powder",
+  "label": "Chipotle chilli powder",
+  "kcal": 282,
+  "p": 12.3,
+  "c": 50,
+  "f": 14.3,
+  "unitG": 15,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "frank s red hot wings sauce",
+  "label": "Frank's Red Hot Wings Sauce",
+  "kcal": 33,
+  "p": 0.5,
+  "c": 3.3,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "celery",
+  "label": "Celery (diced)",
+  "kcal": 16,
+  "p": 0.7,
+  "c": 3,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "large wholemeal tortilla wraps",
+  "label": "Large wholemeal tortilla wraps",
+  "kcal": 280,
+  "p": 9,
+  "c": 49,
+  "f": 5,
+  "unitG": 70,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "colby jack or light cheese",
+  "label": "Colby jack or light cheese (slices)",
+  "kcal": 250,
+  "p": 24,
+  "c": 2.5,
+  "f": 16,
+  "unitG": 21,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "romaine lettuce",
+  "label": "Romaine lettuce (shredded)",
+  "kcal": 17,
+  "p": 1.2,
+  "c": 3.3,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "ketchup",
+  "label": "Ketchup",
+  "kcal": 101,
+  "p": 1.4,
+  "c": 26,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "pickle",
+  "label": "Pickle (gherkin sliced)",
+  "kcal": 11,
+  "p": 0.3,
+  "c": 2.3,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "cauliflower rice",
+  "label": "Cauliflower rice (frozen or fresh)",
+  "kcal": 25,
+  "p": 1.9,
+  "c": 5,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "celery stalks",
+  "label": "Celery stalks (diced)",
+  "kcal": 16,
+  "p": 0.7,
+  "c": 3,
+  "f": 0.2,
+  "unitG": 40,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "alfredo sauce prego",
+  "label": "Alfredo sauce — Prego (1 jar)",
+  "kcal": 130,
+  "p": 3,
+  "c": 5,
+  "f": 11,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "italian tomato sauce prego",
+  "label": "Italian tomato sauce — Prego (1 jar)",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "buffalo sauce",
+  "label": "Buffalo sauce",
+  "kcal": 33,
+  "p": 0.5,
+  "c": 3.3,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "sliced mushrooms",
+  "label": "Sliced mushrooms",
+  "kcal": 22,
+  "p": 3.1,
+  "c": 3.3,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "couscous",
+  "label": "Couscous (dry)",
+  "kcal": 376,
+  "p": 12.8,
+  "c": 77,
+  "f": 0.6,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "red yellow capsicum",
+  "label": "Red & yellow capsicum (diced)",
+  "kcal": 31,
+  "p": 1,
+  "c": 6,
+  "f": 0.3,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "harissa paste",
+  "label": "Harissa paste",
+  "kcal": 50,
+  "p": 1,
+  "c": 7,
+  "f": 2,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "vegetable bone broth or low sodium vegetable broth",
+  "label": "Vegetable bone broth or low-sodium vegetable broth",
+  "kcal": 7,
+  "p": 0.5,
+  "c": 1,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "mild pico de gallo",
+  "label": "Mild pico de gallo",
+  "kcal": 36,
+  "p": 1.5,
+  "c": 7,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "penne pasta",
+  "label": "Penne pasta",
+  "kcal": 371,
+  "p": 13,
+  "c": 74,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "large sweet onions",
+  "label": "Large sweet onions",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "reduced fat cream cheese",
+  "label": "Reduced-fat cream cheese",
+  "kcal": 231,
+  "p": 9,
+  "c": 5,
+  "f": 20,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "parmigiano reggiano",
+  "label": "Parmigiano Reggiano (grated)",
+  "kcal": 431,
+  "p": 38,
+  "c": 3.2,
+  "f": 29,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "gruy re cheese",
+  "label": "Gruyère cheese (grated)",
+  "kcal": 413,
+  "p": 30,
+  "c": 0.4,
+  "f": 32,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "corn flakes",
+  "label": "Corn Flakes (crushed, sugar-free)",
+  "kcal": 378,
+  "p": 7,
+  "c": 84,
+  "f": 1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "cooking oil spray",
+  "label": "Cooking oil spray",
+  "kcal": 47,
+  "p": 0,
+  "c": 0,
+  "f": 4.7,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "large whole eggs",
+  "label": "Large whole eggs",
+  "kcal": 143,
+  "p": 12.6,
+  "c": 0.7,
+  "f": 9.5,
+  "unitG": 60,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "yellow onions",
+  "label": "Yellow onions (large)",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "raw shrimp",
+  "label": "Raw shrimp (peeled & deveined)",
+  "kcal": 85,
+  "p": 20,
+  "c": 0.9,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "orzo pasta",
+  "label": "Orzo pasta (dry)",
+  "kcal": 360,
+  "p": 12,
+  "c": 72,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "reduced fat feta cheese",
+  "label": "Reduced-fat feta cheese",
+  "kcal": 264,
+  "p": 14,
+  "c": 4.1,
+  "f": 21,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "dried oregano",
+  "label": "Dried oregano",
+  "kcal": 265,
+  "p": 9,
+  "c": 69,
+  "f": 4.3,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "kale or baby spinach",
+  "label": "Kale or baby spinach",
+  "kcal": 49,
+  "p": 4.3,
+  "c": 8.8,
+  "f": 0.9,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "parmesan or feta",
+  "label": "Parmesan or feta (crumbled)",
+  "kcal": 431,
+  "p": 38,
+  "c": 3.2,
+  "f": 29,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "green bell peppers",
+  "label": "Green bell peppers",
+  "kcal": 20,
+  "p": 0.9,
+  "c": 4.6,
+  "f": 0.2,
+  "unitG": 120,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "light creamy pasta sauce",
+  "label": "Light creamy pasta sauce (Prego/Barilla jar)",
+  "kcal": 130,
+  "p": 3,
+  "c": 5,
+  "f": 11,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "tomato spaghetti sauce",
+  "label": "Tomato spaghetti sauce (jar)",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "light butter",
+  "label": "Light butter (for mash)",
+  "kcal": 499,
+  "p": 0.9,
+  "c": 0.5,
+  "f": 56,
+  "unitG": 14,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "lamb leg boneless",
+  "label": "Lamb leg boneless (raw)",
+  "kcal": 282,
+  "p": 16,
+  "c": 0,
+  "f": 24,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "fresh mint leaves",
+  "label": "Fresh mint leaves",
+  "kcal": 70,
+  "p": 3.8,
+  "c": 14.9,
+  "f": 0.9,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "top sirloin steak",
+  "label": "Top sirloin steak (raw, trimmed)",
+  "kcal": 185,
+  "p": 22,
+  "c": 0,
+  "f": 10,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "frozen carrots",
+  "label": "Frozen carrots",
+  "kcal": 41,
+  "p": 0.9,
+  "c": 9.6,
+  "f": 0.2,
+  "unitG": 100,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "corn / sweetcorn",
+  "label": "Corn / sweetcorn",
+  "kcal": 86,
+  "p": 3.2,
+  "c": 19,
+  "f": 1.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "green bell pepper",
+  "label": "Green bell pepper (diced)",
+  "kcal": 20,
+  "p": 0.9,
+  "c": 4.6,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "diced chicken breast",
+  "label": "Diced chicken breast",
+  "kcal": 120,
+  "p": 22.5,
+  "c": 0,
+  "f": 2.6,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "plain flour",
+  "label": "Plain flour",
+  "kcal": 364,
+  "p": 10,
+  "c": 76,
+  "f": 1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "macaroni pasta",
+  "label": "Macaroni pasta",
+  "kcal": 371,
+  "p": 13,
+  "c": 74,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "grated cheddar",
+  "label": "Grated cheddar",
+  "kcal": 403,
+  "p": 22.9,
+  "c": 3.4,
+  "f": 33,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "oregano",
+  "label": "Oregano",
+  "kcal": 265,
+  "p": 9,
+  "c": 69,
+  "f": 4.3,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "basil",
+  "label": "Basil (dried)",
+  "kcal": 23,
+  "p": 3.2,
+  "c": 2.7,
+  "f": 0.6,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "high fiber tortilla wraps",
+  "label": "High-fiber tortilla wraps (110 cal)",
+  "kcal": 312,
+  "p": 8,
+  "c": 52,
+  "f": 7.8,
+  "unitG": 55,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "fat free milk",
+  "label": "Fat-free milk",
+  "kcal": 34,
+  "p": 3.4,
+  "c": 4.9,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "garlic salt",
+  "label": "Garlic salt",
+  "kcal": 331,
+  "p": 16.6,
+  "c": 73,
+  "f": 0.7,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "sliced almonds",
+  "label": "Sliced almonds",
+  "kcal": 579,
+  "p": 21,
+  "c": 22,
+  "f": 50,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "brussels sprouts",
+  "label": "Brussels sprouts (quartered)",
+  "kcal": 43,
+  "p": 3.4,
+  "c": 9,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "chicken breasts",
+  "label": "Chicken breasts (raw)",
+  "kcal": 120,
+  "p": 22.5,
+  "c": 0,
+  "f": 2.6,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "red potatoes",
+  "label": "Red potatoes (quartered)",
+  "kcal": 77,
+  "p": 2,
+  "c": 17,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "baby carrots",
+  "label": "Baby carrots",
+  "kcal": 41,
+  "p": 0.9,
+  "c": 9.6,
+  "f": 0.2,
+  "unitG": 100,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "bell pepper green",
+  "label": "Bell pepper, green (diced)",
+  "kcal": 20,
+  "p": 0.9,
+  "c": 4.6,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "canned black beans",
+  "label": "Canned black beans (drained)",
+  "kcal": 132,
+  "p": 8.9,
+  "c": 24,
+  "f": 0.5,
+  "unitG": 240,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "pico de gallo / fresh salsa",
+  "label": "Pico de gallo / fresh salsa",
+  "kcal": 36,
+  "p": 1.5,
+  "c": 7,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "iceberg lettuce",
+  "label": "Iceberg lettuce (chopped)",
+  "kcal": 17,
+  "p": 1.2,
+  "c": 3.3,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "frozen spinach",
+  "label": "Frozen spinach",
+  "kcal": 23,
+  "p": 2.9,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "vegetable broth",
+  "label": "Vegetable broth",
+  "kcal": 7,
+  "p": 0.5,
+  "c": 1,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "coriander powder",
+  "label": "Coriander powder (tsp)",
+  "kcal": 298,
+  "p": 12,
+  "c": 55,
+  "f": 18,
+  "unitG": 2.5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "lean turkey sausage",
+  "label": "Lean turkey sausage",
+  "kcal": 181,
+  "p": 19,
+  "c": 4,
+  "f": 10,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "% mexican cheese blend",
+  "label": "2% Mexican 4-cheese blend",
+  "kcal": 403,
+  "p": 22.9,
+  "c": 3.4,
+  "f": 33,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "low cal pizza sauce",
+  "label": "Low-cal pizza sauce",
+  "kcal": 27,
+  "p": 1.3,
+  "c": 6.3,
+  "f": 0.2,
+  "unitG": 400,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "/ less fat cream cheese",
+  "label": "1/3 less-fat cream cheese",
+  "kcal": 231,
+  "p": 9,
+  "c": 5,
+  "f": 20,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "pork tenderloin",
+  "label": "Pork tenderloin (whole)",
+  "kcal": 109,
+  "p": 21,
+  "c": 0,
+  "f": 2.2,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "raw king prawns",
+  "label": "Raw king prawns (peeled)",
+  "kcal": 85,
+  "p": 20,
+  "c": 0.9,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "ripe avocados",
+  "label": "Ripe avocados",
+  "kcal": 160,
+  "p": 2,
+  "c": 9,
+  "f": 15,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "red chilli",
+  "label": "Red chilli (fresh)",
+  "kcal": 40,
+  "p": 1.5,
+  "c": 8.8,
+  "f": 0.4,
+  "unitG": 15,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "riced cauliflower",
+  "label": "Riced cauliflower (frozen)",
+  "kcal": 25,
+  "p": 1.9,
+  "c": 5,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "mixed frozen vegetables",
+  "label": "Mixed frozen vegetables",
+  "kcal": 65,
+  "p": 3,
+  "c": 11,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "fresh rosemary sprigs",
+  "label": "Fresh rosemary sprigs",
+  "kcal": 131,
+  "p": 3.3,
+  "c": 20.7,
+  "f": 5.9,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "salmon loin",
+  "label": "Salmon loin (cubed, raw)",
+  "kcal": 208,
+  "p": 20,
+  "c": 0,
+  "f": 13,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "ripe avocado",
+  "label": "Ripe avocado (quarter)",
+  "kcal": 160,
+  "p": 2,
+  "c": 9,
+  "f": 15,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "light feta cheese",
+  "label": "Light feta cheese",
+  "kcal": 264,
+  "p": 14,
+  "c": 4.1,
+  "f": 21,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "fresh dill or parsley",
+  "label": "Fresh dill or parsley",
+  "kcal": 43,
+  "p": 3.5,
+  "c": 7,
+  "f": 1.1,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "yellowfin tuna steaks",
+  "label": "Yellowfin tuna steaks (raw)",
+  "kcal": 109,
+  "p": 24,
+  "c": 0,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "flat leaf parsley",
+  "label": "Flat-leaf parsley (large bunch)",
+  "kcal": 36,
+  "p": 3,
+  "c": 6.3,
+  "f": 0.8,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "spring onions",
+  "label": "Spring onions (bunch)",
+  "kcal": 32,
+  "p": 1.8,
+  "c": 7.3,
+  "f": 0.2,
+  "unitG": 150,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "dark soy sauce",
+  "label": "Dark soy sauce",
+  "kcal": 53,
+  "p": 8.1,
+  "c": 4.9,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "japanese style soy sauce",
+  "label": "Japanese-style soy sauce",
+  "kcal": 53,
+  "p": 8.1,
+  "c": 4.9,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "hoisin sauce",
+  "label": "Hoisin sauce",
+  "kcal": 220,
+  "p": 4,
+  "c": 42,
+  "f": 4.5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "rice wine vinegar",
+  "label": "Rice wine vinegar",
+  "kcal": 18,
+  "p": 0,
+  "c": 0.7,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "snow peas",
+  "label": "Snow peas",
+  "kcal": 34,
+  "p": 2.8,
+  "c": 7,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "crushed ginger",
+  "label": "Crushed ginger",
+  "kcal": 80,
+  "p": 1.8,
+  "c": 18,
+  "f": 0.8,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "butternut squash",
+  "label": "Butternut squash (cubed)",
+  "kcal": 45,
+  "p": 1,
+  "c": 11.7,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "lean lamb mince",
+  "label": "Lean lamb mince (raw)",
+  "kcal": 282,
+  "p": 16,
+  "c": 0,
+  "f": 24,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "green lentils",
+  "label": "Green lentils (canned, drained)",
+  "kcal": 116,
+  "p": 9,
+  "c": 20.1,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "baharat spice blend",
+  "label": "Baharat spice blend",
+  "kcal": 300,
+  "p": 10,
+  "c": 50,
+  "f": 10,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "large sweet potato",
+  "label": "Large sweet potato",
+  "kcal": 86,
+  "p": 1.6,
+  "c": 20,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "frozen edamame",
+  "label": "Frozen edamame (shelled)",
+  "kcal": 121,
+  "p": 11,
+  "c": 8.9,
+  "f": 5.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "cornstarch",
+  "label": "Cornstarch",
+  "kcal": 381,
+  "p": 0.3,
+  "c": 91,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "fresh spinach",
+  "label": "Fresh spinach",
+  "kcal": 23,
+  "p": 2.9,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "white beans / cannellini",
+  "label": "White beans / cannellini (400g can)",
+  "kcal": 130,
+  "p": 9,
+  "c": 24,
+  "f": 0.5,
+  "unitG": 240,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "protein pasta or wholegrain pasta",
+  "label": "Protein pasta or wholegrain pasta (dry)",
+  "kcal": 348,
+  "p": 14,
+  "c": 68,
+  "f": 2.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "paneer",
+  "label": "Paneer (cubed)",
+  "kcal": 321,
+  "p": 19,
+  "c": 1,
+  "f": 27,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "garam masala",
+  "label": "Garam masala",
+  "kcal": 379,
+  "p": 13,
+  "c": 51,
+  "f": 15,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "canned corn",
+  "label": "Canned corn (drained)",
+  "kcal": 86,
+  "p": 3.2,
+  "c": 19,
+  "f": 1.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "reduced fat cheddar",
+  "label": "Reduced-fat cheddar (shredded)",
+  "kcal": 273,
+  "p": 27,
+  "c": 3,
+  "f": 17,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "tilapia fillets",
+  "label": "Tilapia fillets (raw)",
+  "kcal": 96,
+  "p": 20,
+  "c": 0,
+  "f": 1.7,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "center cut beef bacon",
+  "label": "Center-cut beef bacon (raw)",
+  "kcal": 230,
+  "p": 14,
+  "c": 1,
+  "f": 18,
+  "unitG": 28,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "frozen shredded hashbrowns",
+  "label": "Frozen shredded hashbrowns",
+  "kcal": 77,
+  "p": 2,
+  "c": 17,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "ground turkey sausage",
+  "label": "Ground turkey sausage (raw)",
+  "kcal": 150,
+  "p": 18.7,
+  "c": 0,
+  "f": 8,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "everything bagels",
+  "label": "Everything bagels",
+  "kcal": 263,
+  "p": 9.8,
+  "c": 49,
+  "f": 3,
+  "unitG": 105,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "pepper jack cheese",
+  "label": "Pepper jack cheese (slices)",
+  "kcal": 357,
+  "p": 21,
+  "c": 1,
+  "f": 29,
+  "unitG": 28,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "grated carrot",
+  "label": "Grated carrot",
+  "kcal": 41,
+  "p": 0.9,
+  "c": 9.6,
+  "f": 0.2,
+  "unitG": 100,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "vanilla protein powder",
+  "label": "Vanilla protein powder",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "low fat cottage cheese",
+  "label": "Low-fat cottage cheese",
+  "kcal": 90,
+  "p": 12,
+  "c": 4,
+  "f": 2.5,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "beef bacon slices",
+  "label": "Beef bacon slices",
+  "kcal": 230,
+  "p": 14,
+  "c": 1,
+  "f": 18,
+  "unitG": 28,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "shredded italian cheese blend",
+  "label": "Shredded Italian cheese blend",
+  "kcal": 180,
+  "p": 20,
+  "c": 1,
+  "f": 11,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "high fiber inch tortilla wraps",
+  "label": "High-fiber 12-inch tortilla wraps",
+  "kcal": 312,
+  "p": 8,
+  "c": 52,
+  "f": 7.8,
+  "unitG": 55,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "sriracha",
+  "label": "Sriracha",
+  "kcal": 93,
+  "p": 1.5,
+  "c": 19,
+  "f": 1.1,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "mixed seeds",
+  "label": "Mixed seeds",
+  "kcal": 584,
+  "p": 21,
+  "c": 20,
+  "f": 51,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "smoked turkey",
+  "label": "Smoked turkey (sliced)",
+  "kcal": 89,
+  "p": 17,
+  "c": 2,
+  "f": 1,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "whole eggs",
+  "label": "Whole eggs",
+  "kcal": 143,
+  "p": 12.6,
+  "c": 0.7,
+  "f": 9.5,
+  "unitG": 60,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "baker street white bread",
+  "label": "Baker Street white bread (slices)",
+  "kcal": 265,
+  "p": 9,
+  "c": 49,
+  "f": 3.2,
+  "unitG": 40,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "whey protein",
+  "label": "Whey protein (1 scoop)",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "milk",
+  "label": "Milk",
+  "kcal": 61,
+  "p": 3.2,
+  "c": 4.8,
+  "f": 3.3,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "chocolate protein powder",
+  "label": "Chocolate protein powder",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "frozen mixed berries",
+  "label": "Frozen mixed berries",
+  "kcal": 49,
+  "p": 0.7,
+  "c": 12,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "lean ground turkey",
+  "label": "Lean ground turkey (raw)",
+  "kcal": 150,
+  "p": 18.7,
+  "c": 0,
+  "f": 8,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "whole grain everything bagels",
+  "label": "Whole grain everything bagels",
+  "kcal": 263,
+  "p": 9.8,
+  "c": 49,
+  "f": 3,
+  "unitG": 105,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "pepper jack cheese slices",
+  "label": "Pepper jack cheese slices",
+  "kcal": 357,
+  "p": 21,
+  "c": 1,
+  "f": 29,
+  "unitG": 28,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "godiva % dark chocolate melted",
+  "label": "Godiva 72% dark chocolate, melted",
+  "kcal": 598,
+  "p": 7.8,
+  "c": 45.9,
+  "f": 42.6,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "ripe bananas mashed",
+  "label": "Ripe bananas, mashed",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "% fat greek yogurt",
+  "label": "0% fat Greek yogurt",
+  "kcal": 59,
+  "p": 10,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "medjool dates pitted",
+  "label": "Medjool dates, pitted",
+  "kcal": 277,
+  "p": 1.8,
+  "c": 75,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "chocolate whey protein",
+  "label": "Chocolate whey protein",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "almond flour",
+  "label": "Almond flour",
+  "kcal": 576,
+  "p": 21.4,
+  "c": 19.6,
+  "f": 52.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "milk chocolate chips",
+  "label": "Milk chocolate chips",
+  "kcal": 535,
+  "p": 5.9,
+  "c": 59.2,
+  "f": 30.2,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "lightly salted rice cakes",
+  "label": "Lightly salted rice cakes",
+  "kcal": 385,
+  "p": 7,
+  "c": 83,
+  "f": 1.8,
+  "unitG": 9,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "powdered peanut butter",
+  "label": "Powdered peanut butter (PB Fit)",
+  "kcal": 375,
+  "p": 35,
+  "c": 30,
+  "f": 13,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "dark chocolate chips",
+  "label": "Dark chocolate chips",
+  "kcal": 547,
+  "p": 5,
+  "c": 60,
+  "f": 33,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "ripe bananas",
+  "label": "Ripe bananas",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "unitG": 120,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "white chocolate protein powder",
+  "label": "White chocolate protein powder",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "pure pumpkin pur e",
+  "label": "Pure pumpkin purée",
+  "kcal": 34,
+  "p": 1.2,
+  "c": 8.1,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "self rising flour",
+  "label": "Self-rising flour",
+  "kcal": 364,
+  "p": 10,
+  "c": 76,
+  "f": 1,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "chocolate brownie protein powder",
+  "label": "Chocolate brownie protein powder",
+  "kcal": 400,
+  "p": 80,
+  "c": 8,
+  "f": 4,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "brown sugar alternative",
+  "label": "Brown sugar alternative",
+  "kcal": 0,
+  "p": 0,
+  "c": 0,
+  "f": 0,
+  "unitG": 30,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "real vanilla extract",
+  "label": "Real vanilla extract",
+  "kcal": 288,
+  "p": 0.1,
+  "c": 12.5,
+  "f": 0.1,
+  "unitG": 5,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "kallo rice cakes",
+  "label": "Kallo rice cakes",
+  "kcal": 385,
+  "p": 7,
+  "c": 83,
+  "f": 1.8,
+  "unitG": 9,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "jam",
+  "label": "Jam (any flavour)",
+  "kcal": 250,
+  "p": 0.5,
+  "c": 63,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "low fat chocolate milk",
+  "label": "Low-fat chocolate milk",
+  "kcal": 70,
+  "p": 3.5,
+  "c": 10,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "wholegrain bread",
+  "label": "Wholegrain bread (loaf)",
+  "kcal": 247,
+  "p": 13,
+  "c": 41,
+  "f": 3.4,
+  "unitG": 40,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "strawberry jam",
+  "label": "Strawberry jam (low-sugar)",
+  "kcal": 120,
+  "p": 0.5,
+  "c": 29,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "fat free greek yogurt",
+  "label": "Fat-free Greek yogurt",
+  "kcal": 59,
+  "p": 10,
+  "c": 3.6,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "mixed frozen berries",
+  "label": "Mixed frozen berries",
+  "kcal": 49,
+  "p": 0.7,
+  "c": 12,
+  "f": 0.4,
+  "uses": 1,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "low sugar granola",
+  "label": "Low-sugar granola",
+  "kcal": 380,
+  "p": 9,
+  "c": 65,
+  "f": 9,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "bananas or berries for topping",
+  "label": "Bananas or berries for topping",
+  "kcal": 89,
+  "p": 1.1,
+  "c": 23,
+  "f": 0.3,
+  "unitG": 120,
+  "uses": 1,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "peanut butter powder",
+  "label": "Peanut butter powder (PBfit)",
+  "kcal": 375,
+  "p": 35,
+  "c": 30,
+  "f": 13,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "steamed bao buns",
+  "label": "Steamed bao buns",
+  "kcal": 223,
+  "p": 7,
+  "c": 45,
+  "f": 2.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "papaya",
+  "label": "Papaya",
+  "kcal": 43,
+  "p": 0.5,
+  "c": 11,
+  "f": 0.3,
+  "uses": 1,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "chili flakes / red pepper flakes",
+  "label": "Chili flakes / red pepper flakes",
+  "kcal": 282,
+  "p": 12.3,
+  "c": 50,
+  "f": 14.3,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "beetroot",
+  "label": "Beetroot",
+  "kcal": 43,
+  "p": 1.6,
+  "c": 9.6,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "apple cider vinegar",
+  "label": "Apple Cider Vinegar",
+  "kcal": 22,
+  "p": 0,
+  "c": 0.9,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Condiments"
+  ]
+ },
+ {
+  "key": "balsamic glaze",
+  "label": "Balsamic glaze",
+  "kcal": 280,
+  "p": 0.5,
+  "c": 68,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Condiments"
+  ]
+ },
+ {
+  "key": "fresh mint/basil",
+  "label": "Fresh mint/basil (garnish)",
+  "kcal": 131,
+  "p": 3.3,
+  "c": 20.7,
+  "f": 5.9,
+  "uses": 1,
+  "cats": [
+   "Herbs"
+  ]
+ },
+ {
+  "key": "pita bread",
+  "label": "Pita bread",
+  "kcal": 275,
+  "p": 9,
+  "c": 55,
+  "f": 1.2,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "whole wheat toast",
+  "label": "Whole wheat toast",
+  "kcal": 247,
+  "p": 13,
+  "c": 41,
+  "f": 3.4,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "apple",
+  "label": "Apple",
+  "kcal": 52,
+  "p": 0.3,
+  "c": 14,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Fruits"
+  ]
+ },
+ {
+  "key": "dates",
+  "label": "Dates (medjool)",
+  "kcal": 277,
+  "p": 1.8,
+  "c": 75,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "almonds",
+  "label": "Almonds",
+  "kcal": 579,
+  "p": 21,
+  "c": 22,
+  "f": 50,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "protein pancake mix",
+  "label": "Protein pancake mix",
+  "kcal": 370,
+  "p": 30,
+  "c": 43,
+  "f": 8,
+  "uses": 1,
+  "cats": [
+   "Baking"
+  ]
+ },
+ {
+  "key": "chicken or mushroom broth",
+  "label": "Chicken or mushroom broth (low-sodium)",
+  "kcal": 10,
+  "p": 2.3,
+  "c": 0.4,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Liquids"
+  ]
+ },
+ {
+  "key": "walnuts",
+  "label": "Walnuts",
+  "kcal": 654,
+  "p": 15,
+  "c": 14,
+  "f": 65,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "miso paste",
+  "label": "Miso paste",
+  "kcal": 200,
+  "p": 12,
+  "c": 26,
+  "f": 6,
+  "uses": 1,
+  "cats": [
+   "Condiments"
+  ]
+ },
+ {
+  "key": "fish sauce",
+  "label": "Fish sauce",
+  "kcal": 35,
+  "p": 5,
+  "c": 3.6,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "rice vinegar",
+  "label": "Rice vinegar",
+  "kcal": 18,
+  "p": 0,
+  "c": 0.7,
+  "f": 0,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "hummus",
+  "label": "Hummus",
+  "kcal": 166,
+  "p": 8,
+  "c": 14,
+  "f": 9.6,
+  "uses": 1,
+  "cats": [
+   "Legumes"
+  ]
+ },
+ {
+  "key": "pumpkin seeds",
+  "label": "Pumpkin seeds",
+  "kcal": 559,
+  "p": 30.2,
+  "c": 10.7,
+  "f": 49.1,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "barramundi",
+  "label": "Barramundi (raw)",
+  "kcal": 125,
+  "p": 22,
+  "c": 0,
+  "f": 3.2,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "mixed herbs",
+  "label": "Mixed herbs (dried)",
+  "kcal": 265,
+  "p": 13,
+  "c": 44,
+  "f": 7,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "peri peri sauce",
+  "label": "Peri peri sauce",
+  "kcal": 60,
+  "p": 1,
+  "c": 10,
+  "f": 2,
+  "uses": 1,
+  "cats": [
+   "Condiments"
+  ]
+ },
+ {
+  "key": "sweetcorn",
+  "label": "Sweetcorn (kernels)",
+  "kcal": 86,
+  "p": 3.2,
+  "c": 19,
+  "f": 1.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "lemongrass",
+  "label": "Lemongrass (fresh)",
+  "kcal": 99,
+  "p": 1.8,
+  "c": 25,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Herbs"
+  ]
+ },
+ {
+  "key": "pecorino romano / parmesan",
+  "label": "Pecorino Romano / Parmesan",
+  "kcal": 431,
+  "p": 38,
+  "c": 3.2,
+  "f": 29,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "silk protein milk",
+  "label": "Silk Protein Milk (skim)",
+  "kcal": 34,
+  "p": 3.4,
+  "c": 4.9,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "extra lean beef mince",
+  "label": "Extra lean beef mince (96/4)",
+  "kcal": 137,
+  "p": 21.4,
+  "c": 0,
+  "f": 5.6,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "chickpea / high protein pasta",
+  "label": "Chickpea / high-protein pasta",
+  "kcal": 348,
+  "p": 14,
+  "c": 68,
+  "f": 2.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "brown onion",
+  "label": "Brown onion",
+  "kcal": 40,
+  "p": 1.1,
+  "c": 9.3,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "garlic paste",
+  "label": "Garlic paste",
+  "kcal": 149,
+  "p": 6.4,
+  "c": 33,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Aromatics"
+  ]
+ },
+ {
+  "key": "mexican/taco seasoning",
+  "label": "Mexican/taco seasoning",
+  "kcal": 285,
+  "p": 11,
+  "c": 49,
+  "f": 8,
+  "uses": 1,
+  "cats": [
+   "Spices"
+  ]
+ },
+ {
+  "key": "tuna",
+  "label": "Tuna (canned in water)",
+  "kcal": 109,
+  "p": 25.5,
+  "c": 0,
+  "f": 0.8,
+  "unitG": 160,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "tomatoes",
+  "label": "Tomatoes (medium)",
+  "kcal": 18,
+  "p": 0.9,
+  "c": 3.9,
+  "f": 0.2,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ },
+ {
+  "key": "english muffin",
+  "label": "English muffin (whole grain)",
+  "kcal": 245,
+  "p": 8.5,
+  "c": 44,
+  "f": 2.5,
+  "unitG": 60,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "light cheese slice",
+  "label": "Light cheese slice",
+  "kcal": 250,
+  "p": 24,
+  "c": 2.5,
+  "f": 16,
+  "unitG": 20,
+  "uses": 1,
+  "cats": [
+   "Dairy"
+  ]
+ },
+ {
+  "key": "whole grain bagel",
+  "label": "Whole grain bagel",
+  "kcal": 263,
+  "p": 9.8,
+  "c": 49,
+  "f": 3,
+  "unitG": 105,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "dark chocolate %",
+  "label": "Dark chocolate 85% (shell)",
+  "kcal": 598,
+  "p": 7.8,
+  "c": 46,
+  "f": 43,
+  "uses": 1,
+  "cats": [
+   "Baking"
+  ]
+ },
+ {
+  "key": "coconut oil",
+  "label": "Coconut oil",
+  "kcal": 892,
+  "p": 0,
+  "c": 0,
+  "f": 100,
+  "uses": 1,
+  "cats": [
+   "Fats"
+  ]
+ },
+ {
+  "key": "vanilla extract",
+  "label": "Vanilla extract",
+  "kcal": 288,
+  "p": 0.1,
+  "c": 12.5,
+  "f": 0.1,
+  "unitG": 5,
+  "uses": 1,
+  "cats": [
+   "Baking"
+  ]
+ },
+ {
+  "key": "shrimp / prawns",
+  "label": "Shrimp / prawns (raw, peeled)",
+  "kcal": 85,
+  "p": 20.1,
+  "c": 0.9,
+  "f": 0.5,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "fresh lemon juice",
+  "label": "Fresh lemon juice",
+  "kcal": 22,
+  "p": 0.4,
+  "c": 6.9,
+  "f": 0.2,
+  "unitG": 45,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "rotisserie chicken breast",
+  "label": "Rotisserie chicken breast (shredded)",
+  "kcal": 165,
+  "p": 31,
+  "c": 0,
+  "f": 3.6,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "salmon fillet",
+  "label": "Salmon fillet (raw)",
+  "kcal": 208,
+  "p": 20.4,
+  "c": 0,
+  "f": 13.4,
+  "uses": 1,
+  "cats": [
+   "Protein"
+  ]
+ },
+ {
+  "key": "macaroni",
+  "label": "Macaroni (dry)",
+  "kcal": 371,
+  "p": 13,
+  "c": 74.7,
+  "f": 1.5,
+  "uses": 1,
+  "cats": [
+   "Carbs"
+  ]
+ },
+ {
+  "key": "buffalo hot sauce",
+  "label": "Buffalo hot sauce",
+  "kcal": 33,
+  "p": 0.5,
+  "c": 3.3,
+  "f": 1.5,
+  "unitG": 15,
+  "uses": 1,
+  "cats": [
+   "Sauces"
+  ]
+ },
+ {
+  "key": "cabbage / coleslaw mix",
+  "label": "Cabbage / coleslaw mix (shredded)",
+  "kcal": 25,
+  "p": 1.3,
+  "c": 5.8,
+  "f": 0.1,
+  "uses": 1,
+  "cats": [
+   "Vegetables"
+  ]
+ }
+]

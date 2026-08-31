@@ -1,0 +1,426 @@
+{
+ "m104": {
+  "allergens": [
+   "Egg",
+   "Milk",
+   "Mustard"
+  ],
+  "from": {
+   "Egg": [
+    "Eggs (whole, large, raw)",
+    "Mayonnaise (light)"
+   ],
+   "Milk": [
+    "Greek Yogurt (0% fat)"
+   ],
+   "Mustard": [
+    "Yellow Mustard"
+   ]
+  }
+ },
+ "m105": {
+  "allergens": [
+   "Fish"
+  ],
+  "from": {
+   "Fish": [
+    "Salmon (Atlantic, raw)"
+   ]
+  }
+ },
+ "m106": {
+  "allergens": [
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Potato Gnocchi (shelf-stable)"
+   ],
+   "Milk": [
+    "Greek Yogurt (0% fat)",
+    "Parmesan"
+   ]
+  }
+ },
+ "m107": {
+  "allergens": [
+   "Egg",
+   "Gluten",
+   "Peanuts",
+   "Sesame",
+   "Soya"
+  ],
+  "from": {
+   "Gluten": [
+    "Egg Noodles (dry)",
+    "Soy Sauce (low sodium)"
+   ],
+   "Egg": [
+    "Egg Noodles (dry)"
+   ],
+   "Peanuts": [
+    "Peanut Butter (natural)",
+    "Roasted Peanuts (unsalted)"
+   ],
+   "Soya": [
+    "Soy Sauce (low sodium)"
+   ],
+   "Sesame": [
+    "Sesame Oil"
+   ]
+  }
+ },
+ "m108": {
+  "allergens": [
+   "Gluten",
+   "Sesame",
+   "Soya"
+  ],
+  "from": {
+   "Gluten": [
+    "Gochujang Paste",
+    "Soy Sauce (low sodium)"
+   ],
+   "Soya": [
+    "Gochujang Paste",
+    "Soy Sauce (low sodium)"
+   ],
+   "Sesame": [
+    "Sesame Oil",
+    "Sesame Seeds"
+   ]
+  }
+ },
+ "m109": {
+  "allergens": [
+   "Celery",
+   "Crustaceans",
+   "Egg",
+   "Fish",
+   "Gluten"
+  ],
+  "from": {
+   "Crustaceans": [
+    "Yellow Curry Paste"
+   ],
+   "Celery": [
+    "Chicken Bone Broth"
+   ],
+   "Fish": [
+    "Fish Sauce"
+   ],
+   "Egg": [
+    "Egg Whites (raw)"
+   ],
+   "Gluten": [
+    "Breadcrumbs (panko)"
+   ]
+  }
+ },
+ "m110": {
+  "allergens": [
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Pita Bread"
+   ],
+   "Milk": [
+    "Greek Yogurt (0% fat)"
+   ]
+  }
+ },
+ "m111": {
+  "allergens": [
+   "Egg",
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Pasta (dry, whole wheat)"
+   ],
+   "Milk": [
+    "Ricotta (part-skim)",
+    "Parmesan",
+    "Light Mozzarella"
+   ],
+   "Egg": [
+    "Egg Whites (raw)"
+   ]
+  }
+ },
+ "m112": {
+  "allergens": [
+   "Egg",
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Breadcrumbs (panko)"
+   ],
+   "Milk": [
+    "Parmesan",
+    "Light Mozzarella"
+   ],
+   "Egg": [
+    "Egg Whites (raw)"
+   ]
+  }
+ },
+ "m113": {
+  "allergens": [
+   "Gluten",
+   "Milk",
+   "Mustard"
+  ],
+  "from": {
+   "Gluten": [
+    "Sourdough Bread"
+   ],
+   "Milk": [
+    "Gruyere",
+    "Greek Yogurt (0% fat)"
+   ],
+   "Mustard": [
+    "Dijon Mustard"
+   ]
+  }
+ },
+ "m114": {
+  "allergens": [
+   "Gluten",
+   "Sesame",
+   "Soya"
+  ],
+  "from": {
+   "Gluten": [
+    "Soy Sauce (low sodium)"
+   ],
+   "Soya": [
+    "Soy Sauce (low sodium)"
+   ],
+   "Sesame": [
+    "Sesame Oil",
+    "Sesame Seeds"
+   ]
+  }
+ },
+ "m115": {
+  "allergens": [
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Pasta (dry, white)"
+   ],
+   "Milk": [
+    "Fat-free evaporated milk",
+    "Fat-Free Cream Cheese"
+   ]
+  }
+ },
+ "m116": {
+  "allergens": [
+   "Gluten",
+   "Milk",
+   "Mustard"
+  ],
+  "from": {
+   "Gluten": [
+    "Tortilla (flour, 25cm)"
+   ],
+   "Milk": [
+    "Light Mozzarella",
+    "Greek Yogurt (0% fat)"
+   ],
+   "Mustard": [
+    "Yellow Mustard"
+   ]
+  }
+ },
+ "m117": {
+  "allergens": [
+   "Celery",
+   "Sulphites"
+  ],
+  "from": {
+   "Sulphites": [
+    "Braising Beef (lean, raw)",
+    "Balsamic Vinegar"
+   ],
+   "Celery": [
+    "Beef Bone Broth"
+   ]
+  }
+ },
+ "m118": {
+  "allergens": [
+   "Milk"
+  ],
+  "from": {
+   "Milk": [
+    "Greek Yogurt (0% fat)",
+    "Feta Cheese"
+   ]
+  }
+ },
+ "m119": {
+  "allergens": [
+   "Milk",
+   "Mustard",
+   "Sesame"
+  ],
+  "from": {
+   "Milk": [
+    "Greek Yogurt (0% fat)"
+   ],
+   "Mustard": [
+    "Yellow Mustard"
+   ],
+   "Sesame": [
+    "Sesame Seeds"
+   ]
+  }
+ },
+ "m120": {
+  "allergens": [
+   "Fish",
+   "Milk"
+  ],
+  "from": {
+   "Fish": [
+    "Salmon (Atlantic, raw)"
+   ],
+   "Milk": [
+    "Fat-free evaporated milk",
+    "Greek Yogurt (0% fat)"
+   ]
+  }
+ },
+ "m121": {
+  "allergens": [],
+  "from": {}
+ },
+ "m122": {
+  "allergens": [
+   "Gluten",
+   "Milk"
+  ],
+  "from": {
+   "Gluten": [
+    "Pasta (dry, white)"
+   ],
+   "Milk": [
+    "Low-Fat Cottage Cheese (2%)",
+    "Milk (skim / 0%)",
+    "Parmesan"
+   ]
+  }
+ },
+ "m123": {
+  "allergens": [
+   "Celery",
+   "Milk"
+  ],
+  "from": {
+   "Celery": [
+    "Chicken Bone Broth"
+   ],
+   "Milk": [
+    "Greek Yogurt (0% fat)",
+    "Butter (unsalted)"
+   ]
+  }
+ },
+ "bf36": {
+  "allergens": [
+   "Egg",
+   "Milk"
+  ],
+  "from": {
+   "Egg": [
+    "Eggs (whole, large, raw)"
+   ],
+   "Milk": [
+    "Milk (skim / 0%)",
+    "Cheddar Cheese (reduced-fat)"
+   ]
+  }
+ },
+ "bf37": {
+  "allergens": [
+   "Egg",
+   "Milk"
+  ],
+  "from": {
+   "Egg": [
+    "Eggs (whole, large, raw)",
+    "Egg Whites (raw)"
+   ],
+   "Milk": [
+    "Cheddar Cheese (reduced-fat)"
+   ]
+  }
+ },
+ "bf38": {
+  "allergens": [
+   "Egg",
+   "Gluten",
+   "Milk",
+   "Sulphites",
+   "Tree nuts"
+  ],
+  "from": {
+   "Gluten": [
+    "Oats (rolled, dry)"
+   ],
+   "Milk": [
+    "Milk (skim / 0%)"
+   ],
+   "Egg": [
+    "Eggs (whole, large, raw)"
+   ],
+   "Tree nuts": [
+    "Walnuts"
+   ],
+   "Sulphites": [
+    "Raisins"
+   ]
+  }
+ },
+ "bf39": {
+  "allergens": [
+   "Gluten",
+   "Milk",
+   "Tree nuts"
+  ],
+  "from": {
+   "Milk": [
+    "Kefir (plain, low-fat)",
+    "Greek Yogurt (0% fat)"
+   ],
+   "Gluten": [
+    "Granola (low-sugar)"
+   ],
+   "Tree nuts": [
+    "Granola (low-sugar)"
+   ]
+  }
+ },
+ "ds7": {
+  "allergens": [
+   "Peanuts"
+  ],
+  "from": {
+   "Peanuts": [
+    "Peanut Butter (natural)",
+    "Roasted Peanuts (unsalted)"
+   ]
+  }
+ }
+}
