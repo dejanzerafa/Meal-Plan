@@ -9,6 +9,7 @@ uat_screenshots/
 screenshots/
 
 # Dev/review files
+admin.html
 recipe-review.html
 recipe-release.html
 generate-icons.html
