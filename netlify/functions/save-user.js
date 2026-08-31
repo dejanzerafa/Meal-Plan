@@ -60,7 +60,10 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { email, first_name, last_name, marketing_opt_in = true, skip_email = false, calc_used } = payload;
+  // Default FALSE. This used to default true here, in the schema, and be
+  // hard-coded true by the client — so every user was enrolled in marketing
+  // without ever being asked. Assumed consent is not consent.
+  const { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used } = payload;
 
   const _rl = await rateLimit(`saveuser_${(email || "").toLowerCase().trim()}_${clientIp(event)}`, { max: 5, windowMs: 60000 });
   if (email && !_rl.ok) {

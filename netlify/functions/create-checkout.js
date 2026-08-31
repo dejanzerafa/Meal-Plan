@@ -91,7 +91,8 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { priceId, tier, recipeId, email, userId } = payload;
+  const { priceId, tier, recipeId, userId } = payload;
+  let { email } = payload;
   if (!priceId || !tier) {
     return {
       statusCode: 400,
@@ -101,6 +102,9 @@ exports.handler = async (event) => {
   }
 
   // Validate email if provided (simple format check)
+  // Normalise before anything uses it. Raw email was used on grant, renewal AND
+  // cancellation, so "Dejan@Icloud.com" missed "dejan@icloud.com" at all three.
+  if (typeof email === "string") email = email.trim().toLowerCase();
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid email" }) };
   }
@@ -108,6 +112,38 @@ exports.handler = async (event) => {
   // ── Validate tier ─────────────────────────────────────────────────────────
   if (!KNOWN_TIERS.includes(tier)) {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid tier" }) };
+  }
+
+  // ── Bind tier TO the price being paid ─────────────────────────────────────
+  // `priceId` and `tier` arrive as two independent fields and used to be validated
+  // in isolation: priceId against a regex and an allowlist, tier against
+  // KNOWN_TIERS. Neither was checked against the other. Both then went into
+  // session.metadata, and stripe-webhook.js reads `tier` straight back out and
+  // writes it to profiles.tier.
+  //
+  // So posting the MONTHLY price id with tier:"annual" charged the monthly price
+  // and provisioned annual access — through a legitimate Stripe payment that
+  // reconciles cleanly in the dashboard, which is what made it hard to spot.
+  //
+  // The price is what the customer actually pays, so the price decides the tier.
+  // The client's `tier` is now only accepted when it agrees.
+  const PRICE_TIER = {};
+  if (process.env.STRIPE_PRICE_MONTHLY) PRICE_TIER[process.env.STRIPE_PRICE_MONTHLY.trim()] = "monthly";
+  if (process.env.STRIPE_PRICE_ANNUAL)  PRICE_TIER[process.env.STRIPE_PRICE_ANNUAL.trim()]  = "annual";
+  const derivedTier = PRICE_TIER[priceId] || null;
+  if (Object.keys(PRICE_TIER).length === 0) {
+    // Fail closed. Without the mapping we cannot prove the tier matches the price,
+    // and granting an unverified tier is worse than refusing the sale.
+    console.error("STRIPE_PRICE_MONTHLY / STRIPE_PRICE_ANNUAL not configured — refusing checkout");
+    return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Checkout is not configured. Please contact support." }) };
+  }
+  if (!derivedTier) {
+    console.warn(`Blocked checkout: priceId ${priceId} maps to no known tier`);
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid priceId" }) };
+  }
+  if (derivedTier !== tier) {
+    console.warn(`Blocked checkout: client asked for tier "${tier}" with the ${derivedTier} price`);
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Price and plan do not match" }) };
   }
 
   // ── Validate priceId format (must be price_<alphanumeric>) ────────────────
@@ -142,11 +178,17 @@ exports.handler = async (event) => {
       ...(email ? { customer_email: email } : {}),
       // Metadata flows through to webhook for unlock provisioning
       metadata: {
-        tier,
+        tier: derivedTier,
         recipeId: recipeId || "",
         priceId: priceId || "",
         userId: userId || "",   // Supabase user ID — lets webhook do direct profile lookup
       },
+      // Stripe does NOT copy session metadata onto the subscription object, so
+      // extendEntitlement's `sub.metadata.userId` lookup was always undefined and
+      // every renewal fell back to a case-sensitive email match. Set it here too.
+      ...(mode === "subscription" ? {
+        subscription_data: { metadata: { tier: derivedTier, userId: userId || "" } }
+      } : {}),
       // Capture customer email (Stripe will prompt for it on checkout)
       customer_creation: mode === "payment" ? "always" : undefined,
       // Do NOT specify payment_method_types — Stripe auto-includes Apple Pay, Google Pay, card

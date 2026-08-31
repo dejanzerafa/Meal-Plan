@@ -1,3 +1,17 @@
+-- ⚠️  SECURITY: this file previously contained the live CRON_SECRET in plain text,
+-- in four places, in a tracked file — and `publish = "."` in netlify.toml meant it
+-- was served at https://soulgainz.app/supabase/cron-jobs.sql to anyone who asked.
+-- Anyone could fetch it and then invoke birthday-emails, holiday-emails and
+-- renewal-reminder at will: mass mail from your domain, on demand, burning the
+-- Resend quota and the sending reputation.
+--
+-- REQUIRED ACTIONS, in order:
+--   1. Rotate CRON_SECRET in Supabase (Settings -> Edge Functions -> Secrets)
+--      and in Netlify env. The old value must be treated as compromised.
+--   2. supabase/ is now in .netlifyignore so this is no longer served.
+--   3. The old value REMAINS IN GIT HISTORY. Rotating is what actually fixes it;
+--      scrubbing history is optional and does not substitute for rotation.
+
 -- ============================================================
 -- SoulGainz — Supabase Cron Jobs
 -- Schedules the 3 Edge Functions that previously ran on Netlify.
@@ -41,7 +55,7 @@ SELECT cron.schedule(
   $$
   SELECT net.http_post(
     url     := 'https://rjreunvnsfjclpighogp.supabase.co/functions/v1/birthday-emails',
-    headers := '{"Content-Type": "application/json", "x-cron-secret": "7ebd7dfdd456b0413fd959ec4d5bc2b5ce94da083f9d49c68bd2888880d27a20"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "x-cron-secret": "REPLACE_WITH_CRON_SECRET_FROM_SUPABASE_VAULT"}'::jsonb,
     body    := '{}'::jsonb
   );
   $$
@@ -54,7 +68,7 @@ SELECT cron.schedule(
   $$
   SELECT net.http_post(
     url     := 'https://rjreunvnsfjclpighogp.supabase.co/functions/v1/holiday-emails',
-    headers := '{"Content-Type": "application/json", "x-cron-secret": "7ebd7dfdd456b0413fd959ec4d5bc2b5ce94da083f9d49c68bd2888880d27a20"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "x-cron-secret": "REPLACE_WITH_CRON_SECRET_FROM_SUPABASE_VAULT"}'::jsonb,
     body    := '{}'::jsonb
   );
   $$
@@ -67,7 +81,7 @@ SELECT cron.schedule(
   $$
   SELECT net.http_post(
     url     := 'https://rjreunvnsfjclpighogp.supabase.co/functions/v1/renewal-reminder',
-    headers := '{"Content-Type": "application/json", "x-cron-secret": "7ebd7dfdd456b0413fd959ec4d5bc2b5ce94da083f9d49c68bd2888880d27a20"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "x-cron-secret": "REPLACE_WITH_CRON_SECRET_FROM_SUPABASE_VAULT"}'::jsonb,
     body    := '{}'::jsonb
   );
   $$
@@ -79,7 +93,7 @@ SELECT jobname, schedule, active FROM cron.job ORDER BY jobname;
 -- ── To manually test a function immediately (optional) ───────────────────
 -- SELECT net.http_post(
 --   url     := 'https://rjreunvnsfjclpighogp.supabase.co/functions/v1/birthday-emails',
---   headers := '{"Content-Type": "application/json", "x-cron-secret": "7ebd7dfdd456b0413fd959ec4d5bc2b5ce94da083f9d49c68bd2888880d27a20"}'::jsonb,
+--   headers := '{"Content-Type": "application/json", "x-cron-secret": "REPLACE_WITH_CRON_SECRET_FROM_SUPABASE_VAULT"}'::jsonb,
 --   body    := '{}'::jsonb
 -- );
 

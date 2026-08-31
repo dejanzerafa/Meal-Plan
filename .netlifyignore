@@ -40,5 +40,17 @@ social/
 *.bak
 *.backup
 
-# Supabase local
-supabase/.temp/
+# Supabase — NEVER serve. cron-jobs.sql carried a live CRON_SECRET and the whole
+# directory was reachable at soulgainz.app/supabase/*.sql because publish = "."
+supabase/
+
+# Source, docs and tooling must not be served. The security-fix SQL and the audit
+# markdown were public: AUDIT_REPORT.md is a written inventory of this app's weak
+# points, which is exactly the document an attacker would want.
+*.md
+*.sql
+*.sh
+scripts/
+package.json
+package-lock.json
+.github/

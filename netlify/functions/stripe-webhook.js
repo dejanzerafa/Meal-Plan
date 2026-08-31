@@ -61,7 +61,10 @@ exports.handler = async (event) => {
         const session = stripeEvent.data.object;
         const tier = session.metadata?.tier || "unknown";
         const recipeId = session.metadata?.recipeId || null;
-        const email = session.customer_details?.email || session.customer_email;
+        // Normalise. This email is the join key for the grant here, for renewals in
+        // extendEntitlement, and for the downgrade on cancellation — a casing
+        // difference silently missed at all three.
+        const email = (session.customer_details?.email || session.customer_email || "").trim().toLowerCase() || null;
         const stripeCustomerId = session.customer;
         const amount = (session.amount_total || 0) / 100;
 
@@ -413,7 +416,7 @@ async function extendEntitlement(supabase, stripe, sub, periodEnd) {
   const authUserId = (sub.metadata && sub.metadata.userId) || null;
   try {
     const customer = await stripe.customers.retrieve(sub.customer);
-    email = customer && customer.email ? customer.email : null;
+    email = customer && customer.email ? customer.email.trim().toLowerCase() : null;
   } catch (e) {
     console.error("extendEntitlement: customer lookup failed", e);
   }

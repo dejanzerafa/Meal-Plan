@@ -1,0 +1,377 @@
+name: Guards
+
+# Every guard script in scripts/ was written because the repo actually shipped
+# the bug it catches — stale ingredient macros, a price on the app domain, a
+# 7-day refund promise against a 14-day Terms, duplicate recipe IDs, a dead
+# inline <script> on the pricing page. Until now they only ran when someone
+# remembered to run them. This makes them a gate.
+#
+# Fails the build on ANY guard failure. Every check runs even when an earlier
+# one fails (`if: ${{ !cancelled() }}`), so one push tells you everything that
+# is broken rather than only the first thing.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guards:
+    name: Guard scripts, syntax, undefined identifiers
+    runs-on: ubuntu-latest
+
+    env:
+      # smoke-test-pricing.mjs asserts the Stripe price IDs are in the expected
+      # mode. It defaults to "test". At launch, set a repository variable
+      # STRIPE_MODE=live (Settings → Secrets and variables → Actions →
+      # Variables) and this gate flips with it instead of going red.
+      STRIPE_MODE: ${{ vars.STRIPE_MODE || 'test' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # acorn and jsdom are both already declared in package.json, so the
+      # checks below add no new dependencies.
+      - name: Install dependencies
+        run: npm ci
+
+      # ── File lists ──────────────────────────────────────────────────────────
+      # Driven by `git ls-files` so a new page or function is covered the day it
+      # is added, with no list to keep in sync here.
+      #
+      # Excluded: node_modules and vendor (third-party, minified, not ours),
+      # _mobile (Capacitor build tree, not deployed) and files/ (an old
+      # prototype, excluded from the deploy by .netlifyignore).
+      - name: Build file lists
+        run: |
+          set -euo pipefail
+          git ls-files '*.html' \
+            | grep -vE '^(node_modules|_mobile|files|vendor)/' \
+            > "$RUNNER_TEMP/html.txt"
+          git ls-files '*.js' '*.mjs' \
+            | grep -vE '^(node_modules|_mobile|vendor)/|/vendor/' \
+            > "$RUNNER_TEMP/js.txt"
+          git ls-files 'netlify/functions/*.js' 'netlify/functions/**/*.js' \
+            > "$RUNNER_TEMP/functions.txt"
+          echo "HTML pages:       $(wc -l < "$RUNNER_TEMP/html.txt")"
+          echo "JS/MJS sources:   $(wc -l < "$RUNNER_TEMP/js.txt")"
+          echo "Netlify functions:$(wc -l < "$RUNNER_TEMP/functions.txt")"
+
+      # ── Helper scripts ──────────────────────────────────────────────────────
+      # Written into the checkout at run time rather than committed, so this
+      # workflow is the only file the repo has to carry. They land in .ci/,
+      # one level below the root, so `import * as acorn` resolves against the
+      # root node_modules that `npm ci` just populated.
+      - name: Write check helpers
+        run: |
+          set -euo pipefail
+          mkdir -p .ci
+
+          cat > .ci/inline-script-syntax.mjs <<'HELPER_EOF'
+          // Parse every inline <script> block in an HTML file.
+          //
+          // index.html is a ~1.2 MB single-file app: one stray bracket anywhere
+          // in it kills the entire block, and the symptom is "every button on
+          // the page is dead at once" rather than an error anyone notices in
+          // review. Nothing else in the toolchain parses this file.
+          import { readFileSync } from "node:fs";
+          import * as acorn from "acorn";
+
+          const files = process.argv.slice(2);
+          let failed = 0, checked = 0;
+
+          const RE = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+
+          for (const file of files) {
+            const html = readFileSync(file, "utf8");
+            RE.lastIndex = 0;
+            let m;
+            while ((m = RE.exec(html)) !== null) {
+              const attrs = m[1] || "";
+              const code  = m[2] || "";
+              if (/\bsrc\s*=/i.test(attrs)) continue;              // external script
+              const type = (attrs.match(/\btype\s*=\s*["']?([^"'\s>]+)/i) || [])[1];
+              if (type && !/^(text\/javascript|application\/javascript|module)$/i.test(type)) continue;
+              if (!code.trim()) continue;
+
+              const line = html.slice(0, m.index).split("\n").length;
+              checked++;
+              try {
+                acorn.parse(code, {
+                  ecmaVersion: "latest",
+                  sourceType: type === "module" ? "module" : "script",
+                });
+              } catch (err) {
+                failed++;
+                const at = err.loc ? ` (line ${err.loc.line}, col ${err.loc.column} of the block)` : "";
+                console.error(`FAIL  ${file}:${line}  inline <script> — ${err.message}${at}`);
+              }
+            }
+          }
+
+          console.log(`${failed ? "FAIL" : "PASS"}  inline script syntax — ${checked} block(s) checked, ${failed} failed`);
+          process.exit(failed ? 1 : 0);
+          HELPER_EOF
+
+          cat > .ci/undefined-calls.mjs <<'HELPER_EOF'
+          // Catches "a function is called but never defined".
+          //
+          // node --check cannot see this. It is a parser: it verifies the file
+          // is grammatical, and `missingHelper()` is perfectly grammatical.
+          // The failure is a runtime ReferenceError, which for this repo means
+          // production. It has happened twice — getSB() left behind in a stale
+          // closure when a function was hoisted out of its useEffect, which
+          // downgraded every paying subscriber to free; and a .catch() on a
+          // PromiseLike that had only .then().
+          //
+          // METHOD
+          //   • Collect every callee that is a bare Identifier   -> foo(), not a.foo().
+          //   • Collect every binding declared ANYWHERE in the file: function and
+          //     class declarations, var/let/const (including destructuring),
+          //     parameters, catch params, import specifiers, and the const on the
+          //     left of a require().
+          //   • Report anything called but neither declared nor a known global.
+          //
+          // For an HTML page, all inline blocks are pooled into one scope,
+          // because in the browser they share one — a helper defined in block 1
+          // is legitimately callable from block 5.
+          //
+          // LIMIT, deliberately chosen: declarations are pooled file-wide rather
+          // than resolved per scope. That gives up "declared in a sibling block
+          // scope" (which the code has to be reorganised to hit) in exchange for
+          // a near-zero false-positive rate on the failure that actually ships:
+          // calling a name that does not exist at all. A checker that cries wolf
+          // gets switched off, and a switched-off checker catches nothing.
+          import { readFileSync } from "node:fs";
+          import * as acorn from "acorn";
+
+          const GLOBALS = new Set([
+            ...Object.getOwnPropertyNames(globalThis),
+            "globalThis","undefined","NaN","Infinity","eval","arguments",
+            // Browser: core
+            "window","document","navigator","location","history","screen","console",
+            "alert","confirm","prompt","fetch","Headers","Request","Response","FormData",
+            "XMLHttpRequest","WebSocket","EventSource","Worker","SharedWorker",
+            "setTimeout","clearTimeout","setInterval","clearInterval",
+            "requestAnimationFrame","cancelAnimationFrame","requestIdleCallback",
+            "queueMicrotask","structuredClone","reportError",
+            "localStorage","sessionStorage","indexedDB","caches","crypto","performance",
+            "matchMedia","getComputedStyle","scrollTo","scrollBy","open","close","focus","blur",
+            "btoa","atob","encodeURI","decodeURI","encodeURIComponent","decodeURIComponent",
+            "postMessage","addEventListener","removeEventListener","dispatchEvent",
+            // Browser: constructors and types
+            "Event","CustomEvent","MessageEvent","ErrorEvent","PromiseRejectionEvent",
+            "Element","HTMLElement","Node","NodeList","DocumentFragment","Image","Audio",
+            "Blob","File","FileReader","URL","URLSearchParams","AbortController","AbortSignal",
+            "IntersectionObserver","MutationObserver","ResizeObserver","PerformanceObserver",
+            "Notification","PushManager","ServiceWorker","ServiceWorkerRegistration",
+            "Canvas","OffscreenCanvas","DOMParser","XMLSerializer","XPathResult","Range","Selection",
+            "DataTransfer","DragEvent","ClipboardEvent","KeyboardEvent","MouseEvent","PointerEvent",
+            "TouchEvent","InputEvent","FocusEvent","WheelEvent","SubmitEvent","StorageEvent",
+            "FormDataEvent","BeforeUnloadEvent","PopStateEvent","HashChangeEvent","CloseEvent",
+            "ReadableStream","WritableStream","TransformStream","MediaRecorder","AudioContext",
+            "TextEncoder","TextDecoder","CompressionStream","DecompressionStream",
+            "CSS","MediaQueryList","BroadcastChannel","Intl",
+            // Service worker scope (sw.js)
+            "self","clients","skipWaiting","registration","importScripts",
+            // Node / CommonJS (netlify/functions)
+            "require","module","exports","__dirname","__filename","process","Buffer",
+            "global","setImmediate","clearImmediate","URLPattern",
+            // Third-party globals loaded from <script src>
+            "React","ReactDOM","supabase","Stripe","Sentry","gtag","dataLayer",
+            "html2canvas","Chart","jspdf",
+          ]);
+
+          function walk(node, visit) {
+            if (!node || typeof node.type !== "string") return;
+            visit(node);
+            for (const key of Object.keys(node)) {
+              if (key === "type" || key === "loc" || key === "range" || key === "start" || key === "end") continue;
+              const v = node[key];
+              if (Array.isArray(v)) {
+                for (const c of v) if (c && typeof c.type === "string") walk(c, visit);
+              } else if (v && typeof v.type === "string") {
+                walk(v, visit);
+              }
+            }
+          }
+
+          function patternNames(pat, out) {
+            if (!pat) return;
+            switch (pat.type) {
+              case "Identifier":        out.add(pat.name); break;
+              case "ObjectPattern":     for (const p of pat.properties) patternNames(p.type === "RestElement" ? p.argument : p.value, out); break;
+              case "ArrayPattern":      for (const e of pat.elements) patternNames(e, out); break;
+              case "AssignmentPattern": patternNames(pat.left, out); break;
+              case "RestElement":       patternNames(pat.argument, out); break;
+            }
+          }
+
+          function analyse(sources) {
+            const declared = new Set();
+            const calls    = [];
+            const asts     = [];
+
+            for (const s of sources) {
+              try {
+                asts.push({
+                  ast: acorn.parse(s.code, { ecmaVersion: "latest", sourceType: s.sourceType, locations: true }),
+                  label: s.label,
+                  lineOffset: s.lineOffset || 0,
+                });
+              } catch {
+                // A syntax error is the other check's job to report, not this one's.
+              }
+            }
+
+            for (const { ast } of asts) {
+              walk(ast, (n) => {
+                switch (n.type) {
+                  case "FunctionDeclaration":
+                  case "ClassDeclaration":
+                  case "FunctionExpression":
+                  case "ClassExpression":
+                    if (n.id) declared.add(n.id.name);
+                    break;
+                  case "VariableDeclarator":
+                    patternNames(n.id, declared);
+                    break;
+                  case "CatchClause":
+                    patternNames(n.param, declared);
+                    break;
+                  case "ImportDefaultSpecifier":
+                  case "ImportNamespaceSpecifier":
+                  case "ImportSpecifier":
+                    declared.add(n.local.name);
+                    break;
+                }
+                if (n.params) for (const p of n.params) patternNames(p, declared);
+              });
+            }
+
+            for (const { ast, label, lineOffset } of asts) {
+              walk(ast, (n) => {
+                if ((n.type === "CallExpression" || n.type === "NewExpression") &&
+                    n.callee && n.callee.type === "Identifier") {
+                  calls.push({
+                    name: n.callee.name,
+                    line: (n.callee.loc ? n.callee.loc.start.line : 0) + lineOffset,
+                    label,
+                  });
+                }
+              });
+            }
+
+            const seen = new Set();
+            return calls.filter(c => {
+              if (declared.has(c.name) || GLOBALS.has(c.name)) return false;
+              const k = `${c.label}:${c.name}`;
+              if (seen.has(k)) return false;        // one report per name per file
+              seen.add(k);
+              return true;
+            });
+          }
+
+          const SCRIPT_RE = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+
+          function sourcesFor(file) {
+            const text = readFileSync(file, "utf8");
+            if (!/\.html?$/i.test(file)) {
+              const isModule = /\.mjs$/i.test(file) || /^\s*(import|export)\s/m.test(text);
+              return [{ label: file, code: text, sourceType: isModule ? "module" : "script", lineOffset: 0 }];
+            }
+            const out = [];
+            SCRIPT_RE.lastIndex = 0;
+            let m;
+            while ((m = SCRIPT_RE.exec(text)) !== null) {
+              const attrs = m[1] || "", code = m[2] || "";
+              if (/\bsrc\s*=/i.test(attrs)) continue;
+              const type = (attrs.match(/\btype\s*=\s*["']?([^"'\s>]+)/i) || [])[1];
+              if (type && !/^(text\/javascript|application\/javascript|module)$/i.test(type)) continue;
+              if (!code.trim()) continue;
+              const startLine = text.slice(0, m.index + m[0].indexOf(code)).split("\n").length;
+              out.push({ label: file, code, sourceType: type === "module" ? "module" : "script", lineOffset: startLine - 1 });
+            }
+            return out;
+          }
+
+          const files = process.argv.slice(2);
+          let total = 0;
+          for (const file of files) {
+            for (const p of analyse(sourcesFor(file))) {
+              console.error(`FAIL  ${p.label}:${p.line}  '${p.name}(...)' is called but never defined in this file`);
+              total++;
+            }
+          }
+          console.log(`${total ? "FAIL" : "PASS"}  undefined-identifier check — ${files.length} file(s), ${total} problem(s)`);
+          process.exit(total ? 1 : 0);
+          HELPER_EOF
+
+          echo "helpers written"
+
+      # ── Syntax ──────────────────────────────────────────────────────────────
+      - name: node --check every Netlify function
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            if node --check "$f"; then
+              echo "  ok    $f"
+            else
+              echo "FAIL  $f"
+              fail=1
+            fi
+          done < "$RUNNER_TEMP/functions.txt"
+          [ "$fail" -eq 0 ] || { echo "::error::One or more Netlify functions failed node --check"; exit 1; }
+          echo "PASS  node --check — all Netlify functions parse"
+
+      - name: Inline <script> syntax (index.html and every other page)
+        if: ${{ !cancelled() }}
+        run: xargs -a "$RUNNER_TEMP/html.txt" -d '\n' node .ci/inline-script-syntax.mjs
+
+      - name: Undefined identifiers (function called but never defined)
+        if: ${{ !cancelled() }}
+        run: cat "$RUNNER_TEMP/html.txt" "$RUNNER_TEMP/js.txt" | xargs -d '\n' node .ci/undefined-calls.mjs
+
+      # ── Guard scripts ───────────────────────────────────────────────────────
+      # One step each, so the job summary names the guard that failed instead of
+      # making you read a merged log.
+      - name: Guard — ingredient registry
+        if: ${{ !cancelled() }}
+        run: node scripts/check-ingredients.mjs
+
+      - name: Guard — copy consistency
+        if: ${{ !cancelled() }}
+        run: node scripts/check-copy-consistency.mjs
+
+      - name: Guard — legal consistency
+        if: ${{ !cancelled() }}
+        run: node scripts/check-legal-consistency.mjs
+
+      - name: Guard — recipe ID uniqueness
+        if: ${{ !cancelled() }}
+        run: node scripts/next-recipe-ids.mjs
+
+      - name: Guard — pricing page smoke test
+        if: ${{ !cancelled() }}
+        run: node scripts/smoke-test-pricing.mjs
+
+      - name: Clean up helpers
+        if: ${{ always() }}
+        run: rm -rf .ci

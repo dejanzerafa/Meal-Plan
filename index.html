@@ -11247,7 +11247,13 @@ function MacroCalculator({ C, onSave, initialProfile, canRecalc, setShowUpgrade 
         let a = n.getFullYear() - b.getFullYear();
         if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate()))
             a--;
-        return a >= 10 && a <= 120 ? a : null;
+        // 16, not 10. calcAge returning non-null is the ONLY condition for
+        // advancing past the onboarding age step, so this was the single thing
+        // standing between a child and a calorie-restriction prescription.
+        // privacy.html already states we do not knowingly collect data from
+        // under-16s; the code accepted 10, contradicting our own policy and,
+        // more to the point, the duty of care.
+        return a >= 16 && a <= 120 ? a : null;
     };
     const getWeightKg = () => {
         const w = parseFloat(form.weight);
@@ -11537,7 +11543,13 @@ function ManualMacroInput({ C, onSave, canRecalc, setShowUpgrade }) {
         if (isNaN(b.getTime())) return null;
         let a = n.getFullYear() - b.getFullYear();
         if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate())) a--;
-        return a >= 10 && a <= 120 ? a : null;
+        // 16, not 10. calcAge returning non-null is the ONLY condition for
+        // advancing past the onboarding age step, so this was the single thing
+        // standing between a child and a calorie-restriction prescription.
+        // privacy.html already states we do not knowingly collect data from
+        // under-16s; the code accepted 10, contradicting our own policy and,
+        // more to the point, the duty of care.
+        return a >= 16 && a <= 120 ? a : null;
     };
     const getWeightKg = () => {
         const w = parseFloat(weight);
@@ -11863,7 +11875,7 @@ function MeHeader({ C, tier: tierProp, via }) {
             safeSet("mp_acc_first_name", parts[0]||"");
             safeSet("mp_acc_last_name", parts.slice(1).join(" ")||"");
             await fetchT("/.netlify/functions/save-user", { method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email.trim().toLowerCase(), first_name: parts[0]||"", last_name: parts.slice(1).join(" ")||"", marketing_opt_in: true, skip_email: true }) }).catch(()=>{});
+                body: JSON.stringify({ email: email.trim().toLowerCase(), first_name: parts[0]||"", last_name: parts.slice(1).join(" ")||"", marketing_opt_in: false, skip_email: true /* never assume consent */ }) }).catch(()=>{});
         } catch(e) {}
         setSaved(true); setEditing(false); setSaving(false);
         // profile saved (onDone removed — no caller was passing it)
@@ -14628,6 +14640,19 @@ function App() {
     }, [currentUser]);
 
     function clearSessionState() {
+        // Drop the Supabase session token unconditionally.
+        //
+        // It normally goes away inside sb.auth.signOut(), but that call is wrapped
+        // in try/catch so a network failure cannot break sign-out. When that catch
+        // fires — offline, blocked, Supabase down — the UI showed "signed out"
+        // while a valid refresh token stayed in localStorage, and the next page
+        // load silently restored the session. On a shared or borrowed device that
+        // hands the account to whoever picks it up next.
+        try {
+            Object.keys(localStorage)
+                .filter(k => /^sb-.*-auth-token$/.test(k))
+                .forEach(k => localStorage.removeItem(k));
+        } catch (_) {}
         // Keys that hold user-generated content not synced to Supabase — preserve across sign-out
         // so users don't lose custom recipes, recipe notes, or step checks when logging out.
         const PRESERVE_PREFIXES = [
@@ -14645,6 +14670,8 @@ function App() {
             // Body stats (not security-sensitive, avoids blank ME tab while Supabase loads)
             "mp_basics",
             // Account name — restored by loadUserData but also preserved to avoid blank flash
+            // mp_acc_email deliberately NOT preserved — it left the previous
+            // user's address prefilled for the next person on a shared device.
             "mp_acc_name", "mp_acc_first_name", "mp_acc_last_name",
             // Pantry — user-generated, not synced to Supabase, permanent data loss if wiped
             "sg_pantry",

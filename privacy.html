@@ -96,13 +96,14 @@
         <tbody>
           <tr><td><strong>Account data</strong></td><td>First name, last name, email address</td><td>When you register</td></tr>
           <tr><td><strong>Date of birth</strong></td><td>Day, month, year</td><td>When you complete the macro calculator</td></tr>
-          <tr><td><strong>Body metrics</strong></td><td>Height, weight, activity level, goal (lose/maintain/gain)</td><td>When you use the macro calculator — stored locally on your device only</td></tr>
+          <tr><td><strong>Body metrics</strong></td><td>Height, weight, gender, activity level, goal (lose/maintain/gain), and the calorie and macronutrient targets calculated from them</td><td>When you use the macro calculator — stored on your device and in our Supabase database, so your plan follows you across devices</td></tr>
           <tr><td><strong>Payment data</strong></td><td>Plan type, payment status — no card numbers</td><td>When you purchase a plan (processed by Stripe)</td></tr>
-          <tr><td><strong>Usage data</strong></td><td>Recipes selected, meal prep dates, shopping sessions</td><td>While using the app — stored locally on your device</td></tr>
+          <tr><td><strong>Usage data</strong></td><td>Recipes selected, meal prep dates, shopping sessions, favourites, supplements you log</td><td>While using the app. Favourites, supplements and meal prep dates are also stored in our database; the rest stays on your device</td></tr>
           <tr><td><strong>Communication data</strong></td><td>Email address, message content</td><td>When you contact us via feedback form or email</td></tr>
         </tbody>
       </table>
-      <p>We do not collect your location, IP address logs, device fingerprints, or any data beyond what is listed above.</p>
+      <p>We use Google Analytics and Sentry (error monitoring) on our website and app. Both receive your IP address and the pages you visit. Google Fonts, which we use for typography, also receives your IP address when a page loads. We do not build advertising profiles and we do not sell your data.</p>
+      <p>We do not collect your precise location, and we do not fingerprint your device.</p>
     </section>
 
     <section id="how-used">
@@ -140,7 +141,7 @@
     <section id="storage">
       <h2>5. Data Storage &amp; Security</h2>
       <h3>Where your data is stored</h3>
-      <p>Account data (name, email, date of birth, payment status) is stored in our Supabase database, hosted on infrastructure in the United States (AWS). Your body metrics (height, weight, goal) and recipe selections are stored locally on your device in browser storage and are never sent to our servers.</p>
+      <p>Account data (name, email, date of birth, payment status) is stored in our Supabase database, hosted on infrastructure in the United States (AWS). Your body metrics (height, weight, gender, activity level, goal) and the calorie and macronutrient targets derived from them are stored both on your device and in our Supabase database, so your plan is available when you sign in on another device. Recipe selections, notes, pantry contents and custom recipes are stored only on your device and are not sent to our servers — which also means they are not recoverable if you reinstall.</p>
       <h3>How we protect your data</h3>
       <ul>
         <li>All data in transit is encrypted using HTTPS/TLS</li>

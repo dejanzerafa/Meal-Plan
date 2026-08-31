@@ -48,6 +48,40 @@ async function _checkIpRateLimit(ip) {
 }
 
 exports.handler = async (event) => {
+  // ── Require the caller to prove who they are ────────────────────────────────
+  // This returned first_name, last_name, email and subscription tier for ANY
+  // address, to anyone, with no authentication. The origin check below is
+  // `if (origin && ...)`, so any non-browser client simply omits the header and
+  // passes; the 5-per-2-minutes IP limit slows enumeration without stopping it.
+  // Net effect: name and paid-subscription status of any user, disclosed to
+  // anyone who knows or guesses their email.
+  //
+  // Restore is inherently a signed-in action — you are recovering entitlements
+  // onto a device where you have just authenticated — so a JWT costs the real
+  // user nothing and closes the oracle entirely.
+  {
+    const _auth = (event.headers && (event.headers.authorization || event.headers.Authorization)) || "";
+    if (!_auth.startsWith("Bearer ")) {
+      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Sign in to restore your account." }) };
+    }
+    try {
+      const _r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: { apikey: process.env.SUPABASE_ANON_KEY || "", Authorization: _auth },
+      });
+      if (!_r.ok) throw new Error("bad token");
+      const _u = await _r.json();
+      // Bind the lookup to the token. Even a valid user must not be able to ask
+      // about somebody else's address.
+      const _claimed = ((JSON.parse(event.body || "{}").email) || "").trim().toLowerCase();
+      const _actual  = (_u && _u.email ? _u.email : "").trim().toLowerCase();
+      if (!_actual || (_claimed && _claimed !== _actual)) {
+        return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "You can only restore your own account." }) };
+      }
+    } catch (_e) {
+      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Session expired. Sign in again." }) };
+    }
+  }
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
