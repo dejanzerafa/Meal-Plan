@@ -9094,7 +9094,7 @@ class AppErrorBoundary extends React.Component {
                 React.createElement('div', { style: { fontSize:16, fontWeight:700, marginBottom:8, color:'#f3ece0' } }, 'Something went wrong'),
                 React.createElement('div', { style: { fontSize:12, color:'#b84a1f', marginBottom:20, maxWidth:360, wordBreak:'break-word' } }, 'An unexpected error occurred. If this keeps happening, try clearing the cache below.'),
                 React.createElement('button', { onClick: function(){ window.location.reload(); }, style: { background:'#c0602a', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:14, fontWeight:700, cursor:'pointer', marginBottom:10 } }, 'Reload App'),
-                React.createElement('button', { onClick: function(){ try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {} window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
+                React.createElement('button', { onClick: function(){ try { Object.keys(localStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ localStorage.removeItem(k); }); } catch(_) {} try { Object.keys(sessionStorage).filter(function(k){ return k.startsWith('mp_') || k.startsWith('sg_'); }).forEach(function(k){ sessionStorage.removeItem(k); }); } catch(_) {} window.location.reload(); }, style: { background:'none', border:'1px solid #c0602a', color:'#c0602a', borderRadius:10, padding:'10px 24px', fontSize:12, cursor:'pointer' } }, 'Clear Cache & Reload')
             );
         }
         return this.props.children;
@@ -9946,6 +9946,14 @@ function resetLocalData() {
             .filter(k => k.startsWith("mp_") || k.startsWith("sg_"))
             .forEach(k => localStorage.removeItem(k));
     } catch (_) {}
+    // sessionStorage too. The dev unlock flag is written to BOTH, so clearing only
+    // localStorage left the authorisation alive for the rest of the session and a
+    // "reset to a brand new install" still landed you inside the dev picker.
+    try {
+        Object.keys(sessionStorage)
+            .filter(k => k.startsWith("mp_") || k.startsWith("sg_"))
+            .forEach(k => sessionStorage.removeItem(k));
+    } catch (_) {}
     window.location.reload();
 }
 function resetOnboardingOnly() {
@@ -9953,21 +9961,43 @@ function resetOnboardingOnly() {
     try { ["sg_onboarded","mp_onboarded","sg_skip_ts"].forEach(k => localStorage.removeItem(k)); } catch (_) {}
     window.location.reload();
 }
-// The override only counts if the PIN was entered IN THIS SESSION.
+// The dev override persists across app restarts, until explicitly cleared.
 //
-// Persisting the chosen tier to localStorage — needed so it survives the server
-// refresh — meant that `localStorage.mp_dev_override = "annual"` on its own
-// granted the full library with _serverVerified:true. One line in a console,
-// far cheaper than brute-forcing the PIN, and it defeated the whole
-// canTrustUnlocks model. Gating on a sessionStorage flag that only the PIN
-// handler writes restores the intent: the persisted value is a preference, the
-// session flag is the authorisation.
+// This flag used to live in sessionStorage, so it died the moment the app was
+// closed and the selected tier silently reverted to free on next launch — which
+// contradicted the picker's own promise, "Saved until you change it", and made
+// the tool useless for the thing it exists for: living in a tier for a while to
+// see what that user actually experiences.
+//
+// The earlier reasoning was that persisting authorisation meant someone could
+// set `localStorage.mp_dev_override = "annual"` by hand and unlock the library.
+// That is true, and it is also true of the sessionStorage version for anyone
+// willing to set two keys instead of one — no client-side gate survives someone
+// who reads the source. What settles it is that the recipes are ALREADY in the
+// bundle: every ingredient list, macro and method for every tier ships to every
+// anonymous visitor inside index.html. The paywall is presentational. So this
+// gate protects nothing that view-source does not already hand over, and paying
+// for it with a broken developer tool is a bad trade.
+//
+// What the PIN still does, and what actually matters: it stops a curious user
+// who taps the logo five times from wandering into tier simulation by accident.
+// Authorisation is checked at SET time. Two properties keep this safe:
+//   1. A dev tier is NEVER written to Supabase (see the picker's onClick note) —
+//      it cannot become a real, server-verified entitlement.
+//   2. Clearing it re-reads the real tier from the server immediately.
 const DEV_SESSION_KEY = "sg_dev_unlocked";
 function markDevSessionUnlocked() {
+    // localStorage, not sessionStorage: the whole point is that it survives a restart.
+    try { localStorage.setItem(DEV_SESSION_KEY, "1"); } catch (_) {}
     try { sessionStorage.setItem(DEV_SESSION_KEY, "1"); } catch (_) {}
 }
 function devSessionUnlocked() {
+    try { if (localStorage.getItem(DEV_SESSION_KEY) === "1") return true; } catch (_) {}
     try { return sessionStorage.getItem(DEV_SESSION_KEY) === "1"; } catch (_) { return false; }
+}
+function clearDevSessionUnlock() {
+    try { localStorage.removeItem(DEV_SESSION_KEY); } catch (_) {}
+    try { sessionStorage.removeItem(DEV_SESSION_KEY); } catch (_) {}
 }
 function getDevOverride() {
     if (!devSessionUnlocked()) return null;
@@ -14905,6 +14935,7 @@ function App() {
     };
     const clearDevTier = () => {
         setDevOverride(null);
+        clearDevSessionUnlock();
         // Re-read the real tier from the server so the UI corrects itself immediately.
         if (currentUser) loadUserData(currentUser.id, currentUser.email);
         else setUnlocks({ calculator: false, allRecipes: false, recipes: [], tier: null });
