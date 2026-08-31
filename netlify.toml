@@ -34,12 +34,47 @@
 
 # Custom redirects (PWA-friendly)
 
-# ── Security: block admin panel from public access ─────────────────────────
-# admin.html must come BEFORE the wildcard catch-all below.
+# ── Security: block admin panel and dev artefacts from public access ───────
+#
+# force = true is LOAD-BEARING. Netlify applies a redirect only when no static
+# file matches the path; without force, a rule pointing at an existing file does
+# NOTHING. Every rule in this block was previously unforced, so admin.html and
+# ~900 KB of stale app copies (baseline-v15.html, recipe-review.html) were
+# publicly served despite the rules that were supposed to block them. The
+# /pricing rules further down always had force = true, which is why those work.
+#
+# admin.html's own gate is a client-side sessionStorage boolean, so serving it
+# at all is the problem — the admin FUNCTIONS verify ADMIN_SECRET server-side,
+# but the panel should not be reachable.
 [[redirects]]
   from = "/admin.html"
   to = "/404.html"
   status = 404
+  force = true
+
+[[redirects]]
+  from = "/baseline-v15.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/recipe-review.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/recipe-release.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/generate-icons.html"
+  to = "/404.html"
+  status = 404
+  force = true
 
 # Root → landing page (SEO: bare domain shows marketing page, not app shell)
 [[redirects]]

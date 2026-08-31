@@ -75,7 +75,15 @@ exports.handler = async (event) => {
           .select()
           .single();
 
-        if (userErr) { console.error("User upsert error:", userErr); break; }
+        // Do NOT `break` here. `break` exits the switch and falls through to the
+        // 200 at the end of the handler, so Stripe records success and never
+        // retries — a transient Supabase failure would permanently lose the
+        // entitlement while the customer has already been charged. A 500 makes
+        // Stripe retry on its own schedule, which is exactly what this needs.
+        if (userErr) {
+          console.error("User upsert error:", userErr);
+          return { statusCode: 500, body: "user upsert failed" };
+        }
 
         // 2. Record the purchase — subscriptions only (monthly / annual)
         if (!["monthly", "annual"].includes(tier)) {
@@ -245,9 +253,33 @@ exports.handler = async (event) => {
       }
 
       // ── Subscription updated (status changes, renewal, cancellation scheduled) ─
+      // ── Renewal paid ────────────────────────────────────────────────────
+      // The canonical renewal signal. subscription.updated also extends (above),
+      // but this fires reliably on every successful recurring charge, including
+      // cases where the subscription object itself does not change shape.
+      case "invoice.payment_succeeded": {
+        const inv = stripeEvent.data.object;
+        if (!inv.subscription || inv.billing_reason === "subscription_create") break;
+        try {
+          const sub = await stripe.subscriptions.retrieve(inv.subscription);
+          const periodEnd = new Date(sub.current_period_end * 1000).toISOString();
+          await supabase.from("subscriptions")
+            .update({ status: sub.status, current_period_end: periodEnd, at_risk: false })
+            .eq("stripe_subscription_id", sub.id);
+          const ok = await extendEntitlement(supabase, stripe, sub, periodEnd);
+          if (!ok) return { statusCode: 500, body: "renewal entitlement write failed" };
+        } catch (e) {
+          console.error("invoice.payment_succeeded error:", e);
+          return { statusCode: 500, body: "renewal handling failed" };
+        }
+        break;
+      }
+
       case "customer.subscription.updated": {
         const sub = stripeEvent.data.object;
         const prevStatus = stripeEvent.data.previous_attributes?.status;
+
+        const newPeriodEnd = new Date(sub.current_period_end * 1000).toISOString();
 
         // Sync status + period to subscriptions table
         const { error: syncErr } = await supabase
@@ -255,10 +287,27 @@ exports.handler = async (event) => {
           .update({
             status: sub.status,
             cancel_at_period_end: sub.cancel_at_period_end,
-            current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            current_period_end: newPeriodEnd,
           })
           .eq("stripe_subscription_id", sub.id);
         if (syncErr) console.error("subscription.updated sync error:", syncErr);
+
+        // ── Extend the ENTITLEMENT, not just the bookkeeping row ──────────────
+        // profiles.tier_expires is what the app actually enforces (it treats an
+        // elapsed date as "expired -> free"). Before this, tier_expires was set
+        // once at checkout and never moved, so a paying monthly member was
+        // downgraded to free on day 31 while Stripe kept billing them.
+        //
+        // Renewals surface here as an active subscription whose current_period_end
+        // has moved forward, so extend whenever the sub is in a paying state.
+        if (sub.status === "active" || sub.status === "trialing") {
+          const extended = await extendEntitlement(supabase, stripe, sub, newPeriodEnd);
+          if (!extended) {
+            // Do not swallow it. A 500 makes Stripe retry, and a retry is far
+            // better than a customer silently losing access at the period end.
+            return { statusCode: 500, body: "entitlement extension failed" };
+          }
+        }
 
         // If subscription just became past_due, also update profiles to flag it
         // (access stays on during grace period / retries — Stripe handles the retry schedule)
@@ -344,6 +393,58 @@ exports.handler = async (event) => {
   }
 };
 
+// ── Extend a live subscriber's entitlement ───────────────────────────────────
+// profiles.tier_expires is the ONLY thing the app enforces — index.html treats an
+// elapsed date as "expired, treat as free". Before this existed, tier_expires was
+// written once at checkout and never moved, so a paying monthly member was
+// downgraded to free on day 31 while Stripe carried on billing them. Annual
+// members hit the same wall at month 12.
+//
+// Returns true ONLY when a row was actually written. PostgREST returns 200 with
+// zero rows when nothing matched, so without .select() a no-op reads as success —
+// the same trap that used to hide unmatched purchases in the checkout path.
+//
+// Deliberately does NOT write `tier`. The tier was set from checkout metadata and
+// is already correct on the row; re-deriving it from the price id on every renewal
+// would risk downgrading an annual member to monthly on a single mapping mistake.
+// A renewal only needs to move the expiry forward.
+async function extendEntitlement(supabase, stripe, sub, periodEnd) {
+  let email = null;
+  const authUserId = (sub.metadata && sub.metadata.userId) || null;
+  try {
+    const customer = await stripe.customers.retrieve(sub.customer);
+    email = customer && customer.email ? customer.email : null;
+  } catch (e) {
+    console.error("extendEntitlement: customer lookup failed", e);
+  }
+
+  const patch = { tier_expires: periodEnd, tier_via: "stripe" };
+
+  if (authUserId) {
+    const { data, error } = await supabase
+      .from("profiles").update(patch).eq("id", authUserId).select("id");
+    if (error) { console.error("extendEntitlement by id failed:", error); return false; }
+    if (data && data.length) {
+      console.log(`Entitlement extended to ${periodEnd} for ${authUserId}`);
+      return true;
+    }
+  }
+  if (email) {
+    const { data, error } = await supabase
+      .from("profiles").update(patch).eq("email", email).select("id");
+    if (error) { console.error("extendEntitlement by email failed:", error); return false; }
+    if (data && data.length) {
+      console.log(`Entitlement extended to ${periodEnd} for ${email}`);
+      return true;
+    }
+  }
+  console.error(
+    `RENEWAL UNMATCHED: sub ${sub.id} renewed to ${periodEnd} but no profiles row ` +
+    `matched (email=${email}, userId=${authUserId}). Manual grant required.`
+  );
+  return false;
+}
+
 // ── Downgrade user to free tier in Supabase profiles ─────────────────────────
 // Called when subscription.deleted fires. Finds the user's profile by email
 // and clears tier, all_recipes, calculator so the app reverts to free on next sign-in.
@@ -368,15 +469,21 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
 
   // Update profiles table — this is what the app reads on sign-in for tier verification
   // Only update columns that actually exist in the profiles schema (tier, tier_via, tier_label, tier_expires)
-  const { error } = await supabase
+  // `.select()` is load-bearing. PostgREST returns 200 with zero rows when nothing
+  // matched, so without it a downgrade that touched NOTHING was logged as
+  // "Profile downgraded to free" and the fallback below never ran — a cancelled
+  // subscriber kept paid access indefinitely. Treat zero rows as a miss.
+  const { data: rows, error } = await supabase
     .from("profiles")
     .update({ tier: null, tier_via: null, tier_label: null, tier_expires: null })
     // Only revoke what Stripe granted. Without this, cancelling a subscription
     // also wiped a promo or friend-code tier held by the same person.
     .eq("tier_via", "stripe")
-    .eq("email", email);
+    .eq("email", email)
+    .select("id");
 
-  if (error) {
+  if (error || !rows || rows.length === 0) {
+    if (!error) console.warn(`Downgrade by email matched 0 rows for ${email} — trying customer id`);
     console.error("Profile downgrade error for", email, error);
     // Fallback: look up profile by stripe_customer_id via users table
     try {

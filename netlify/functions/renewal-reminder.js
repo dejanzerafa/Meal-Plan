@@ -11,9 +11,33 @@
 //   RESEND_API_KEY, FROM_EMAIL
 //   APP_URL
 
+const { secretsMatch } = require("./_shared/auth");
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event) => {
+  // ── Auth gate ───────────────────────────────────────────────────────────────
+  // Runs on a Netlify schedule, but the endpoint is ALSO reachable over plain
+  // HTTP. Ungated, anyone could invoke it repeatedly to mail-bomb the entire user
+  // base from support@soulgainz.app — and birthday-emails additionally mints live
+  // Stripe promotion codes. Netlify's scheduler sets x-nf-event-trigger; every
+  // other caller must present ADMIN_SECRET.
+  {
+    const _h = event && event.headers ? event.headers : {};
+    const isScheduled = !!(_h["x-nf-event-trigger"] || _h["X-Nf-Event-Trigger"]);
+    if (!isScheduled) {
+      const adminSecret = process.env.ADMIN_SECRET;
+      let provided = null;
+      try {
+        const auth = _h.authorization || _h.Authorization || "";
+        provided = auth.startsWith("Bearer ") ? auth.slice(7)
+                 : (event && event.body ? (JSON.parse(event.body).secret || null) : null);
+      } catch (_) {}
+      if (!adminSecret || !secretsMatch(provided, adminSecret)) {
+        return { statusCode: 401, body: JSON.stringify({ error: "unauthorized" }) };
+      }
+    }
+  }
+
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const apiKey     = process.env.RESEND_API_KEY;

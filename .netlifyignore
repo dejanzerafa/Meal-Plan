@@ -10,6 +10,8 @@ screenshots/
 
 # Dev/review files
 recipe-review.html
+recipe-release.html
+generate-icons.html
 recipe-image-prompts.html
 recipe-image-prompts.csv
 baseline-v15.html

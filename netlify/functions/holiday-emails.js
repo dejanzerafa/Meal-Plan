@@ -18,6 +18,7 @@
 //   APP_URL              \u2014 https://soulgainz.app
 
 // \u2500\u2500 Fixed holidays (same date every year) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const { secretsMatch } = require("./_shared/auth");
 const FIXED_HOLIDAYS = {
   // Universal
   "01-01": { key: "new_year",          label: "New Year's Day",     faith: "universal" },
@@ -98,6 +99,29 @@ const YEAR_HOLIDAYS = {
 };
 
 exports.handler = async (event) => {
+  // ── Auth gate ───────────────────────────────────────────────────────────────
+  // Runs on a Netlify schedule, but the endpoint is ALSO reachable over plain
+  // HTTP. Ungated, anyone could invoke it repeatedly to mail-bomb the entire user
+  // base from support@soulgainz.app — and birthday-emails additionally mints live
+  // Stripe promotion codes. Netlify's scheduler sets x-nf-event-trigger; every
+  // other caller must present ADMIN_SECRET.
+  {
+    const _h = event && event.headers ? event.headers : {};
+    const isScheduled = !!(_h["x-nf-event-trigger"] || _h["X-Nf-Event-Trigger"]);
+    if (!isScheduled) {
+      const adminSecret = process.env.ADMIN_SECRET;
+      let provided = null;
+      try {
+        const auth = _h.authorization || _h.Authorization || "";
+        provided = auth.startsWith("Bearer ") ? auth.slice(7)
+                 : (event && event.body ? (JSON.parse(event.body).secret || null) : null);
+      } catch (_) {}
+      if (!adminSecret || !secretsMatch(provided, adminSecret)) {
+        return { statusCode: 401, body: JSON.stringify({ error: "unauthorized" }) };
+      }
+    }
+  }
+
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
   const resendKey   = process.env.RESEND_API_KEY;

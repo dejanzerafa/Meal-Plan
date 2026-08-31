@@ -750,12 +750,10 @@ const ING_FLAT = [
     { id: 347, name: "Egg Noodles (dry)", cat: "Grains & Carbs", kcal: 384, p: 14.2, c: 71.3, f: 4.4 },
     { id: 348, name: "Yellow Curry Paste", cat: "Condiments", kcal: 115, p: 2.5, c: 15, f: 5 },
     { id: 349, name: "Kefir (plain, low-fat)", cat: "Dairy & Eggs", kcal: 41, p: 3.3, c: 4.8, f: 1 },
-    { id: 350, name: "Ricotta (part-skim)", cat: "Dairy & Eggs", kcal: 138, p: 11.4, c: 5.1, f: 7.9 },
     { id: 351, name: "Gruyere", cat: "Dairy & Eggs", kcal: 413, p: 29.8, c: 0.4, f: 32.3 },
     { id: 352, name: "Rocket / Arugula", cat: "Vegetables", kcal: 25, p: 2.6, c: 3.7, f: 0.7 },
     { id: 353, name: "Horseradish (prepared)", cat: "Condiments", kcal: 48, p: 1.2, c: 11.3, f: 0.7 },
     { id: 354, name: "Shallot", cat: "Vegetables", kcal: 72, p: 2.5, c: 16.8, f: 0.1 },
-    { id: 355, name: "Cannellini Beans (canned, drained)", cat: "Legumes", kcal: 114, p: 7.4, c: 20.6, f: 0.4 },
     { id: 356, name: "Raisins", cat: "Fruits", kcal: 299, p: 3.1, c: 79.2, f: 0.5 },
     { id: 357, name: "Nutmeg (ground)", cat: "Herbs & Spices", kcal: 525, p: 5.8, c: 49.3, f: 36.3 },
     { id: 358, name: "Puffed Quinoa", cat: "Grains & Carbs", kcal: 380, p: 13, c: 70, f: 6 },
@@ -5982,10 +5980,10 @@ const PENDING_RECIPES = [
         subtitle: "Stovetop · 25 min",
         badge: "🔥 Quick", carb: "🍚 Jasmine Rice",
         portions: 1,
-        perPortion: { kcal: 590, protein: 56.1, carbs: 61.3, fat: 10.6 },
+        perPortion: { kcal: 638, protein: 44.2, carbs: 61.3, fat: 23.4 },
         allergens: ["Celery","Crustaceans","Egg","Fish","Gluten"],
         batchItems: [
-            { key: "m109_ground", label: "Ground chicken (99% lean, raw)", qty: 180, unit: "g", cat: "Protein", ingId: 287 },
+            { key: "m109_ground", label: "Ground chicken (lean, raw)", qty: 180, unit: "g", cat: "Protein", ingId: 3 },
             { key: "m109_garlic", label: "Garlic (minced)", qty: 5, unit: "g", cat: "Aromatics", ingId: 108 },
             { key: "m109_ginger", label: "Ginger (fresh, grated)", qty: 5, unit: "g", cat: "Aromatics", ingId: 228 },
             { key: "m109_yellow", label: "Yellow curry paste", qty: 18, unit: "g", cat: "Sauces", ingId: 348 },
@@ -6043,12 +6041,12 @@ const PENDING_RECIPES = [
         subtitle: "Oven · 40 min",
         badge: "🔥 Batch Prep", carb: "🍝 Lasagne",
         portions: 1,
-        perPortion: { kcal: 610, protein: 61.1, carbs: 56.3, fat: 16 },
+        perPortion: { kcal: 610, protein: 60.4, carbs: 56.8, fat: 16 },
         allergens: ["Egg","Gluten","Milk"],
         batchItems: [
             { key: "m111_wholew", label: "Wholewheat lasagne sheets", qty: 60, unit: "g", cat: "Carbs", ingId: 67 },
             { key: "m111_chicke", label: "Chicken breast (cooked, finely chopped)", qty: 100, unit: "g", cat: "Protein", ingId: 345 },
-            { key: "m111_ricott", label: "Ricotta (part-skim)", qty: 50, unit: "g", cat: "Dairy", ingId: 350 },
+            { key: "m111_ricott", label: "Ricotta (part-skim)", qty: 50, unit: "g", cat: "Dairy", ingId: 52 },
             { key: "m111_baby", label: "Baby spinach (cooked & squeezed dry)", qty: 60, unit: "g", cat: "Vegetables", ingId: 121 },
             { key: "m111_egg", label: "Egg white", qty: 20, unit: "g", cat: "Protein", ingId: 41 },
             { key: "m111_parmes", label: "Parmesan (grated)", qty: 10, unit: "g", cat: "Dairy", ingId: 46 },
@@ -6337,14 +6335,14 @@ const PENDING_RECIPES = [
         subtitle: "Oven + Stovetop · 35 min",
         badge: "🍲 Slow Cook", carb: "🍠 Sweet Potato",
         portions: 1,
-        perPortion: { kcal: 614, protein: 48.9, carbs: 80.7, fat: 11.4 },
+        perPortion: { kcal: 638, protein: 51.3, carbs: 85.8, fat: 11.5 },
         allergens: [],
         batchItems: [
             { key: "m121_chicke", label: "Chicken breast (raw, shredded)", qty: 130, unit: "g", cat: "Protein", ingId: 1 },
             { key: "m121_sweet", label: "Sweet potato (raw, diced)", qty: 150, unit: "g", cat: "Carbs", ingId: 68 },
             { key: "m121_caulif", label: "Cauliflower (florets)", qty: 150, unit: "g", cat: "Vegetables", ingId: 116 },
             { key: "m121_onion", label: "Onion (chopped)", qty: 70, unit: "g", cat: "Vegetables", ingId: 106 },
-            { key: "m121_cannel", label: "Cannellini beans (canned, drained)", qty: 150, unit: "g", cat: "Legumes", ingId: 355 },
+            { key: "m121_cannel", label: "Cannellini beans (canned, drained)", qty: 150, unit: "g", cat: "Legumes", ingId: 297 },
             { key: "m121_vegeta", label: "Vegetable broth", qty: 350, unit: "ml", cat: "Liquids", ingId: 279 },
             { key: "m121_cumin", label: "Cumin (ground)", qty: 2, unit: "g", cat: "Spices", ingId: 222 },
             { key: "m121_smoked", label: "Smoked paprika", qty: 2, unit: "g", cat: "Spices", ingId: 238 },
@@ -8404,7 +8402,7 @@ const INGREDIENT_MACROS = {
     "m108_jasmin": { kcal: 365, p: 7.1, c: 80, f: 0.7 },
     "m108_spring": { kcal: 32, p: 1.8, c: 7.3, f: 0.2 },
     "m108_sesame2": { kcal: 573, p: 17.7, c: 23.5, f: 49.7 },
-    "m109_ground": { kcal: 116, p: 24, c: 0, f: 1 },
+    "m109_ground": { kcal: 143, p: 17.4, c: 0, f: 8.1 },
     "m109_garlic": { kcal: 149, p: 6.4, c: 33, f: 0.5 },
     "m109_ginger": { kcal: 80, p: 1.8, c: 18, f: 0.8 },
     "m109_yellow": { kcal: 115, p: 2.5, c: 15, f: 5 },
@@ -8428,7 +8426,7 @@ const INGREDIENT_MACROS = {
     "m110_parsle": { kcal: 36, p: 3, c: 6.3, f: 0.8 },
     "m111_wholew": { kcal: 348, p: 14, c: 68, f: 2.5 },
     "m111_chicke": { kcal: 165, p: 31, c: 0, f: 3.6 },
-    "m111_ricott": { kcal: 138, p: 11.4, c: 5.1, f: 7.9 },
+    "m111_ricott": { kcal: 138, p: 10, c: 6, f: 8 },
     "m111_baby": { kcal: 23, p: 2.9, c: 3.6, f: 0.4 },
     "m111_egg": { kcal: 52, p: 11, c: 0.7, f: 0.2 },
     "m111_parmes": { kcal: 431, p: 38, c: 3.2, f: 29 },
@@ -8530,7 +8528,7 @@ const INGREDIENT_MACROS = {
     "m121_sweet": { kcal: 86, p: 1.6, c: 20, f: 0.1 },
     "m121_caulif": { kcal: 25, p: 1.9, c: 5, f: 0.3 },
     "m121_onion": { kcal: 40, p: 1.1, c: 9.3, f: 0.1 },
-    "m121_cannel": { kcal: 114, p: 7.4, c: 20.6, f: 0.4 },
+    "m121_cannel": { kcal: 130, p: 9, c: 24, f: 0.5 },
     "m121_vegeta": { kcal: 7, p: 0.5, c: 1, f: 0 },
     "m121_cumin": { kcal: 375, p: 17.8, c: 44, f: 22 },
     "m121_smoked": { kcal: 282, p: 14.1, c: 54, f: 13 },
@@ -8988,7 +8986,7 @@ function TotalBar({ total, targets, profileName }) {
 //
 // EXCLUSIONS run first and win. Order matters.
 const ALLERGEN_MAP = [
-    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","macaroni","spaghetti","penne","fusilli","linguine","orzo","farfalle","rigatoni","lasagne","lasagna","tortilla","bagel","brioche","bun","roll","ciabatta","focaccia","naan","pita","bao","croissant","muffin","crumpet","soy sauce","worcestershire","wheat","barley","malt","rye","spelt","semolina","oat","granola","muesli","cornflake","corn flake","cereal","cracker","pancake mix","baking mix","batter mix","breadcrumb","panko","wrap","noodle","couscous","bulgur","seitan","pastry","biscuit","cookie","crouton","stock cube","bouillon"],
+    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","macaroni","spaghetti","penne","fusilli","linguine","orzo","farfalle","rigatoni","lasagne","lasagna","tortilla","bagel","brioche","bun","roll","ciabatta","focaccia","naan","pita","bao","croissant","muffin","crumpet","soy sauce","worcestershire","wheat","barley","malt","rye","spelt","semolina","oat","granola","muesli","cornflake","corn flake","cereal","cracker","pancake mix","baking mix","batter mix","breadcrumb","panko","wrap","noodle","couscous","bulgur","seitan","pastry","biscuit","cookie","crouton","stock cube","bouillon","gnocchi","ravioli","tortellini","gyoza","dumpling","tagliatelle","farro","freekeh","gochujang"],
       not: ["coconut flour","almond flour","chickpea flour","rice flour","buckwheat","rice cake","gluten-free","gluten free","corn tortilla","tamari"] },
     { name: "Dairy",          icon: "🧀", terms: ["cheese","milk","butter","cream","yogurt","yoghurt","whey","casein","cheddar","parmesan","parmigiano","mozzarella","ricotta","feta","halloumi","mascarpone","ghee","lactose","custard","brioche"],
       not: ["peanut butter","almond butter","cashew butter","nut butter","coconut milk","almond milk","oat milk","soy milk","soya milk","rice milk","coconut cream","cocoa butter","shea butter","buttermilk substitute","butternut","butter bean","butterhead"] },
@@ -9362,10 +9360,19 @@ function CopyListButton({ generateText, C }) {
     return React.createElement("button", {
         onClick: function() {
             var txt = generateText();
-            navigator.clipboard.writeText(txt).then(function() {
+            // .catch is not optional here. An unhandled rejection reaches
+            // window.onunhandledrejection -> showOnScreenError, which wipes #root
+            // and offers a "clear all data" button. Clipboard writes reject on
+            // denied permission, insecure context and inside some iOS webviews.
+            const _done = function () {
                 setCopied(true);
                 setTimeout(function() { setCopied(false); }, 2200);
-            });
+            };
+            try {
+                const _p = navigator.clipboard && navigator.clipboard.writeText(txt);
+                if (_p && _p.then) _p.then(_done).catch(function () { _fallbackCopy(txt, _done); });
+                else _fallbackCopy(txt, _done);
+            } catch (_e) { _fallbackCopy(txt, _done); }
         },
         style: { padding: "7px 14px", background: copied ? C.accentDim : "none",
             border: "1px solid " + (copied ? C.accent : C.dim), borderRadius: 8,
@@ -9859,6 +9866,26 @@ function withTimeout(promise, ms, label) {
 // reachable — and an unguarded write inside a render or a state updater takes
 // the whole app down to the error boundary, where the only escape button wipes
 // the user's custom recipes. Never call setItem directly.
+
+// Clipboard fallback for contexts where navigator.clipboard is unavailable or
+// rejects: insecure origin, denied permission, some iOS webviews. Without this
+// the rejection reaches window.onunhandledrejection, which replaces the whole
+// app with an error screen offering to clear localStorage.
+function _fallbackCopy(text, onDone) {
+    try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok && typeof onDone === "function") onDone();
+    } catch (_e) { /* copying is a convenience; never let it break the app */ }
+}
+
 function safeSet(key, value) {
     try {
         localStorage.setItem(key, value);
@@ -13691,12 +13718,17 @@ function PrepItFlow({ C, lunch, dinner, breakfastRecipe, preRecipe, dessert, all
 
     function setReminder() {
         if (!("Notification" in window)) { setReminderSet(true); return; }
-        Notification.requestPermission().then(function(perm) {
-            if (perm==="granted") {
-                try { safeSet("mp_prep_reminder", reminderTime); } catch(e){}
-                setReminderSet(true);
+        // Safari's older callback form returns undefined, so `.then` would throw
+        // synchronously into window.onerror and trigger the full-screen error page.
+        try {
+            const _p = Notification.requestPermission();
+            if (_p && _p.then) {
+                _p.then(function (perm) {
+                    if (perm === "granted") { try { safeSet("mp_prep_reminder", reminderTime); } catch (e) {} }
+                    setReminderSet(true);
+                }).catch(function () { setReminderSet(true); });
             } else { setReminderSet(true); }
-        });
+        } catch (_e) { setReminderSet(true); }
     }
 
     const stepDots = React.createElement("div", { style:{display:"flex",gap:6,justifyContent:"center",marginBottom:20} },
@@ -13845,6 +13877,8 @@ function EmptySlotCard({ slot, targets, C: colors, onAssign, onRestore }) {
 function App() {
     // ── Supabase auth state ────────────────────────────────────────────────
     const [currentUser, setCurrentUser] = React.useState(null);
+    // Mirrors currentUser for closures created at render 0 (see setUnlocks).
+    React.useEffect(() => { currentUserRef.current = currentUser; }, [currentUser]);
     const [authReady,   setAuthReady]   = React.useState(false);
     // Used below to prevent login-screen flash while session is being resolved
 
@@ -14375,7 +14409,7 @@ function App() {
                             // Mark as server-verified — this flag is never persisted to localStorage.
                             // canView uses this to prevent localStorage spoofing for authenticated users.
                             _serverVerified: true };
-                        setUnlocks(unlockData);
+                        setUnlocks(unlockData, userId);
                         // The upgrade we were waiting for has landed — stop the poller
                         // rather than burning the remaining 30 ticks (4 Supabase round
                         // trips each) after a successful purchase.
@@ -14384,12 +14418,12 @@ function App() {
                         // Row exists but tier is null/free — explicitly clear all paid fields.
                         // Do NOT spread prev state: a previously-paid user who cancelled would
                         // otherwise retain their old tier/allRecipes values in React state.
-                        setUnlocksState({ calculator: true, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true });
+                        setUnlocks({ calculator: true, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true }, userId);
                     }
                 } else {
                     // No profile row yet — create stub with all available local data
                     if (_devTier) _applyDev();
-                    else setUnlocksState(prev => ({ ...prev, tier: null, allRecipes: false, calculator: true, _serverVerified: true }));
+                    else setUnlocks({ calculator: true, allRecipes: false, recipes: [], tier: null, via: null, label: null, expires: null, _serverVerified: true }, userId);
                     try {
                         const _fn = localStorage.getItem("mp_acc_first_name") || null;
                         const _ln = localStorage.getItem("mp_acc_last_name")  || null;
@@ -14765,7 +14799,19 @@ function App() {
         catch (e) { }
         return { calculator: false, allRecipes: false, recipes: [], tier: null, _serverVerified: false };
     });
-    const setUnlocks = (next) => {
+    // currentUser lives in state, but setUnlocks is called from closures created at
+    // render 0 — loadUserData is useCallback(fn, []) and the promo listener is
+    // useEffect(fn, []). Reading `currentUser` directly from those closures always
+    // returned null, so the verification stamp below was NEVER written on the server
+    // path, which is the only path a real subscriber takes. That silently made the
+    // entire 30-day offline grace dead code: a paying member who opened the app
+    // offline saw the whole library locked with no explanation.
+    //
+    // The ref is always current regardless of which closure calls us. forUserId is
+    // an explicit override for the one case the ref cannot cover: loadUserData runs
+    // immediately on sign-in, before the effect that syncs the ref has committed.
+    const currentUserRef = React.useRef(null);
+    const setUnlocks = (next, forUserId) => {
         setUnlocksState(next);
         try {
             // Strip _serverVerified before persisting — it must always be earned from the server,
@@ -14776,9 +14822,10 @@ function App() {
             // subscriber out of everything they bought. Not a security hole: it is
             // only trusted for GRACE_MS, only for the same signed-in user id, and any
             // successful server read overwrites it.
-            if (_sv && currentUser && currentUser.id) {
+            const _uid = forUserId || (currentUserRef.current && currentUserRef.current.id);
+            if (_sv && _uid) {
                 toStore._verifiedAt = Date.now();
-                toStore._verifiedFor = currentUser.id;
+                toStore._verifiedFor = _uid;
             }
             safeSet("mp_unlocks", JSON.stringify(toStore));
         }
