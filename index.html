@@ -10362,7 +10362,7 @@ function OnboardingModal({ onClose }) {
         {
             icon: "🛒",
             title: "Generate your list",
-            body: "Once your recipes are set, the Shop tab builds your full grocery list automatically, scaled to your batch size (3, 5 or 7 days). Available on any paid plan.",
+            body: "Once your recipes are set, the Shop tab builds your full grocery list automatically, scaled to your batch size (3, 5 or 7 days).",
             action: null,
         },
         {
@@ -12377,7 +12377,7 @@ function OnboardingStory({ onNext }) {
     const steps = [
         { n: "01", icon: "📊", title: "Calculate your macros", desc: "Protein, carbs and fat targets tailored to your body and goals." },
         { n: "02", icon: "🍳", title: "Pick your recipes", desc: "160+ high-protein, real-food recipes. Max 10 ingredients each." },
-        { n: "03", icon: "🛒", title: "Shop once", desc: "Auto-generated grocery list scaled to your batch size. Included with any paid plan." },
+        { n: "03", icon: "🛒", title: "Shop once", desc: "Auto-generated grocery list scaled to your batch size." },
         { n: "04", icon: "🔥", title: "Cook once. Eat all week.", desc: "One prep session covers every meal. No daily cooking." },
     ];
     const slide1 = React.createElement("div", { style: Object.assign({}, fade, { display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 420 }) },
@@ -13709,6 +13709,8 @@ function EmptySlotCard({ slot, targets, C: colors, onAssign, onRestore }) {
 function App() {
     // ── Supabase auth state ────────────────────────────────────────────────
     const [currentUser, setCurrentUser] = React.useState(null);
+    const [_restoreBusy, _setRestoreBusy] = React.useState(false);
+    const [_restoreMsg, _setRestoreMsg]   = React.useState(null);
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -15337,25 +15339,53 @@ function App() {
                         ? React.createElement(MealCard, { meal: desr, macros: DS, slot: "dessert", profileScale: profileScale, portions: portions, onSkip: () => setDessert(null), onSwap: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } })
                         : React.createElement(EmptySlotCard, { slot: "dessert", targets: effectiveTargets, C: C, onAssign: () => { setPendingSlot("dessert"); setRecipeCat("dessert"); setRecipeQuery(""); setTab("recipes"); } }),
                     React.createElement(MacroBalancer, { allSet: !!(lr || dr || bfr || prer || desr), total: total, targets: effectiveTargets, L: L, D: D, BF: BF, PRE_M: PRE_M, DS: DS, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, showBalance: showBalance, setShowBalance: setShowBalance, setLunchScale: setLunchScale, setDinnerScale: setDinnerScale, setBfScale: setBfScale, setPreScale: setPreScale, setDesScale: setDesScale, bfActive: !breakfastSkipped, preActive: !preSkipped, desActive: !!desr, setBreakfastSkipped: setBreakfastSkipped, setPreSkipped: setPreSkipped, setDessert: setDessert, profileScale: profileScale })),
-                tab === "shopping" && React.createElement("div", { className: "tab-anim", key: "shop" },
-                !(unlocks.allRecipes || (unlocks.recipes && unlocks.recipes.length > 0)) ? React.createElement("div", { style: { padding: "32px 20px" } },
+                tab === "shopping" && (() => {
+                // ── Free tier gets the shopping list, for the recipes they can see ──
+                //
+                // It used to be paywalled outright, which broke the journey the app
+                // itself teaches: set macros -> pick recipes -> shop. A free user
+                // followed all three steps and the last one was a wall. Onboarding,
+                // the getting-started guide and the landing FAQ all promised it.
+                //
+                // The risk is not a free user choosing a paid recipe — canView stops
+                // that at selection. It is a LAPSED subscriber, whose slots still
+                // hold paid recipes in localStorage: rendering their list would leak
+                // full ingredient lists for recipes they no longer pay for.
+                //
+                // So filter per recipe rather than gating the tab. Each slot passes
+                // through canView, and anything withheld is named rather than
+                // silently dropped — a list that quietly omits your dinner is worse
+                // than one that tells you why.
+                const _v = r => (r && canView(r.id)) ? r : null;
+                const _lr = _v(lr), _dr = _v(dr), _bfr = _v(bfr), _desr = _v(desr), _prer = _v(prer);
+                const _hidden = [[lr,_lr,"lunch"],[dr,_dr,"dinner"],[bfr,_bfr,"breakfast"],
+                                 [desr,_desr,"dessert"],[prer,_prer,"pre-workout"]]
+                    .filter(([a,b]) => a && !b).map(([a,b,slot]) => slot);
+                return React.createElement("div", { className: "tab-anim", key: "shop" },
+                _hidden.length ? React.createElement("div", { style: { margin: "12px 16px 0", padding: "12px 14px", background: C.accentDim, border: "1px solid " + C.accentBorder, borderRadius: 12, fontSize: 12, color: C.text, lineHeight: 1.5 } },
+                    React.createElement("strong", null, "Your " + _hidden.join(" and ") + " " + (_hidden.length > 1 ? "are" : "is") + " not on your plan"),
+                    ", so " + (_hidden.length > 1 ? "they are" : "it is") + " left off this list. Everything else is below.") : null,
+                (!_lr && !_dr && !_bfr && !_desr && !_prer) ? React.createElement("div", { style: { padding: "32px 20px" } },
                     React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } },
                         React.createElement("div", { style: { fontSize: 44, marginBottom: 10 } }, "\uD83D\uDED2"),
-                        React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Shopping List is a paid feature"),
-                        React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Unlock a personalised grocery list — scaled to your portions, sorted by category, and ready to share.")),
+                        React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 8 } }, "Nothing to shop for yet"),
+                        React.createElement("div", { style: { fontSize: 13, color: C.sub, lineHeight: 1.6, marginBottom: 20 } }, "Pick a lunch and dinner in the Today tab and your grocery list builds itself \u2014 scaled to your portions and sorted by aisle.")),
                     React.createElement("div", { style: { background: C.accentDim, border: "1.5px solid " + C.accentBorder, borderRadius: 14, padding: "16px", marginBottom: 12 } },
-                        React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 8 } }, "WHAT YOU GET WITH ANY PAID PLAN"),
+                        React.createElement("div", { style: { fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 8 } }, "WHAT THE LIST DOES"),
                         [["\u2713", "Smart grocery list scaled to your portions"], ["\u2713", "Sorted by aisle — fridge, pantry, produce"], ["\u2713", "WhatsApp share + clipboard copy"], ["\u2713", "Pantry mode — hide what you already have"]].map(function(item) {
                             return React.createElement("div", { key: item[1], style: { display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 6, fontSize: 12, color: C.text } },
                                 React.createElement("span", { style: { color: C.green, fontWeight: 700, flexShrink: 0 } }, item[0]),
                                 React.createElement("span", null, item[1]));
                         })),
-                    React.createElement("button", { onClick: function() { setShowUpgrade(true); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "14px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em" } }, "Unlock Shopping List \u2192")) :
-                (!lr || !dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
+                    React.createElement("button", { onClick: function() { setTab("recipes"); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "14px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer", letterSpacing: "0.02em" } }, "Browse Recipes \u2192")) :
+                (!_lr || !_dr) ? (React.createElement("div", { style: { textAlign: "center", padding: "60px 20px", color: C.sub } },
                     React.createElement("div", { style: { fontSize: 32, marginBottom: 12 } }, "\uD83D\uDED2"),
                     React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 } }, "Select your recipes first"),
                     React.createElement("div", { style: { fontSize: 13 } }, "Choose a lunch and dinner recipe in the Today tab to generate your shopping list."))) :
-                (React.createElement(ShoppingList, { lr: lr, dr: dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: bfr, desr: desr, prer: prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale, pantry: pantry }))),
+                // FILTERED recipes, not the raw ones — this is what keeps a lapsed
+                // subscriber's paid recipes out of the list.
+                (React.createElement(ShoppingList, { lr: _lr, dr: _dr, portions: portions, setPortions: setPortions, targets: effectiveTargets, profileName: profileName, bfr: _bfr, desr: _desr, prer: _prer, preSkipped: preSkipped, bfSkipped: breakfastSkipped, lunchScale: lunchScale, dinnerScale: dinnerScale, profileScale: profileScale, effectiveTargets: effectiveTargets, bfScale: bfScale, preScale: preScale, desScale: desScale, pantry: pantry })));
+                })(),
                 
                     tab === "log" && React.createElement(ComplianceLog, { C: C, logs: calLogs, onLogsChange: setCalLogs }),
                     tab === "supplements" && React.createElement(SupplementsTab, {
@@ -15644,6 +15674,67 @@ function App() {
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Manage Account"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Plan, billing details or cancel · opens in your browser")),
                             React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→"))),
+                    // ── Restore purchase ───────────────────────────────────────────────
+                    // Shown to anyone signed in WITHOUT a paid tier. That is exactly the
+                    // population who might have paid and not received it.
+                    //
+                    // restore-account.js was fully implemented — subscription lookup,
+                    // rate limiting, unlock shaping — and had ZERO callers. track-event
+                    // even whitelists restore_account_click/success events that nothing
+                    // could emit. Every stuck-purchase path (webhook failure, email
+                    // mismatch, a second account created on the pricing page) had no
+                    // in-app recovery: the only route was the feedback form, which
+                    // returns "Got it - thank you!" even when the send fails.
+                    //
+                    // Not "Restore purchase" as a payment CTA — it re-checks an
+                    // entitlement the customer already bought, which is account admin,
+                    // and it shows no prices.
+                    currentUser && !["monthly","annual","dev"].includes(unlocks && unlocks.tier)
+                      && React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
+                        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
+                            React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDD04"),
+                            React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.08em" } }, "ALREADY PAID?")),
+                        React.createElement("div", { style: { fontSize: 12, color: C.sub, lineHeight: 1.5, marginBottom: 10 } },
+                            "If you subscribed and your recipes are still locked, check again \u2014 it can take a moment after payment."),
+                        _restoreMsg && React.createElement("div", { style: { fontSize: 12, color: _restoreMsg.ok ? C.green : "#ef4444", marginBottom: 10, lineHeight: 1.5 } }, _restoreMsg.text),
+                        React.createElement("button", {
+                            disabled: _restoreBusy,
+                            onClick: async () => {
+                                _setRestoreBusy(true); _setRestoreMsg(null);
+                                try {
+                                    const sb = getSB();
+                                    if (!sb) throw new Error("offline");
+                                    const { data: { session } } = await sb.auth.getSession();
+                                    if (!session) throw new Error("nosession");
+                                    const res = await fetchT("/.netlify/functions/restore-account", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
+                                        body: JSON.stringify({ email: currentUser.email }),
+                                    }, 12000);
+                                    const data = await res.json().catch(() => ({}));
+                                    if (!res.ok) throw new Error(data.error || "failed");
+                                    // The function returns { found, name, email, calcUsed, unlocks }
+                                    // — the tier is nested inside `unlocks`, not top-level.
+                                    const _t = data.unlocks && data.unlocks.tier;
+                                    if (data.found && ["monthly","annual"].includes(_t)) {
+                                        // Re-read from the server rather than trusting this response —
+                                        // loadUserData is the single place that grants a tier.
+                                        await loadUserData(currentUser.id, currentUser.email);
+                                        _setRestoreMsg({ ok: true, text: "Found your " + _t + " plan. Your recipes are unlocked." });
+                                    } else {
+                                        _setRestoreMsg({ ok: false, text: "No active subscription found for " + currentUser.email + ". If you paid with a different email, contact support@soulgainz.app and we will move it across." });
+                                    }
+                                } catch (e) {
+                                    const m = String(e && e.message || "");
+                                    _setRestoreMsg({ ok: false, text:
+                                        m === "offline" || /fetch|network|timeout/i.test(m) ? "Could not reach the server. Check your connection and try again."
+                                      : m === "nosession" ? "Your session expired. Sign out and back in, then try again."
+                                      : "Could not check right now. If this keeps happening, email support@soulgainz.app." });
+                                } finally { _setRestoreBusy(false); }
+                            },
+                            style: { width: "100%", padding: "11px", borderRadius: 10, border: `1px solid ${C.dim}`, background: C.card2, color: C.text, fontSize: 12, fontWeight: 700, cursor: _restoreBusy ? "wait" : "pointer", fontFamily: "inherit" }
+                        }, _restoreBusy ? "Checking\u2026" : "Check my subscription"),
+                    ),
                     // ── Have a promo code? — below MORE, above ACCOUNT ─────────────────
                     !isAdmin(currentUser && currentUser.email) && React.createElement("div", { style: { background: C.card, border: `1px solid ${C.dim}`, borderRadius: 16, padding: "16px", marginBottom: 12, boxShadow: C.cardShadow } },
                         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
