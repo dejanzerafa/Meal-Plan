@@ -1,14 +1,13 @@
 {
   "name": "meal-prep-functions",
   "version": "1.0.0",
-  "description": "Server-side functions for Meal Prep app — Stripe + Supabase + Resend",
+  "description": "Server-side functions for Meal Prep app \u2014 Stripe + Supabase + Resend",
   "private": true,
   "dependencies": {
     "@netlify/blobs": "^11.0.1",
     "@supabase/supabase-js": "^2.39.7",
     "acorn": "^8.18.0",
-    "stripe": "^14.21.0",
-    "web-push": "^3.6.7"
+    "stripe": "^14.21.0"
   },
   "devDependencies": {
     "jsdom": "^25.0.1"
