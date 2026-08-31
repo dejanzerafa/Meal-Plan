@@ -2,9 +2,22 @@
 // Called by /success.html after Stripe redirects user back.
 // Verifies session is paid, returns the unlock state for the app to apply.
 
+const { rateLimit, clientIp } = require("./_shared/auth");
 const Stripe = require("stripe");
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // Returns the buyer's email and Stripe customer id for a session id.
+  // Session ids appear in success_url, so they leak via referrer, history and
+  // analytics. This had no origin check on the GET path and no limit at all.
+  {
+    const _rl = await rateLimit(`verifysession:${clientIp(event)}`, { max: 10, windowMs: 60000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,

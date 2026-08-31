@@ -11,7 +11,7 @@
 //   RESEND_API_KEY       — re_xxxx...
 //   FROM_EMAIL           — SoulGainz <support@soulgainz.app>
 
-const { rateLimit } = require("./_shared/auth");
+const { rateLimit, escHtml } = require("./_shared/auth");
 
 // ── Allowed origins ───────────────────────────────────────────────────────────
 // Exact matching (correctly) replaced startsWith, but browsers send
@@ -103,7 +103,11 @@ exports.handler = async (event) => {
   }
 
   const safeCategory = VALID_CATEGORIES.includes(category) ? category : "Other";
-  const safeEmail    = typeof email === "string" && email.includes("@") ? email.slice(0, 254).toLowerCase().trim() : null;
+  // includes("@") was the ENTIRE validation. Require a real shape, then escape at
+  // every point of use below — a value like  x@x" onmouseover=... x="  breaks out
+  // of the mailto attribute otherwise.
+  const _rawEmail = typeof email === "string" ? email.slice(0, 254).toLowerCase().trim() : "";
+  const safeEmail    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(_rawEmail) ? _rawEmail : null;
   const safeTier     = typeof tier   === "string" ? tier.slice(0, 32)   : "free";
   const safeDevice   = typeof device === "string" ? device.slice(0, 64) : "unknown";
   const safeTab      = typeof tab    === "string" ? tab.slice(0, 32)    : "unknown";
@@ -142,7 +146,7 @@ exports.handler = async (event) => {
 
   // ── 2. Email admin via Resend ─────────────────────────────────────────────
   if (resendKey) {
-    const tierBadge = safeTier !== "free" ? `<span style="background:#b84a1f;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;">${safeTier}</span>` : `<span style="background:#444;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">free</span>`;
+    const tierBadge = safeTier !== "free" ? `<span style="background:#b84a1f;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;">${escHtml(safeTier)}</span>` : `<span style="background:#444;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">free</span>`;
     const replyTo = safeEmail || "no-reply@soulgainz.app";
 
     const html = `
@@ -167,15 +171,15 @@ exports.handler = async (event) => {
         </tr>
         <tr>
           <td style="padding:6px 0;font-size:12px;color:#7a6d5e;">TAB</td>
-          <td style="padding:6px 0;font-size:13px;color:#1a1209;">${safeTab}</td>
+          <td style="padding:6px 0;font-size:13px;color:#1a1209;">${escHtml(safeTab)}</td>
         </tr>
         <tr>
           <td style="padding:6px 0;font-size:12px;color:#7a6d5e;">DEVICE</td>
-          <td style="padding:6px 0;font-size:13px;color:#1a1209;">${safeDevice}</td>
+          <td style="padding:6px 0;font-size:13px;color:#1a1209;">${escHtml(safeDevice)}</td>
         </tr>
         ${safeEmail ? `<tr>
           <td style="padding:6px 0;font-size:12px;color:#7a6d5e;">EMAIL</td>
-          <td style="padding:6px 0;font-size:13px;color:#1a1209;"><a href="mailto:${safeEmail}" style="color:#b84a1f;">${safeEmail}</a></td>
+          <td style="padding:6px 0;font-size:13px;color:#1a1209;"><a href="mailto:${escHtml(safeEmail)}" style="color:#b84a1f;">${escHtml(safeEmail)}</a></td>
         </tr>` : ""}
       </table>
       <div style="background:#fff8f0;border-left:3px solid #E07B2A;padding:14px 16px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.7;color:#1a1209;white-space:pre-wrap;">${safeMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
@@ -198,7 +202,7 @@ exports.handler = async (event) => {
           from: fromEmail,
           to: ["support@soulgainz.app"],
           reply_to: replyTo,
-          subject: `[${safeCategory}] App Feedback${safeEmail ? ` from ${safeEmail}` : ""}`,
+          subject: `[${safeCategory}] App Feedback${safeEmail ? ` from ${escHtml(safeEmail)}` : ""}`,
           html,
         }),
       });

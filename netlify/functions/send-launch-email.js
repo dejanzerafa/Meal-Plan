@@ -18,11 +18,22 @@
 //   Resend's batch API sends up to 100 emails per call.
 //   This function handles pagination automatically for larger lists.
 
+const { clientIp, rateLimit, secretsMatch } = require("./_shared/auth");
 const { createClient } = require("@supabase/supabase-js");
 
 const BATCH_SIZE = 100; // Resend batch limit
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // Mails the entire waitlist on success.
+  {
+    const _rl = await rateLimit(`launchmail:${clientIp(event)}`, { max: 3, windowMs: 3600000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -32,7 +43,7 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
 
   const secret = process.env.LAUNCH_SECRET;
-  if (!secret || body.secret !== secret) {
+  if (!secret || !secretsMatch(body.secret, secret)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
   }
 

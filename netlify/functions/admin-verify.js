@@ -5,7 +5,7 @@
 // Rate limiting: max 10 failed attempts per IP per 15-minute window using Netlify Blobs.
 // Requires Netlify Blobs (available automatically on all Netlify plans, no extra config).
 
-const { secretsMatch } = require("./_shared/auth");
+const { secretsMatch, clientIp } = require("./_shared/auth");
 
 const { getStore } = require("@netlify/blobs");
 
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
   // ── IP-based rate limiting ───────────────────────────────────────────────────
   const clientIp =
     event.headers["x-nf-client-connection-ip"] ||
-    (event.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+    clientIp(event) ||
     "unknown";
 
   let store;

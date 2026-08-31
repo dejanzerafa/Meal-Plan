@@ -24,12 +24,23 @@
 //   APP_URL                 — https://soulgainz.app (used in invite emails)
 // ─────────────────────────────────────────────────────────────────────────────
 
+const { clientIp, rateLimit, secretsMatch } = require("./_shared/auth");
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // Mails the entire waitlist on success.
+  {
+    const _rl = await rateLimit(`migratewl:${clientIp(event)}`, { max: 3, windowMs: 3600000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   // ── Auth gate ───────────────────────────────────────────────────────────────
   const adminKey = process.env.ADMIN_MIGRATION_KEY;
-  if (!adminKey || event.headers["x-admin-key"] !== adminKey) {
+  if (!adminKey || !secretsMatch(event.headers["x-admin-key"], adminKey)) {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 

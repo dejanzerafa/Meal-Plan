@@ -29,9 +29,20 @@
 //   Dashboard → Coupons → Create coupon → 100% off → name "Friends & Family"
 //   Copy the coupon ID into STRIPE_FRIENDS_COUPON_ID env var.
 
-const { secretsMatch } = require("./_shared/auth");
+const { clientIp, rateLimit, secretsMatch } = require("./_shared/auth");
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // Same bypass as admin-list-users: accepts ADMIN_SECRET with no limit,
+  // so the brute-force protection on admin-verify could be walked around.
+  {
+    const _rl = await rateLimit(`adminfriend:${clientIp(event)}`, { max: 10, windowMs: 900000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,

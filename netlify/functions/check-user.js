@@ -5,10 +5,24 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
+const { rateLimit, clientIp } = require("./_shared/auth");
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // This is an account-existence oracle: it returns {exists} for any
+  // address, and the origin check above is `if (origin && ...)` so any non-browser
+  // client simply omits the header and passes. Rate limiting was the only missing
+  // control, so enumeration was unbounded.
+  {
+    const _rl = await rateLimit(`checkuser:${clientIp(event)}`, { max: 20, windowMs: 60000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
@@ -33,7 +47,14 @@ exports.handler = async (event) => {
     return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
-  const email = event.queryStringParameters && event.queryStringParameters.email;
+  // Accept the email from a POST body (preferred — keeps it out of access logs,
+  // browser history and Sentry breadcrumbs) and still from the query string for
+  // any client that has not updated yet.
+  let email = null;
+  if (event.httpMethod === "POST" && event.body) {
+    try { email = JSON.parse(event.body).email; } catch (_) {}
+  }
+  if (!email) email = event.queryStringParameters && event.queryStringParameters.email;
   if (!email || !email.includes("@")) {
     return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
   }

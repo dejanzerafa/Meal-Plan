@@ -7,9 +7,21 @@
 //   SUPABASE_URL         - https://xxxx.supabase.co
 //   SUPABASE_SERVICE_KEY - service_role key
 
-const { secretsMatch } = require("./_shared/auth");
+const { clientIp, rateLimit, secretsMatch } = require("./_shared/auth");
 
 exports.handler = async (event) => {
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // admin-verify limits password attempts to 10 per 15 minutes, but this
+  // endpoint accepts the SAME ADMIN_SECRET with no limit — so the secret could be
+  // ground here, never touching the limiter, and this one dumps every user.
+  {
+    const _rl = await rateLimit(`adminlist:${clientIp(event)}`, { max: 10, windowMs: 900000 });
+    if (!_rl.ok) {
+      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+               body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
+    }
+  }
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,

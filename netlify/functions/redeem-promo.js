@@ -115,7 +115,45 @@ exports.handler = async (event) => {
     ? new Date(Date.now() + dbCode.duration_days * 86400000).toISOString().split("T")[0]
     : null;
 
-  // ── 4. Update profiles.tier (atomically via service key) ─────────────────
+  // ── 4. CLAIM THE CODE FIRST — compare-and-swap ────────────────────────────
+  // The old order was: read with active=eq.true, grant the tier, then mark the
+  // code inactive at step 5. Two concurrent requests with the same single-use
+  // code both passed the read and both got the tier.
+  //
+  // Claiming first turns it into an atomic test-and-set: the PATCH carries
+  // `active=eq.true` in the filter, so Postgres serialises the two writers and
+  // exactly one row comes back. The loser sees an empty array and stops. If the
+  // grant below then fails, the claim is released so the code is not burned.
+  const claimRes = await fetch(
+    `${apiBase}/promo_codes?id=eq.${dbCode.id}&active=eq.true`,
+    {
+      method: "PATCH",
+      headers: { ...headers, Prefer: "return=representation" },
+      body: JSON.stringify({
+        active: false,
+        redeemed_by: userId,
+        redeemed_at: new Date().toISOString(),
+      }),
+    }
+  );
+  const claimed = claimRes.ok ? await claimRes.json().catch(() => []) : [];
+  if (!claimRes.ok || !Array.isArray(claimed) || claimed.length === 0) {
+    console.warn(`redeem-promo: code ${code} already claimed (race) for ${userId}`);
+    return { statusCode: 409, headers: corsHeaders, body: JSON.stringify({ error: "This code has already been used." }) };
+  }
+
+  // Release the claim if anything below fails, so a transient error does not
+  // consume a single-use code the customer never received value from.
+  const _releaseClaim = async () => {
+    try {
+      await fetch(`${apiBase}/promo_codes?id=eq.${dbCode.id}`, {
+        method: "PATCH", headers,
+        body: JSON.stringify({ active: true, redeemed_by: null, redeemed_at: null }),
+      });
+    } catch (_) {}
+  };
+
+  // ── 5. Grant the tier ─────────────────────────────────────────────────────
   const profileRes = await fetch(
     `${apiBase}/profiles?id=eq.${encodeURIComponent(userId)}`,
     {
@@ -132,22 +170,19 @@ exports.handler = async (event) => {
   if (!profileRes.ok) {
     const err = await profileRes.text();
     console.error("redeem-promo: profile update failed", err);
+    await _releaseClaim();
     return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Failed to apply code" }) };
   }
-
-  // ── 5. Mark code as used ──────────────────────────────────────────────────
-  await fetch(
-    `${apiBase}/promo_codes?id=eq.${dbCode.id}`,
-    {
-      method: "PATCH",
-      headers,
-      body: JSON.stringify({
-        active: false,
-        redeemed_by: userId,
-        redeemed_at: new Date().toISOString(),
-      }),
+  // Zero rows is not success. Without this, a user with no profiles row had the
+  // code marked used while receiving nothing.
+  {
+    const _rows = await profileRes.json().catch(() => null);
+    if (Array.isArray(_rows) && _rows.length === 0) {
+      console.error(`redeem-promo: no profiles row matched ${userId} — releasing code`);
+      await _releaseClaim();
+      return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Could not find your account. Please contact support." }) };
     }
-  );
+  }
 
   console.log(`redeem-promo: code ${code} redeemed by ${userId} (${userEmail || "?"}) → tier ${dbCode.tier}`);
 

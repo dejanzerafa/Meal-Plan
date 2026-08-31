@@ -8,6 +8,7 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
+const { clientIp } = require("./_shared/auth");
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
@@ -116,7 +117,7 @@ exports.handler = async (event) => {
   // Prefer x-nf-client-connection-ip (Netlify's real-IP header, not spoofable)
   const clientIp =
     (event.headers && event.headers["x-nf-client-connection-ip"]) ||
-    ((event.headers && event.headers["x-forwarded-for"]) || "").split(",")[0].trim() ||
+    clientIp(event) ||
     "unknown";
   const allowed = await _checkIpRateLimit(clientIp);
   if (!allowed) {

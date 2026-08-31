@@ -10516,13 +10516,13 @@ function OnboardingModal({ onClose }) {
         {
             icon: "🛒",
             title: "Generate your list",
-            body: "Once your recipes are set, the Shop tab builds your full grocery list automatically — scaled to your batch size (3, 5, or 7 days).",
+            body: "Once your recipes are set, the Shop tab builds your full grocery list automatically, scaled to your batch size (3, 5 or 7 days). Available on any paid plan.",
             action: null,
         },
         {
             icon: "📅",
             title: "Log your batch",
-            body: "In the Calendar tab, tap a day, pick your batch size, and log it. The calendar marks your shop day and next prep day for you.",
+            body: "In the COMPLY tab, tap a day, pick your batch size, and log it. The calendar marks your shop day and next prep day for you.",
             action: "Let's go →",
         },
     ];
@@ -10673,7 +10673,7 @@ function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
 // Subscription is managed at marketing.soulgainz.app/pricing — app reads status from Supabase.
 function UpgradeModal({ onClose }) {
     var features = [
-        ["\u2713", "All 160+ high-protein recipes"],
+        ["\u2713", "High-protein recipes \u2014 84 on monthly, all 161 on annual"],
         ["\u2713", "Auto grocery list builder"],
         ["\u2713", "Weekly meal planner"],
         ["\u2713", "Verified macros to the gram"],
@@ -10691,7 +10691,7 @@ function UpgradeModal({ onClose }) {
             React.createElement("div", { style: { textAlign: "center", fontSize: 26, marginBottom: 10 } }, "\uD83E\uDD69\uD83C\uDF57\uD83E\uDD5A\uD83D\uDC1F"),
             React.createElement("div", { className: "display", style: { fontSize: 22, color: C.text, textAlign: "center", marginBottom: 6, fontWeight: 900 } }, "Unlock Full Access"),
             React.createElement("div", { style: { fontSize: 13, color: C.sub, textAlign: "center", lineHeight: 1.6, marginBottom: 24 } },
-                "Monthly and annual plans available at soulgainz.app"),
+                "Monthly and annual plans available at marketing.soulgainz.app"),
             React.createElement("div", { style: { background: C.card, borderRadius: 14, padding: "16px", marginBottom: 20 } },
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, letterSpacing: "0.1em", marginBottom: 12 } }, "WHAT YOU GET"),
                 features.map(function(item) {
@@ -10703,7 +10703,7 @@ function UpgradeModal({ onClose }) {
             React.createElement("button", { onClick: openSubscribePage,
                 style: { width: "100%", background: C.accent, color: "#000", border: "none", borderRadius: 14,
                     padding: "16px", fontSize: 15, fontWeight: 900, cursor: "pointer", marginBottom: 10 } },
-                "Get Access at SoulGainz.app \u2192"),
+                "Get Access \u2192"),
             React.createElement("div", { style: { fontSize: 11, color: C.muted, textAlign: "center", marginBottom: 14, lineHeight: 1.5 } },
                 "Opens in your browser. Sign in there with the ",
                 React.createElement("strong", { style: { color: C.sub } }, "same email"),
@@ -10752,7 +10752,7 @@ function DevModal({ onClose, onApplyTier }) {
                 ["free","monthly","annual","dev"].map(t =>
                     React.createElement("div", { key: t, style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 0", fontSize: 11 } },
                         React.createElement("span", { style: { color: TIER_COLORS[t] || C.sub, fontWeight: 600, textTransform: "capitalize" } }, t),
-                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "Limited recipes" : t === "monthly" ? "85 recipes" : t === "annual" ? "160+ recipes" : "Full dev access")))),
+                        React.createElement("span", { style: { color: C.muted } }, t === "free" ? "14 recipes" : t === "monthly" ? "84 recipes" : t === "annual" ? "all 161 recipes" : "Full dev access")))),
             React.createElement("div", { style: { borderTop: `1px solid ${C.dim}`, paddingTop: 14 } },
                 React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: C.muted, letterSpacing: "0.12em", marginBottom: 10 } }, "\uD83E\uDDEA TESTING RESETS"),
                 React.createElement("button", { onClick: resetToNewUser, style: { width: "100%", background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.45)", borderRadius: 8, padding: "10px", color: "#ef4444", fontSize: 12, fontWeight: 800, cursor: "pointer", marginBottom: 4 } }, "\uD83D\uDEAA Brand-New User \u2014 Sign Out & Wipe All"),
@@ -11741,8 +11741,8 @@ function GuideAccordion({ C }) {
     const [open, setOpen] = React.useState(false);
     const steps = [
         { num: "01", icon: "👤", title: "Set Your Macros", desc: "Tap 'Calculate My Macros' above. Enter your details — the app works out your daily protein, carb and fat targets.", tip: "Do this first — your macros guide everything else." },
-        { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Go to RECIPES. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients and macros.", tip: "Most recipes are free to view. Unlock all with a plan." },
-        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From TODAY, tap '+ Add Food' to assign meals. Add breakfast, pre-workout and dessert slots too.", tip: null },
+        { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Go to RECIPES. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients and macros.", tip: "14 recipes are free to view. Unlock all with a plan." },
+        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From TODAY, tap '+ Assign Recipe' to assign meals. Add breakfast, pre-workout and dessert slots too.", tip: null },
         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to SHOP. The app builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: null },
         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
         { num: "06", icon: "🔓", title: "Unlock More", desc: "Unlock the full recipe library at SoulGainz.app — choose the plan that works for you.", tip: null },
@@ -12604,7 +12604,7 @@ function OnboardingStory({ onNext }) {
             "Stop spending ", React.createElement("em", { style: { color: "#B85C10" } }, "€10,000 a year"),
             React.createElement("br", null), "on food you don't love."),
         React.createElement("div", { style: { display: "flex", width: "100%", background: "#EDE3D6", borderRadius: 16, overflow: "hidden", marginBottom: 24 } },
-            [["30+", "Recipes"], ["≤10", "Ingredients"], ["€300", "Per Fortnight"]].map(([num, label], i) =>
+            [["160+", "Recipes"], ["≤10", "Ingredients"], ["€300", "Per Fortnight"]].map(([num, label], i) =>
                 React.createElement("div", { key: i, style: { flex: 1, textAlign: "center",
                     borderRight: i < 2 ? "1px solid #C4A98A" : "none", padding: "16px 4px" } },
                     React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: "#1a1008",
@@ -12618,8 +12618,8 @@ function OnboardingStory({ onNext }) {
     // ── Slide 1: How it works ─────────────────────────────────────────────────
     const steps = [
         { n: "01", icon: "📊", title: "Calculate your macros", desc: "Protein, carbs and fat targets tailored to your body and goals." },
-        { n: "02", icon: "🍳", title: "Pick your recipes", desc: "30+ high-protein, real-food recipes. Max 10 ingredients each." },
-        { n: "03", icon: "🛒", title: "Shop once", desc: "Auto-generated grocery list scaled to your batch size." },
+        { n: "02", icon: "🍳", title: "Pick your recipes", desc: "160+ high-protein, real-food recipes. Max 10 ingredients each." },
+        { n: "03", icon: "🛒", title: "Shop once", desc: "Auto-generated grocery list scaled to your batch size. Included with any paid plan." },
         { n: "04", icon: "🔥", title: "Cook once. Eat all week.", desc: "One prep session covers every meal. No daily cooking." },
     ];
     const slide1 = React.createElement("div", { style: Object.assign({}, fade, { display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 420 }) },
@@ -12649,7 +12649,7 @@ function OnboardingStory({ onNext }) {
             width: "100%", boxSizing: "border-box", marginBottom: 20 } },
             React.createElement("div", { style: { fontSize: 28, marginBottom: 12, textAlign: "center" } }, "\u201C"),
             React.createElement("p", { style: { fontSize: 14, color: "#5A3C20", lineHeight: 1.75, fontStyle: "italic", margin: "0 0 14px", textAlign: "center" } },
-                "I got tired of spending a fortune on food that didn't satisfy me. So I built this: 30+ real recipes, max 10 ingredients, a full week of meals under €300. One cook session. No powders. Just food worth eating."),
+                "I got tired of spending a fortune on food that didn't satisfy me. So I built this: 160+ real recipes, max 10 ingredients, a full week of meals under €300. One cook session. No powders. Just food worth eating."),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
                 React.createElement("div", { style: { width: 36, height: 36, borderRadius: "50%", background: "#C4A98A",
                     display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 } }, "👨‍🍳"),
@@ -15088,7 +15088,12 @@ function App() {
     React.useEffect(function() {
         var _email = (localStorage.getItem("mp_acc_email") || "").trim();
         if (!_email) return;
-        fetchT("/.netlify/functions/check-user?email=" + encodeURIComponent(_email), {}, 8000)
+        // POST, not GET. An email in a query string lands in Netlify access logs,
+                    // browser history, and Sentry breadcrumbs (which capture fetch URLs) —
+                    // beforeSend only strips event.user.email, not the URL.
+                    fetchT("/.netlify/functions/check-user", { method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: _email }) }, 8000)
             .then(function(r) { return r.ok ? r.json() : null; })
             .then(function(data) { if (data && data.calc_used === true) setServerCalcUsed(true); })
             .catch(function() {});
@@ -15657,7 +15662,7 @@ function App() {
 ),
                     !unlocked && (React.createElement("div", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                             borderRadius: 8, padding: "6px 12px", marginBottom: 10, textAlign: "center" } },
-                        "\uD83D\uDD13 1 free recipe \u00B7 \uD83D\uDD12 Unlock ",
+                        "\uD83D\uDD13 14 recipes free \u00B7 \uD83D\uDD12 Unlock ",
                         allRecipes.filter(r => (r.category || "main") === "main").length - 1,
                         " more + all breakfast & desserts")),
                     filteredRecipes.length === 0 && (function() {
@@ -15696,8 +15701,8 @@ function App() {
                     profile && React.createElement("div", { style: { fontSize: 11, color: C.muted, background: C.card, border: `1px solid ${C.dim}`, borderRadius: 8, padding: "8px 12px", marginBottom: 12, textAlign: "center" } }, "✓ You're all set up — use this as a reference anytime."),
                     [
                         { num: "01", icon: "👤", title: "Set Your Macros", desc: "Head to the ME tab and tap 'Calculate My Macros'. Enter your details — the app will work out your daily protein, carb and fat targets. Free on first use.", tip: "Do this first — your macros guide everything else." },
-                        { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Tap the RECIPES tab. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients, method, and macros. Lock icons mean the recipe requires a plan.", tip: "Most recipes are free to view. Unlock all with a plan." },
-                        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the TODAY tab, tap '+ Add Food' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
+                        { num: "02", icon: "🍽️", title: "Browse Recipes", desc: "Tap the RECIPES tab. Browse by category — mains, breakfast, dessert. Tap any recipe to see ingredients, method, and macros. Lock icons mean the recipe requires a plan.", tip: "14 recipes are free to view. Unlock all with a plan." },
+                        { num: "03", icon: "☀️", title: "Assign Lunch & Dinner", desc: "From the TODAY tab, tap '+ Assign Recipe' to assign your lunch and dinner. You can also add breakfast, pre-workout, and dessert slots.", tip: "Locked recipes can still be assigned — tap to preview them." },
                         { num: "04", icon: "🛒", title: "Generate Your Grocery List", desc: "Go to the SHOP tab. The app automatically builds your full ingredient list scaled to your batch size. Tick items off as you shop.", tip: "Batch size scales every ingredient quantity automatically." },
                         { num: "05", icon: "📅", title: "Log Your Prep Day", desc: "Scroll to the bottom of the Today tab and mark the day you're cooking.", tip: "Cook once. The calendar keeps you on schedule." },
                         { num: "06", icon: "🔓", title: "Unlock More", desc: "Browse more recipes and unlock the full library at SoulGainz.app — every recipe, every future drop.", tip: null },
