@@ -9767,6 +9767,67 @@ function parseLocalDate(str) {
     return new Date(+m[1], +m[2] - 1, +m[3]);
 }
 
+// ── Meal-log durability ledger ────────────────────────────────────────────────
+// loadUserData treats the server as authoritative for meal_logs and discards any
+// local date the server lacks. Whether that is correct depends entirely on one
+// question: has this date ever been durably written?
+//
+// The first attempt tracked that in `window._sg_pending_logs`, an in-memory Set.
+// It only ever meant "a write is currently in flight", which is not the same
+// thing, and it lost three cases outright:
+//
+//   1. Logged while signed out. Never in the Set at all (the sync branch is
+//      inside `if (currentUser)`), so the first sign-in deleted the entry.
+//   2. Logged while offline. saveMealLogToSupabase swallows its own error, so the
+//      .then() ran anyway and deleted the date from the Set — marking a write
+//      that never landed as complete.
+//   3. Any page reload. window state is gone; the next focus wiped the entry.
+//
+// So it is persisted, and it is cleared only on a CONFIRMED server write.
+// Tombstones do the same job for deletes, so un-logging a day offline is not
+// undone by the next sync resurrecting the server's copy.
+const LOGS_UNSYNCED = "mp_logs_unsynced";
+const LOGS_TOMBSTONE = "mp_logs_tombstone";
+function _readDateSet(key) {
+    try {
+        const v = JSON.parse(localStorage.getItem(key) || "[]");
+        return new Set(Array.isArray(v) ? v.filter(d => typeof d === "string") : []);
+    } catch (_) { return new Set(); }
+}
+function _writeDateSet(key, set) {
+    try { safeSet(key, JSON.stringify([...set])); } catch (_) {}
+}
+function markLogUnsynced(date)   { const s = _readDateSet(LOGS_UNSYNCED);  s.add(date);    _writeDateSet(LOGS_UNSYNCED, s); }
+function markLogSynced(date)     { const s = _readDateSet(LOGS_UNSYNCED);  s.delete(date); _writeDateSet(LOGS_UNSYNCED, s); }
+function markLogTombstoned(date) { const s = _readDateSet(LOGS_TOMBSTONE); s.add(date);    _writeDateSet(LOGS_TOMBSTONE, s); }
+function clearLogTombstone(date) { const s = _readDateSet(LOGS_TOMBSTONE); s.delete(date); _writeDateSet(LOGS_TOMBSTONE, s); }
+function unsyncedLogDates()      { return _readDateSet(LOGS_UNSYNCED); }
+function tombstonedLogDates()    { return _readDateSet(LOGS_TOMBSTONE); }
+
+// Serialise every server write for a given date.
+//
+// A log is DELETE-then-INSERT; an un-log is DELETE. Fired concurrently — which a
+// double-tap on a calendar cell does — they interleave as
+// (log)DELETE, (unlog)DELETE, (log)INSERT, and the row ends up ALIVE on the
+// server with the tombstone already cleared, because the un-log's own delete
+// reported success. The next focus reads that row back and the day the user
+// removed reappears. Permanently: nothing is left in either ledger to fix it.
+//
+// meal_logs has no version column to arbitrate with, so ordering is enforced
+// client-side: writes for one date run strictly in the order they were issued.
+// Different dates stay independent.
+const _logWriteChains = new Map();
+function queueLogWrite(date, fn) {
+    const prev = _logWriteChains.get(date) || Promise.resolve();
+    // Run `fn` whether the previous link resolved or rejected — one failed write
+    // must not strand every later write for that date.
+    const next = prev.then(fn, fn).catch(() => {});
+    _logWriteChains.set(date, next);
+    // Drop the entry once it is the tail, so the map does not grow without bound.
+    next.then(() => { if (_logWriteChains.get(date) === next) _logWriteChains.delete(date); });
+    return next;
+}
+
 function safeSet(key, value) {
     try {
         localStorage.setItem(key, value);
@@ -10686,6 +10747,8 @@ function getProteinType(r) {
 // Monthly meal-prep compliance tracker — shows how consistently user preps
 function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
     const today = new Date();
+    // Stable across renders within one local day; changes at midnight.
+    const todayKey = localDateKey(today);
     const [viewYear,  setViewYear]  = React.useState(today.getFullYear());
     const [viewMonth, setViewMonth] = React.useState(today.getMonth());
     const [localLogs, setLocalLogs] = React.useState(() => {
@@ -10769,7 +10832,15 @@ function ComplianceLog({ C, logs: logsProp, onLogsChange }) {
             months.push({ label: d.toLocaleString("default", { month: "short" }), count, pct, isCurrent: i === 0 });
         }
         return months;
-    }, [logs, target]);
+        // The dep is the DAY KEY, not `today` itself. `today` is `new Date()` in the
+        // component body, so a fresh object every render — depending on it would make
+        // this useMemo recompute unconditionally and buy nothing. The key is a stable
+        // string that changes exactly once, at local midnight, which is the only
+        // moment the three-month window actually moves. (It still needs a render to
+        // be observed; nothing here polls the clock. What it fixes is the previous
+        // version, where even a re-render after midnight kept serving the stale
+        // months from cache — the new month reading zero for the whole session.)
+    }, [logs, target, todayKey]);
 
     return React.createElement("div", { className:"tab-anim", style:{paddingBottom:32} },
 
@@ -12782,11 +12853,17 @@ function AdminPanel({ C, currentUser, onClose }) {
         const code = genCode();
         const days = tierDays(tier);
         const redeemBy = new Date(); redeemBy.setDate(redeemBy.getDate() + 30);
+        // localDateKey, not toISOString().split("T")[0]. The admin is in Qatar
+        // (UTC+3), so an evening-issued code serialised to UTC lost a day and the
+        // recipient's "Redeem by" was one day earlier than the 30 promised — and
+        // the redeem check compares against local end-of-day, so the code died a
+        // full day early.
+        const redeemByKey = localDateKey(redeemBy);
         try {
             const sb = getSB();
             const { error } = await sb.from("promo_codes").insert({
                 code, tier,
-                expires: redeemBy.toISOString().split("T")[0],
+                expires: redeemByKey,
                 label: em,
                 duration_days: days,
                 created_by: currentUser.id,
@@ -12803,7 +12880,7 @@ function AdminPanel({ C, currentUser, onClose }) {
                     fetch("/.netlify/functions/send-promo-code", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + session.access_token },
-                        body: JSON.stringify({ code, recipientEmail: em, label: em, expires: redeemBy.toISOString().split("T")[0], durationDays: days }),
+                        body: JSON.stringify({ code, recipientEmail: em, label: em, expires: redeemByKey, durationDays: days }),
                     }).then(r => { if (!r.ok) r.text().then(t => console.warn("send-promo-code:", t)); })
                       .catch(err => console.warn("send-promo-code:", err));
                 }
@@ -13267,7 +13344,10 @@ function SupplementsTab({ C, currentUser, isPremium }) {
             // entire stack would vanish server-side. Last entry wins, which matches
             // what the user last edited.
             const byName = new Map();
-            for (const item of list) byName.set(String(item.name || "").trim().toLowerCase(), item);
+            // Key on the trimmed name as-is. Lowercasing here collapsed "Creatine" and
+            // "creatine" — two legitimately distinct rows under the case-SENSITIVE
+            // unique index — and silently pruned one of them.
+            for (const item of list) byName.set(String(item.name || "").trim(), item);
             const unique = [...byName.values()];
 
             // Insert FIRST, delete second, so a failure cannot leave the user with
@@ -13282,10 +13362,25 @@ function SupplementsTab({ C, currentUser, isPremium }) {
                 );
                 if (upErr) throw upErr;
                 // Remove only rows the user actually deleted.
+                // PostgREST's in-list uses BACKSLASH escaping, not SQL doubling.
+                // Doubling the quote produced a 400 (silently swallowed, so the prune
+                // no-opped and deleted supplements came back), and an unescaped
+                // backslash was consumed by the parser — "Omega\\3" matched nothing,
+                // so the row was DELETED immediately after being upserted.
+                const esc = n => String(n).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
                 const keep = unique.map(s => s.name);
-                await sb.from("user_supplements").delete()
+                const { error: pruneErr } = await sb.from("user_supplements").delete()
                     .eq("user_id", currentUser.id)
-                    .not("name", "in", `(${keep.map(n => `"${String(n).replace(/"/g, '""')}"`).join(",")})`);
+                    .not("name", "in", `(${keep.map(n => `"${esc(n)}"`).join(",")})`);
+                // Throwing here skips the success path and lands in the catch below,
+                // which console.warns. That is all it does — syncToSupabase is called
+                // fire-and-forget from mutate(), so nothing reaches the UI and the user
+                // still sees deleted supplements reappear on the next load. What the
+                // throw buys is that the failure is DISTINGUISHABLE in the console
+                // instead of being discarded silently, which is how the 400 from the
+                // old SQL-style escaping went unnoticed. Surfacing it to the user needs
+                // mutate() to await this call; not done here.
+                if (pruneErr) throw pruneErr;
             } else {
                 await sb.from("user_supplements").delete().eq("user_id", currentUser.id);
             }
@@ -13314,11 +13409,22 @@ function SupplementsTab({ C, currentUser, isPremium }) {
                 try { local = JSON.parse(localStorage.getItem("sg_supplements") || "[]"); } catch (_) {}
                 if (Array.isArray(local) && local.length) {
                     setSupps(local);
+                    try { scheduleReminders(local); } catch (_) {}
                     try { await syncToSupabase(local); } catch (_) {}
                     return;
                 }
             }
             setSupps(list); saveSuppList(list);
+            // Rebuild sg_supp_reminders here, not only in mutate().
+            //
+            // sg_supp_reminders is deliberately NOT in PRESERVE_PREFIXES — it is a
+            // per-person dosing schedule and must not survive sign-out on a shared
+            // device. But scheduleReminders() was only ever called from mutate(), so
+            // after a sign-out/sign-in the supplement list came back from the server
+            // while the reminder array stayed empty, and notifications silently
+            // stopped firing until the user happened to add or edit a supplement.
+            // Nothing in the UI indicated they had stopped.
+            try { scheduleReminders(list); } catch (_) {}
         } catch(e){ console.warn("SG supp load", e); }
     };
     React.useEffect(() => { loadFromSupabase(); }, [currentUser?.id]);
@@ -13885,30 +13991,32 @@ function App() {
         // second device, and un-logging a day locally did not stick, because the
         // next focus merged the server row straight back in.
         try {
-            if (currentUser && currentUser.id) {
-                // Track in-flight writes. loadUserData runs on focus and
-                // visibilitychange and treats the server as authoritative, so
-                // without this a refresh landing between the local write and the
-                // server round-trip would discard a prep day the user just logged.
-                if (!(window._sg_pending_logs instanceof Set)) window._sg_pending_logs = new Set();
-                const pending = window._sg_pending_logs;
-                const prev = new Set((calLogs || []).map(l => l.date));
-                const next = new Set((newLogs || []).map(l => l.date));
-                for (const l of (newLogs || [])) {
-                    if (prev.has(l.date)) continue;
-                    pending.add(l.date);
-                    Promise.resolve(saveMealLogToSupabase(l))
-                        .catch(() => {})
-                        .then(() => pending.delete(l.date));
-                }
-                for (const d of prev) {
-                    if (next.has(d)) continue;
-                    // Clear any pending marker first, or a delete racing its own
-                    // add would leave the date pinned as "in flight" forever and
-                    // the merge would keep resurrecting it.
-                    pending.delete(d);
-                    Promise.resolve(removeMealLogFromSupabase(d)).catch(() => {});
-                }
+            const prev = new Set((calLogs || []).map(l => l.date));
+            const next = new Set((newLogs || []).map(l => l.date));
+            const signedIn = !!(currentUser && currentUser.id);
+            for (const l of (newLogs || [])) {
+                if (prev.has(l.date)) continue;
+                // Ledger FIRST, and unconditionally — including when signed out.
+                // A prep day logged before sign-in used to be invisible to the
+                // sync layer entirely, so the first sign-in's server read found no
+                // matching row and deleted it. Recording it here means the flush on
+                // sign-in replays it instead.
+                markLogUnsynced(l.date);
+                clearLogTombstone(l.date);
+                if (!signedIn) continue;
+                // Only a CONFIRMED write clears the ledger. Offline, this resolves
+                // false and the date stays pending for the next flush. Queued so it
+                // cannot interleave with an un-log of the same date.
+                queueLogWrite(l.date, () => Promise.resolve(saveMealLogToSupabase(l))
+                    .then(ok => { if (ok) markLogSynced(l.date); }));
+            }
+            for (const d of prev) {
+                if (next.has(d)) continue;
+                markLogSynced(d);
+                markLogTombstoned(d);
+                if (!signedIn) continue;
+                queueLogWrite(d, () => Promise.resolve(removeMealLogFromSupabase(d))
+                    .then(ok => { if (ok) clearLogTombstone(d); }));
             }
         } catch (_) { /* sync is best-effort; local state is authoritative */ }
         // ── Prep ending reminder: detect newly added log date ─────────────────
@@ -14187,7 +14295,16 @@ function App() {
                 const minuteKey = timeNow.slice(0,5);
                 if (minuteKey !== lastFired) {
                     reminders.forEach(r => {
-                        if (r.times && r.times.some(t => t === timeNow || t.slice(0,4) === timeNow.slice(0,4))) {
+                        // scheduleReminders writes ONE FLAT ENTRY PER TIME:
+                        //   { name, dose, unit, time: "08:00" }
+                        // This read `r.times.some(...)`, a plural array that no writer
+                        // has ever produced, so the condition was always false and the
+                        // PWA supplement reminder has never fired for anyone. (The
+                        // native Capacitor path schedules separately and did work.)
+                        // Accept both shapes so an old cached array still fires.
+                        const times = Array.isArray(r.times) ? r.times : (r.time ? [r.time] : []);
+                        if (times.some(t => typeof t === "string" &&
+                                (t === timeNow || t.slice(0,4) === timeNow.slice(0,4)))) {
                             notify("SoulGainz 💊", "Time for "+r.name+(r.dose?" — "+r.dose+r.unit:""));
                         }
                     });
@@ -14293,6 +14410,56 @@ function App() {
                     const p = sbRowToProfile(row);
                     setProfile(p);
                     try { safeSet("mp_profile", JSON.stringify(p)); } catch(_) {}
+                    // Restore mp_basics from the server row.
+                    //
+                    // mp_basics was dropped from PRESERVE_PREFIXES on the grounds that
+                    // it is per-person health data and must not survive sign-out on a
+                    // shared device. That part is right, but the comment there claimed
+                    // it "is restored from profiles on sign-in" and nothing did that —
+                    // this function only ever read mp_basics to backfill dob/gender UP
+                    // to the server. So the same user signing back in on their own
+                    // device found DOB, gender, weight and height blank in the ME tab,
+                    // and ProfileBasicsEditor initialises its useState from
+                    // getUserBasics(), so the blanks stuck until they retyped them.
+                    //
+                    // FILL GAPS ONLY — never overwrite a populated local field.
+                    //
+                    // This runs on every focus and visibilitychange, not just at
+                    // sign-in, so "server wins" is wrong twice over:
+                    //
+                    //   - Units. Writing weight_kg also forced weightUnit:"kg", so a
+                    //     user who entered 180 lb / 5 ft 11 in watched it turn into
+                    //     81.6 kg / 180 cm on the next app foreground. ftFt/ftIn were
+                    //     technically preserved but went dead, because getHeightCm()
+                    //     only reads them while heightUnit === "ft".
+                    //   - Freshness. handleBasicsSaved only pushes to Supabase when a
+                    //     profile exists, so a user who has not run the calculator
+                    //     edits their weight in the ME tab, backgrounds the app, and
+                    //     the stale server row silently reverts it.
+                    //
+                    // Filling only what is missing gives the sign-out case what it
+                    // needs (local is empty, so everything is restored) without ever
+                    // touching a value this device just set.
+                    try {
+                        const _prev = getUserBasics() || {};
+                        const _next = { ..._prev };
+                        const _blank = v => v === undefined || v === null || v === "";
+                        if (_blank(_next.dob)    && row.dob)    _next.dob    = row.dob;
+                        if (_blank(_next.gender) && row.gender) _next.gender = row.gender;
+                        if (_blank(_next.weight) && row.weight_kg != null) {
+                            _next.weight = String(row.weight_kg);
+                            if (_blank(_next.weightUnit)) _next.weightUnit = "kg";
+                        }
+                        if (_blank(_next.height) && row.height_cm != null) {
+                            _next.height = String(row.height_cm);
+                            if (_blank(_next.heightUnit)) _next.heightUnit = "cm";
+                        }
+                        // Only write when something actually changed, so a no-op focus
+                        // refresh does not churn updatedAt on every foreground.
+                        const _changed = ["dob","gender","weight","weightUnit","height","heightUnit"]
+                            .some(k => _next[k] !== _prev[k]);
+                        if (_changed) saveUserBasics(_next);
+                    } catch(_) {}
                     // Restore name keys so ProfileBasicsEditor and greeting show correctly
                     try {
                         let first = row.first_name || "";
@@ -14340,10 +14507,26 @@ function App() {
                         // a bare date, but this concatenated "T23:59:59" onto both — so a
                         // Stripe row became "...T10:00:00.000ZT23:59:59" → Invalid Date →
                         // the comparison was always false and no Stripe tier ever expired.
-                        // Take the date part only, and treat it as end-of-day UTC so the
-                        // expiry lands at the same instant for every timezone.
-                        const _expiryRaw = row.tier_expires ? String(row.tier_expires).slice(0, 10) : null;
-                        const _expiry = _expiryRaw ? new Date(_expiryRaw + "T23:59:59Z") : null;
+                        // The two writers put genuinely different things in this column,
+                        // so branch on the value instead of forcing both through one path:
+                        //
+                        //   Stripe webhook   full ISO timestamp — a real instant, already
+                        //                    exact. Parse it as-is. Slicing it to a date
+                        //                    and re-reading that as LOCAL end-of-day
+                        //                    misplaced the expiry by up to a day: in
+                        //                    UTC+14, "2026-09-01T23:00:00Z" (Sep 2 local)
+                        //                    became Sep 1 local EOD — access revoked ~27h
+                        //                    early, still on a paid subscription.
+                        //   redeem-promo     bare "YYYY-MM-DD" — a calendar date, and the
+                        //                    promise is "through the end of that day" in
+                        //                    the user's own timezone, so local EOD. NOT
+                        //                    "T23:59:59Z", which cut Los Angeles off at
+                        //                    16:59 on the last day they paid for.
+                        const _expiryVal = row.tier_expires ? String(row.tier_expires) : null;
+                        const _expiry = !_expiryVal ? null
+                            : (/^\d{4}-\d{2}-\d{2}$/.test(_expiryVal)
+                                ? new Date(_expiryVal + "T23:59:59")   // bare date → local end of day
+                                : new Date(_expiryVal));               // timestamp → exact instant
                         const tierExpired = !!_expiry && !isNaN(_expiry.getTime()) && _expiry < new Date();
                         const effectiveTier = tierExpired ? "free" : row.tier;
                         if (tierExpired && row.tier !== "free") {
@@ -14406,6 +14589,12 @@ function App() {
                         if (local) { setProfile(local); }
                     } catch(_) {}
                 }
+                // Replay the durability ledger BEFORE reading, so the read below
+                // sees a server that already has everything this device owes it.
+                try {
+                    const _local = JSON.parse(localStorage.getItem("mp_cal_logs") || "[]");
+                    await flushPendingMealLogs(userId, Array.isArray(_local) ? _local : []);
+                } catch (_) {}
                 const { data: logs } = await sb.from("meal_logs").select("*").eq("user_id", userId).order("date", { ascending:false });
                 if (logs !== null) {
                     // Merge Supabase meal_logs with any local-only prep sessions (no lunchId/dinnerId)
@@ -14428,9 +14617,18 @@ function App() {
                     // entries survive ONLY while their write is still in flight,
                     // which is what stops a refresh landing mid-write from throwing
                     // away a prep day the user just logged.
-                    const _pending = (window._sg_pending_logs instanceof Set) ? window._sg_pending_logs : new Set();
-                    const localOnlyKept = localOnly.filter(l => _pending.has(l.date));
-                    const merged = [...sbFmt, ...localOnlyKept].sort((a,b) => a.date > b.date ? -1 : 1);
+                    // "Not durably written" is a persisted fact, not an in-memory
+                    // one — see the ledger helpers near localDateKey. The previous
+                    // in-memory Set meant a page reload, an offline write, or
+                    // anything logged before sign-in all read as "the server is
+                    // right, delete it".
+                    const _unsynced = unsyncedLogDates();
+                    const _tombs = tombstonedLogDates();
+                    const localOnlyKept = localOnly.filter(l => _unsynced.has(l.date));
+                    // A delete that has not yet reached the server must not be
+                    // undone by the server's stale copy coming back down.
+                    const merged = [...sbFmt.filter(l => !_tombs.has(l.date)), ...localOnlyKept]
+                        .sort((a,b) => a.date > b.date ? -1 : 1);
                     setCalLogsState(merged);
                     try { safeSet("mp_cal_logs", JSON.stringify(merged)); } catch(_) {}
                 }
@@ -14701,19 +14899,89 @@ function App() {
         try { await getSB().from("profiles").upsert(profileToSbRow(currentUser.id, currentUser.email, p), { onConflict:"id" }); }
         catch(e) { console.warn("SG: profile sync", e); }
     }
+    // Both return TRUE only when the server confirmed the write. The callers use
+    // that to clear the durability ledger, so "swallowed the error and returned
+    // undefined" would mark an offline write as durable and let the next sync
+    // delete the user's data. PostgREST also resolves on an error rather than
+    // throwing, so the `error` field has to be checked explicitly, not just awaited.
     async function saveMealLogToSupabase(logEntry) {
-        if (!currentUser || !getSB()) return;
+        if (!currentUser || !getSB()) return false;
         try {
             const sb = getSB();
-            await sb.from("meal_logs").delete().eq("user_id", currentUser.id).eq("date", logEntry.date);
-            await sb.from("meal_logs").insert({ user_id:currentUser.id, date:logEntry.date,
+            const { error: delErr } = await sb.from("meal_logs").delete().eq("user_id", currentUser.id).eq("date", logEntry.date);
+            if (delErr) throw delErr;
+            const { error: insErr } = await sb.from("meal_logs").insert({ user_id:currentUser.id, date:logEntry.date,
                 lunch_id:logEntry.lunchId, dinner_id:logEntry.dinnerId, batch_size:logEntry.batchSize||7 });
-        } catch(e) { console.warn("SG: meal log sync", e); }
+            if (insErr) throw insErr;
+            return true;
+        } catch(e) { console.warn("SG: meal log sync", e); return false; }
     }
     async function removeMealLogFromSupabase(date) {
-        if (!currentUser || !getSB()) return;
-        try { await getSB().from("meal_logs").delete().eq("user_id", currentUser.id).eq("date", date); }
-        catch(e) { console.warn("SG: meal log remove", e); }
+        if (!currentUser || !getSB()) return false;
+        try {
+            const { error } = await getSB().from("meal_logs").delete().eq("user_id", currentUser.id).eq("date", date);
+            if (error) throw error;
+            return true;
+        }
+        catch(e) { console.warn("SG: meal log remove", e); return false; }
+    }
+    // Replay anything the ledger still says is not durable. Called on sign-in and
+    // on every focus refresh, immediately BEFORE the server read — otherwise the
+    // read would see a server that legitimately lacks the row and the merge would
+    // have to keep guessing.
+    //
+    // Takes userId as a PARAMETER and does its own writes rather than calling
+    // saveMealLogToSupabase/removeMealLogFromSupabase. Its only caller is
+    // loadUserData, which is a useCallback with [] deps: it permanently holds
+    // render #1's closure, where currentUser is still null. Every other line in
+    // loadUserData already respects that — it takes userId/userEmail as arguments
+    // and never reads currentUser. A `if (!currentUser) return;` guard here read
+    // as false on every call forever, so the entire replay was dead code and
+    // offline/signed-out logs still never reached the server.
+    const _flushInFlight = React.useRef(false);
+    async function flushPendingMealLogs(userId, logs) {
+        const sb = getSB();
+        if (!userId || !sb) return;
+        // loadUserData fires on focus, on visibilitychange, and every 3s for 90s
+        // after checkout. Two overlapping flushes both see date d unsynced, both
+        // DELETE then INSERT, and the unique index on (user_id, date) makes the
+        // loser fail with 23505 — pinning d as unsynced forever and retrying it
+        // on every focus for the life of the install.
+        if (_flushInFlight.current) return;
+        _flushInFlight.current = true;
+        try {
+            // Tombstones first: a date can be both un-logged locally and still
+            // present on the server, and the delete has to land before the merge
+            // reads the server back.
+            for (const d of tombstonedLogDates()) {
+                // Through the same per-date chain as setCalLogs, so a replay cannot
+                // interleave with a live write the user just made for that date.
+                await queueLogWrite(d, async () => {
+                    const { error } = await sb.from("meal_logs").delete().eq("user_id", userId).eq("date", d);
+                    if (!error) clearLogTombstone(d);
+                });
+            }
+            const unsynced = unsyncedLogDates();
+            if (!unsynced.size) return;
+            const byDate = new Map((logs || []).map(l => [l.date, l]));
+            for (const d of unsynced) {
+                const entry = byDate.get(d);
+                // In the ledger but absent from local state. The log-then-unlog
+                // path already clears the ledger itself, so reaching here means
+                // local and ledger have diverged. Tombstone it rather than
+                // marking it synced: local state is what the user sees, and a
+                // silent "synced" would leave an orphan row on the server that
+                // the next merge pulls back into their calendar.
+                if (!entry) { markLogSynced(d); markLogTombstoned(d); continue; }
+                await queueLogWrite(d, async () => {
+                    const { error: delErr } = await sb.from("meal_logs").delete().eq("user_id", userId).eq("date", d);
+                    if (delErr) return;
+                    const { error: insErr } = await sb.from("meal_logs").insert({ user_id: userId, date: d,
+                        lunch_id: entry.lunchId, dinner_id: entry.dinnerId, batch_size: entry.batchSize || 7 });
+                    if (!insErr) markLogSynced(d);
+                });
+            }
+        } finally { _flushInFlight.current = false; }
     }
     async function syncFavourite(recipeId, adding) {
         if (!currentUser || !getSB()) return;
@@ -14739,7 +15007,9 @@ function App() {
         // Check if a promo-granted tier has expired
         try {
             const stored = JSON.parse(localStorage.getItem("mp_unlocks") || "{}");
-            if (stored.via === "promo" && stored.expires && new Date(String(stored.expires).slice(0, 10) + "T23:59:59Z") < new Date()) {
+            // Local end-of-day, matching the redeem-screen check and the tier_expires
+            // comparison above. With "Z" a promo died mid-afternoon in the Americas.
+            if (stored.via === "promo" && stored.expires && new Date(String(stored.expires).slice(0, 10) + "T23:59:59") < new Date()) {
                 const reset = { calculator: false, allRecipes: false, recipes: [], tier: null };
                 setUnlocks(reset);
             }
@@ -14937,7 +15207,12 @@ function App() {
                         markDevSessionUnlocked();
                         setShowDevTierPicker(true);
                     }
-                });
+                })
+                // crypto.subtle is undefined on an insecure origin, and digest()
+                // rejects rather than throwing. Without this the rejection reached
+                // window.onunhandledrejection, which shows the full-screen error
+                // card offering to clear app data — over a mistyped dev PIN.
+                .catch(() => {});
         }
         else setLogoTaps(t);
     };
@@ -16216,7 +16491,10 @@ function showOnScreenError(msg, src, line) {
     var clearBtn = document.createElement('button'); clearBtn.style.cssText='background:none;border:1px solid #c0602a;color:#c0602a;border-radius:10px;padding:10px 24px;font-size:12px;cursor:pointer;'; clearBtn.textContent='Clear cache & reload';
     clearBtn.onclick=function(){
         if (!window.confirm('Clear cached app data and reload?\n\nYour custom recipes, pantry, saved plans and notes are kept.')) return;
-        var KEEP=/^(sg_custom_recipes|sg_pantry|mp_saved_plans|mp_note_|mp_steps_|sg_supplements|mp_cal_logs|mp_basics|mp_profile|sb-.*-auth-token)/;
+        // mp_logs_unsynced/mp_logs_tombstone ride along with mp_cal_logs. Keeping
+        // the logs but dropping the ledger would mark every not-yet-durable prep
+        // day as synced, and the next server read would delete it.
+        var KEEP=/^(sg_custom_recipes|sg_pantry|mp_saved_plans|mp_note_|mp_steps_|sg_supplements|mp_cal_logs|mp_logs_unsynced|mp_logs_tombstone|mp_basics|mp_profile|sb-.*-auth-token)/;
         try { Object.keys(localStorage).forEach(function(k){ if(!KEEP.test(k)) localStorage.removeItem(k); }); } catch(_) {}
         try { if (window.caches && caches.keys) caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }); } catch(_) {}
         location.reload();

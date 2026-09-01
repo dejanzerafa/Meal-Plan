@@ -62,14 +62,28 @@ jobs:
           git ls-files '*.html' \
             | grep -vE '^(node_modules|_mobile|files|vendor)/' \
             > "$RUNNER_TEMP/html.txt"
-          git ls-files '*.js' '*.mjs' \
+          git ls-files '*.js' '*.mjs' '*.cjs' \
             | grep -vE '^(node_modules|_mobile|vendor)/|/vendor/' \
             > "$RUNNER_TEMP/js.txt"
-          git ls-files 'netlify/functions/*.js' 'netlify/functions/**/*.js' \
+          # .mjs/.cjs too: a function added as .mjs got no node --check at all,
+          # while the comment above claimed every new function was covered.
+          git ls-files 'netlify/functions/*.js'  'netlify/functions/**/*.js' \
+                       'netlify/functions/*.mjs' 'netlify/functions/**/*.mjs' \
+                       'netlify/functions/*.cjs' 'netlify/functions/**/*.cjs' \
             > "$RUNNER_TEMP/functions.txt"
           echo "HTML pages:       $(wc -l < "$RUNNER_TEMP/html.txt")"
           echo "JS/MJS sources:   $(wc -l < "$RUNNER_TEMP/js.txt")"
           echo "Netlify functions:$(wc -l < "$RUNNER_TEMP/functions.txt")"
+
+          # An EMPTY list is a silently-green build with zero coverage, not a pass.
+          # `git ls-files` returns nothing after a directory rename, and the loops
+          # below then iterate zero times and print PASS. Fail loudly instead.
+          for f in html js functions; do
+            if [ ! -s "$RUNNER_TEMP/$f.txt" ]; then
+              echo "::error::$f.txt is empty — the pathspec matched nothing. Did a directory move?"
+              exit 1
+            fi
+          done
 
       # ── Helper scripts ──────────────────────────────────────────────────────
       # Written into the checkout at run time rather than committed, so this
@@ -372,9 +386,40 @@ jobs:
         if: ${{ !cancelled() }}
         run: node scripts/smoke-test-pricing.mjs
 
-      - name: Regression suite
+      # Was written, exits 1 on failure, and was never wired in. It enforces the
+      # App Store rule — no plan price and no checkout button on the app domain —
+      # which is the guard here with an external consequence if it regresses.
+      - name: Guard — Apple compliance (no pricing on the app domain)
         if: ${{ !cancelled() }}
-        run: node scripts/test-regressions.mjs
+        run: node scripts/check-apple-compliance.mjs
+
+      # Runs once per timezone, because the timezone assertions were inert.
+      # ubuntu-latest is UTC, and every date bug this suite exists to catch is a
+      # bug that CANNOT manifest in UTC: toISOString() on a local midnight only
+      # rolls the day when the offset is non-zero. So the tests passed on a build
+      # that still had the bug.
+      #
+      #   Asia/Qatar        UTC+3, no DST — where the app is built and used
+      #   America/Los_Angeles  UTC-7/-8 — the opposite sign, catches the "+Z"
+      #                     end-of-day bugs that expire access hours early
+      #   Pacific/Kiritimati UTC+14, the extreme — a whole calendar day of skew
+      #   UTC               the control; a failure only here means the fix
+      #                     over-corrected
+      - name: Regression suite (multiple timezones)
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          fail=0
+          for tz in UTC Asia/Qatar America/Los_Angeles Pacific/Kiritimati; do
+            echo "──────── TZ=$tz ────────"
+            if TZ="$tz" node scripts/test-regressions.mjs; then
+              echo "  ok    TZ=$tz"
+            else
+              echo "::error::Regression suite failed under TZ=$tz"
+              fail=1
+            fi
+          done
+          [ "$fail" -eq 0 ] || exit 1
 
       - name: Clean up helpers
         if: ${{ always() }}

@@ -28,7 +28,7 @@ exports.handler = async (event) => {
       statusCode: 204,
       headers: {
         "Access-Control-Allow-Origin": "https://soulgainz.app",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Max-Age": "86400",
       },
@@ -36,7 +36,15 @@ exports.handler = async (event) => {
     };
   }
 
-  if (event.httpMethod !== "GET") {
+  // POST is the primary path. The client was moved to POST so the email stays out
+  // of Netlify access logs, browser history and Sentry breadcrumbs (Sentry captures
+  // fetch URLs; beforeSend only strips event.user.email). The POST-parsing block
+  // below was added at the same time — but this gate was left rejecting everything
+  // that is not GET, so every call 405'd, the read-back of calc_used never
+  // happened, and canUseCalculator silently fell through to the localStorage-only
+  // check. The "one free calculation per email" rule held only until a user
+  // cleared a key or opened the app on another device.
+  if (event.httpMethod !== "GET" && event.httpMethod !== "POST" && event.httpMethod !== "OPTIONS") {
     return { statusCode: 405, body: "Method not allowed" };
   }
 

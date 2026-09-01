@@ -251,10 +251,10 @@
   <p>No App Store needed. Get the full SoulGainz experience installed on your phone in under 30 seconds.</p>
 
   <div class="platform-tabs">
-    <button class="tab-btn active" onclick="switchPlatform('ios')">
+    <button class="tab-btn active" data-platform="ios" onclick="switchPlatform('ios')">
       iPhone / iPad
     </button>
-    <button class="tab-btn" onclick="switchPlatform('android')">
+    <button class="tab-btn" data-platform="android" onclick="switchPlatform('android')">
       Android
     </button>
   </div>
@@ -415,11 +415,17 @@
 </footer>
 
 <script>
+// `p` identifies the tab, so the button is found by its own argument rather than
+// by the implicit global `window.event`. That global is non-standard: in Firefox
+// it is undefined here, so the line threw and the clicked tab never got the
+// `active` class — the panel switched but the highlight stayed on iOS.
 function switchPlatform(p) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.platform-panel').forEach(el => el.classList.remove('active'));
-  document.querySelector(`#panel-${p}`).classList.add('active');
-  event.currentTarget.classList.add('active');
+  const panel = document.querySelector(`#panel-${p}`);
+  if (panel) panel.classList.add('active');
+  const btn = document.querySelector(`.tab-btn[data-platform="${p}"]`);
+  if (btn) btn.classList.add('active');
 }
 
 // Auto-detect platform
