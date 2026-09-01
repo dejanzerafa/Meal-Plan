@@ -369,20 +369,37 @@ exports.handler = async (event) => {
           .eq("stripe_subscription_id", sub.id);
 
         // 2. Downgrade the user's profile to free tier in Supabase
+        //
+        // Normalised, like the grant path and extendEntitlement. This one was
+        // missed: a Stripe email of "Dejan@Icloud.com" never matched a profile row
+        // stored lowercase, so the revocation quietly matched zero rows.
+        let custEmail = null;
         try {
           const customer = await stripe.customers.retrieve(sub.customer);
-          const custEmail = customer.email;
-          if (custEmail) {
-            await downgradeUserToFree(supabase, custEmail, sub.customer);
-
-            // 3. Send win-back email
+          custEmail = customer && customer.email ? customer.email.trim().toLowerCase() : null;
+        } catch (e) {
+          console.error("subscription.deleted: customer lookup failed", e);
+          return { statusCode: 500, body: "customer lookup failed" };
+        }
+        if (custEmail) {
+          // This whole block used to sit inside a try/catch that swallowed every
+          // failure and fell through to the 200 below — so a revocation touching
+          // zero rows was recorded by Stripe as success and never retried, and a
+          // cancelled subscriber kept their tier indefinitely.
+          const revoked = await downgradeUserToFree(supabase, custEmail, sub.customer);
+          if (!revoked) {
+            console.error(`REVOCATION FAILED for ${custEmail} — returning 500 so Stripe retries`);
+            return { statusCode: 500, body: "downgrade failed" };
+          }
+          // The win-back email is a courtesy. It must never fail the revocation.
+          try {
             await sendEmail({
               to: custEmail,
               subject: "Your access has ended — come back anytime",
               html: buildCancellationEmail(APP_URL),
             });
-          }
-        } catch(e) { console.error("Subscription deleted handler error:", e); }
+          } catch (e) { console.error("Win-back email failed (revocation already succeeded):", e); }
+        }
 
         break;
       }
@@ -496,16 +513,30 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
         .eq("stripe_customer_id", stripeCustomerId)
         .single();
       if (user) {
-        const { error: fallbackErr } = await supabase
+        const { data: fbRows, error: fallbackErr } = await supabase
           .from("profiles")
           .update({ tier: null, tier_via: null, tier_label: null, tier_expires: null })
-          .eq("id", user.id);
-        if (fallbackErr) console.error("Profile downgrade fallback error:", fallbackErr);
-        else console.log(`Profile downgraded to free (by ID fallback): ${stripeCustomerId}`);
+          .eq("id", user.id)
+          .select("id");
+        if (fallbackErr) { console.error("Profile downgrade fallback error:", fallbackErr); return false; }
+        // Without .select() a zero-row update reads as success — the exact trap
+        // .select() was added upstream to close, left open one level down. And
+        // users.id is NOT the auth UUID that profiles.id holds (see the checkout
+        // handler's comment), so this match legitimately often finds nothing.
+        // That has to be reported, not logged as a successful downgrade.
+        if (!fbRows || fbRows.length === 0) {
+          console.error(`REVOCATION UNMATCHED: no profiles row for customer ${stripeCustomerId} (email ${email}). Manual downgrade required.`);
+          return false;
+        }
+        console.log(`Profile downgraded to free (by ID fallback): ${stripeCustomerId}`);
+        return true;
       }
-    } catch(e2) { console.error("Profile downgrade fallback lookup error:", e2); }
+      console.error(`REVOCATION UNMATCHED: no users row for customer ${stripeCustomerId}. Manual downgrade required.`);
+      return false;
+    } catch(e2) { console.error("Profile downgrade fallback lookup error:", e2); return false; }
   } else {
     console.log(`Profile downgraded to free: ${email}`);
+    return true;
   }
 }
 

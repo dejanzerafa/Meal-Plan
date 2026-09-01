@@ -34,17 +34,16 @@ exports.handler = async (event) => {
   }
 
   // ── IP-based rate limiting ───────────────────────────────────────────────────
-  const clientIp =
-    event.headers["x-nf-client-connection-ip"] ||
-    clientIp(event) ||
-    "unknown";
+  // Same self-referencing-const bug as restore-account had: the local shadowed
+  // the imported helper and appeared in its own initialiser.
+  const _ip = clientIp(event) || "unknown";
 
   let store;
   let attempts = { count: 0, windowStart: Date.now() };
 
   try {
     store = getStore({ name: "admin-rate-limit", consistency: "strong" });
-    const stored = await store.get(`ip:${clientIp}`, { type: "json" }).catch(() => null);
+    const stored = await store.get(`ip:${_ip}`, { type: "json" }).catch(() => null);
     if (stored) {
       if (Date.now() - stored.windowStart < RATE_LIMIT_WINDOW) {
         attempts = stored; // still within window
@@ -76,7 +75,7 @@ exports.handler = async (event) => {
     // Increment failed-attempt counter
     if (store) {
       try {
-        await store.setJSON(`ip:${clientIp}`, {
+        await store.setJSON(`ip:${_ip}`, {
           count:       attempts.count + 1,
           windowStart: attempts.windowStart,
         });
@@ -89,7 +88,7 @@ exports.handler = async (event) => {
 
   // ── Success: clear rate limit counter for this IP ───────────────────────────
   if (store) {
-    try { await store.delete(`ip:${clientIp}`); } catch (_) {}
+    try { await store.delete(`ip:${_ip}`); } catch (_) {}
   }
 
   // Returns an HMAC of the timestamp, signed with ADMIN_SECRET. NOTE: nothing

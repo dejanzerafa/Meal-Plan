@@ -23,14 +23,19 @@
 #    supabase/functions/renewal-reminder/ — see its index.ts for the pg_cron SQL.
 # To test any function manually: POST /.netlify/functions/<name> (body may be empty)
 
-[functions."birthday-emails"]
-  schedule = "0 8 * * *"      # Daily at 08:00 UTC — check + send birthday emails
-
-[functions."holiday-emails"]
-  schedule = "0 7 * * *"      # Daily at 07:00 UTC — check + send holiday emails
-
-[functions."renewal-reminder"]
-  schedule = "0 9 * * *"      # Daily at 09:00 UTC — send 7-day renewal reminders
+# Schedules REMOVED. These three functions now require ADMIN_SECRET or CRON_SECRET
+# unconditionally, and Netlify's scheduler cannot present either — so leaving the
+# schedules here would produce a silent daily 401 that looks like the emails simply
+# stopped working.
+#
+# They previously accepted an `x-nf-event-trigger` header as proof of being the
+# scheduler. That header arrives on the inbound request, so any caller could send
+# it and skip the secret entirely — mass mail from support@soulgainz.app on demand,
+# and live Stripe promotion codes from birthday-emails. It was never a gate.
+#
+# Supabase pg_cron is the invoker: it sends CRON_SECRET as a Bearer token. See
+# supabase/cron-jobs.sql. That path also works on the free plan, which these
+# schedules never did.
 
 # Custom redirects (PWA-friendly)
 

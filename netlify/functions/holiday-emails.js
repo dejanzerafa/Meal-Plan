@@ -100,15 +100,17 @@ const YEAR_HOLIDAYS = {
 
 exports.handler = async (event) => {
   // ── Auth gate ───────────────────────────────────────────────────────────────
-  // Runs on a Netlify schedule, but the endpoint is ALSO reachable over plain
+  // Runs on a schedule, but the endpoint is ALSO reachable over plain
   // HTTP. Ungated, anyone could invoke it repeatedly to mail-bomb the entire user
   // base from support@soulgainz.app — and birthday-emails additionally mints live
-  // Stripe promotion codes. Netlify's scheduler sets x-nf-event-trigger; every
-  // other caller must present ADMIN_SECRET.
+  // Stripe promotion codes. EVERY caller must present ADMIN_SECRET or CRON_SECRET.
+  //
+  // The previous version accepted an x-nf-event-trigger header as proof of being
+  // the scheduler. That header arrives on the inbound request — anyone could send
+  // it and skip the secret check entirely. It was not a gate.
   {
     const _h = event && event.headers ? event.headers : {};
-    const isScheduled = !!(_h["x-nf-event-trigger"] || _h["X-Nf-Event-Trigger"]);
-    if (!isScheduled) {
+    {
       const adminSecret = process.env.ADMIN_SECRET;
       let provided = null;
       try {
@@ -116,7 +118,15 @@ exports.handler = async (event) => {
         provided = auth.startsWith("Bearer ") ? auth.slice(7)
                  : (event && event.body ? (JSON.parse(event.body).secret || null) : null);
       } catch (_) {}
-      if (!adminSecret || !secretsMatch(provided, adminSecret)) {
+      // Accept EITHER secret. Netlify's scheduler cannot present one, so if the
+      // netlify.toml schedules are live on a paid plan they will now 401 — the
+      // Supabase pg_cron path (which DOES send CRON_SECRET as a Bearer token) is
+      // the intended invoker. Failing closed is correct here: these functions mail
+      // the entire user base and mint live Stripe promotion codes.
+      const cronSecret = process.env.CRON_SECRET;
+      const okAdmin = adminSecret && secretsMatch(provided, adminSecret);
+      const okCron  = cronSecret  && secretsMatch(provided, cronSecret);
+      if (!okAdmin && !okCron) {
         return { statusCode: 401, body: JSON.stringify({ error: "unauthorized" }) };
       }
     }

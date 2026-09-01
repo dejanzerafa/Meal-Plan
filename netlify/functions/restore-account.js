@@ -49,6 +49,18 @@ async function _checkIpRateLimit(ip) {
 }
 
 exports.handler = async (event) => {
+  // Declared before anything can reference it. The auth gate below returns
+  // 401/403 with these headers, and one of those returns sits outside the try —
+  // so an undeclared identifier here was a ReferenceError and a 502, not a 401.
+  // It also runs before the OPTIONS branch, which meant CORS preflight 502'd and
+  // the browser could never reach this function at all.
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Content-Type": "application/json",
+  };
+
   // ── Require the caller to prove who they are ────────────────────────────────
   // This returned first_name, last_name, email and subscription tier for ANY
   // address, to anyone, with no authentication. The origin check below is
@@ -114,12 +126,14 @@ exports.handler = async (event) => {
   }
 
   // ── IP rate limit ─────────────────────────────────────────────────────────
-  // Prefer x-nf-client-connection-ip (Netlify's real-IP header, not spoofable)
-  const clientIp =
-    (event.headers && event.headers["x-nf-client-connection-ip"]) ||
-    clientIp(event) ||
-    "unknown";
-  const allowed = await _checkIpRateLimit(clientIp);
+  // Was `const clientIp = ... || clientIp(event) || ...`. That local shadowed the
+  // imported helper AND appeared inside its own initialiser — a temporal-dead-zone
+  // ReferenceError the moment the Netlify header is absent (local dev, or any path
+  // that omits it), thrown outside every try block, so a 502 rather than a 429.
+  // The helper already prefers x-nf-client-connection-ip and falls back to the
+  // LAST forwarded hop, which is the non-spoofable one.
+  const _ip = clientIp(event) || "unknown";
+  const allowed = await _checkIpRateLimit(_ip);
   if (!allowed) {
     return { statusCode: 429, headers, body: JSON.stringify({ error: "Too many attempts. Please wait a moment." }) };
   }

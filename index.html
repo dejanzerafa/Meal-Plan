@@ -8864,7 +8864,7 @@ function TotalBar({ total, targets, profileName }) {
 //
 // EXCLUSIONS run first and win. Order matters.
 const ALLERGEN_MAP = [
-    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","macaroni","spaghetti","penne","fusilli","linguine","orzo","farfalle","rigatoni","lasagne","lasagna","tortilla","bagel","brioche","bun","roll","ciabatta","focaccia","naan","pita","bao","croissant","muffin","crumpet","soy sauce","worcestershire","wheat","barley","malt","rye","spelt","semolina","oat","granola","muesli","cornflake","corn flake","cereal","cracker","pancake mix","baking mix","batter mix","breadcrumb","panko","wrap","noodle","couscous","bulgur","seitan","pastry","biscuit","cookie","crouton","stock cube","bouillon","gnocchi","ravioli","tortellini","gyoza","dumpling","tagliatelle","farro","freekeh","gochujang"],
+    { name: "Gluten / Wheat", icon: "🌾", terms: ["flour","bread","pasta","macaroni","spaghetti","penne","fusilli","linguine","orzo","farfalle","rigatoni","lasagne","lasagna","tortilla","bagel","brioche","bun","roll","ciabatta","focaccia","naan","pita","bao","croissant","muffin","crumpet","soy sauce","worcestershire","wheat","barley","malt","rye","spelt","semolina","oat","granola","muesli","cornflake","corn flake","cereal","cracker","pancake mix","baking mix","batter mix","breadcrumb","panko","wrap","noodle","couscous","bulgur","seitan","pastry","biscuit","cookie","crouton","stock cube","bouillon","gnocchi","ravioli","tortellini","gyoza","dumpling","tagliatelle","farro","freekeh","gochujang","teriyaki","hoisin","miso","oyster sauce","ponzu","seitan"],
       not: ["coconut flour","almond flour","chickpea flour","rice flour","buckwheat","rice cake","gluten-free","gluten free","corn tortilla","tamari"] },
     { name: "Dairy",          icon: "🧀", terms: ["cheese","milk","butter","cream","yogurt","yoghurt","whey","casein","cheddar","parmesan","parmigiano","mozzarella","ricotta","feta","halloumi","mascarpone","ghee","lactose","custard","brioche"],
       not: ["peanut butter","almond butter","cashew butter","nut butter","coconut milk","almond milk","oat milk","soy milk","soya milk","rice milk","coconut cream","cocoa butter","shea butter","buttermilk substitute","butternut","butter bean","butterhead"] },
@@ -14953,11 +14953,18 @@ function App() {
         setPendingSlot(null);
     };
     const allRecipes = React.useMemo(() => [...RECIPES, ...customRecipes], [customRecipes]);
-    const lr = lunch ? (allRecipes.find(r => r.id === lunch) || null) : null;
-    const dr = dinner ? (allRecipes.find(r => r.id === dinner) || null) : null;
-    const bfr = breakfastRecipe ? (allRecipes.find(r => r.id === breakfastRecipe) || null) : null;
-    const prer = preRecipe ? (allRecipes.find(r => r.id === preRecipe) || null) : null;
-    const desr = dessert ? (allRecipes.find(r => r.id === dessert) || null) : null;
+    // canView is applied HERE, at the single point every consumer reads from.
+    // Filtering only the SHOP tab left the MEALS tab leaking: MealCard's
+    // "Fridge pull" toggle renders every batchItem with scaled quantities, so a
+    // lapsed subscriber kept the full ingredient list for the paid recipes still
+    // sitting in their slots. Meal-slot ids survive sign-out by design and are
+    // never cleared on downgrade, so this persisted indefinitely.
+    const _vis = r => (r && canView(r.id)) ? r : null;
+    const lr = _vis(lunch ? (allRecipes.find(r => r.id === lunch) || null) : null);
+    const dr = _vis(dinner ? (allRecipes.find(r => r.id === dinner) || null) : null);
+    const bfr = _vis(breakfastRecipe ? (allRecipes.find(r => r.id === breakfastRecipe) || null) : null);
+    const prer = _vis(preRecipe ? (allRecipes.find(r => r.id === preRecipe) || null) : null);
+    const desr = _vis(dessert ? (allRecipes.find(r => r.id === dessert) || null) : null);
     // Effective targets — profile macros override defaults when available; nudge is applied on top
     const effectiveTargets = (() => {
         const base = (profile && profile.result && profile.result.macros && profile.result.macros.kcal)
