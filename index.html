@@ -9739,6 +9739,34 @@ function _fallbackCopy(text, onDone) {
     } catch (_e) { /* copying is a convenience; never let it break the app */ }
 }
 
+// ── Local calendar date ──────────────────────────────────────────────────────
+// Every calendar date in this app is a LOCAL day: "the day the user prepped", not
+// an instant in time. Producing one with toISOString() is wrong for any zone east
+// of UTC, because it converts to UTC first and rolls back past midnight. Qatar is
+// UTC+3, so `new Date("2026-09-01T00:00:00").toISOString().slice(0,10)` returns
+// "2026-08-31" — every time, not as an edge case.
+//
+// Symptoms this caused: the prep-ending banner and its notification fired a full
+// day early; the 7-day adherence window silently dropped today between midnight
+// and 03:00; and today's dot read "off plan" for the first three hours of every day.
+//
+// Use this for anything compared against a stored date. Use toISOString() only for
+// true timestamps (created_at, updated_at), where the instant IS the point.
+function localDateKey(d) {
+    const x = (d instanceof Date) ? d : new Date(d);
+    if (isNaN(x)) return null;
+    const p = n => String(n).padStart(2, "0");
+    return x.getFullYear() + "-" + p(x.getMonth() + 1) + "-" + p(x.getDate());
+}
+// Parse a "YYYY-MM-DD" as LOCAL midnight. `new Date("2026-09-01")` is parsed as
+// UTC midnight per spec, which is the mirror image of the same bug.
+function parseLocalDate(str) {
+    if (typeof str !== "string") return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(str);
+    if (!m) { const d = new Date(str); return isNaN(d) ? null : d; }
+    return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+
 function safeSet(key, value) {
     try {
         localStorage.setItem(key, value);
@@ -9892,6 +9920,13 @@ function isAdmin(email) { return email && ADMIN_EMAILS.includes(email.toLowerCas
 
 // Convert Supabase profile row → app profile object
 function sbRowToProfile(row) {
+    // A row whose identity and macro fields are all null is NOT a profile — it is
+    // the residue of "Clear all data", which nulls the columns but leaves the row.
+    // Returning an object here made App state truthy, so ProfileTab skipped its
+    // first-run branch and rendered a "DAILY MACRO TARGETS" card full of em-dashes
+    // instead of the calculator. Treat an empty row as no profile.
+    if (row && !row.first_name && !row.last_name && !row.dob && !row.weight_kg
+            && !row.height_cm && !row.kcal_target) return null;
     if (!row) return null;
     const kcal = row.kcal_target || null;
     const protein = row.protein_g || null;
@@ -13224,12 +13259,35 @@ function SupplementsTab({ C, currentUser, isPremium }) {
         const sb = getSB(); if (!sb) return;
         try {
             setSyncing(true);
-            await sb.from("user_supplements").delete().eq("user_id", currentUser.id);
-            if (list.length) {
-                await sb.from("user_supplements").insert(list.map(s => ({
-                    user_id: currentUser.id, name: s.name, dose: s.dose, unit: s.unit,
-                    times: s.times, notes: s.notes, active: s.active
-                })));
+            // De-duplicate by name BEFORE writing. part10 added a unique index on
+            // (user_id, name), and this path is a delete-then-insert of the whole
+            // list — so two entries with the same name (a morning and an evening
+            // "Creatine", which the UI permits) now raise 23505. The catch below
+            // only warns, so the DELETE would already have succeeded and the user's
+            // entire stack would vanish server-side. Last entry wins, which matches
+            // what the user last edited.
+            const byName = new Map();
+            for (const item of list) byName.set(String(item.name || "").trim().toLowerCase(), item);
+            const unique = [...byName.values()];
+
+            // Insert FIRST, delete second, so a failure cannot leave the user with
+            // nothing. Upsert on the unique index makes the insert idempotent.
+            if (unique.length) {
+                const { error: upErr } = await sb.from("user_supplements").upsert(
+                    unique.map(s => ({
+                        user_id: currentUser.id, name: s.name, dose: s.dose, unit: s.unit,
+                        times: s.times, notes: s.notes, active: s.active
+                    })),
+                    { onConflict: "user_id,name" }
+                );
+                if (upErr) throw upErr;
+                // Remove only rows the user actually deleted.
+                const keep = unique.map(s => s.name);
+                await sb.from("user_supplements").delete()
+                    .eq("user_id", currentUser.id)
+                    .not("name", "in", `(${keep.map(n => `"${String(n).replace(/"/g, '""')}"`).join(",")})`);
+            } else {
+                await sb.from("user_supplements").delete().eq("user_id", currentUser.id);
             }
         } catch(e){ console.warn("SG supp sync", e); }
         finally { setSyncing(false); }
@@ -13238,12 +13296,29 @@ function SupplementsTab({ C, currentUser, isPremium }) {
         if (!currentUser) return;
         const sb = getSB(); if (!sb) return;
         try {
-            const { data } = await sb.from("user_supplements").select("*").eq("user_id", currentUser.id);
-            if (data) {
-                const list = data.map(r => ({ id:r.id, name:r.name, dose:r.dose, unit:r.unit||"mg",
-                    times:r.times||[], notes:r.notes||"", active:r.active!==false, createdAt:r.created_at }));
-                setSupps(list); saveSuppList(list);
+            const { data, error } = await sb.from("user_supplements").select("*").eq("user_id", currentUser.id);
+            if (error) throw error;
+            const list = (data || []).map(r => ({ id:r.id, name:r.name, dose:r.dose, unit:r.unit||"mg",
+                times:r.times||[], notes:r.notes||"", active:r.active!==false, createdAt:r.created_at }));
+            // An EMPTY server result used to overwrite local, because `[]` is truthy.
+            // A user who built a stack while signed out and then signed in on the
+            // same device had it deleted: syncToSupabase only fires on a mutation,
+            // and uploadLocalDataToSupabase only runs at signup. sg_supplements is
+            // in the sign-out preserve list precisely because it is user content,
+            // and this path threw it away.
+            //
+            // So: an empty server result with a NON-empty local list means the local
+            // one has never been synced. Push it up instead of destroying it.
+            if (list.length === 0) {
+                let local = [];
+                try { local = JSON.parse(localStorage.getItem("sg_supplements") || "[]"); } catch (_) {}
+                if (Array.isArray(local) && local.length) {
+                    setSupps(local);
+                    try { await syncToSupabase(local); } catch (_) {}
+                    return;
+                }
             }
+            setSupps(list); saveSuppList(list);
         } catch(e){ console.warn("SG supp load", e); }
     };
     React.useEffect(() => { loadFromSupabase(); }, [currentUser?.id]);
@@ -13811,10 +13886,29 @@ function App() {
         // next focus merged the server row straight back in.
         try {
             if (currentUser && currentUser.id) {
+                // Track in-flight writes. loadUserData runs on focus and
+                // visibilitychange and treats the server as authoritative, so
+                // without this a refresh landing between the local write and the
+                // server round-trip would discard a prep day the user just logged.
+                if (!(window._sg_pending_logs instanceof Set)) window._sg_pending_logs = new Set();
+                const pending = window._sg_pending_logs;
                 const prev = new Set((calLogs || []).map(l => l.date));
                 const next = new Set((newLogs || []).map(l => l.date));
-                for (const l of (newLogs || [])) if (!prev.has(l.date)) saveMealLogToSupabase(l);
-                for (const d of prev) if (!next.has(d)) removeMealLogFromSupabase(d);
+                for (const l of (newLogs || [])) {
+                    if (prev.has(l.date)) continue;
+                    pending.add(l.date);
+                    Promise.resolve(saveMealLogToSupabase(l))
+                        .catch(() => {})
+                        .then(() => pending.delete(l.date));
+                }
+                for (const d of prev) {
+                    if (next.has(d)) continue;
+                    // Clear any pending marker first, or a delete racing its own
+                    // add would leave the date pinned as "in flight" forever and
+                    // the merge would keep resurrecting it.
+                    pending.delete(d);
+                    Promise.resolve(removeMealLogFromSupabase(d)).catch(() => {});
+                }
             }
         } catch (_) { /* sync is best-effort; local state is authoritative */ }
         // ── Prep ending reminder: detect newly added log date ─────────────────
@@ -13827,7 +13921,7 @@ function App() {
                 const prepEnd = new Date(prepStart);
                 prepEnd.setDate(prepEnd.getDate() + bsz);
                 // Write prep end date for the in-app banner (existing polling reads this)
-                safeSet("mp_next_prep", prepEnd.toISOString().slice(0, 10));
+                safeSet("mp_next_prep", localDateKey(prepEnd));
                 // Notification fires 1 day before prep ends at 9am
                 const notifAt = new Date(prepEnd);
                 notifAt.setDate(notifAt.getDate() - 1);
@@ -13895,8 +13989,8 @@ function App() {
             var shopDate = localStorage.getItem("mp_next_shop");
             var prepDate = localStorage.getItem("mp_next_prep");
             var now = new Date();
-            if (shopDate && new Date(shopDate) <= now) { setShopAlert(true); localStorage.removeItem("mp_next_shop"); }
-            if (prepDate && new Date(prepDate) <= now) { setPrepAlert(true); localStorage.removeItem("mp_next_prep"); }
+            if (shopDate && parseLocalDate(shopDate) <= now) { setShopAlert(true); localStorage.removeItem("mp_next_shop"); }
+            if (prepDate && parseLocalDate(prepDate) <= now) { setPrepAlert(true); localStorage.removeItem("mp_next_prep"); }
         } catch(e) {}
     }, []);
     React.useEffect(() => {
@@ -14123,7 +14217,7 @@ function App() {
                     const bsz = Math.min(Math.max(parseInt(log.batchSize) || 7, 1), 30);
                     for (let i = 0; i < bsz; i++) {
                         const d = new Date(start); d.setDate(d.getDate() + i);
-                        coveredDates.add(d.toISOString().slice(0, 10));
+                        coveredDates.add(localDateKey(d));
                     }
                 } catch(_) {}
             });
@@ -14136,7 +14230,7 @@ function App() {
             for (let i = 0; i < 60; i++) {
                 const d = new Date(today);
                 d.setDate(d.getDate() - i);
-                const key = d.toISOString().slice(0, 10);
+                const key = localDateKey(d);
                 const hasEntry = coveredDates.has(key);
                 if (hasEntry) { streak++; } else { break; }
             }
@@ -14323,7 +14417,20 @@ function App() {
                         const localLogs = JSON.parse(localStorage.getItem("mp_cal_logs") || "[]");
                         localOnly = localLogs.filter(l => l.date && !sbDates.has(l.date));
                     } catch(_) {}
-                    const merged = [...sbFmt, ...localOnly].sort((a,b) => a.date > b.date ? -1 : 1);
+                    // A union can never express a DELETE. Keeping every local date
+                    // the server lacks meant un-logging a prep day on one device
+                    // silently reappeared on another — and if a focus refresh raced
+                    // the DELETE, the entry became local-only and could never be
+                    // removed again, because the un-log path only calls
+                    // removeMealLogFromSupabase for dates it believes the server holds.
+                    //
+                    // The server is authoritative for anything already synced. Local
+                    // entries survive ONLY while their write is still in flight,
+                    // which is what stops a refresh landing mid-write from throwing
+                    // away a prep day the user just logged.
+                    const _pending = (window._sg_pending_logs instanceof Set) ? window._sg_pending_logs : new Set();
+                    const localOnlyKept = localOnly.filter(l => _pending.has(l.date));
+                    const merged = [...sbFmt, ...localOnlyKept].sort((a,b) => a.date > b.date ? -1 : 1);
                     setCalLogsState(merged);
                     try { safeSet("mp_cal_logs", JSON.stringify(merged)); } catch(_) {}
                 }
@@ -14364,10 +14471,15 @@ function App() {
                 // Exception: an active dev override is a deliberate local simulation, so a
                 // Supabase error must not silently cancel it mid-test.
                 if (_devTier) _applyDev();
-                else setUnlocksState(prev => ({
+                // setUnlocks, NOT setUnlocksState. The raw setter never writes
+                // localStorage, so the stale mp_unlocks — stamp and all — survived
+                // and the next page load restored paid access. The comment directly
+                // above says "reset to free until next successful verify"; this is
+                // what makes that true past a reload.
+                else setUnlocks({
                     calculator: false, allRecipes: false, recipes: [],
                     tier: null, _serverVerified: false
-                }));
+                });
             }
         }
     , []);
@@ -14470,6 +14582,12 @@ function App() {
         };
     }, [currentUser]);
 
+    // Promote out of onboarding when a password recovery is in progress. Done in
+    // an effect, after commit, rather than during render.
+    React.useEffect(() => {
+        if (showSetPassword && onboardStep !== "app") setOnboardStep("app");
+    }, [showSetPassword, onboardStep]);
+
     function clearSessionState() {
         // Drop the Supabase session token unconditionally.
         //
@@ -14491,43 +14609,59 @@ function App() {
             "sg_custom_recipes", "mp_note_", "mp_steps_",
             // Calculator
             "sg_calc_results", "sg_calc_email",
-            // Supplements
-            "sg_supplements", "sg_supp_disc", "sg_supp_reminders", "sg_supp_last_fired",
+            // Supplements — sg_supplements REMOVED: it syncs to user_supplements and
+            // is per-person. Preserving it showed the next user the previous one's
+            // supplement schedule. The three UI-state keys are not personal.
+            "sg_supp_disc", "sg_supp_last_fired",
             // Meal selections — not in Supabase, device-level, must survive sign-out
             "mp_lunch", "mp_dinner", "mp_breakfast", "mp_dessert", "mp_preworkout",
             "mp_pre_skip", "mp_bfast_skip", "mp_portions",
             // Macro adjustments
             "mp_macro_nudge",
-            // Body stats (not security-sensitive, avoids blank ME tab while Supabase loads)
-            "mp_basics",
+            // mp_basics REMOVED. It holds date of birth, gender, weight and height —
+            // health-adjacent personal data, and the opposite of "not
+            // security-sensitive". It is restored from profiles on sign-in.
             // Account name — restored by loadUserData but also preserved to avoid blank flash
             // mp_acc_email deliberately NOT preserved — it left the previous
             // user's address prefilled for the next person on a shared device.
             "mp_acc_name", "mp_acc_first_name", "mp_acc_last_name",
             // Pantry — user-generated, not synced to Supabase, permanent data loss if wiped
             "sg_pantry",
-            // Promo anti-reuse guard — prevents re-redemption on same device after sign-out
-            "mp_redeemed_promos",
+            // mp_redeemed_promos REMOVED. Anti-reuse belongs on the server, which
+            // already enforces it (redeem-promo marks the code inactive). Keeping it
+            // locally blocked a DIFFERENT person on a shared device from redeeming a
+            // code they legitimately hold.
             // Onboarding state — prevents forcing returning users through signup again
             "sg_onboarded", "sg_skip_ts",
-            // Calendar logs — also restored from Supabase but preserve locally for instant load
-            "mp_cal_logs",
+            // mp_cal_logs REMOVED — it is restored from meal_logs on sign-in, and
+            // preserving it showed the next user the previous one's prep calendar.
             // App preferences
             "mp_lang", "mp_theme", "mp_onboarded", "mp_pwa_ok",
             "mp_daily_time", "mp_notif_daily", "mp_notif_prep", "mp_notif_shop",
             "mp_next_prep", "mp_next_shop",
             "mp_sunday_dismissed", "mp_last_milestone",
-            // Email — needed for server calc check + analytics after sign-out
-            "mp_acc_email", "mp_calc_used_email",
-            // Recipe history — device-level, not in Supabase, permanent loss if wiped
-            "mp_history", "mp_last_",
+            // mp_acc_email and mp_calc_used_email REMOVED. The comment above already
+            // said mp_acc_email was deliberately not preserved; this line preserved
+            // it anyway, and the code won. Consequences: the ME tab prefilled the
+            // previous user's address, every analytics event was attributed to them
+            // until the new user signed in, and the calculator quota check (which
+            // has [] deps and fires once at mount) judged the new user by the old
+            // one's usage.
+            // mp_history REMOVED — a 56-day record of what the previous person ate.
+            // mp_last_ is per-recipe UI state, not personal.
+            "mp_last_",
             // Recipe UI preferences — cosmetic but prevents reset on sign-out
             "mp_recipeCat", "mp_recipeView",
             // Unlock state (promo/local) + welcome modal trigger
             "mp_unlocks", "mp_new_unlock",
-            // Profile + macros — backed up to Supabase on sign-in but preserve locally
-            // so same-device sign-out/sign-in doesn't lose data if Supabase is unavailable
-            "mp_profile",
+            // mp_profile REMOVED. It holds name, date of birth, gender, weight,
+            // height, goal and macro targets, and it IS backed up to Supabase — so
+            // the stated reason for preserving it (guarding against Supabase being
+            // unavailable) buys a narrow same-device convenience at the cost of
+            // showing the next person on a shared device the previous user's health
+            // data. It also caused a concrete bug: with no profiles row of their
+            // own, a new signer-in had the PREVIOUS user's profile restored into
+            // their session.
             // Saved meal plan templates — user-generated, not synced to Supabase, permanent loss if wiped
             "mp_saved_plans",
             // Prep reminder time preference — device-level setting
@@ -14605,7 +14739,7 @@ function App() {
         // Check if a promo-granted tier has expired
         try {
             const stored = JSON.parse(localStorage.getItem("mp_unlocks") || "{}");
-            if (stored.via === "promo" && stored.expires && new Date(stored.expires + "T23:59:59") < new Date()) {
+            if (stored.via === "promo" && stored.expires && new Date(String(stored.expires).slice(0, 10) + "T23:59:59Z") < new Date()) {
                 const reset = { calculator: false, allRecipes: false, recipes: [], tier: null };
                 setUnlocks(reset);
             }
@@ -14666,6 +14800,30 @@ function App() {
             if (stored) {
                 const parsed = JSON.parse(stored);
                 return Object.assign({ recipes: [] }, parsed, {
+                // ── On the forgeability of _verifiedAt / _verifiedFor ─────────────
+                // These pass through from localStorage by design, and that means a
+                // hand-written {_verifiedAt: Date.now(), _verifiedFor: <your own
+                // uid>} grants paid access for 30 days without ever reaching the
+                // server. The comment on canView claims the localStorage-spoofing
+                // hole is closed; strictly, the grace path re-opens it.
+                //
+                // It cannot be closed client-side. Stripping the stamp on restore
+                // would kill the offline grace outright — the whole point is that it
+                // survives a restart so a subscriber on a plane keeps what they paid
+                // for. Making it unforgeable needs a server-signed token, and
+                // verifying a signature requires the key, which cannot live in a
+                // file every user can read.
+                //
+                // What makes the trade acceptable: every recipe already ships inside
+                // this bundle to every anonymous visitor, so forging the stamp
+                // exposes nothing that view-source does not. The alternative — no
+                // grace — locks paying customers out of what they bought whenever
+                // their connection drops. That is the worse error, and it is the one
+                // that actually happens.
+                //
+                // If the recipe bodies ever move behind an authenticated endpoint,
+                // revisit this: at that point the stamp starts guarding something
+                // real and should become a signed, server-issued token.
                     recipes: Array.isArray(parsed.recipes) ? parsed.recipes : [],
                     calculator: !!parsed.calculator,
                     allRecipes: !!parsed.allRecipes,
@@ -15025,8 +15183,20 @@ function App() {
     // Prevent flash of onboarding screen while Supabase resolves the session
     if (!authReady) return React.createElement("div", { style:{position:"fixed",inset:0,background:"#0F0D0A",display:"flex",alignItems:"center",justifyContent:"center"} },
         React.createElement("div", { style:{width:40,height:40,border:"3px solid #2a2520",borderTopColor:"#e8d5b0",borderRadius:"50%",animation:"spin 0.8s linear infinite"} }));
-    if (onboardStep === "story") return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
-    if (onboardStep === "signup") return React.createElement(OnboardingSignup, { onDone: () => { const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(dest); } setOnboardStep("app"); } });
+    // Password recovery must win over onboarding. Supabase signs the user in from
+    // the emailed link, but the set-password modal lives inside the main return —
+    // so on any browser that has not onboarded (a fresh device, a mail-app webview,
+    // a private window, or a user who skipped signup more than 3 days ago) they
+    // landed on the marketing story instead. They could not sign in, because they
+    // had forgotten the password, and requesting another link repeated the loop.
+    // That is the common case: people reset passwords precisely when they are on a
+    // device they have not used before.
+    // NOT setOnboardStep() here — calling a setter during render is a React
+    // anti-pattern and can loop. The guards below are enough: they let the main
+    // return (which holds the modal) render while recovery is pending, and the
+    // effect near the auth listener promotes onboardStep once, after commit.
+    if (onboardStep === "story" && !showSetPassword) return React.createElement(OnboardingStory, { onNext: () => setOnboardStep("signup") });
+    if (onboardStep === "signup" && !showSetPassword) return React.createElement(OnboardingSignup, { onDone: () => { const dest = window._sg_open_tab; if (dest) { delete window._sg_open_tab; setTab(dest); } setOnboardStep("app"); } });
 
     return (React.createElement("div", { "data-theme": resolvedTheme, style: { display: "flex", height: "100svh", width: "100%",
             paddingTop: "env(safe-area-inset-top, 0px)",
@@ -15234,7 +15404,7 @@ function App() {
                         for (var i = 0; i < 7; i++) {
                             var d = new Date(today);
                             d.setDate(today.getDate() - i);
-                            past7.push(d.toISOString().split("T")[0]);
+                            past7.push(localDateKey(d));
                         }
                         var logsInWindow = (calLogs || []).filter(function(l) { return past7.indexOf(l.date) !== -1 && l.lunchId && l.dinnerId; });
                         if (!logsInWindow.length) return null;
@@ -15593,7 +15763,7 @@ function App() {
                             var y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
                             var ds = y + "-" + m + "-" + day;
                             var onPlan = batchLogs.some(function(log) {
-                                var start = new Date(log.date);
+                                var start = parseLocalDate(log.date);
                                 var end = new Date(start);
                                 end.setDate(start.getDate() + (log.batchSize || 1));
                                 return d >= start && d < end;

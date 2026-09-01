@@ -372,6 +372,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: node scripts/smoke-test-pricing.mjs
 
+      - name: Regression suite
+        if: ${{ !cancelled() }}
+        run: node scripts/test-regressions.mjs
+
       - name: Clean up helpers
         if: ${{ always() }}
         run: rm -rf .ci
