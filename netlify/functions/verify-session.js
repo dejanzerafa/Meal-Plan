@@ -104,8 +104,11 @@ exports.handler = async (event) => {
       }),
     };
   } catch (err) {
-    console.error("verify-session error:", err);
+    console.error("verify-session error:", err && err.code, err && err.message);
     // Do not echo err.message — Stripe's wording reveals whether the id exists.
-    return { statusCode: 500, headers, body: JSON.stringify({ error: "Could not verify payment" }) };
+    // Stripe answers an unknown id with resource_missing; that is the caller's
+    // problem (404), not ours (500), and the success page treats both the same.
+    const missing = err && (err.code === "resource_missing" || err.statusCode === 404);
+    return { statusCode: missing ? 404 : 500, headers, body: JSON.stringify({ error: "Could not verify payment" }) };
   }
 };

@@ -10285,18 +10285,29 @@ function isAdmin(email) { return email && ADMIN_EMAILS.includes(email.toLowerCas
 // assumed consent is not consent. save-user's welcome_sent flag makes this
 // idempotent, so calling it twice (immediate session AND a later confirmation
 // landing) sends once.
-function sendWelcomeEmail(email, firstName, lastName) {
+function sendWelcomeEmail(email, firstName, lastName, accessToken) {
     try {
         const em = String(email || "").trim().toLowerCase();
         if (!em || !em.includes("@")) return;
+        // The bearer is what makes save-user willing to send mail at all: it
+        // takes the recipient from the TOKEN, never from the body, so this
+        // cannot be turned into a relay for arbitrary addresses. Without a
+        // token save-user stores the row and forces skip_email.
+        const headers = { "Content-Type": "application/json" };
+        if (accessToken) headers.Authorization = "Bearer " + accessToken;
         void fetch("/.netlify/functions/save-user", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({
                 email: em,
                 first_name: String(firstName || "").slice(0, 50),
                 last_name:  String(lastName  || "").slice(0, 50),
                 marketing_opt_in: false,
+                // Never "Welcome back" from a sign-up moment. save-user's
+                // welcome_sent flag makes the first call send once; this makes
+                // the second call (confirmation-on projects reach both moments)
+                // a true no-op.
+                welcome_only: true,
             }),
         }).catch(() => {});
     } catch (_) {}
@@ -10638,7 +10649,7 @@ function SeasonalPopup({ show, onClose, onBuy }) {
                 // Deliberately shows NO price and no in-app purchase. Apple
                 // rejects apps that display prices or sell directly; all
                 // purchasing happens on the website. This block previously
-                // rendered "€4.99 · one-time" with an "Unlock This Season"
+                // rendered "[a one-time price] · one-time" with an "Unlock This Season"
                 // buy button — it is dormant (setShowSeasonalPopup is never
                 // called) but shipped in the bundle, and "seasonal" is not a
                 // purchasable tier any more (see KNOWN_TIERS in
@@ -12981,7 +12992,7 @@ function OnboardingSignup({ onDone }) {
             safeSet("sg_onboarded",      "registered");
             // Flag auth listener to upload local data instead of overwriting it
             window._sg_upload_on_auth = true;
-            sendWelcomeEmail(em, name.trim(), surname.trim());
+            sendWelcomeEmail(em, name.trim(), surname.trim(), data.session && data.session.access_token);
             setStatus("success");
             // "macros" is the tab id of the FOODS ingredient browser, NOT the macro
             // calculator — the calculator lives in the ME tab ("profile"). New users
@@ -15221,9 +15232,13 @@ function App() {
             // initialiser armed _sg_upload_on_auth before the listener existed.
             // The account is real as of now — this is the welcome moment for the
             // confirmation-on path.
-            sendWelcomeEmail(currentUser.email,
-                localStorage.getItem("mp_acc_first_name") || "",
-                localStorage.getItem("mp_acc_last_name")  || "");
+            const _sb = getSB();
+            if (_sb) _sb.auth.getSession().then(({ data }) => {
+                sendWelcomeEmail(currentUser.email,
+                    localStorage.getItem("mp_acc_first_name") || "",
+                    localStorage.getItem("mp_acc_last_name")  || "",
+                    data && data.session && data.session.access_token);
+            }).catch(() => {});
         } catch (_) {}
         if (onboardStep !== "app") setOnboardStep("app");
         try {
@@ -15278,6 +15293,9 @@ function App() {
             // code they legitimately hold.
             // Onboarding state — prevents forcing returning users through signup again
             "sg_onboarded", "sg_skip_ts",
+            // Pending-confirmation address: an external SIGNED_OUT while waiting for
+            // the link must not strip the sign-in screen of its banner and prefill.
+            "sg_pending_confirm_email",
             // mp_cal_logs REMOVED — it is restored from meal_logs on sign-in, and
             // preserving it showed the next user the previous one's prep calendar.
             // App preferences

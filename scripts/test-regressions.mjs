@@ -677,6 +677,8 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
   t("marketing success page deep-links to the ME tab by its real id",
      /tab=profile/.test(ms) && !/tab=me\b/.test(ms),
      "the tab is called 'profile' internally; ?tab=me renders a blank screen");
+  t("verify-session answers an unknown session id with 404, not 500",
+     /err\.code === "resource_missing"/.test(vs) && /missing \? 404 : 500/.test(vs));
   t("/success is routed on the marketing site",
      /from = "\/success"/.test(readFileSync(join(ROOT, "marketing-site", "netlify.toml"), "utf8")));
 }
@@ -775,12 +777,31 @@ section("Sign-up — email confirmation must not be a dead end");
     t("no call for an invalid email", sent.length === 1);
   }
   t("it is called on the immediate-session sign-up path",
-     /window\._sg_upload_on_auth = true;\s*sendWelcomeEmail\(em, name\.trim\(\), surname\.trim\(\)\)/.test(src));
+     /window\._sg_upload_on_auth = true;\s*sendWelcomeEmail\(em, name\.trim\(\), surname\.trim\(\), data\.session && data\.session\.access_token\)/.test(src),
+     "the bearer is what lets save-user send mail at all");
   t("and on the confirmation-landing path",
      /localStorage\.removeItem\("sg_pending_confirm_email"\);[\s\S]{0,600}sendWelcomeEmail\(currentUser\.email/.test(src));
   const saveUser = stripJS(readFileSync(join(ROOT, "netlify", "functions", "save-user.js"), "utf8"));
   t("save-user still guards on welcome_sent so the two paths send once",
      /alreadySent = userData\?\.welcome_sent/.test(saveUser) && /welcome_sent: true/.test(saveUser));
+  // save-user sends mail from support@ to a caller-supplied address. Review
+  // called it an open relay. Now: no bearer → skip_email forced; bearer → the
+  // recipient is the TOKEN's email, never the body's.
+  t("save-user forces skip_email when there is no bearer", /\} else \{\s*skip_email = true;/.test(saveUser),
+     "otherwise one IP can send 'Welcome to SoulGainz' to unlimited addresses");
+  t("save-user takes the recipient from the token, not the body",
+     /authedUser = r\.user;\s*email = String\(authedUser\.email/.test(saveUser));
+  t("welcome_only suppresses 'Welcome back'", /\} else if \(!welcome_only\) \{/.test(saveUser),
+     "a second call from the sign-up path sent 'Welcome back' to someone who joined ninety seconds ago");
+  t("the app passes the bearer and welcome_only", /Authorization = "Bearer " \+ accessToken/.test(welcome) && /welcome_only: true/.test(welcome));
+  for (const f of ["pricing.html", "sign-up.html"]) {
+    const m = readFileSync(join(ROOT, "marketing-site", f), "utf8");
+    t(`marketing ${f} sends the welcome after sign-up, with the bearer`,
+       /function sendWelcome\(session, name\)/.test(m) && /'Bearer ' \+ session\.access_token/.test(m) && /sendWelcome\(session, name\)/.test(m.replace(/function sendWelcome\(session, name\)/, "")),
+       "buyers — the users you most want to welcome — got nothing");
+    t(`marketing ${f} stores first_name/last_name, not only full_name`, /first_name: \(name\|\|''\)\.trim\(\)/.test(m),
+       "the app's profile stub reads first_name/last_name; full_name alone left the ME tab blank");
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -874,6 +895,16 @@ section("App-domain hygiene — nothing pre-launch or paid may be served there")
   t("and excluded from the deploy", /^marketing-site\/$/m.test(ign));
   const landing = readFileSync(join(ROOT, "landing.html"), "utf8");
   t("no fabricated testimonials on the landing page", !/Real results, real people/.test(landing) && !/★★★★★/.test(landing));
+  t("no plan price survives in the app bundle, even in a comment", !/€\d+\.\d\d/.test(raw.slice(0, raw.indexOf("const RECIPES ="))),
+     "a dormant '€4.99 · one-time' comment shipped in the bundle; grep-based reviewers flag it every time");
+  const swap = readFileSync(join(ROOT, "scripts", "launch-swap.mjs"), "utf8");
+  t("launch-swap refuses to apply on a dirty tree", /git status --porcelain/.test(swap) && /process\.exit\(2\)/.test(swap),
+     "the documented undo is `git checkout .`, which would take unrelated work with it");
+  t("launch-swap dry run is a no-op on disk", (() => {
+    const before = execSync("git status --porcelain", { cwd: ROOT, encoding: "utf8" });
+    try { execSync("node scripts/launch-swap.mjs", { cwd: ROOT, stdio: "pipe" }); } catch (_) { return false; }
+    return execSync("git status --porcelain", { cwd: ROOT, encoding: "utf8" }) === before;
+  })());
 }
 
 section("Other pages — install.html and the service worker");

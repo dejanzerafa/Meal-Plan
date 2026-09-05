@@ -671,6 +671,24 @@
     // same name, which is a SyntaxError before a single line runs — every
     // button on the page was dead from the commit that self-hosted the bundle.
     let sb = null;
+
+    // Welcome email. Fire-and-forget. save-user takes the recipient from the
+    // bearer token, so this cannot mail anyone but the signed-in user, and
+    // welcome_only makes a repeat call a no-op rather than a "Welcome back".
+    // Buyers are the users you most want to welcome, and until now the
+    // marketing sign-up path never sent one.
+    function sendWelcome(session, name) {
+      try {
+        if (!session || !session.access_token) return;
+        const parts = String(name || '').trim().split(/\s+/);
+        void fetch('https://soulgainz.app/.netlify/functions/save-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+          body: JSON.stringify({ email: session.user && session.user.email, first_name: parts[0] || '', last_name: parts.slice(1).join(' '), marketing_opt_in: false, welcome_only: true }),
+        }).catch(() => {});
+      } catch (_) {}
+    }
+
     try {
       sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     } catch(e) { console.warn('Supabase init failed', e); }
@@ -910,10 +928,11 @@
             // Land back HERE after confirming, with the session in the hash, so
             // they can pick a plan and pay. Without it the link used Supabase's
             // Site URL — the app's waitlist page, which cannot consume the token.
-            options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name } },
+            options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name, first_name: (name||'').trim().split(/\s+/)[0] || undefined, last_name: (name||'').trim().split(/\s+/).slice(1).join(' ') || undefined } },
           });
           if (error) throw error;
           session = data?.session;
+          if (session) sendWelcome(session, name);
           // If email confirmation required, session may be null
           if (!session) {
             errEl.style.color = '#4ade80';

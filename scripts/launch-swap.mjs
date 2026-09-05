@@ -237,15 +237,24 @@ if (!APPLY) {
   process.exit(0);
 }
 
+// Refuse to write over unrelated uncommitted work. The documented undo is
+// `git checkout .`, which would take that work with it.
+const dirty = (() => { try { return execSync("git status --porcelain", { cwd: ROOT, encoding: "utf8" }).trim(); } catch (_) { return ""; } })();
+if (dirty) {
+  console.log("  ✗ working tree is not clean — commit or stash first:\n" + dirty.replace(/^/gm, "     ") + "\n");
+  process.exit(2);
+}
 for (const e of edits) writeFileSync(join(ROOT, e.file), e.after);
 console.log("  written.");
-// Regenerate the two legal pages from the edited template.
-execSync("node scripts/build-legal-pages.mjs", { cwd: ROOT, stdio: "pipe" });
-console.log("  legal pages regenerated.\n");
+// Regenerate the two legal pages from the edited template. A failure here is
+// reported like any other leftover rather than escaping as a stack trace with
+// eight files already modified and no summary.
+const leftovers = [];
+try { execSync("node scripts/build-legal-pages.mjs", { cwd: ROOT, stdio: "pipe" }); console.log("  legal pages regenerated.\n"); }
+catch (e) { leftovers.push("LEGAL PAGE REGEN FAILED:\n" + (e.stdout || e.stderr || e.message)); }
 
 // ── Verify: nothing pre-launch is left, and the app domain is still compliant ─
 console.log("  verifying …");
-const leftovers = [];
 const check = (file, re, label) => {
   const s = readFileSync(join(ROOT, file), "utf8");
   const m = s.match(re);

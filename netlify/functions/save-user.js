@@ -18,7 +18,7 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
-const { escHtml, rateLimit, clientIp } = require("./_shared/auth");
+const { escHtml, rateLimit, clientIp, requireUser } = require("./_shared/auth");
 
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
@@ -29,49 +29,72 @@ const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
 // is unauthenticated, writes a caller-supplied email, and can send mail.
 
 exports.handler = async (event) => {
+  const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
+  const allowed = ["https://soulgainz.app", "https://www.soulgainz.app", "https://soulgainz.netlify.app",
+                   "https://marketing.soulgainz.app", "http://localhost", "http://127.0.0.1"];
+  const corsOrigin = (allowed.includes(origin) || _isLocalOrigin(origin)) ? origin : "https://soulgainz.app";
+  const cors = {
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Vary": "Origin",
+  };
+
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "https://soulgainz.app",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Max-Age": "86400",
-      },
-      body: "",
-    };
+    return { statusCode: 204, headers: { ...cors, "Access-Control-Max-Age": "86400" }, body: "" };
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, headers: cors, body: "Method not allowed" };
   }
 
-  // Origin check — only allow requests from known app origins
-  const origin = event.headers && (event.headers.origin || event.headers.Origin || "");
-  const allowed = ["https://soulgainz.app", "https://www.soulgainz.app", "https://soulgainz.netlify.app", "http://localhost", "http://127.0.0.1"];
   if (origin && !allowed.includes(origin) && !_isLocalOrigin(origin)) {
-    return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
+    return { statusCode: 403, headers: cors, body: JSON.stringify({ error: "Forbidden" }) };
   }
 
   let payload;
   try {
     payload = JSON.parse(event.body || "{}");
   } catch (e) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
+    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
   // Default FALSE. This used to default true here, in the schema, and be
   // hard-coded true by the client — so every user was enrolled in marketing
   // without ever being asked. Assumed consent is not consent.
-  const { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used } = payload;
+  let { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used, welcome_only = false } = payload;
+
+  // ── Who is asking? ──────────────────────────────────────────────────────────
+  // This endpoint sends mail from support@soulgainz.app to a caller-supplied
+  // address. Unauthenticated, that is an open relay for "Welcome to SoulGainz"
+  // with an attacker-chosen first name, rate-limited only per email+IP — one
+  // IP could hit unlimited distinct addresses. So:
+  //
+  //   Bearer token present  → the address is taken from the TOKEN, not the
+  //                           body, and mail may be sent.
+  //   No token              → data may still be stored (the calculator's
+  //                           free-use stamp needs this), but skip_email is
+  //                           forced on. Nothing is ever mailed to an address
+  //                           the caller merely typed.
+  let authedUser = null;
+  const hasBearer = /^Bearer\s+/i.test((event.headers && (event.headers.authorization || event.headers.Authorization)) || "");
+  if (hasBearer) {
+    const r = await requireUser(event);
+    if (r.error) return { statusCode: r.status, headers: cors, body: JSON.stringify({ error: r.error }) };
+    authedUser = r.user;
+    email = String(authedUser.email || "").trim().toLowerCase();
+  } else {
+    skip_email = true;
+    email = String(email || "").trim().toLowerCase();
+  }
 
   const _rl = await rateLimit(`saveuser_${(email || "").toLowerCase().trim()}_${clientIp(event)}`, { max: 5, windowMs: 60000 });
   if (email && !_rl.ok) {
-    return { statusCode: 429, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
+    return { statusCode: 429, headers: cors, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
   }
 
   if (!email || !email.includes("@")) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
+    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Valid email required" }) };
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -83,7 +106,7 @@ exports.handler = async (event) => {
 
   if (!supabaseUrl || !supabaseKey) {
     console.log("Supabase not configured - skipping");
-    return { statusCode: 200, body: JSON.stringify({ ok: true, skipped: true }) };
+    return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true, skipped: true }) };
   }
 
   try {
@@ -216,8 +239,12 @@ exports.handler = async (event) => {
           console.error("Welcome email error:", emailErr.message);
         }
 
-      // 3b. Returning user - send Welcome Back email
-      } else {
+      // 3b. Returning user - send Welcome Back email.
+      // Not from the sign-up path: the app calls this at the moment an account
+      // becomes real, and a second call (confirmation-on projects hit both the
+      // immediate and the confirmation-landing moments) must be a no-op, not a
+      // "Welcome back" to someone who joined ninety seconds ago.
+      } else if (!welcome_only) {
         try {
           const emailRes = await fetch("https://api.resend.com/emails", {
             method: "POST",
@@ -245,10 +272,10 @@ exports.handler = async (event) => {
       }
     }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true }) };
   } catch (err) {
     console.error("save-user error:", err);
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: "Could not save" }) };
   }
 };
 

@@ -73,7 +73,7 @@ exports.handler = async (event) => {
       // schema — the live DB confirmed it (diagnostic 2026-09-05, section 9), so
       // this endpoint has 400'd on every call. Plan and status live on the
       // subscriptions table; embed the latest row via the users→subscriptions FK.
-      `${supabaseUrl}/rest/v1/users?select=email,first_name,last_name,created_at,marketing_opt_in,subscriptions(tier,status,current_period_end)&order=created_at.desc`,
+      `${supabaseUrl}/rest/v1/users?select=email,first_name,last_name,created_at,marketing_opt_in,subscriptions(tier,status,current_period_end,created_at)&order=created_at.desc&subscriptions.order=created_at.desc`,
       {
         headers: {
           "apikey": supabaseKey,
