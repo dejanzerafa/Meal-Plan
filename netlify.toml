@@ -12,6 +12,12 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "VAPID_PUBLIC_KEY"
 
+[[edge_functions]]
+  function = "block-source-files"
+  # Regex, not a glob. Blocks .sql/.md/.sh/etc at any depth — the extension
+  # cases that redirect splats cannot express. See the function file for why.
+  pattern = "^/.*\\.(sql|md|sh|yml|yaml|toml|lock|bak|backup|env)$"
+
 [functions]
   node_bundler = "esbuild"
 
@@ -77,6 +83,81 @@
 
 [[redirects]]
   from = "/generate-icons.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ── Security: block source, docs and tooling from public access ────────────
+#
+# .netlifyignore DOES NOT WORK for this. It was added on 2026-08-31 to exclude
+# supabase/, *.md, *.sql and package.json, and none of it took effect: as of
+# 2026-09-05 /supabase/cron-jobs.sql, /AUDIT_REPORT.md and /package.json all
+# still returned 200. Netlify does not apply .netlifyignore to the publish
+# directory of a `publish = "."` site — forced redirects are the mechanism that
+# actually works here, same as the admin.html block above.
+#
+# Directory splats. The trailing /* is required; Netlify matches the splat only
+# at the END of a path, which is also why there is no `/*.sql` rule — that
+# pattern silently matches nothing. Extensions are handled by the edge function
+# declared further down instead.
+[[redirects]]
+  from = "/supabase/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/recipe-intake/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/screenshots/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/uat_screenshots/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/files/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/social/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/socials/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Dependency manifests. Named explicitly rather than by extension: a blanket
+# *.json block would take out manifest.json and break the PWA install.
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
   to = "/404.html"
   status = 404
   force = true
