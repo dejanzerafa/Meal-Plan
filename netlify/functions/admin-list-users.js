@@ -69,7 +69,11 @@ exports.handler = async (event) => {
   try {
     // Fetch all users — select the columns needed for the dashboard
     const res = await fetch(
-      `${supabaseUrl}/rest/v1/users?select=email,first_name,last_name,created_at,subscription_status,plan_type,marketing_opt_in&order=created_at.desc`,
+      // subscription_status and plan_type were selected here and exist in no
+      // schema — the live DB confirmed it (diagnostic 2026-09-05, section 9), so
+      // this endpoint has 400'd on every call. Plan and status live on the
+      // subscriptions table; embed the latest row via the users→subscriptions FK.
+      `${supabaseUrl}/rest/v1/users?select=email,first_name,last_name,created_at,marketing_opt_in,subscriptions(tier,status,current_period_end)&order=created_at.desc`,
       {
         headers: {
           "apikey": supabaseKey,
@@ -85,7 +89,18 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers, body: JSON.stringify({ error: "Supabase fetch failed", detail: err }) };
     }
 
-    const users = await res.json();
+    const rows = await res.json();
+    // Flatten the embed to the shape the old (never-working) select promised,
+    // so anything reading subscription_status / plan_type keeps working.
+    const users = rows.map(r => {
+      const subs = Array.isArray(r.subscriptions) ? r.subscriptions : [];
+      const live = subs.find(s => s.status === "active" || s.status === "trialing") || subs[0] || null;
+      const { subscriptions, ...rest } = r;
+      return { ...rest,
+        subscription_status: live ? live.status : null,
+        plan_type:           live ? live.tier   : null,
+        period_end:          live ? live.current_period_end : null };
+    });
     console.log(`admin-list-users: returned ${users.length} users`);
 
     return {

@@ -22,7 +22,7 @@
 //      out and executed, it is executed. Regexes are the fallback, not the norm.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -519,6 +519,18 @@ section("Netlify functions — the method gate must match what the client sends"
   t("the schema's status CHECK uses Stripe's spelling", /'canceled'/.test(schema) && !/CHECK \(status IN \([^)]*'cancelled'/.test(schema),
      "Stripe sends `canceled`; a CHECK on `cancelled` rejects every cancellation");
   t("part 11 adds at_risk and widens the CHECK", /add column if not exists at_risk/.test(part11) && /'canceled'/.test(part11));
+  // The live DB (diagnostic 2026-09-05) had none of these; the functions
+  // selected or wrote them anyway and 400'd on every call.
+  const fnFiles = readdirSync(fnDir).filter(f => f.endsWith(".js")).map(f => stripJS(readFileSync(join(fnDir, f), "utf8")));
+  const allFn = fnFiles.join("\n");
+  t("no function selects users.subscription_status / users.plan_type",
+     !/rest\/v1\/users\?select=[^`'"]*\b(subscription_status|plan_type)\b/.test(allFn),
+     "those columns exist in no schema; admin-list-users 400'd on every call");
+  const part12 = readFileSync(join(ROOT, "supabase-schema-fix-part12-RUN-THIS.sql"), "utf8");
+  t("part 12 adds promo_codes.redeemed_by / redeemed_at",
+     /add column if not exists redeemed_by/.test(part12) && /add column if not exists redeemed_at/.test(part12),
+     "redeem-promo.js has always written them; every redemption 400'd and read as 'already claimed'");
+  t("part 12 entitles any profile with an active sub and a NULL tier", /and p\.tier is null/.test(part12));
   // Every subscriptions write must capture its error. The renewal write at
   // invoice.payment_succeeded was a bare `await` and discarded the 42703.
   const subWrites = [...wh.matchAll(/(?:const \{ error: \w+ \} = )?await supabase\s*\.from\("subscriptions"\)\s*\.(?:update|insert)\(/g)];
