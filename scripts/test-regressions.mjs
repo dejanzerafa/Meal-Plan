@@ -907,6 +907,133 @@ section("App-domain hygiene — nothing pre-launch or paid may be served there")
   })());
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
+{
+  const fnDir = join(ROOT, "netlify", "functions");
+  const fn = f => stripJS(readFileSync(join(fnDir, f), "utf8"));
+
+  // ── S3: the dev tier override is only reachable by a signed-in admin ──
+  // Executed, not grepped. getDevOverride is pulled out with its two
+  // dependencies stubbed so we can prove a non-admin gets null even when the
+  // localStorage value and the session flag are both set.
+  {
+    const body = fnSrc("getDevOverride");
+    const isAdminSrc = fnSrc("isAdmin");
+    const adminLine = lineWith("const ADMIN_EMAILS");
+    t("getDevOverride / isAdmin / ADMIN_EMAILS extracted", !!body && !!isAdminSrc && !!adminLine);
+    if (body && isAdminSrc && adminLine) {
+      const run = (email) => new Function("localStorage", "DEV_TIERS", "devSessionUnlocked", "email",
+        adminLine + "\n" + isAdminSrc + "\n" + body + "\nreturn getDevOverride(email);")
+        ({ getItem: () => "annual" }, ["annual", "monthly"], () => true, email);
+      t("non-admin with mp_dev_override=annual and an unlocked session still gets null", run("someone@example.com") === null,
+         "anyone could set one localStorage key and hold every paid recipe");
+      t("no email → null", run(null) === null);
+      const admin = eval(adminLine.replace(/^\s*const ADMIN_EMAILS\s*=\s*/, "").replace(/;.*$/, ""))[0];
+      t("the admin with the same state gets the tier", run(admin) === "annual");
+    }
+    const tap = constFnSrc("const tapLogo = ");
+    t("the PIN prompt refuses to unlock without an admin session",
+       !!tap && /if \(!currentUser \|\| !isAdmin\(currentUser\.email\)\) return;/.test(tap) && tap.indexOf("!isAdmin(currentUser.email)") < tap.indexOf("markDevSessionUnlocked()"),
+       "the PIN hash is in the page source; the PIN alone must not be enough");
+    const apply = constFnSrc("const applyDevTier = ");
+    t("applyDevTier is gated on an admin session", !!apply && /isAdmin\(currentUser\.email\)/.test(apply));
+  }
+
+  // ── D4: profiles.email is server-owned ──
+  {
+    const p13 = readFileSync(join(ROOT, "supabase-schema-fix-part13-RUN-THIS.sql"), "utf8");
+    t("part 13 installs the email-from-auth trigger", /create trigger trg_profiles_email_from_auth/.test(p13) && /before insert or update of email/i.test(p13));
+    t("part 13 makes lower(email) unique on profiles", /profiles_email_lower_uniq/.test(p13) && /lower\(email\)/.test(p13));
+    t("part 13 defaults users.marketing_opt_in to false", /marketing_opt_in\s+set default false/i.test(p13),
+       "assumed consent is not consent");
+  }
+
+  // ── S1: every money/data function reports, and report() cannot take one down ──
+  {
+    const rep = fn(join("_shared", "report.js"));
+    t("report() exists and never throws", /\breport\b/.test(rep) && /catch/.test(rep) && /AbortController|setTimeout/.test(rep));
+    t("report() scrubs emails before sending", /@/.test(rep) && /replace\(/.test(rep));
+    const critical = ["stripe-webhook.js", "create-checkout.js", "save-user.js", "verify-session.js", "delete-account.js", "export-data.js"];
+    for (const f of critical) t(`${f} imports report()`, /require\("\.\/_shared\/report"\)/.test(fn(f)), "a silent failure in a money or data path");
+    t("the webhook reports an UNMATCHED PURCHASE", /report\("stripe-webhook",\s*"UNMATCHED PURCHASE/.test(fn("stripe-webhook.js")));
+  }
+
+  // ── S5: terms acceptance is recorded once, server-side, from a verified token ──
+  {
+    const su = fn("save-user.js");
+    t("save-user writes terms_accepted_at only for a token-verified user", /if \(authedUser && terms_accepted_at\)/.test(su));
+    t("…and only once (terms_accepted_at=is.null filter)", /terms_accepted_at=is\.null/.test(su),
+       "a re-POST must not overwrite the original acceptance timestamp");
+    t("app sign-up posts terms_accepted_at + terms_version with a bearer", /terms_version:\s*"2026-08"/.test(src) && /welcome_only:\s*true/.test(src));
+    const msu = readFileSync(join(ROOT, "marketing-site", "sign-up.html"), "utf8");
+    t("marketing sign-up refuses to create an account without the Terms checkbox",
+       /id="input-terms"/.test(msu) && /currentTab === 'signup' && !document\.getElementById\('input-terms'\)\.checked/.test(msu));
+  }
+
+  // ── S4: lifecycle emails + cron ──
+  {
+    const wh = fn("stripe-webhook.js");
+    t("webhook handles charge.refunded", /case "charge\.refunded"/.test(wh) && /buildRefundEmail/.test(wh));
+    t("cancel-requested email keys on the previous_attributes transition",
+       /previous_attributes\.cancel_at_period_end === false/.test(wh) && /previous_attributes\.cancel_at_period_end === true/.test(wh),
+       "without the transition check every subscription.updated (renewal, card change) would send a cancellation email");
+    const cron = readFileSync(join(ROOT, "supabase", "cron-jobs.sql"), "utf8");
+    const cronCode = cron.replace(/--[^\n]*/g, "");   // the header comments narrate the old bugs by name
+    t("cron-jobs.sql carries no secret literal", !/Bearer [A-Za-z0-9_-]{16,}/.test(cronCode) && !/REPLACE_WITH_CRON_SECRET/.test(cronCode),
+       "the previous file leaked the secret, then shipped a placeholder that 401'd daily");
+    t("cron reads the secret from Vault at run time", /vault\.decrypted_secrets/.test(cron) && /sg_cron_call/.test(cron));
+    t("cron targets the deployed Netlify functions", /soulgainz\.app\/\.netlify\/functions\//.test(cron) && !/functions\.supabase\.co|supabase\.co\/functions\/v1/.test(cron));
+    t("cron refuses to schedule without the Vault secret", /raise exception 'vault secret "cron_secret" not found/.test(cron));
+    t("the helper is revoked from public/anon/authenticated", /revoke all on function public\.sg_cron_call\(text\) from public, anon, authenticated/.test(cron));
+  }
+
+  // ── D6: export + deletion ──
+  {
+    const del = fn("delete-account.js"), exp = fn("export-data.js");
+    t("delete-account requires the typed confirmation server-side", /body\.confirm !== "DELETE"/.test(del) && del.indexOf('body.confirm !== "DELETE"') < del.indexOf("requireUser(event)"),
+       "a one-line fetch from devtools must not be enough");
+    t("delete-account stamps the Stripe customer before cancelling", del.indexOf("stripe.customers.update") < del.indexOf("stripe.subscriptions.cancel"),
+       "subscription.deleted fires on cancel; the webhook needs the stamp to know the account is closing");
+    t("delete-account cancels Stripe before deleting rows, and deletes the auth user last",
+       del.indexOf("stripe.subscriptions.cancel") < del.indexOf('del("meal_logs"') && del.indexOf('delEmail("users"') < del.indexOf("auth.admin.deleteUser"),
+       "a deleted auth user with a still-billing subscription is the worst outcome");
+    t("a Stripe cancel failure aborts the deletion", /throw new Error\(`Stripe cancel failed/.test(del));
+    t("delete-account unlinks promo codes rather than deleting them", /update\(\{ redeemed_by: null \}\)/.test(del) && !/from\("promo_codes"\)\.delete\(/.test(del));
+    t("export-data is GET-only, bearer-only, and takes nothing from the request", /httpMethod !== "GET"/.test(exp) && !/event\.body|queryStringParameters/.test(exp));
+    t("export-data strips stripe_session_id", /stripe_session_id, \.\.\.rest/.test(exp));
+    const wh = fn("stripe-webhook.js");
+    t("webhook treats subscription.deleted on a stamped customer as a no-op", /_deletedCustomer\.metadata\.deleted_at/.test(wh) && wh.indexOf("_deletedCustomer.metadata.deleted_at") < wh.indexOf("downgradeUserToFree(supabase, custEmail"));
+    t("ME tab exposes Download my data and Delete account", /"Download my data"/.test(src) && /"Delete account"/.test(src) && /onClick: downloadMyData/.test(src) && /onClick: deleteMyAccount/.test(src));
+    const dma = fnSrc("deleteMyAccount");
+    t("deleteMyAccount wipes ALL local storage after success (not just the session)", !!dma && /localStorage\.clear\(\)/.test(dma) && /clearSessionState\(\)/.test(dma) && dma.indexOf("res.ok") < dma.indexOf("localStorage.clear()"),
+       "PRESERVE_PREFIXES would otherwise keep the deleted person's calculator email and custom recipes for the next user");
+    t("deleteMyAccount demands the typed word before any request", !!dma && /window\.prompt\(/.test(dma) && dma.indexOf("window.prompt(") < dma.indexOf('_acctFetch("delete-account"'));
+  }
+
+  // ── S2: analytics only after opt-in ──
+  {
+    const consent = stripJS(readFileSync(join(ROOT, "consent.js"), "utf8"));
+    t("consent.js only creates the GA script inside loadGA()", (consent.match(/googletagmanager\.com\/gtag\/js/g) || []).length === 1 && /function loadGA\(\)/.test(consent));
+    t("no answer shows the banner and loads nothing", /if \(s === "granted"\) loadGA\(\);\s*else if \(s === null\) show\(\);/.test(consent));
+    t("a withdrawn consent after load reloads the page", /if \(loaded\) \{ try \{ location\.reload\(\); \}/.test(consent));
+    const pages = readdirSync(ROOT).filter(f => f.endsWith(".html"));
+    const inlineGA = pages.filter(f => /googletagmanager\.com\/gtag\/js\?id=/.test(readFileSync(join(ROOT, f), "utf8")));
+    t("no app-domain page loads gtag.js directly", inlineGA.length === 0, inlineGA.join(", "));
+    const withConsent = pages.filter(f => /<script src="\/consent\.js" defer><\/script>/.test(readFileSync(join(ROOT, f), "utf8")));
+    t("consent.js is on every page that used to carry GA (16)", withConsent.length >= 16, `${withConsent.length}: ${withConsent.join(", ")}`);
+    t("sw precaches /consent.js", /'\/consent\.js'/.test(readFileSync(join(ROOT, "sw.js"), "utf8")));
+    t("sg_consent survives sign-out", /"sg_consent",/.test(slice("const PRESERVE_PREFIXES = [", "[", "];")));
+    const priv = readFileSync(join(ROOT, "privacy.html"), "utf8");
+    t("privacy policy no longer claims 'no tracking cookies' or 'never leaves your device'",
+       !/does not use tracking cookies/.test(priv) && !/This data never leaves your device/.test(priv));
+    t("privacy policy lists GA, Sentry and Google Fonts as processors and not Formspree",
+       /<strong>Google Analytics<\/strong>/.test(priv) && /<strong>Sentry<\/strong>/.test(priv) && /<strong>Google Fonts<\/strong>/.test(priv) && !/Formspree/.test(priv));
+    t("privacy policy describes analytics as opt-in with a way to change the choice", /opt-in/.test(priv) && /sgConsent\.reset\(\)/.test(priv));
+    t("privacy policy points at the in-app export and delete", /Download my data/.test(priv) && /Delete account/.test(priv));
+  }
+}
+
 section("Other pages — install.html and the service worker");
 {
   const inst = readFileSync(join(ROOT, "install.html"), "utf8");
