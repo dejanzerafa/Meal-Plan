@@ -5,6 +5,8 @@
 //   checkout.session.completed       → upsert user, record subscription, welcome email
 //   invoice.payment_failed           → escalating dunning emails (attempt 1 / 2 / final)
 //   customer.subscription.updated    → sync status/period to subscriptions table
+//   customer.subscription.updated    → also: cancel-requested / cancel-reverted confirmations
+//   charge.refunded                  → refund confirmation email
 //   customer.subscription.deleted    → downgrade profiles.tier to free in Supabase + win-back email
 //
 // ── Required environment variables ───────────────────────────────────────────
@@ -344,6 +346,44 @@ exports.handler = async (event) => {
           } catch(e) { console.error("past_due handler error:", e); }
         }
 
+        // ── Cancellation REQUESTED ──────────────────────────────────────────
+        // The customer clicked cancel in the portal. Stripe sets
+        // cancel_at_period_end and fires this event NOW; subscription.deleted
+        // fires weeks later, when the period ends. The only confirmation used
+        // to go out at that later moment, so the person who cancelled got
+        // silence for a month and then "Your access has ended" — which reads
+        // as if they were cut off, not as the thing they asked for. Confirm
+        // at the moment of the request, with the date access actually runs to.
+        const cancelRequested = sub.cancel_at_period_end === true &&
+          stripeEvent.data.previous_attributes && stripeEvent.data.previous_attributes.cancel_at_period_end === false;
+        if (cancelRequested) {
+          try {
+            const customer = await stripe.customers.retrieve(sub.customer);
+            if (customer.email) {
+              await sendEmail({
+                to: customer.email,
+                subject: "Cancellation confirmed — access continues until " + fmtDate(sub.current_period_end),
+                html: buildCancelRequestedEmail(APP_URL, fmtDate(sub.current_period_end)),
+              });
+            }
+          } catch (e) { console.error("cancel-requested email error:", e); }
+        }
+        // And the reverse: they changed their mind in the portal before the end.
+        const cancelReverted = sub.cancel_at_period_end === false &&
+          stripeEvent.data.previous_attributes && stripeEvent.data.previous_attributes.cancel_at_period_end === true;
+        if (cancelReverted) {
+          try {
+            const customer = await stripe.customers.retrieve(sub.customer);
+            if (customer.email) {
+              await sendEmail({
+                to: customer.email,
+                subject: "Your SoulGainz subscription will continue",
+                html: buildCancelRevertedEmail(APP_URL, fmtDate(sub.current_period_end)),
+              });
+            }
+          } catch (e) { console.error("cancel-reverted email error:", e); }
+        }
+
         // Reactivated — clear at_risk flag
         if (sub.status === "active" && prevStatus === "past_due") {
           const { error: clearErr } = await supabase
@@ -364,6 +404,32 @@ exports.handler = async (event) => {
           } catch(e) { console.error("Reactivation email error:", e); }
         }
 
+        break;
+      }
+
+      // ── Refund issued (14-day guarantee, or any manual refund) ───────────
+      // Stripe fires this on any full or partial refund from the dashboard.
+      // Nothing confirmed it to the customer before. Access is NOT revoked
+      // here: a refund inside the guarantee is normally paired with a
+      // cancellation in the dashboard, which arrives as subscription.deleted
+      // and does the downgrade. Confirming the money is this handler's job.
+      case "charge.refunded": {
+        const ch = stripeEvent.data.object;
+        const refunded = (ch.amount_refunded || 0) / 100;
+        const currency = (ch.currency || "eur").toUpperCase();
+        let email = ch.billing_details && ch.billing_details.email;
+        if (!email && ch.customer) {
+          try { const c = await stripe.customers.retrieve(ch.customer); email = c.email; } catch (_) {}
+        }
+        if (email && refunded > 0) {
+          try {
+            await sendEmail({
+              to: email,
+              subject: `Refund issued — ${currency} ${refunded.toFixed(2)}`,
+              html: buildRefundEmail(APP_URL, `${currency} ${refunded.toFixed(2)}`, ch.refunded ? "full" : "partial"),
+            });
+          } catch (e) { console.error("refund email error:", e); }
+        }
         break;
       }
 
@@ -706,6 +772,65 @@ function buildPaymentRestoredEmail(appUrl) {
       </td>
     </tr>`);
 }
+
+function fmtDate(unix) {
+  try { return new Date(unix * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+  catch (_) { return "the end of your billing period"; }
+}
+
+// ── Cancellation requested (sent the moment they click cancel) ──────────────
+function buildCancelRequestedEmail(appUrl, until) {
+  return wrapEmail(`
+    <tr>
+      <td style="padding:32px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 12px;">Cancellation confirmed</h1>
+        <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 16px;">
+          Your subscription won't renew. You keep full access until <strong>${escHtmlLocal(until)}</strong>, and nothing else is charged.
+        </p>
+        <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 16px;">
+          Your meal logs, prep history and saved recipes stay on your account. If you change your mind before then, you can resume from the ME tab — no new checkout needed.
+        </p>
+        <p style="font-size:13px;color:#7a6f63;line-height:1.7;margin:0 0 24px;">
+          Cancelled within 14 days of your first payment? Reply to this email and we'll refund it in full.
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+          <a href="${appUrl}" style="display:inline-block;background:#E07B2A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 36px;border-radius:10px;">Open SoulGainz →</a>
+        </td></tr></table>
+      </td>
+    </tr>`);
+}
+
+function buildCancelRevertedEmail(appUrl, renews) {
+  return wrapEmail(`
+    <tr>
+      <td style="padding:32px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 12px;">Welcome back — subscription resumed</h1>
+        <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 24px;">
+          Your cancellation has been withdrawn. Your plan continues and next renews on <strong>${escHtmlLocal(renews)}</strong>.
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+          <a href="${appUrl}" style="display:inline-block;background:#E07B2A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 36px;border-radius:10px;">Open SoulGainz →</a>
+        </td></tr></table>
+      </td>
+    </tr>`);
+}
+
+function buildRefundEmail(appUrl, amount, kind) {
+  return wrapEmail(`
+    <tr>
+      <td style="padding:32px;">
+        <h1 style="font-family:Georgia,serif;font-size:24px;color:#1a1612;margin:0 0 12px;">Refund issued</h1>
+        <p style="font-size:15px;color:#4a3f33;line-height:1.7;margin:0 0 16px;">
+          A ${kind} refund of <strong>${escHtmlLocal(amount)}</strong> has been sent to your original payment method. Banks usually show it within 5–10 working days.
+        </p>
+        <p style="font-size:13px;color:#7a6f63;line-height:1.7;margin:0 0 24px;">
+          Questions about it? Reply to this email.
+        </p>
+      </td>
+    </tr>`);
+}
+
+const escHtmlLocal = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 // ── Cancellation / win-back email ─────────────────────────────────────────────
 function buildCancellationEmail(appUrl) {

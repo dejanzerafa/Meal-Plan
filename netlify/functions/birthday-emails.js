@@ -75,11 +75,16 @@ exports.handler = async (event) => {
   try {
     // \u2500\u2500 1. Find users whose birthday is today \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     // date_of_birth is stored as DATE; we match on month + day only.
+    // users.date_of_birth is written by NOTHING in the app — the profile form
+    // writes profiles.dob (text, YYYY-MM-DD). Part 12 backfilled the three rows
+    // that existed; every sign-up since would have been invisible here. Read
+    // the column that is actually maintained, server-side filtered on today's
+    // month-day so we do not pull every profile to filter in JS. Consent is
+    // still users.marketing_opt_in, joined on email.
     const usersRes = await fetch(
-      `${supabaseUrl}/rest/v1/users` +
-      `?date_of_birth=not.is.null` +
-      `&marketing_opt_in=eq.true` +
-      `&select=id,email,first_name,date_of_birth`,
+      `${supabaseUrl}/rest/v1/profiles` +
+      `?dob=like.*-${month}-${day}` +
+      `&select=id,email,first_name,dob`,
       {
         headers: {
           "apikey": supabaseKey,
@@ -94,14 +99,21 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: err }) };
     }
 
-    const allUsers = await usersRes.json();
-
-    // Filter to today's birthdays (month-day match)
-    const todaysBirthdays = allUsers.filter((u) => {
-      if (!u.date_of_birth) return false;
-      const dob = u.date_of_birth; // "YYYY-MM-DD"
-      return dob.slice(5, 7) === month && dob.slice(8, 10) === day;
-    });
+    const profiles = await usersRes.json();
+    // Consent lives on users. Look those up for today's matches only.
+    let todaysBirthdays = [];
+    if (profiles.length) {
+      const emails = profiles.map(p => String(p.email || "").toLowerCase()).filter(Boolean);
+      const consentRes = await fetch(
+        `${supabaseUrl}/rest/v1/users?email=in.(${emails.map(e => `"${e.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`).join(",")})&marketing_opt_in=eq.true&select=id,email,first_name`,
+        { headers: { "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}` } }
+      );
+      const consented = consentRes.ok ? await consentRes.json() : [];
+      const byEmail = new Map(consented.map(u => [String(u.email).toLowerCase(), u]));
+      todaysBirthdays = profiles
+        .filter(p => /^\d{4}-\d{2}-\d{2}$/.test(p.dob || "") && byEmail.has(String(p.email || "").toLowerCase()))
+        .map(p => { const u = byEmail.get(String(p.email).toLowerCase()); return { id: u.id, email: u.email, first_name: p.first_name || u.first_name, date_of_birth: p.dob }; });
+    }
 
     console.log(`Found ${todaysBirthdays.length} birthday(s) today`);
 
