@@ -174,9 +174,40 @@
   }
   .install-nudge a { color: var(--orange); text-decoration: none; }
 </style>
+  <!-- Consumes the session handed across from marketing.soulgainz.app/success.
+       That page verified the payment with Stripe and holds the session the
+       checkout was started under; this one establishes it on THIS origin. -->
+  <!-- No CDN fallback: the app domain's CSP script-src is 'self' only, so a
+       jsdelivr fallback would be blocked anyway. index.html loads the same file. -->
+  <script src="/vendor/supabase.min.js"></script>
+  <style>[hidden] { display: none !important; } .signing { opacity: 0.6; }</style>
 </head>
 <body>
 
+<!-- State: establishing the session (default while the fragment is consumed) -->
+<div id="state-signing">
+  <div class="check-ring signing">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <h1>Signing you <span>in…</span></h1>
+  <p class="sub">Payment confirmed. Unlocking your library.</p>
+</div>
+
+<!-- State: no session could be established here. The purchase is real — the
+     webhook granted the tier — the user just needs to sign in on this origin.
+     Also what anyone who types /success by hand will see: no claim of access. -->
+<div id="state-signin" hidden>
+  <h1>Sign in to <span>continue</span></h1>
+  <p class="sub">If you've just paid, your plan is already active. Sign in with the email you used at checkout and your library will be unlocked.</p>
+  <a href="/index.html?tab=profile" class="btn-primary">Sign in to SoulGainz →</a>
+  <a href="https://marketing.soulgainz.app/pricing" class="btn-secondary">Back to pricing</a>
+  <p class="sub" style="margin-top:20px;font-size:13px;">Already signed in and still see the free tier? Open the ME tab and tap <strong>Restore purchase</strong>.</p>
+</div>
+
+<!-- State: signed in, paid. Shown ONLY after setSession() succeeded. -->
+<div id="state-in" hidden>
 <div class="check-ring">
   <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="20 6 9 17 4 12"/>
@@ -220,10 +251,44 @@
   📲 Don't have the app installed yet? <a href="/install">Follow these steps →</a>
 </div>
 
+</div>
+
 <script>
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const tier = params.get('tier') || '';
+(async function() {
+  const show = (id) => {
+    for (const el of ['state-signing', 'state-signin', 'state-in']) {
+      const n = document.getElementById(el); if (n) n.hidden = (el !== id);
+    }
+  };
+
+  // The tokens arrive in the FRAGMENT, never the query string: fragments are
+  // not sent to the server and do not appear in Netlify's logs. Read them and
+  // strip them from the address bar and history immediately.
+  const frag = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+  const access  = frag.get('access_token');
+  const refresh = frag.get('refresh_token');
+  const tier    = frag.get('tier') || '';
+  try { history.replaceState(null, '', location.pathname); } catch (_) {}
+
+  if (!access || !refresh) { show('state-signin'); return; }
+
+  try {
+    if (!window.supabase) throw new Error('supabase-js not loaded');
+    const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const { data, error } = await sb.auth.setSession({ access_token: access, refresh_token: refresh });
+    if (error || !data || !data.session) throw error || new Error('no session');
+  } catch (e) {
+    console.error('setSession failed', e);
+    show('state-signin');
+    return;
+  }
+
+  // The app re-checks the tier from Supabase on launch (loadUserData) and the
+  // post-checkout poller is armed by this flag, so a webhook that lands a few
+  // seconds late is still caught without the user doing anything.
+  try { localStorage.setItem('sg_awaiting_upgrade', String(Date.now())); } catch (_) {}
 
   // Plan badge + messaging
   const planNames = { monthly: 'Monthly Plan Active', annual: 'Annual Plan Active' };
@@ -235,7 +300,6 @@
     monthly: ['Browse 85+ recipes', 'Your monthly library is now unlocked'],
     annual:  ['Browse 160+ recipes', 'Your full annual library is now unlocked'],
   };
-
   if (tier && planNames[tier]) {
     document.getElementById('plan-name').textContent = planNames[tier];
     document.getElementById('welcome-msg').textContent = welcomeMsgs[tier];
@@ -243,10 +307,11 @@
     document.getElementById('step2-text').innerHTML = s[0] + '<small>' + s[1] + '</small>';
   }
 
-  // Show install nudge if not running as installed PWA
   if (!window.matchMedia('(display-mode: standalone)').matches && !navigator.standalone) {
     document.getElementById('install-nudge').style.display = 'block';
   }
+
+  show('state-in');
 })();
 </script>
 

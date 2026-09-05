@@ -528,6 +528,60 @@ section("Netlify functions — the method gate must match what the client sends"
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+section("Paid path — the buyer must arrive in the app SIGNED IN");
+// Shipped bug: checkout ran on marketing.soulgainz.app (signed in there) and
+// Stripe returned the buyer to soulgainz.app, a different origin with its own
+// localStorage and therefore no session. success.html said "You're in!"
+// unconditionally — verify-session.js had zero callers — above a locked
+// library and a Join-the-waitlist button.
+{
+  const cc  = stripJS(readFileSync(join(ROOT, "netlify", "functions", "create-checkout.js"), "utf8"));
+  const ms  = readFileSync(join(ROOT, "marketing-site", "success.html"), "utf8");
+  const as  = readFileSync(join(ROOT, "success.html"), "utf8");
+  const vs  = stripJS(readFileSync(join(ROOT, "netlify", "functions", "verify-session.js"), "utf8"));
+  t("Stripe returns the buyer to the MARKETING origin, where the session lives",
+     /success_url: `\$\{marketingUrl\}\/success/.test(cc),
+     "a success_url on the app domain lands the buyer signed out");
+  t("marketing success page verifies with Stripe before claiming anything",
+     /verify-session/.test(ms) && /if \(!verdict\.paid\)/.test(ms),
+     "the redirect alone is not proof of payment — a declined card still redirects");
+  t("verify-session is no longer dead code",
+     [ms, raw].some(s => /\/verify-session/.test(s)),
+     "it existed for months with zero callers");
+  t("verify-session returns CORS headers on every response, not just preflight",
+     /"Access-Control-Allow-Origin": corsOrigin/.test(vs) && /statusCode: 200, headers/.test(vs),
+     "without it the browser blocks the JSON and the success page can never learn the payment went through");
+  t("handoff is gated on the session belonging to the checkout's user",
+     /session\.user\.id === verdict\.userId/.test(ms),
+     "a leaked session id must not carry another browser's login into the app");
+  t("tokens travel in the FRAGMENT, not the query string",
+     /APP_SUCCESS \+ '#' \+/.test(ms) && /location\.hash/.test(as) && !/location\.search[^\n]*access_token/.test(as),
+     "fragments are never sent to the server; query strings land in Netlify logs");
+  t("both pages strip the tokens from history immediately",
+     (ms.match(/history\.replaceState/g) || []).length >= 1 && (as.match(/history\.replaceState/g) || []).length >= 1);
+  t("the app success page establishes the session with setSession",
+     /sb\.auth\.setSession\(\{ access_token: access, refresh_token: refresh \}\)/.test(as));
+  t("\"You're in\" is HIDDEN until setSession succeeds",
+     /<div id="state-in" hidden>/.test(as) && /show\('state-in'\)/.test(as) &&
+     as.indexOf("show('state-in')") > as.indexOf("sb.auth.setSession"),
+     "anyone typing /success by hand must not be told their subscription is active");
+  t("a missing or failed session shows sign-in, not access",
+     /if \(!access \|\| !refresh\) \{ show\('state-signin'\)/.test(as));
+  t("the app arms the post-checkout poller from the handoff marker",
+     /localStorage\.setItem\('sg_awaiting_upgrade'/.test(as) &&
+     /localStorage\.getItem\("sg_awaiting_upgrade"\)/.test(src) &&
+     /localStorage\.removeItem\("sg_awaiting_upgrade"\)/.test(src),
+     "the marketing-first path never calls openSubscribePage(), so nothing else arms the poller");
+  t("the marker is a one-shot with an expiry", /Date\.now\(\) - _mark < 10 \* 60 \* 1000/.test(src),
+     "a stale flag would fire 30 Supabase round trips on every launch");
+  t("marketing success page deep-links to the ME tab by its real id",
+     /tab=profile/.test(ms) && !/tab=me\b/.test(ms),
+     "the tab is called 'profile' internally; ?tab=me renders a blank screen");
+  t("/success is routed on the marketing site",
+     /from = "\/success"/.test(readFileSync(join(ROOT, "marketing-site", "netlify.toml"), "utf8")));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 section("Floating promises and stale memos");
 {
   const bare = [...src.matchAll(/crypto\.subtle\.digest\(/g)].filter(m => {

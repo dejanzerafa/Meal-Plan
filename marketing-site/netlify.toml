@@ -17,6 +17,13 @@
   to   = "/sign-up.html"
   status = 200
 
+# Stripe's success_url (set in create-checkout.js). Verifies the payment and
+# hands the session across to soulgainz.app.
+[[redirects]]
+  from = "/success"
+  to   = "/success.html"
+  status = 200
+
 [[redirects]]
   from = "/contact"
   to   = "/contact.html"

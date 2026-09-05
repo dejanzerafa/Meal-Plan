@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirming your payment — SoulGainz</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <script src="/vendor/supabase.min.js" onerror="this.dataset.failed=1"></script>
+  <script>
+    if (!window.supabase) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"><\/script>');
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0C0B0A; color: #F2EDE6;
+      font-family: "Instrument Sans", -apple-system, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center; padding: 24px;
+    }
+    .logo { position: absolute; top: 24px; left: 24px; font-family: "Fraunces", Georgia, serif; font-size: 18px; font-weight: 800; color: #F2EDE6; text-decoration: none; }
+    .logo span { color: #E07B2A; }
+    .spinner { width: 44px; height: 44px; border: 3px solid #2A2724; border-top-color: #E07B2A; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em; font-family: "Fraunces", Georgia, serif; }
+    h1 span { color: #E07B2A; }
+    p { color: #8A8580; font-size: 16px; margin-bottom: 12px; max-width: 460px; line-height: 1.6; }
+    p strong { color: #F2EDE6; }
+    .btn { display: inline-block; background: #E07B2A; color: #0C0B0A; padding: 13px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; margin-top: 20px; }
+    .btn:hover { opacity: 0.88; }
+    .muted { font-size: 13px; margin-top: 28px; }
+    .muted a { color: #E07B2A; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">Soul<span>Gainz</span></a>
+
+  <!-- State 1: verifying -->
+  <div id="state-verifying">
+    <div class="spinner"></div>
+    <h1>Confirming your payment…</h1>
+    <p>One moment — checking with Stripe.</p>
+  </div>
+
+  <!-- State 2: paid, signed in here, handing off — usually never seen, the
+       redirect fires immediately. Shown only if the redirect is slow. -->
+  <div id="state-handoff" hidden>
+    <div class="spinner"></div>
+    <h1>You're <span>in.</span></h1>
+    <p>Payment confirmed. Opening SoulGainz…</p>
+  </div>
+
+  <!-- State 3: paid, but no session on this origin (private window, cleared
+       storage, a different browser than the one that started checkout).
+       The purchase is real and the webhook has already granted the tier;
+       the user just needs to sign in on the app. -->
+  <div id="state-signin" hidden>
+    <h1>Payment <span>confirmed.</span></h1>
+    <p>Your plan is active. Sign in to SoulGainz with <strong id="paid-email">the email you paid with</strong> and your library will be unlocked.</p>
+    <a id="signin-link" href="https://soulgainz.app/?tab=profile" class="btn">Sign in to SoulGainz →</a>
+    <p class="muted">Already signed in and still see the free tier? Open the ME tab and tap <strong>Restore purchase</strong>.</p>
+  </div>
+
+  <!-- State 4: not paid (declined, abandoned, expired) -->
+  <div id="state-unpaid" hidden>
+    <h1>Payment not completed</h1>
+    <p>Stripe hasn't confirmed this payment. If your card was declined, nothing has been charged.</p>
+    <a href="/pricing" class="btn">Back to plans →</a>
+    <p class="muted">Think this is wrong? <a href="mailto:support@soulgainz.app">support@soulgainz.app</a></p>
+  </div>
+
+  <!-- State 5: verification itself failed (network, function down) -->
+  <div id="state-error" hidden>
+    <h1>Couldn't confirm just now</h1>
+    <p>If your payment went through, your plan is already active — sign in to SoulGainz and it will be there. If you're not sure, check your email for a receipt from Stripe.</p>
+    <a href="https://soulgainz.app/?tab=profile" class="btn">Open SoulGainz →</a>
+    <p class="muted">Need a hand? <a href="mailto:support@soulgainz.app">support@soulgainz.app</a></p>
+  </div>
+
+<script>
+(async function () {
+  // ── Why this page exists ────────────────────────────────────────────────────
+  // Checkout starts on THIS origin, signed in. Supabase keeps the session in
+  // localStorage, which is per-origin, so if Stripe returned the buyer straight
+  // to soulgainz.app they arrived with no session — on a page that said "You're
+  // in!" above a locked library. This page has the session. It verifies the
+  // payment server-side, then hands the session to the app in a URL fragment,
+  // which the app's success page consumes with setSession(). Fragments are
+  // never sent to a server, so the tokens do not appear in any log.
+
+  const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
+  const VERIFY_URL    = 'https://soulgainz.app/.netlify/functions/verify-session';
+  const APP_SUCCESS   = 'https://soulgainz.app/success';
+
+  const show = (id) => {
+    for (const el of document.querySelectorAll('[id^="state-"]')) el.hidden = (el.id !== id);
+  };
+
+  const sessionId = new URLSearchParams(location.search).get('session_id');
+  if (!sessionId) { show('state-unpaid'); return; }
+
+  // Strip the session id from the address bar and history now, before any
+  // async work. It is a lookup key for the buyer's email; it should not sit in
+  // a bookmark.
+  try { history.replaceState(null, '', location.pathname); } catch (_) {}
+
+  // 1. Verify with Stripe, server-side. Never trust the redirect alone.
+  let verdict;
+  try {
+    const r = await fetch(VERIFY_URL + '?session_id=' + encodeURIComponent(sessionId), { credentials: 'omit' });
+    if (!r.ok) throw new Error('verify ' + r.status);
+    verdict = await r.json();
+  } catch (e) {
+    console.error('verify-session failed', e);
+    show('state-error');
+    return;
+  }
+
+  if (!verdict.paid) { show('state-unpaid'); return; }
+
+  const paidEmail = verdict.email || '';
+  const emailEl = document.getElementById('paid-email');
+  if (paidEmail && emailEl) emailEl.textContent = paidEmail;
+
+  // 2. Do we hold the session that started this checkout?
+  let session = null;
+  try {
+    if (!window.supabase) throw new Error('supabase-js not loaded');
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const { data } = await sb.auth.getSession();
+    session = data && data.session;
+  } catch (e) {
+    console.error('getSession failed', e);
+  }
+
+  // Hand over only when the session belongs to the user the checkout was
+  // opened for. A session id can leak (referrer, history); it must not carry a
+  // different browser's login into the app.
+  const sameUser = session && verdict.userId && session.user && session.user.id === verdict.userId;
+  if (!session || !sameUser) { show('state-signin'); return; }
+
+  // 3. Hand the session to the app in the fragment. The app's success page
+  //    calls setSession() and then strips the fragment from its own history.
+  show('state-handoff');
+  const frag = new URLSearchParams({
+    access_token:  session.access_token,
+    refresh_token: session.refresh_token,
+    tier:          verdict.tier || '',
+  });
+  location.replace(APP_SUCCESS + '#' + frag.toString());
+})();
+</script>
+</body>
+</html>

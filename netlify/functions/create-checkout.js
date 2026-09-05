@@ -3,7 +3,7 @@
 //
 // Required environment variables (set in Netlify dashboard → Site → Environment):
 //   STRIPE_SECRET_KEY    — sk_test_... or sk_live_...
-//   APP_URL              — e.g. https://soulgainz.app
+//   MARKETING_URL        — e.g. https://marketing.soulgainz.app (Stripe returns the buyer here)
 //   ALLOWED_PRICE_IDS    — comma-separated list of valid Stripe price IDs (optional but recommended)
 
 // Exact matching (correctly) replaced startsWith, but browsers send
@@ -82,7 +82,17 @@ exports.handler = async (event) => {
   }
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
-  const appUrl = process.env.APP_URL || "https://soulgainz.app";
+  // APP_URL is no longer used for redirects — see marketingUrl below. Kept as
+  // an env var for the functions that still need the app origin.
+  // Stripe must return the buyer to the MARKETING origin, not the app's.
+  //
+  // Checkout is started from marketing.soulgainz.app while signed in there.
+  // Supabase keeps the session in localStorage, which is per-origin — so a
+  // success_url on soulgainz.app landed the buyer on the app with no session,
+  // where a page told them "You're in!" above a locked library and a
+  // Join-the-waitlist button. marketing-site/success.html verifies the payment
+  // with the session it actually holds, then hands that session to the app.
+  const marketingUrl = process.env.MARKETING_URL || "https://marketing.soulgainz.app";
 
   let payload;
   try {
@@ -172,8 +182,8 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create({
       mode,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${appUrl}/success?tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/pricing`,
+      success_url: `${marketingUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${marketingUrl}/pricing`,
       // Pre-fill checkout with the user's email if they're signed in
       ...(email ? { customer_email: email } : {}),
       // Metadata flows through to webhook for unlock provisioning

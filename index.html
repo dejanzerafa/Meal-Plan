@@ -15049,6 +15049,17 @@ function App() {
     // than the user having to work out that they must restart the app.
     React.useEffect(() => {
         if (!currentUser) return;
+        // The marketing-first purchase path never calls openSubscribePage() —
+        // the buyer arrives from success.html with a session that page just
+        // established via setSession(). success.html leaves this localStorage
+        // marker so the same poller arms here too, and clears it: the marker
+        // is a one-shot, valid for ten minutes, so a stale flag from a purchase
+        // last week does not fire 30 Supabase round trips on every launch.
+        try {
+            const _mark = parseInt(localStorage.getItem("sg_awaiting_upgrade") || "0", 10);
+            if (_mark && Date.now() - _mark < 10 * 60 * 1000) window._sg_awaiting_upgrade = true;
+            localStorage.removeItem("sg_awaiting_upgrade");
+        } catch (_) {}
         let tries = 0, timer = null;
         const tick = () => {
             // Must null `timer` on BOTH exits, or the `!timer` guard in start()
