@@ -49,6 +49,19 @@ const FORBIDDEN = [
     why: 'customer-facing site is soulgainz.app' },
   { pattern: /30-day (satisfaction|money-back)/i,    why: `refund window is ${TRUTH.refundDays} days` },
   { pattern: /within 7 days/i,                       why: `refund window is ${TRUTH.refundDays} days` },
+  // "All purchases are final and non-refundable" shipped in the in-app Terms
+  // summary AND inside the signup modal next to the I-agree checkbox, while
+  // terms.html promised a 14-day money-back guarantee. The digit-based
+  // patterns above could not see it — there is no number in the sentence.
+  // A blanket no-refunds claim is never correct while the guarantee exists.
+  // "After 14 days ... non-refundable" is the correct copy and is allowed by
+  // the negative lookbehind on the day count.
+  { pattern: /(?<!\d\s?days?[^.\n]{0,60})\b(?:all\s+)?(?:purchases?|payments?|sales?|subscriptions?)\s+(?:are|is)\s+(?:final|non-?refundable)/i,
+    why: `terms.html promises a ${TRUTH.refundDays}-day money-back guarantee; a blanket no-refunds claim contradicts it` },
+  // Same lookbehind: "After 14 days ... no refund is issued for the unused
+  // remainder" is the guarantee's own wording and must pass.
+  { pattern: /(?<!\d\s?days?[^.\n]{0,120})\bno refunds?\b/i,
+    why: `terms.html promises a ${TRUTH.refundDays}-day money-back guarantee` },
   // Checkout charges EUR. A USD price in an email is a price we cannot honour.
   { pattern: /\$\d+\.\d{2}/,                         why: 'prices are charged in EUR, not USD' },
   // Only Monthly and Annual are sold (Terms 5.1 / KNOWN_TIERS in
