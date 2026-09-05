@@ -7,10 +7,19 @@
   command = "mkdir -p vendor && curl --fail -L 'https://unpkg.com/react@18.2.0/umd/react.production.min.js' -o vendor/react.min.js && curl --fail -L 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js' -o vendor/react-dom.min.js && curl --fail -L 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js' -o vendor/supabase.min.js && test -s vendor/react.min.js && test -s vendor/react-dom.min.js && test -s vendor/supabase.min.js && echo 'Vendor files OK'"
 
 # ── Secrets scanning ─────────────────────────────────────────────────────────
-# VAPID_PUBLIC_KEY is intentionally embedded in client-side JS (it is a public key).
-# Tell Netlify not to block deploys because of it.
+# Netlify fails a build if any env var's VALUE appears in the deployed files.
+# These are all public by design and are supposed to be in the client:
+#   VAPID_PUBLIC_KEY      a public key
+#   STRIPE_PRICE_*        Stripe price ids — the browser sends them to
+#                         create-checkout, so they live in pricing.html by
+#                         necessity; the server-side allowlist is what makes
+#                         them safe, not secrecy. The 2026-09-05 deploy failed
+#                         the moment they were added as env vars.
+#   ALLOWED_PRICE_IDS     the same ids, comma-joined
+# The secret keys (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, SUPABASE_SERVICE_KEY,
+# CRON_SECRET, ADMIN_SECRET, RESEND_API_KEY) stay scanned.
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "VAPID_PUBLIC_KEY"
+  SECRETS_SCAN_OMIT_KEYS = "VAPID_PUBLIC_KEY,STRIPE_PRICE_MONTHLY,STRIPE_PRICE_ANNUAL,ALLOWED_PRICE_IDS"
 
 [[edge_functions]]
   function = "block-source-files"
