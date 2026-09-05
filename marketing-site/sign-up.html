@@ -355,6 +355,9 @@
 
       // Email confirmation required — no session yet
       if (currentTab === 'signup' && !session) {
+        // The confirmation link lands on /pricing, which sends the welcome
+        // (and records Terms acceptance server-side) once a session exists.
+        try { localStorage.setItem('sg_mkt_welcome_pending', name || ''); } catch (_) {}
         showMsg('✓ Account created! Check your email to confirm, then sign in.', 'ok');
         btn.disabled = false; btn.textContent = 'Create account →';
         switchTab('login');

@@ -19,6 +19,9 @@
 // Never throws. Never waits more than ~2.5 s.
 
 const VERSION = "soulgainz-fn/1.0";
+const scrub = (s) => String(s == null ? "" : s)
+  .replace(/([A-Za-z0-9._%+-])[A-Za-z0-9._%+-]*(@[A-Za-z0-9.-]+)/g, "$1***$2")
+  .replace(/\b(sk|rk|whsec|re)_[A-Za-z0-9_]{6,}\b/g, "[redacted]");
 
 function parseDsn(dsn) {
   try {
@@ -61,17 +64,17 @@ async function report(fn, errOrMessage, extra = {}, level) {
     environment: process.env.CONTEXT === "production" ? "production" : (process.env.CONTEXT || "dev"),
     release: process.env.COMMIT_REF ? `soulgainz@${String(process.env.COMMIT_REF).slice(0, 8)}` : undefined,
     tags: { function: fn, site: process.env.SITE_NAME || "soulgainz" },
-    // Scrub: never ship a full email or any secret-looking value.
+    // Scrub: never ship a full email or any secret-looking value. Applied to
+    // the message too — PostgREST unique-violation text embeds the key
+    // ("Key (email)=(x@y.com)") and reaches here through the webhook's catch.
     extra: Object.fromEntries(Object.entries(extra || {}).map(([k, v]) => {
       if (v == null) return [k, v];
-      let s = typeof v === "string" ? v : JSON.stringify(v);
-      s = s.replace(/([A-Za-z0-9._%+-])[A-Za-z0-9._%+-]*(@[A-Za-z0-9.-]+)/g, "$1***$2");
-      s = s.replace(/\b(sk|rk|whsec|re)_[A-Za-z0-9_]{6,}\b/g, "[redacted]");
+      const s = scrub(typeof v === "string" ? v : JSON.stringify(v));
       return [k, s.length > 2000 ? s.slice(0, 2000) + "…" : s];
     })),
     ...(isErr
-      ? { exception: { values: [{ type: errOrMessage.name || "Error", value: message, stacktrace: { frames: frames(errOrMessage) } }] } }
-      : { message: { formatted: message } }),
+      ? { exception: { values: [{ type: errOrMessage.name || "Error", value: scrub(message), stacktrace: { frames: frames(errOrMessage) } }] } }
+      : { message: { formatted: scrub(message) } }),
   };
 
   const envelope =

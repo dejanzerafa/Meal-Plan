@@ -14308,6 +14308,10 @@ function App() {
     // One busy flag for both so the two cannot run at once.
     const [_acctBusy, _setAcctBusy] = React.useState(false);
     const [_acctMsg, _setAcctMsg]   = React.useState(null);
+    // Typed-confirmation for deletion lives in the page, not window.prompt():
+    // prompt() returns null immediately in iOS standalone PWAs.
+    const [_acctConfirmOpen, _setAcctConfirmOpen] = React.useState(false);
+    const [_acctConfirmText, _setAcctConfirmText] = React.useState("");
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -15403,24 +15407,35 @@ function App() {
             const res = await _acctFetch("export-data", { method: "GET" });
             const text = await res.text();
             if (!res.ok) { let m = "Export failed"; try { m = JSON.parse(text).error || m; } catch (_) {} throw new Error(m); }
+            const fname = "soulgainz-data-" + localDateKey(new Date()) + ".json";
             const blob = new Blob([text], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url; a.download = "soulgainz-data-" + localDateKey(new Date()) + ".json";
-            document.body.appendChild(a); a.click(); a.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 10000);
-            _setAcctMsg({ ok: true, text: "Your data file has been downloaded." });
+            // iOS standalone PWAs ignore <a download> on a blob (it opens a
+            // blank tab). The share sheet works there and lets the user save
+            // to Files; fall back to the anchor everywhere else.
+            const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
+            let shared = false;
+            if (standalone && navigator.share && navigator.canShare) {
+                try {
+                    const file = new File([blob], fname, { type: "application/json" });
+                    if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "SoulGainz data" }); shared = true; }
+                } catch (e) { if (e && e.name === "AbortError") { _setAcctMsg(null); return; } }
+            }
+            if (!shared) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url; a.download = fname;
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+            }
+            _setAcctMsg({ ok: true, text: shared ? "Your data file is ready to save." : "Your data file has been downloaded." });
         } catch (e) {
             _setAcctMsg({ ok: false, text: e.message || "Export failed. Please try again." });
         } finally { _setAcctBusy(false); }
     }
     async function deleteMyAccount() {
         if (_acctBusy) return;
-        const typed = window.prompt(
-            "This permanently deletes your account, profile, meal logs and favourites, and cancels any active membership. " +
-            "It cannot be undone.\n\nType DELETE to confirm:");
-        if (typed == null) return;
-        if (typed.trim() !== "DELETE") { _setAcctMsg({ ok: false, text: "Not deleted — you need to type DELETE exactly." }); return; }
+        if (!_acctConfirmOpen) { _setAcctConfirmOpen(true); _setAcctConfirmText(""); _setAcctMsg(null); return; }
+        if (_acctConfirmText.trim() !== "DELETE") { _setAcctMsg({ ok: false, text: "Type DELETE exactly to confirm." }); return; }
         _setAcctBusy(true); _setAcctMsg(null);
         try {
             const res = await _acctFetch("delete-account", {
@@ -15441,6 +15456,7 @@ function App() {
             _setAcctBusy(false);
         }
     }
+    function cancelDeleteMyAccount() { _setAcctConfirmOpen(false); _setAcctConfirmText(""); _setAcctMsg(null); }
 
     async function saveProfileToSupabase(p) {
         if (!currentUser || !getSB()) return;
@@ -16797,6 +16813,20 @@ function App() {
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#ef4444" } }, "Delete account"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Permanently erase your account and cancel any membership")),
                             React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        _acctConfirmOpen && React.createElement("div", { style: { marginTop: 8, padding: "12px", borderRadius: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.35)" } },
+                            React.createElement("div", { style: { fontSize: 12, lineHeight: 1.45, color: C.text, marginBottom: 8 } },
+                                "This permanently deletes your account, profile, meal logs and favourites, and cancels any active membership. It cannot be undone."),
+                            React.createElement("input", {
+                                type: "text", value: _acctConfirmText, autoCapitalize: "characters", autoCorrect: "off", spellCheck: false,
+                                placeholder: "Type DELETE to confirm", "aria-label": "Type DELETE to confirm",
+                                onChange: e => _setAcctConfirmText(e.target.value),
+                                style: { width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 8, border: `1px solid ${C.dim}`, background: C.card2, color: C.text, fontSize: 14, marginBottom: 8 } }),
+                            React.createElement("div", { style: { display: "flex", gap: 8 } },
+                                React.createElement("button", { onClick: cancelDeleteMyAccount, disabled: _acctBusy,
+                                    style: { flex: 1, padding: "10px", borderRadius: 8, border: `1px solid ${C.dim}`, background: "transparent", color: C.text, fontWeight: 700, fontSize: 12, cursor: "pointer" } }, "Cancel"),
+                                React.createElement("button", { onClick: deleteMyAccount, disabled: _acctBusy || _acctConfirmText.trim() !== "DELETE",
+                                    style: { flex: 1, padding: "10px", borderRadius: 8, border: "none", background: "#ef4444", color: "#fff", fontWeight: 800, fontSize: 12, cursor: "pointer", opacity: (_acctBusy || _acctConfirmText.trim() !== "DELETE") ? 0.5 : 1 } },
+                                    _acctBusy ? "Deleting…" : "Permanently delete"))),
                         _acctMsg && React.createElement("div", { style: { marginTop: 8, fontSize: 11, lineHeight: 1.4, color: _acctMsg.ok ? C.green : "#ef4444" } }, _acctMsg.text)),
                     !currentUser && React.createElement("button", {
                         onClick: () => setOnboardStep("signup"),

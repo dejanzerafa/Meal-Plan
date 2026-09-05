@@ -472,16 +472,20 @@ exports.handler = async (event) => {
         // and then removes every row, so by the time this event arrives there
         // is nothing to downgrade. It stamps the customer first; honour that
         // rather than paging "REVOCATION UNMATCHED" for every account closure.
-        if (_deletedCustomer && _deletedCustomer.metadata && _deletedCustomer.metadata.deleted_at) {
-          console.log(`subscription.deleted for closed account ${sub.customer} — nothing to revoke`);
-          break;
-        }
+        // Still run the downgrade (the stamp is set before the rows go, so a
+        // deletion that failed half-way leaves a profile that must lose access);
+        // just don't page when it matches nothing.
+        const _closing = !!(_deletedCustomer && _deletedCustomer.metadata && _deletedCustomer.metadata.deleted_at);
         if (custEmail) {
           // This whole block used to sit inside a try/catch that swallowed every
           // failure and fell through to the 200 below — so a revocation touching
           // zero rows was recorded by Stripe as success and never retried, and a
           // cancelled subscriber kept their tier indefinitely.
-          const revoked = await downgradeUserToFree(supabase, custEmail, sub.customer);
+          const revoked = await downgradeUserToFree(supabase, custEmail, sub.customer, { quiet: _closing });
+          if (!revoked && _closing) {
+            console.log(`subscription.deleted for closed account ${sub.customer} — nothing left to revoke`);
+            break;
+          }
           if (!revoked) {
             console.error(`REVOCATION FAILED for ${custEmail} — returning 500 so Stripe retries`);
             await report("stripe-webhook", "REVOCATION FAILED — access not removed after cancellation, Stripe retrying", { email: custEmail, subscription: sub.id }, "fatal");
@@ -565,7 +569,7 @@ async function extendEntitlement(supabase, stripe, sub, periodEnd) {
 // ── Downgrade user to free tier in Supabase profiles ─────────────────────────
 // Called when subscription.deleted fires. Finds the user's profile by email
 // and clears tier, all_recipes, calculator so the app reverts to free on next sign-in.
-async function downgradeUserToFree(supabase, email, stripeCustomerId) {
+async function downgradeUserToFree(supabase, email, stripeCustomerId, { quiet = false } = {}) {
   console.log(`Downgrading ${email} to free tier`);
 
   // Update subscriptions table (belt-and-suspenders in case status update above missed it)
@@ -623,14 +627,14 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
         // That has to be reported, not logged as a successful downgrade.
         if (!fbRows || fbRows.length === 0) {
           console.error(`REVOCATION UNMATCHED: no profiles row for customer ${stripeCustomerId} (email ${email}). Manual downgrade required.`);
-      await report("stripe-webhook", "REVOCATION UNMATCHED — cancelled customer still has access, manual downgrade required", { email, customerId: stripeCustomerId }, "fatal");
+      if (!quiet) await report("stripe-webhook", "REVOCATION UNMATCHED — cancelled customer still has access, manual downgrade required", { email, customerId: stripeCustomerId }, "fatal");
           return false;
         }
         console.log(`Profile downgraded to free (by ID fallback): ${stripeCustomerId}`);
         return true;
       }
       console.error(`REVOCATION UNMATCHED: no users row for customer ${stripeCustomerId}. Manual downgrade required.`);
-      await report("stripe-webhook", "REVOCATION UNMATCHED — no users row for cancelled customer", { customerId: stripeCustomerId }, "fatal");
+      if (!quiet) await report("stripe-webhook", "REVOCATION UNMATCHED — no users row for cancelled customer", { customerId: stripeCustomerId }, "fatal");
       return false;
     } catch(e2) { console.error("Profile downgrade fallback lookup error:", e2); return false; }
   } else {

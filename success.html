@@ -184,8 +184,10 @@
 </head>
 <body>
 
-<!-- State: establishing the session (default while the fragment is consumed) -->
-<div id="state-signing">
+<!-- State: establishing the session. Hidden by default — the script shows it
+     only once a fragment is present, so a plain visit never flashes
+     "Payment confirmed". -->
+<div id="state-signing" hidden>
   <div class="check-ring signing">
     <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="20 6 9 17 4 12"/>
@@ -269,28 +271,38 @@
   const refresh   = frag.get('refresh_token');
   const tier      = frag.get('tier') || '';
   const sessionId = frag.get('session_id') || '';
+  const nonce     = frag.get('nonce') || '';
   try { history.replaceState(null, '', location.pathname); } catch (_) {}
 
   if (!access || !refresh || !sessionId) { show('state-signin'); return; }
+  show('state-signing');
 
   // ── Do not trust the fragment. Anyone can put tokens in a URL. ────────────
-  // A crafted link soulgainz.app/success#access_token=<attacker's>&… would
-  // otherwise log the victim into the attacker's account — and the app then
-  // uploads the victim's local data into it. So: ask Stripe (via
-  // verify-session) who this Checkout Session belongs to, and only establish
-  // the session if the token's own subject is that same user.
-  const jwtSub = (() => {
-    try {
-      const payload = access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(atob(payload)).sub || null;
-    } catch (_) { return null; }
-  })();
+  // Three independent checks, all required:
+  //   1. Nonce. marketing.soulgainz.app/success set a random cookie on the
+  //      shared parent domain right before redirecting here. A link that was
+  //      forwarded, or crafted by someone who paid for their own checkout,
+  //      arrives in a browser without that cookie. (Login-CSRF.)
+  //   2. verify-session, with the fragment's token as bearer: the SERVER
+  //      verifies the JWT and confirms its subject is the buyer the checkout
+  //      was opened for. No client-side JWT decoding to fool.
+  //   3. Not replacing someone else's session. If this origin already holds a
+  //      session for a different user, leave it alone and go to the app.
+  const cookieNonce = (document.cookie.match(/(?:^|;\s*)sg_hand=([a-f0-9]{32})/) || [])[1] || '';
+  try { document.cookie = 'sg_hand=; Domain=soulgainz.app; Path=/; Secure; SameSite=Lax; Max-Age=0'; } catch (_) {}
+  if (!nonce || !cookieNonce || nonce !== cookieNonce) {
+    console.warn('handoff refused: nonce missing or mismatched');
+    show('state-signin');
+    return;
+  }
+
   let verdict = null;
   try {
-    const r = await fetch('/.netlify/functions/verify-session?session_id=' + encodeURIComponent(sessionId), { credentials: 'omit' });
+    const r = await fetch('/.netlify/functions/verify-session?session_id=' + encodeURIComponent(sessionId),
+      { credentials: 'omit', headers: { Authorization: 'Bearer ' + access } });
     if (r.ok) verdict = await r.json();
   } catch (_) {}
-  if (!verdict || !verdict.paid || !verdict.userId || !jwtSub || verdict.userId !== jwtSub) {
+  if (!verdict || !verdict.paid || verdict.sameUser !== true) {
     console.warn('handoff refused: session/token mismatch');
     show('state-signin');
     return;
@@ -301,6 +313,13 @@
     const SUPABASE_URL  = 'https://rjreunvnsfjclpighogp.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcmV1bnZuc2ZqY2xwaWdob2dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQ0MjIsImV4cCI6MjA5MzY1MDQyMn0.1JGpif9m0Cg2LJXt4h8GhekJpH7PdtWVkopu_cJD814';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const existing = await sb.auth.getSession().then(r => r.data && r.data.session).catch(() => null);
+    const jwtSub = (() => { try { return JSON.parse(atob(access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).sub || null; } catch (_) { return null; } })();
+    if (existing && existing.user && jwtSub && existing.user.id !== jwtSub) {
+      console.warn('handoff refused: a different user is signed in here');
+      location.replace('/index.html?tab=profile');
+      return;
+    }
     const { data, error } = await sb.auth.setSession({ access_token: access, refresh_token: refresh });
     if (error || !data || !data.session) throw error || new Error('no session');
   } catch (e) {

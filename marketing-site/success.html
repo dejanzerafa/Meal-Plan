@@ -114,10 +114,25 @@
   // a bookmark.
   try { history.replaceState(null, '', location.pathname); } catch (_) {}
 
-  // 1. Verify with Stripe, server-side. Never trust the redirect alone.
+  // 1. Do we hold the session that started this checkout?
+  let session = null, sb = null;
+  try {
+    if (!window.supabase) throw new Error('supabase-js not loaded');
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const { data } = await sb.auth.getSession();
+    session = data && data.session;
+  } catch (e) {
+    console.error('getSession failed', e);
+  }
+
+  // 2. Verify with Stripe, server-side. Never trust the redirect alone.
+  //    The bearer lets the SERVER decide whether this signed-in user is the
+  //    buyer (JWT subject vs the checkout's userId). Without it, or for anyone
+  //    else, verify-session answers only {paid, tier} — no email.
   let verdict;
   try {
-    const r = await fetch(VERIFY_URL + '?session_id=' + encodeURIComponent(sessionId), { credentials: 'omit' });
+    const headers = session && session.access_token ? { Authorization: 'Bearer ' + session.access_token } : {};
+    const r = await fetch(VERIFY_URL + '?session_id=' + encodeURIComponent(sessionId), { credentials: 'omit', headers });
     if (!r.ok) throw new Error('verify ' + r.status);
     verdict = await r.json();
   } catch (e) {
@@ -132,35 +147,28 @@
   const emailEl = document.getElementById('paid-email');
   if (paidEmail && emailEl) emailEl.textContent = paidEmail;
 
-  // 2. Do we hold the session that started this checkout?
-  let session = null, sb = null;
-  try {
-    if (!window.supabase) throw new Error('supabase-js not loaded');
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const { data } = await sb.auth.getSession();
-    session = data && data.session;
-  } catch (e) {
-    console.error('getSession failed', e);
-  }
-
-  // Hand over only when the session belongs to the user the checkout was
-  // opened for. A session id can leak (referrer, history); it must not carry a
-  // different browser's login into the app.
-  const sameUser = session && verdict.userId && session.user && session.user.id === verdict.userId;
-  if (!session || !sameUser) { show('state-signin'); return; }
+  // Hand over only when the server confirmed the session belongs to the user
+  // the checkout was opened for. A session id can leak (referrer, history); it
+  // must not carry a different browser's login into the app.
+  if (!session || !verdict.sameUser) { show('state-signin'); return; }
 
   // 3. Hand the session to the app in the fragment. The app's success page
   //    calls setSession() and then strips the fragment from its own history.
   show('state-handoff');
+  // Bind the handoff to THIS browser. The app re-verifies the session id and
+  // the token's subject, but an attacker can pay for their own checkout and
+  // craft a link that passes both — then a victim who opens it is logged into
+  // the attacker's account (login-CSRF). A random nonce in a cookie on the
+  // shared parent domain is something only this browser holds; the app
+  // refuses the handoff unless the cookie matches the fragment.
+  const nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+  document.cookie = 'sg_hand=' + nonce + '; Domain=soulgainz.app; Path=/; Secure; SameSite=Lax; Max-Age=300';
   const frag = new URLSearchParams({
     access_token:  session.access_token,
     refresh_token: session.refresh_token,
     tier:          verdict.tier || '',
-    // The app re-verifies this itself before trusting the tokens, and checks
-    // the token's subject against the session's buyer. A crafted link with an
-    // attacker's tokens therefore cannot log a victim into the attacker's
-    // account (login-CSRF) — verify-session would name a different userId.
     session_id:    sessionId,
+    nonce:         nonce,
   });
   // HAND OVER, don't copy. After this line the app owns the session. Supabase
   // rotates refresh tokens with reuse detection: if this origin kept its copy,

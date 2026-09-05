@@ -554,8 +554,11 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
   t("MARKETING_URL defaults to the marketing origin", /MARKETING_URL \|\| "https:\/\/marketing\.soulgainz\.app"/.test(cc),
      "a default of the app origin re-creates the signed-out landing");
   t("cancel_url also returns to the marketing site", /cancel_url: `\$\{marketingUrl\}\/pricing`/.test(cc));
-  t("verify-session returns the auth userId the app checks against",
-     /userId: session\.metadata\?\.userId/.test(vs) && /SOLD_TIERS\.has\(tier\)/.test(vs) && !/error: err\.message/.test(vs));
+  t("verify-session decides sameUser SERVER-side from a verified bearer, and never returns email otherwise",
+     /sameUser = !!\(session\.metadata\?\.userId && r\.user\.id === session\.metadata\.userId\)/.test(vs) &&
+     /\.\.\.\(sameUser \? \{ email:/.test(vs) && !/userId: session\.metadata/.test(vs) && !/customerId:/.test(vs) &&
+     /SOLD_TIERS\.has\(tier\)/.test(vs) && !/error: err\.message/.test(vs),
+     "a leaked session id used to return the buyer's email and customer id to anyone");
   t("Stripe returns the buyer to the MARKETING origin, where the session lives",
      /success_url: `\$\{marketingUrl\}\/success/.test(cc),
      "a success_url on the app domain lands the buyer signed out");
@@ -599,8 +602,26 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
       history: { replaceState() {} },
       localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
       matchMedia: () => ({ matches: true }),
-      fetch: async (u) => { calls.fetch.push(u); const v = opts.verdict; return { ok: !!v, json: async () => v }; },
-      document: { getElementById: id => els[id] || null, querySelectorAll: sel => sel === '[id^="state-"]' ? Object.values(els).filter(e => e.id.startsWith("state-")) : [], write() {} },
+      // verify-session's contract: sameUser is decided from the bearer. The
+      // scenario's `verdict.userId` is the buyer; the harness compares it to
+      // the bearer's subject exactly as the function does, and strips email
+      // unless they match.
+      fetch: async (u, init) => {
+        calls.fetch.push(u);
+        const v = opts.verdict; if (!v) return { ok: false, json: async () => null };
+        const auth = (init && init.headers && (init.headers.Authorization || init.headers.authorization)) || "";
+        const tok = auth.replace(/^Bearer\s+/i, "");
+        let sub = null; try { sub = JSON.parse(Buffer.from(tok.split(".")[1], "base64url").toString()).sub; } catch (_) {}
+        const sameUser = !!(v.userId && sub && sub === v.userId);
+        const out = v.paid ? { paid: true, tier: v.tier, sameUser, ...(sameUser ? { email: v.email || null } : {}) } : v;
+        return { ok: true, json: async () => out };
+      },
+      crypto: { getRandomValues: (a) => { for (let i = 0; i < a.length; i++) a[i] = (i * 37 + 11) & 255; return a; } },
+      document: { getElementById: id => els[id] || null, querySelectorAll: sel => sel === '[id^="state-"]' ? Object.values(els).filter(e => e.id.startsWith("state-")) : [], write() {},
+                  // A one-cookie jar shared across the two pages of a scenario
+                  // (the nonce travels marketing → app on the parent domain).
+                  get cookie() { return opts.jar ? Object.entries(opts.jar).map(([k, v]) => k + "=" + v).join("; ") : ""; },
+                  set cookie(v) { if (!opts.jar) return; const m = /^([^=]+)=([^;]*)/.exec(v); if (!m) return; if (/Max-Age=0/.test(v)) delete opts.jar[m[1]]; else opts.jar[m[1]] = m[2]; } },
       supabase: { createClient: () => sb },
     });
     // In a browser window === globalThis. The page calls window.matchMedia
@@ -620,9 +641,14 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
     const paidOwner = { paid: true, tier: "monthly", userId: U, email: "a@b.c" };
     const sess = (id) => ({ access_token: jwt(id), refresh_token: "r", user: { id } });
 
-    let r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: paidOwner, session: sess(U) });
+    const jar = {};
+    let r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: paidOwner, session: sess(U), jar });
     t("marketing: paid + own session → hands off to the app", r.calls.replace && r.calls.replace.startsWith("https://soulgainz.app/success#"),
        "visible=" + r.visible + " replace=" + r.calls.replace);
+    t("marketing: verify-session was called WITH the bearer", r.calls.fetch.length === 1, "sameUser must be decided server-side");
+    t("marketing: a nonce cookie was set on the parent domain and the same nonce is in the fragment",
+       !!jar.sg_hand && new RegExp("[#&]nonce=" + jar.sg_hand + "(&|$)").test(r.calls.replace || ""), "jar=" + JSON.stringify(jar));
+    const handoffHash = "#" + (r.calls.replace || "").split("#")[1];
     t("marketing: the fragment carries session_id for the app to re-verify", /[#&]session_id=cs_test_abc/.test(r.calls.replace || ""));
     t("marketing: signs itself out LOCALLY after handing over", r.calls.signOut && r.calls.signOut.scope === "local",
        "both origins holding one refresh-token family → reuse detection revokes it → buyer signed out later");
@@ -646,23 +672,44 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
 
   // app success page
   {
-    const frag = (sub, sid = "cs_test_abc") => `#access_token=${jwt(sub)}&refresh_token=r&tier=monthly&session_id=${sid}`;
+    const N = "0b30557c9fc3ea1138a5f2192a52b0d3";
+    const frag = (sub, sid = "cs_test_abc", nonce = N) => `#access_token=${jwt(sub)}&refresh_token=r&tier=monthly&session_id=${sid}&nonce=${nonce}`;
     const owner = { paid: true, tier: "monthly", userId: U };
+    const withCookie = () => ({ sg_hand: N });
 
-    let r = await runPage(as, { hash: frag(U), verdict: owner });
-    t("app: verified owner tokens → setSession → 'You're in'", r.calls.setSession && r.visible.join() === "state-in",
+    let r = await runPage(as, { hash: frag(U), verdict: owner, jar: withCookie() });
+    t("app: verified owner tokens + matching nonce cookie → setSession → 'You're in'", r.calls.setSession && r.visible.join() === "state-in",
        "visible=" + r.visible + " setSession=" + !!r.calls.setSession);
-    t("app: it re-verified the session_id itself", r.calls.fetch.some(u => /verify-session\?session_id=cs_test_abc/.test(u)));
+    t("app: it re-verified the session_id itself, with the fragment token as bearer", r.calls.fetch.some(u => /verify-session\?session_id=cs_test_abc/.test(u)));
 
-    r = await runPage(as, { hash: frag("attacker"), verdict: owner });
+    r = await runPage(as, { hash: frag("attacker"), verdict: owner, jar: withCookie() });
     t("app: token subject ≠ session owner → REFUSED (login-CSRF)", r.calls.setSession === null && r.visible.join() === "state-signin",
        "a crafted link with an attacker's tokens must not sign the victim into the attacker's account");
 
-    r = await runPage(as, { hash: frag(U), verdict: { paid: false } });
+    // The attacker pays for their OWN checkout: session owner and token
+    // subject now agree. Only the nonce cookie — set in the buyer's browser
+    // by the marketing page — tells this link apart from a real handoff.
+    r = await runPage(as, { hash: frag(U), verdict: owner, jar: {} });
+    t("app: valid-looking link but NO nonce cookie in this browser → REFUSED (self-paid login-CSRF)",
+       r.calls.setSession === null && r.visible.join() === "state-signin", "visible=" + r.visible);
+    r = await runPage(as, { hash: frag(U, "cs_test_abc", "ffffffffffffffffffffffffffffffff"), verdict: owner, jar: withCookie() });
+    t("app: nonce in fragment ≠ cookie → REFUSED", r.calls.setSession === null && r.visible.join() === "state-signin");
+    const jar2 = withCookie();
+    r = await runPage(as, { hash: frag(U), verdict: owner, jar: jar2 });
+    t("app: the nonce cookie is consumed (deleted) on use", !jar2.sg_hand, JSON.stringify(jar2));
+
+    r = await runPage(as, { hash: frag(U), verdict: owner, jar: withCookie(), session: { access_token: jwt("someone-else"), user: { id: "someone-else" } } });
+    t("app: a DIFFERENT user already signed in here → left alone, sent to the app, no setSession",
+       r.calls.setSession === null && r.calls.replace === "/index.html?tab=profile", "replace=" + r.calls.replace + " visible=" + r.visible);
+
+    r = await runPage(as, { hash: frag(U), verdict: { paid: false }, jar: withCookie() });
     t("app: unpaid session → refused", r.calls.setSession === null && r.visible.join() === "state-signin");
 
-    r = await runPage(as, { hash: frag(U), verdict: owner, setSessionResult: { data: null, error: new Error("bad") } });
+    r = await runPage(as, { hash: frag(U), verdict: owner, jar: withCookie(), setSessionResult: { data: null, error: new Error("bad") } });
     t("app: setSession fails → sign-in, NOT 'You're in'", r.visible.join() === "state-signin", "visible=" + r.visible);
+
+    r = await runPage(as, { hash: "", jar: {} });
+    t("app: the 'Payment confirmed' state is hidden by default (no flash on a plain visit)", /<div id="state-signing" hidden>/.test(as));
 
     r = await runPage(as, { hash: "" });
     t("app: typed /success by hand → sign-in prompt, nothing verified", r.visible.join() === "state-signin" && r.calls.fetch.length === 0);
@@ -1008,7 +1055,47 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     const dma = fnSrc("deleteMyAccount");
     t("deleteMyAccount wipes ALL local storage after success (not just the session)", !!dma && /localStorage\.clear\(\)/.test(dma) && /clearSessionState\(\)/.test(dma) && dma.indexOf("res.ok") < dma.indexOf("localStorage.clear()"),
        "PRESERVE_PREFIXES would otherwise keep the deleted person's calculator email and custom recipes for the next user");
-    t("deleteMyAccount demands the typed word before any request", !!dma && /window\.prompt\(/.test(dma) && dma.indexOf("window.prompt(") < dma.indexOf('_acctFetch("delete-account"'));
+    t("deleteMyAccount demands the typed word before any request (in-page input, not window.prompt — iOS PWAs return null from prompt)",
+       !!dma && !/window\.prompt\(/.test(dma) && /_acctConfirmText\.trim\(\) !== "DELETE"/.test(dma) && dma.indexOf('!== "DELETE"') < dma.indexOf('_acctFetch("delete-account"'));
+  }
+
+  // ── Code-review round (2026-09-05 evening) ──
+  {
+    const su = fn("save-user.js");
+    t("save-user: an unauthenticated caller can write calc_used and NOTHING else",
+       /first_name = undefined; last_name = undefined; marketing_opt_in = undefined;/.test(su) && su.indexOf("marketing_opt_in = undefined") < su.indexOf("rest/v1/users?email=eq."),
+       "anyone could POST {email: victim, marketing_opt_in: true} and enrol a stranger in marketing mail");
+    t("save-user: the PATCH only carries fields the caller sent",
+       /\.\.\.\(first_name !== undefined \? \{ first_name/.test(su) && /\.\.\.\(marketing_opt_in !== undefined \? \{ marketing_opt_in \}/.test(su),
+       "the calculator's {email, calc_used} call used to null the name and revoke marketing consent on every use");
+    t("save-user: Resend audience only for an authenticated opt-in", /marketing_opt_in === true && authedUser/.test(su));
+    for (const f of ["delete-account.js", "export-data.js"]) {
+      const c = fn(f);
+      t(`${f}: ilike pattern characters are escaped (a_b@x.com must not match a?b@x.com)`,
+         /emailPattern = email\.replace\(\/\[\\\\%_\]\/g/.test(c) && !/\.ilike\("email", email\)/.test(c),
+         "unescaped _ read (or deleted) other people's rows");
+    }
+    const del = fn("delete-account.js");
+    t("delete-account: read errors are fatal before Stripe is consulted", /if \(ur\.error\) throw/.test(del) && /if \(sr\.error\) throw/.test(del),
+       "a transient PostgREST failure read as 'no rows' and skipped the Stripe cancel");
+    t("delete-account: subscriptions come from Stripe's side too (list per customer + metadata search)",
+       /stripe\.subscriptions\.list\(\{ customer: cid, status: "all"/.test(del) && /stripe\.subscriptions\.search\(/.test(del),
+       "the webhook tolerates a failed ledger insert, so the ledger alone can miss a live subscription");
+    t("delete-account: stamps are reverted if deletion fails", /stampedCustomers/.test(del) && /metadata: \{ deleted_at: "" \}/.test(del),
+       "a surviving account with a stamped customer would make every real cancellation look like a closure");
+    t("delete-account: removes the Resend audience contact", /api\.resend\.com\/audiences\/.*\/contacts\//.test(del));
+    const wh = fn("stripe-webhook.js");
+    t("webhook: a stamped customer still gets the downgrade attempt, only the paging is suppressed",
+       /downgradeUserToFree\(supabase, custEmail, sub\.customer, \{ quiet: _closing \}\)/.test(wh) && /if \(!quiet\) await report\(/.test(wh));
+    const rep = fn(join("_shared", "report.js"));
+    t("report(): the exception message is scrubbed, not just extra", /value: scrub\(message\)/.test(rep) && /formatted: scrub\(message\)/.test(rep),
+       "PostgREST unique-violation text embeds the email");
+    const pr = readFileSync(join(ROOT, "marketing-site", "pricing.html"), "utf8");
+    const msu = readFileSync(join(ROOT, "marketing-site", "sign-up.html"), "utf8");
+    t("marketing: sign-up with confirmation ON remembers the welcome and flushes it when the session appears",
+       /localStorage\.setItem\(WELCOME_KEY, name/.test(pr) && /flushPendingWelcome\(session\)/.test(pr) && /'sg_mkt_welcome_pending'/.test(msu),
+       "signUp() returns no session when confirmation is on, so the welcome + server-side Terms record never happened");
+    t("marketing pricing: the Terms field toggles to flex (was a precedence bug)", /style\.display = tab === 'signup' \? 'flex' : 'none';/.test(pr));
   }
 
   // ── S2: analytics only after opt-in ──

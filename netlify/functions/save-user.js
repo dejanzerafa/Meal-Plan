@@ -63,7 +63,13 @@ exports.handler = async (event) => {
   // Default FALSE. This used to default true here, in the schema, and be
   // hard-coded true by the client — so every user was enrolled in marketing
   // without ever being asked. Assumed consent is not consent.
-  let { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used, welcome_only = false, terms_accepted_at, terms_version } = payload;
+  let { email, first_name, last_name, marketing_opt_in, skip_email = false, calc_used, welcome_only = false, terms_accepted_at, terms_version } = payload;
+  // Only fields the caller actually sent are written. A PATCH that always
+  // carried every column turned "update calc_used" into "erase the name".
+  const sent = k => Object.prototype.hasOwnProperty.call(payload, k);
+  if (!sent("first_name")) first_name = undefined;
+  if (!sent("last_name"))  last_name  = undefined;
+  if (!sent("marketing_opt_in")) marketing_opt_in = undefined; else marketing_opt_in = marketing_opt_in === true;
 
   // ── Who is asking? ──────────────────────────────────────────────────────────
   // This endpoint sends mail from support@soulgainz.app to a caller-supplied
@@ -87,6 +93,13 @@ exports.handler = async (event) => {
   } else {
     skip_email = true;
     email = String(email || "").trim().toLowerCase();
+    // Unauthenticated callers may stamp calc_used and nothing else. Without
+    // this, anyone could POST {email: victim, marketing_opt_in: true} and enrol
+    // a stranger in marketing mail — and the calculator's own call (which
+    // sends no name) PATCHed first_name/last_name to null and marketing_opt_in
+    // to false on every use, wiping a consent the user had actually given.
+    first_name = undefined; last_name = undefined; marketing_opt_in = undefined;
+    terms_accepted_at = undefined; terms_version = undefined;
   }
 
   const _rl = await rateLimit(`saveuser_${(email || "").toLowerCase().trim()}_${clientIp(event)}`, { max: 5, windowMs: 60000 });
@@ -148,9 +161,9 @@ exports.handler = async (event) => {
           "Prefer": "return=representation",
         },
         body: JSON.stringify({
-          first_name: first_name || null,
-          last_name:  last_name  || null,
-          marketing_opt_in,
+          ...(first_name !== undefined ? { first_name: first_name || null } : {}),
+          ...(last_name  !== undefined ? { last_name:  last_name  || null } : {}),
+          ...(marketing_opt_in !== undefined ? { marketing_opt_in } : {}),
           updated_at: new Date().toISOString(),
           ...(calc_used === true ? { calc_used: true } : {}),
         }),
@@ -178,7 +191,7 @@ exports.handler = async (event) => {
           email,
           first_name: first_name || null,
           last_name:  last_name  || null,
-          marketing_opt_in,
+          marketing_opt_in: marketing_opt_in === true,   // schema default false; explicit here
           updated_at: new Date().toISOString(),
           ...(calc_used === true ? { calc_used: true } : {}),
         }),
@@ -196,7 +209,7 @@ exports.handler = async (event) => {
     }
 
     // -- 2. Add / update contact in Resend Audience ------------------------------
-    if (resendKey && audienceId && marketing_opt_in) {
+    if (resendKey && audienceId && marketing_opt_in === true && authedUser) {
       fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
         method: "POST",
         headers: {

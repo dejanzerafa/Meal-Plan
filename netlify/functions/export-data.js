@@ -31,6 +31,12 @@ exports.handler = async (event) => {
   if (auth.error) return { statusCode: auth.status, headers: cors, body: JSON.stringify({ error: auth.error }) };
   const { user, supabase } = auth;
   const email = String(user.email || "").toLowerCase();
+  // ilike treats % and _ as wildcards — and _ is common in real addresses.
+  // Unescaped, a_b@x.com matched (and here would have read or deleted) every
+  // a?b@x.com row belonging to someone else. Escape the pattern characters;
+  // PostgREST also rewrites a bare * to %, so refuse that outright.
+  if (/[*]/.test(email)) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Unsupported email" }) };
+  const emailPattern = email.replace(/[\\%_]/g, c => "\\" + c);
 
   try {
     // Core tables (the user's own rows) throw on error — a half export is
@@ -43,7 +49,7 @@ exports.handler = async (event) => {
       return data || [];
     };
     const byEmail = async (table, { optional = false } = {}) => {
-      const { data, error } = await supabase.from(table).select("*").ilike("email", email);
+      const { data, error } = await supabase.from(table).select("*").ilike("email", emailPattern);
       if (error) {
         if (optional) { console.warn(`export-data: skipping ${table}: ${error.message}`); return []; }
         throw new Error(`${table}: ${error.message}`);
@@ -57,8 +63,10 @@ exports.handler = async (event) => {
     let subscriptions = [], birthdayCodes = [];
     if (userIds.length) {
       const s = await supabase.from("subscriptions").select("*").in("user_id", userIds);
+      if (s.error) throw new Error(`subscriptions: ${s.error.message}`);
       subscriptions = s.data || [];
       const b = await supabase.from("birthday_codes").select("*").in("user_id", userIds);
+      if (b.error) throw new Error(`birthday_codes: ${b.error.message}`);
       birthdayCodes = b.data || [];
     }
 

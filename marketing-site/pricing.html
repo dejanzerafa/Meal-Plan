@@ -681,6 +681,19 @@
     // welcome_only makes a repeat call a no-op rather than a "Welcome back".
     // Buyers are the users you most want to welcome, and until now the
     // marketing sign-up path never sent one.
+    // With email confirmation ON, signUp() returns no session, so the welcome
+    // (and the server-side Terms record it carries) could never be sent from
+    // the sign-up handler. Remember the name; the confirmation link lands on
+    // THIS page with a session, and flushPendingWelcome sends it then.
+    const WELCOME_KEY = 'sg_mkt_welcome_pending';
+    function flushPendingWelcome(session) {
+      try {
+        const name = localStorage.getItem(WELCOME_KEY);
+        if (name === null || !session || !session.access_token) return;
+        localStorage.removeItem(WELCOME_KEY);
+        sendWelcome(session, name);
+      } catch (_) {}
+    }
     function sendWelcome(session, name) {
       try {
         if (!session || !session.access_token) return;
@@ -874,7 +887,10 @@
     // Run on load, and keep in sync if the session changes in another tab
     renderAccountBar();
     try {
-      if (sb) sb.auth.onAuthStateChange(() => { renderAccountBar(); });
+      if (sb) sb.auth.onAuthStateChange((evt, session) => {
+        renderAccountBar();
+        if (evt === 'SIGNED_IN' || evt === 'INITIAL_SESSION') flushPendingWelcome(session);
+      });
     } catch (_) {}
 
     // ── Auth modal ────────────────────────────────────────────────────────────
@@ -897,7 +913,7 @@
       document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
       document.getElementById('tab-login').classList.toggle('active', tab === 'login');
       document.getElementById('field-name').style.display = tab === 'signup' ? 'block' : 'none';
-      document.getElementById('field-terms').style.display = tab === 'signup' ? 'block' : 'none' === 'none' ? 'none' : 'flex';
+      document.getElementById('field-terms').style.display = tab === 'signup' ? 'flex' : 'none';
       document.getElementById('auth-submit').textContent =
         tab === 'signup' ? 'Create account & continue' : 'Log in & continue';
       document.getElementById('auth-error').textContent = '';
@@ -941,6 +957,7 @@
           if (session) sendWelcome(session, name);
           // If email confirmation required, session may be null
           if (!session) {
+            try { localStorage.setItem(WELCOME_KEY, name || ''); } catch (_) {}
             errEl.style.color = '#4ade80';
             errEl.textContent = 'Account created! Check your email to confirm, then log in.';
             btn.disabled = false;

@@ -11,10 +11,11 @@
 // that told a customer whose card was declined that they were in.
 //
 // GET ?session_id=cs_...
-// → { paid: true,  tier, email, customerId }
+// → { paid: true,  tier, sameUser }            (no bearer, or bearer ≠ buyer)
+// → { paid: true,  tier, sameUser: true, email } (bearer verified as the buyer)
 // → { paid: false, status }               (unpaid / expired / declined)
 
-const { rateLimit, clientIp } = require("./_shared/auth");
+const { rateLimit, clientIp, requireUser } = require("./_shared/auth");
 const { report } = require("./_shared/report");
 const Stripe = require("stripe");
 
@@ -42,7 +43,7 @@ exports.handler = async (event) => {
   const headers = {
     "Access-Control-Allow-Origin": corsOrigin,
     "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Vary": "Origin",
     "Content-Type": "application/json",
     // Never cache a payment verdict.
@@ -71,6 +72,7 @@ exports.handler = async (event) => {
   }
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
+  const hasBearer = /^Bearer\s+/i.test((event.headers && (event.headers.authorization || event.headers.Authorization)) || "");
   const sessionId = event.queryStringParameters?.session_id;
   if (!sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "session_id required" }) };
@@ -86,7 +88,20 @@ exports.handler = async (event) => {
     const tier = session.metadata?.tier || null;
     if (!SOLD_TIERS.has(tier)) {
       console.error("verify-session: paid session with unknown tier", sessionId, tier);
-      return { statusCode: 200, headers, body: JSON.stringify({ paid: true, tier: null, email: session.customer_details?.email || null }) };
+      return { statusCode: 200, headers, body: JSON.stringify({ paid: true, tier: null }) };
+    }
+
+    // Who is asking? A session id leaks (referrer, history, analytics), so an
+    // unauthenticated caller learns only that it was paid and for which tier.
+    // With a bearer token the server — not the page — decides whether the
+    // caller IS the buyer, by verifying the JWT and comparing its subject to
+    // the userId the checkout was opened for. Only then does the buyer's own
+    // email come back. Both success pages send their bearer.
+    let sameUser = false;
+    if (hasBearer) {
+      const r = await requireUser(event);
+      if (r.error) return { statusCode: r.status, headers, body: JSON.stringify({ error: r.error }) };
+      sameUser = !!(session.metadata?.userId && r.user.id === session.metadata.userId);
     }
 
     return {
@@ -95,13 +110,8 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         paid: true,
         tier,
-        email: session.customer_details?.email || null,
-        customerId: session.customer || null,
-        // The auth user the session was opened for. The success page compares
-        // this against its own signed-in user before handing tokens to the app,
-        // so a session id pasted into another browser cannot carry someone
-        // else's login across.
-        userId: session.metadata?.userId || null,
+        sameUser,
+        ...(sameUser ? { email: session.customer_details?.email || null } : {}),
       }),
     };
   } catch (err) {
