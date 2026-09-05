@@ -9,6 +9,7 @@
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
 const { clientIp } = require("./_shared/auth");
+const { report } = require("./_shared/report");
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
@@ -237,6 +238,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("restore-account error:", err);
+    await report("restore-account", err instanceof Error ? err : new Error(String(err)), { where: "restore-account " });
     return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
   }
 };

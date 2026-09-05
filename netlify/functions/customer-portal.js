@@ -15,6 +15,7 @@ const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
 const Stripe = require("stripe");
+const { report } = require("./_shared/report");
 const { createClient } = require("@supabase/supabase-js");
 
 const ALLOWED_ORIGINS = [
@@ -107,6 +108,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("Stripe portal error:", err);
+    await report("customer-portal", err instanceof Error ? err : new Error(String(err)), { where: "Stripe portal " });
     // Billing portal may not be configured in Stripe dashboard
     if (err.code === "resource_missing") {
       return {

@@ -19,6 +19,7 @@
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
 const { escHtml, rateLimit, clientIp, requireUser } = require("./_shared/auth");
+const { report } = require("./_shared/report");
 
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
@@ -169,6 +170,7 @@ exports.handler = async (event) => {
       } else {
         const err = await insertRes.text();
         console.error("Supabase insert error:", err);
+        await report("save-user", err instanceof Error ? err : new Error(String(err)), { where: "Supabase insert " });
       }
     }
 

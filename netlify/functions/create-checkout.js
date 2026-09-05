@@ -13,6 +13,7 @@ const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
 const Stripe = require("stripe");
+const { report } = require("./_shared/report");
 
 // ── Allowed origins ───────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -146,6 +147,7 @@ exports.handler = async (event) => {
     // Fail closed. Without the mapping we cannot prove the tier matches the price,
     // and granting an unverified tier is worse than refusing the sale.
     console.error("STRIPE_PRICE_MONTHLY / STRIPE_PRICE_ANNUAL not configured — refusing checkout");
+    await report("create-checkout", "checkout refused: STRIPE_PRICE_* env not set — no purchase can succeed", {}, "fatal");
     return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Checkout is not configured. Please contact support." }) };
   }
   if (!derivedTier) {
@@ -214,6 +216,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("Stripe checkout error:", err);
+    await report("create-checkout", err instanceof Error ? err : new Error(String(err)), { where: "Stripe checkout " });
     return {
       statusCode: 500,
       headers: corsHeaders,

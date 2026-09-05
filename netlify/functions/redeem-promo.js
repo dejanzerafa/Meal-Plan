@@ -11,6 +11,7 @@ const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
 
 const { requireUser, rateLimit, clientIp } = require("./_shared/auth");
+const { report } = require("./_shared/report");
 
 const ALLOWED_ORIGINS = [
   "https://soulgainz.app",
@@ -170,6 +171,7 @@ exports.handler = async (event) => {
   if (!profileRes.ok) {
     const err = await profileRes.text();
     console.error("redeem-promo: profile update failed", err);
+    await report("redeem-promo", err instanceof Error ? err : new Error(String(err)), { where: "redeem-promo: profile update " });
     await _releaseClaim();
     return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Failed to apply code" }) };
   }

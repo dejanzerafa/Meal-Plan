@@ -15,6 +15,7 @@
 // → { paid: false, status }               (unpaid / expired / declined)
 
 const { rateLimit, clientIp } = require("./_shared/auth");
+const { report } = require("./_shared/report");
 const Stripe = require("stripe");
 
 const ALLOWED_ORIGINS = [
@@ -105,6 +106,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("verify-session error:", err && err.code, err && err.message);
+    if (!(err && (err.code === "resource_missing" || err.statusCode === 404))) await report("verify-session", err instanceof Error ? err : new Error(String(err)), { sessionId });
     // Do not echo err.message — Stripe's wording reveals whether the id exists.
     // Stripe answers an unknown id with resource_missing; that is the caller's
     // problem (404), not ours (500), and the success page treats both the same.

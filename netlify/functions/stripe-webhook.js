@@ -18,6 +18,7 @@
 
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
+const { report } = require("./_shared/report");
 
 const APP_URL = process.env.APP_URL || "https://soulgainz.app";
 const FROM_EMAIL = process.env.FROM_EMAIL || "SoulGainz <support@soulgainz.app>";
@@ -85,6 +86,7 @@ exports.handler = async (event) => {
         // Stripe retry on its own schedule, which is exactly what this needs.
         if (userErr) {
           console.error("User upsert error:", userErr);
+          await report("stripe-webhook", "users upsert failed on checkout — Stripe will retry", { email, sessionId: session.id, error: userErr && userErr.message });
           return { statusCode: 500, body: "user upsert failed" };
         }
 
@@ -153,6 +155,7 @@ exports.handler = async (event) => {
             }, { onConflict: "id" });
           if (profileErr) {
             console.error("Profile tier upsert error:", profileErr);
+            await report("stripe-webhook", "profile tier upsert failed on checkout", { tier, email, sessionId: session.id, error: profileErr && profileErr.message });
             // Last-resort fallback: update by email (catches rows without a matching id)
             // `.select()` matters: PostgREST returns 200 with zero rows when nothing
             // matched, so without it a buyer whose Stripe email differs from their
@@ -169,6 +172,7 @@ exports.handler = async (event) => {
             }
             if (!emailRows || emailRows.length === 0) {
               console.error(`UNMATCHED PURCHASE: paid ${tier} for ${email} but no profiles row matched. Manual grant required.`);
+              await report("stripe-webhook", "UNMATCHED PURCHASE — paid, no profile matched, manual grant required", { tier, email, sessionId: session.id, customerId: session.customer }, "fatal");
               return { statusCode: 500, body: "no matching account for this purchase" };
             }
             console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
@@ -281,6 +285,7 @@ exports.handler = async (event) => {
           if (!ok) return { statusCode: 500, body: "renewal entitlement write failed" };
         } catch (e) {
           console.error("invoice.payment_succeeded error:", e);
+          await report("stripe-webhook", e, { stage: "invoice.payment_succeeded", invoice: inv.id, subscription: inv.subscription });
           return { statusCode: 500, body: "renewal handling failed" };
         }
         break;
@@ -404,6 +409,7 @@ exports.handler = async (event) => {
           const revoked = await downgradeUserToFree(supabase, custEmail, sub.customer);
           if (!revoked) {
             console.error(`REVOCATION FAILED for ${custEmail} — returning 500 so Stripe retries`);
+            await report("stripe-webhook", "REVOCATION FAILED — access not removed after cancellation, Stripe retrying", { email: custEmail, subscription: sub.id }, "fatal");
             return { statusCode: 500, body: "downgrade failed" };
           }
           // The win-back email is a courtesy. It must never fail the revocation.
@@ -424,6 +430,7 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
   } catch (err) {
     console.error("Webhook handler error:", err);
+    await report("stripe-webhook", err, { eventType: stripeEvent && stripeEvent.type, eventId: stripeEvent && stripeEvent.id });
     return { statusCode: 500, body: err.message };
   }
 };
@@ -541,12 +548,14 @@ async function downgradeUserToFree(supabase, email, stripeCustomerId) {
         // That has to be reported, not logged as a successful downgrade.
         if (!fbRows || fbRows.length === 0) {
           console.error(`REVOCATION UNMATCHED: no profiles row for customer ${stripeCustomerId} (email ${email}). Manual downgrade required.`);
+      await report("stripe-webhook", "REVOCATION UNMATCHED — cancelled customer still has access, manual downgrade required", { email, customerId: stripeCustomerId }, "fatal");
           return false;
         }
         console.log(`Profile downgraded to free (by ID fallback): ${stripeCustomerId}`);
         return true;
       }
       console.error(`REVOCATION UNMATCHED: no users row for customer ${stripeCustomerId}. Manual downgrade required.`);
+      await report("stripe-webhook", "REVOCATION UNMATCHED — no users row for cancelled customer", { customerId: stripeCustomerId }, "fatal");
       return false;
     } catch(e2) { console.error("Profile downgrade fallback lookup error:", e2); return false; }
   } else {
