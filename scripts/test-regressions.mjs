@@ -551,6 +551,11 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
   const ms  = readFileSync(join(ROOT, "marketing-site", "success.html"), "utf8");
   const as  = readFileSync(join(ROOT, "success.html"), "utf8");
   const vs  = stripJS(readFileSync(join(ROOT, "netlify", "functions", "verify-session.js"), "utf8"));
+  t("MARKETING_URL defaults to the marketing origin", /MARKETING_URL \|\| "https:\/\/marketing\.soulgainz\.app"/.test(cc),
+     "a default of the app origin re-creates the signed-out landing");
+  t("cancel_url also returns to the marketing site", /cancel_url: `\$\{marketingUrl\}\/pricing`/.test(cc));
+  t("verify-session returns the auth userId the app checks against",
+     /userId: session\.metadata\?\.userId/.test(vs) && /SOLD_TIERS\.has\(tier\)/.test(vs) && !/error: err\.message/.test(vs));
   t("Stripe returns the buyer to the MARKETING origin, where the session lives",
      /success_url: `\$\{marketingUrl\}\/success/.test(cc),
      "a success_url on the app domain lands the buyer signed out");
@@ -563,22 +568,105 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
   t("verify-session returns CORS headers on every response, not just preflight",
      /"Access-Control-Allow-Origin": corsOrigin/.test(vs) && /statusCode: 200, headers/.test(vs),
      "without it the browser blocks the JSON and the success page can never learn the payment went through");
-  t("handoff is gated on the session belonging to the checkout's user",
-     /session\.user\.id === verdict\.userId/.test(ms),
-     "a leaked session id must not carry another browser's login into the app");
-  t("tokens travel in the FRAGMENT, not the query string",
-     /APP_SUCCESS \+ '#' \+/.test(ms) && /location\.hash/.test(as) && !/location\.search[^\n]*access_token/.test(as),
-     "fragments are never sent to the server; query strings land in Netlify logs");
-  t("both pages strip the tokens from history immediately",
-     (ms.match(/history\.replaceState/g) || []).length >= 1 && (as.match(/history\.replaceState/g) || []).length >= 1);
-  t("the app success page establishes the session with setSession",
-     /sb\.auth\.setSession\(\{ access_token: access, refresh_token: refresh \}\)/.test(as));
-  t("\"You're in\" is HIDDEN until setSession succeeds",
-     /<div id="state-in" hidden>/.test(as) && /show\('state-in'\)/.test(as) &&
-     as.indexOf("show('state-in')") > as.indexOf("sb.auth.setSession"),
-     "anyone typing /success by hand must not be told their subscription is active");
-  t("a missing or failed session shows sign-in, not access",
-     /if \(!access \|\| !refresh\) \{ show\('state-signin'\)/.test(as));
+  // ── The two success pages, EXECUTED under scripted scenarios ──────────────
+  // Greps here were defeated three ways in review: `sameUser` computed but not
+  // used; the unpaid branch calling show() without `return` and falling through
+  // to the handoff; a failed setSession still revealing "You're in". Each page
+  // is run in a vm with a fake DOM and a scripted fetch/supabase, and the
+  // assertion is on what it DID — which element ended up visible, whether
+  // location.replace fired, whether signOut was called.
+  const runPage = async (html, opts) => {
+    const vm = await import("node:vm");
+    const blocks = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+      .filter(m => !/\bsrc\s*=/.test(m[1]) && m[2].trim()).map(m => m[2]);
+    const els = {}; const el = id => (els[id] ||= { id, hidden: false, textContent: "", innerHTML: "", style: {} });
+    for (const id of html.matchAll(/id="([^"]+)"/g)) el(id[1]);
+    for (const id of html.matchAll(/<div id="([^"]+)" hidden>/g)) el(id[1]).hidden = true;
+    const calls = { replace: null, signOut: null, setSession: null, fetch: [] };
+    const sb = {
+      auth: {
+        getSession: async () => ({ data: { session: opts.session || null } }),
+        signOut: async (o) => { calls.signOut = o; },
+        setSession: async (p) => { calls.setSession = p; return opts.setSessionResult || { data: { session: { user: {} } }, error: null }; },
+      },
+    };
+    const ctx = vm.createContext({
+      console: { log() {}, warn() {}, error() {}, info() {} },
+      location: { search: opts.search || "", hash: opts.hash || "", origin: "https://x", pathname: "/success", href: "https://x/success",
+                  replace: (u) => { calls.replace = u; } },
+      navigator: { standalone: false }, setTimeout, clearTimeout, URLSearchParams, URL,
+      atob: (b) => Buffer.from(b, "base64").toString("binary"),
+      history: { replaceState() {} },
+      localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
+      matchMedia: () => ({ matches: true }),
+      fetch: async (u) => { calls.fetch.push(u); const v = opts.verdict; return { ok: !!v, json: async () => v }; },
+      document: { getElementById: id => els[id] || null, querySelectorAll: sel => sel === '[id^="state-"]' ? Object.values(els).filter(e => e.id.startsWith("state-")) : [], write() {} },
+      supabase: { createClient: () => sb },
+    });
+    // In a browser window === globalThis. The page calls window.matchMedia
+    // and window.supabase, so the context must be its own window.
+    ctx.window = ctx; ctx.self = ctx; ctx.globalThis = ctx;
+    for (const b of blocks) { try { await vm.runInContext(b, ctx, { filename: "page" }); } catch (e) { if (e.name === "SyntaxError") throw e; } }
+    // let the async IIFE settle
+    for (let i = 0; i < 20; i++) await new Promise(r => setImmediate(r));
+    const visible = Object.values(els).filter(e => e.id.startsWith("state-") && !e.hidden).map(e => e.id);
+    return { visible, calls };
+  };
+  const jwt = (sub) => "h." + Buffer.from(JSON.stringify({ sub })).toString("base64url") + ".s";
+  const U = "11111111-1111-1111-1111-111111111111";
+
+  // marketing success page
+  {
+    const paidOwner = { paid: true, tier: "monthly", userId: U, email: "a@b.c" };
+    const sess = (id) => ({ access_token: jwt(id), refresh_token: "r", user: { id } });
+
+    let r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: paidOwner, session: sess(U) });
+    t("marketing: paid + own session → hands off to the app", r.calls.replace && r.calls.replace.startsWith("https://soulgainz.app/success#"),
+       "visible=" + r.visible + " replace=" + r.calls.replace);
+    t("marketing: the fragment carries session_id for the app to re-verify", /[#&]session_id=cs_test_abc/.test(r.calls.replace || ""));
+    t("marketing: signs itself out LOCALLY after handing over", r.calls.signOut && r.calls.signOut.scope === "local",
+       "both origins holding one refresh-token family → reuse detection revokes it → buyer signed out later");
+    t("marketing: tokens are in the fragment, not the query", !/\?[^#]*access_token/.test(r.calls.replace || ""));
+
+    r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: paidOwner, session: sess("other-user") });
+    t("marketing: paid but session belongs to someone else → sign-in, NO handoff",
+       r.calls.replace === null && r.visible.join() === "state-signin", "visible=" + r.visible + " replace=" + r.calls.replace);
+
+    r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: { paid: false, status: "unpaid" }, session: sess(U) });
+    t("marketing: unpaid → 'not completed', NO handoff, no signOut",
+       r.calls.replace === null && r.calls.signOut === null && r.visible.join() === "state-unpaid", "visible=" + r.visible);
+
+    r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: null, session: sess(U) });
+    t("marketing: verify unreachable → error state, NO handoff", r.calls.replace === null && r.visible.join() === "state-error");
+
+    r = await runPage(ms, { search: "", session: sess(U) });
+    t("marketing: reload with no session_id → neutral state, not 'payment not completed'",
+       r.visible.join() === "state-error" && r.calls.fetch.length === 0, "visible=" + r.visible);
+  }
+
+  // app success page
+  {
+    const frag = (sub, sid = "cs_test_abc") => `#access_token=${jwt(sub)}&refresh_token=r&tier=monthly&session_id=${sid}`;
+    const owner = { paid: true, tier: "monthly", userId: U };
+
+    let r = await runPage(as, { hash: frag(U), verdict: owner });
+    t("app: verified owner tokens → setSession → 'You're in'", r.calls.setSession && r.visible.join() === "state-in",
+       "visible=" + r.visible + " setSession=" + !!r.calls.setSession);
+    t("app: it re-verified the session_id itself", r.calls.fetch.some(u => /verify-session\?session_id=cs_test_abc/.test(u)));
+
+    r = await runPage(as, { hash: frag("attacker"), verdict: owner });
+    t("app: token subject ≠ session owner → REFUSED (login-CSRF)", r.calls.setSession === null && r.visible.join() === "state-signin",
+       "a crafted link with an attacker's tokens must not sign the victim into the attacker's account");
+
+    r = await runPage(as, { hash: frag(U), verdict: { paid: false } });
+    t("app: unpaid session → refused", r.calls.setSession === null && r.visible.join() === "state-signin");
+
+    r = await runPage(as, { hash: frag(U), verdict: owner, setSessionResult: { data: null, error: new Error("bad") } });
+    t("app: setSession fails → sign-in, NOT 'You're in'", r.visible.join() === "state-signin", "visible=" + r.visible);
+
+    r = await runPage(as, { hash: "" });
+    t("app: typed /success by hand → sign-in prompt, nothing verified", r.visible.join() === "state-signin" && r.calls.fetch.length === 0);
+  }
   t("the app arms the post-checkout poller from the handoff marker",
      /localStorage\.setItem\('sg_awaiting_upgrade'/.test(as) &&
      /localStorage\.getItem\("sg_awaiting_upgrade"\)/.test(src) &&
@@ -613,7 +701,44 @@ section("Sign-up — email confirmation must not be a dead end");
   t("the duplicate-email (empty identities) case is caught",
      /data\.user\.identities\.length === 0/.test(su),
      "Supabase answers a duplicate sign-up with a user and no identities, not an error");
-  t("the onboarding gate routes pending_confirm to sign-in", /if \(status === "pending_confirm"\)/.test(src));
+  {
+    // The gate is the useState initialiser: `() => { try { const status = … } }`.
+    // Extract it and run it against a fake localStorage + location.
+    const gi = raw.indexOf("const [onboardStep, setOnboardStep] = useState(() => {");
+    const gate = braceBody(raw.indexOf("{", gi + "const [onboardStep, setOnboardStep] = useState(() => ".length));
+    const run = (store, search = "") => {
+      const w = {};
+      const fn = new Function("localStorage", "window",
+        "return (function() " + gate + ")();")(
+        { getItem: k => (k in store ? store[k] : null), removeItem: k => { delete store[k]; }, setItem: (k, v) => { store[k] = v; } },
+        Object.assign(w, { location: { search } }));
+      return { step: fn, armed: w._sg_upload_on_auth === true };
+    };
+    t("gate: registered → app", run({ sg_onboarded: "registered" }).step === "app");
+    t("gate: pending_confirm → sign-in screen, not the app", run({ sg_onboarded: "pending_confirm" }).step === "signup",
+       "opening the app as if they had an account is the bug being fixed");
+    t("gate: confirmation landing arms the local-data upload", run({ sg_onboarded: "pending_confirm" }, "?confirmed=1").armed === true,
+       "SIGNED_IN otherwise wipes local favourites against an empty server");
+    t("gate: a plain relaunch while pending does NOT arm it", run({ sg_onboarded: "pending_confirm" }).armed === false);
+    t("gate: first visit → story", run({}).step === "story");
+  }
+  {
+    // The post-checkout marker block, executed.
+    const mi = raw.indexOf('const _mark = parseInt(localStorage.getItem("sg_awaiting_upgrade")');
+    const blockStart = raw.lastIndexOf("try {", mi);
+    const block = braceBody(blockStart + 4);
+    const run = (ageMs) => {
+      const store = ageMs === null ? {} : { sg_awaiting_upgrade: String(Date.now() - ageMs) };
+      const w = {};
+      new Function("localStorage", "window", "try " + block + " catch (_) {}")(
+        { getItem: k => (k in store ? store[k] : null), removeItem: k => { delete store[k]; } }, w);
+      return { armed: w._sg_awaiting_upgrade === true, cleared: !("sg_awaiting_upgrade" in store) };
+    };
+    t("marker: 1-minute-old → arms the poller and is consumed", run(60e3).armed && run(60e3).cleared);
+    t("marker: 11-minutes-old → NOT armed, still consumed", !run(11 * 60e3).armed && run(11 * 60e3).cleared,
+       "a stale flag would fire 30 Supabase round trips on every launch");
+    t("marker: absent → not armed", !run(null).armed);
+  }
   t("the confirmation landing arms the local-data upload BEFORE the auth listener",
      /get\("confirmed"\) === "1"\) window\._sg_upload_on_auth = true/.test(src),
      "SIGNED_IN otherwise calls loadUserData, which wipes local favourites against an empty server");
@@ -632,11 +757,23 @@ section("Sign-up — email confirmation must not be a dead end");
   // caller hardcoded skip_email: true and the sign-up handler never called it.
   // No user ever received one.
   const welcome = fnSrc("sendWelcomeEmail") || "";
-  t("sendWelcomeEmail exists and calls save-user", /\/\.netlify\/functions\/save-user/.test(welcome));
-  t("it does NOT pass skip_email", !/skip_email/.test(welcome),
-     "that flag is exactly what suppressed the welcome for every user");
-  t("it sends marketing_opt_in: false", /marketing_opt_in: false/.test(welcome),
-     "the in-app sign-up has no marketing checkbox; assumed consent is not consent");
+  t("sendWelcomeEmail exists", !!welcome);
+  if (welcome) {
+    // Executed with a stub fetch. A grep was defeated by `if (em || …) return`
+    // — every string the grep looked for was still in the body.
+    const sent = [];
+    const send = new Function("fetch", welcome + "\nreturn sendWelcomeEmail;")((url, init) => { sent.push({ url, body: JSON.parse(init.body) }); return Promise.resolve(); });
+    send("  Dejan@Example.COM ", "D".repeat(80), "Z");
+    t("it POSTs save-user with the normalised email", sent.length === 1 && /save-user/.test(sent[0].url) && sent[0].body.email === "dejan@example.com",
+       JSON.stringify(sent));
+    t("it does NOT pass skip_email", sent.length === 1 && !("skip_email" in sent[0].body),
+       "that flag is exactly what suppressed the welcome for every user");
+    t("it sends marketing_opt_in: false", sent.length === 1 && sent[0].body.marketing_opt_in === false,
+       "the in-app sign-up has no marketing checkbox; assumed consent is not consent");
+    t("names are truncated to 50", sent.length === 1 && sent[0].body.first_name.length === 50);
+    send(""); send("nope");
+    t("no call for an invalid email", sent.length === 1);
+  }
   t("it is called on the immediate-session sign-up path",
      /window\._sg_upload_on_auth = true;\s*sendWelcomeEmail\(em, name\.trim\(\), surname\.trim\(\)\)/.test(src));
   t("and on the confirmation-landing path",
@@ -666,12 +803,23 @@ section("Marketing pages — inline scripts must load alongside the vendored bun
   const vendor = readFileSync(vendorPath, "utf8");
   t("the vendored bundle declares a global `supabase`", /^var supabase\s*=/m.test(vendor),
      "if this changes, the collision class below changes with it — re-check every page");
-  const pages = ["index.html", "pricing.html", "sign-up.html", "success.html", "about.html", "contact.html"];
+  // Every tracked page that loads the bundle — derived, not listed. The first
+  // version hard-coded six marketing pages and missed root success.html and
+  // index.html, which load the byte-identical file and were open to the exact
+  // same collision. The root vendor copy is used for root pages.
+  const tracked = (execSync("git ls-files '*.html'", { cwd: ROOT, encoding: "utf8" })).split("\n")
+    .filter(f => f && !/^(node_modules|_mobile|files|vendor)\//.test(f));
+  const pages = tracked.filter(f => /vendor\/supabase\.min\.js/.test(readFileSync(join(ROOT, f), "utf8")));
+  t("at least four pages load the vendored bundle (discovery works)", pages.length >= 4, pages.join(", "));
   for (const f of pages) {
-    const html = readFileSync(join(ROOT, "marketing-site", f), "utf8");
-    if (!/vendor\/supabase\.min\.js/.test(html)) { t(`${f} does not load the bundle — skipped`, true); continue; }
+    const html = readFileSync(join(ROOT, f), "utf8");
+    const vendorFile = f.startsWith("marketing-site/") ? vendorPath : join(ROOT, "vendor", "supabase.min.js");
+    const vendorSrc = readFileSync(vendorFile, "utf8");
+    // Same type filter as stripHTML and the CI helper — a JSON-LD block must
+    // not be executed as JS and reported as a false SyntaxError.
     const blocks = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-      .filter(m => !/\bsrc\s*=/.test(m[1]) && m[2].trim());
+      .filter(m => !/\bsrc\s*=/.test(m[1]) && m[2].trim())
+      .filter(m => { const ty = (m[1].match(/\btype\s*=\s*["']?([^"'\s>]+)/i) || [])[1]; return !ty || /^(text\/javascript|application\/javascript|module)$/i.test(ty); });
     const noop = () => {};
     const ctx = vm.createContext({
       console: { log: noop, warn: noop, error: noop, info: noop },
@@ -685,7 +833,7 @@ section("Marketing pages — inline scripts must load alongside the vendored bun
     });
     ctx.window = ctx; ctx.self = ctx; ctx.globalThis = ctx;
     let syntax = null;
-    try { vm.runInContext(vendor, ctx, { filename: "vendor" }); } catch (e) { syntax = "vendor: " + e.message; }
+    try { vm.runInContext(vendorSrc, ctx, { filename: "vendor" }); } catch (e) { syntax = "vendor: " + e.message; }
     blocks.forEach((b, i) => {
       if (syntax) return;
       try { vm.runInContext(b[2], ctx, { filename: `${f}#${i}` }); }
@@ -716,6 +864,18 @@ section("Floating promises and stale memos");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+section("App-domain hygiene — nothing pre-launch or paid may be served there");
+{
+  const toml = readFileSync(join(ROOT, "netlify.toml"), "utf8");
+  const ign = readFileSync(join(ROOT, ".netlifyignore"), "utf8");
+  t("marketing-site/* is force-404'd on the app domain",
+     /from = "\/marketing-site\/\*"[\s\S]{0,80}status = 404[\s\S]{0,40}force = true/.test(toml),
+     "soulgainz.app/marketing-site/pricing.html served prices and checkout inside PWA scope");
+  t("and excluded from the deploy", /^marketing-site\/$/m.test(ign));
+  const landing = readFileSync(join(ROOT, "landing.html"), "utf8");
+  t("no fabricated testimonials on the landing page", !/Real results, real people/.test(landing) && !/★★★★★/.test(landing));
+}
+
 section("Other pages — install.html and the service worker");
 {
   const inst = readFileSync(join(ROOT, "install.html"), "utf8");
@@ -736,18 +896,30 @@ section("Other pages — install.html and the service worker");
   const sw = readFileSync(join(ROOT, "sw.js"), "utf8");
   const now = (sw.match(/CACHE_NAME = '([^']+)'/) || [])[1];
   t("CACHE_NAME is present and versioned", /^meal-plan-v\d+$/.test(now || ""), String(now));
-  try {
-    const head = execSync("git show HEAD:sw.js", { cwd: ROOT, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
-    const was = (head.match(/CACHE_NAME = '([^']+)'/) || [])[1];
-    const indexChanged = execSync("git diff --name-only HEAD -- index.html", { cwd: ROOT, encoding: "utf8" }).trim();
-    if (indexChanged) {
-      t("index.html changed, so CACHE_NAME was bumped", now !== was,
-         `still ${now} — installed PWAs will keep serving the cached index.html`);
-    } else {
-      t("index.html unchanged since HEAD; no bump required", true);
-    }
-  } catch (_) {
+  // Two comparisons, because they answer different questions:
+  //   working tree vs HEAD   — local, before you commit
+  //   HEAD vs HEAD~1         — in CI, where the tree is always clean after
+  //                            checkout and the first comparison is inert
+  // The CI case is the one that matters: this assertion passed on every push
+  // for a week and could never have failed there.
+  const git = (cmd) => { try { return execSync(cmd, { cwd: ROOT, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }); } catch (_) { return null; } };
+  const ver = (txt) => ((txt || "").match(/CACHE_NAME = '([^']+)'/) || [])[1] || null;
+  const headSw = ver(git("git show HEAD:sw.js"));
+  if (headSw === null) {
     t("git comparison skipped (no repo or no HEAD)", true);
+  } else {
+    const dirty = (git("git diff --name-only HEAD -- index.html") || "").trim();
+    if (dirty) {
+      t("index.html changed in the working tree, so CACHE_NAME was bumped", now !== headSw,
+         `still ${now} — installed PWAs will keep serving the cached index.html`);
+    }
+    const prevSw = ver(git("git show HEAD~1:sw.js"));
+    const committed = (git("git diff --name-only HEAD~1 HEAD -- index.html") || "").trim();
+    if (prevSw !== null && committed) {
+      t("index.html changed in the last commit, so CACHE_NAME was bumped with it", headSw !== prevSw,
+         `HEAD~1 and HEAD both ship ${headSw} — this commit reaches no installed client`);
+    }
+    if (!dirty && !committed) t("index.html unchanged (tree and last commit); no bump required", true);
   }
 }
 

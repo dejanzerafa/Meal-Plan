@@ -226,8 +226,8 @@
   <h3>What's next</h3>
   <div class="next-step-item">
     <div class="ns-dot">1</div>
-    <div class="ns-text">Open the app
-      <small>Tap the SoulGainz icon on your home screen</small>
+    <div class="ns-text">Open SoulGainz
+      <small>Use the button below — you're signed in right here</small>
     </div>
   </div>
   <div class="next-step-item">
@@ -265,12 +265,36 @@
   // not sent to the server and do not appear in Netlify's logs. Read them and
   // strip them from the address bar and history immediately.
   const frag = new URLSearchParams((location.hash || '').replace(/^#/, ''));
-  const access  = frag.get('access_token');
-  const refresh = frag.get('refresh_token');
-  const tier    = frag.get('tier') || '';
+  const access    = frag.get('access_token');
+  const refresh   = frag.get('refresh_token');
+  const tier      = frag.get('tier') || '';
+  const sessionId = frag.get('session_id') || '';
   try { history.replaceState(null, '', location.pathname); } catch (_) {}
 
-  if (!access || !refresh) { show('state-signin'); return; }
+  if (!access || !refresh || !sessionId) { show('state-signin'); return; }
+
+  // ── Do not trust the fragment. Anyone can put tokens in a URL. ────────────
+  // A crafted link soulgainz.app/success#access_token=<attacker's>&… would
+  // otherwise log the victim into the attacker's account — and the app then
+  // uploads the victim's local data into it. So: ask Stripe (via
+  // verify-session) who this Checkout Session belongs to, and only establish
+  // the session if the token's own subject is that same user.
+  const jwtSub = (() => {
+    try {
+      const payload = access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(payload)).sub || null;
+    } catch (_) { return null; }
+  })();
+  let verdict = null;
+  try {
+    const r = await fetch('/.netlify/functions/verify-session?session_id=' + encodeURIComponent(sessionId), { credentials: 'omit' });
+    if (r.ok) verdict = await r.json();
+  } catch (_) {}
+  if (!verdict || !verdict.paid || !verdict.userId || !jwtSub || verdict.userId !== jwtSub) {
+    console.warn('handoff refused: session/token mismatch');
+    show('state-signin');
+    return;
+  }
 
   try {
     if (!window.supabase) throw new Error('supabase-js not loaded');

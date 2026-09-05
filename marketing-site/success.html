@@ -62,7 +62,7 @@
   <div id="state-signin" hidden>
     <h1>Payment <span>confirmed.</span></h1>
     <p>Your plan is active. Sign in to SoulGainz with <strong id="paid-email">the email you paid with</strong> and your library will be unlocked.</p>
-    <a id="signin-link" href="https://soulgainz.app/?tab=profile" class="btn">Sign in to SoulGainz →</a>
+    <a id="signin-link" href="https://soulgainz.app/index.html?tab=profile" class="btn">Sign in to SoulGainz →</a>
     <p class="muted">Already signed in and still see the free tier? Open the ME tab and tap <strong>Restore purchase</strong>.</p>
   </div>
 
@@ -78,7 +78,7 @@
   <div id="state-error" hidden>
     <h1>Couldn't confirm just now</h1>
     <p>If your payment went through, your plan is already active — sign in to SoulGainz and it will be there. If you're not sure, check your email for a receipt from Stripe.</p>
-    <a href="https://soulgainz.app/?tab=profile" class="btn">Open SoulGainz →</a>
+    <a href="https://soulgainz.app/index.html?tab=profile" class="btn">Open SoulGainz →</a>
     <p class="muted">Need a hand? <a href="mailto:support@soulgainz.app">support@soulgainz.app</a></p>
   </div>
 
@@ -103,7 +103,11 @@
   };
 
   const sessionId = new URLSearchParams(location.search).get('session_id');
-  if (!sessionId) { show('state-unpaid'); return; }
+  // No id: this page was reloaded, reached via Back, or typed. The id was
+  // stripped from the URL on the first load, so a buyer who reloads lands
+  // here — and must NOT be told "Payment not completed" for a payment that
+  // went through. Neutral state: the app knows their real tier.
+  if (!sessionId) { show('state-error'); return; }
 
   // Strip the session id from the address bar and history now, before any
   // async work. It is a lookup key for the buyer's email; it should not sit in
@@ -129,10 +133,10 @@
   if (paidEmail && emailEl) emailEl.textContent = paidEmail;
 
   // 2. Do we hold the session that started this checkout?
-  let session = null;
+  let session = null, sb = null;
   try {
     if (!window.supabase) throw new Error('supabase-js not loaded');
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     const { data } = await sb.auth.getSession();
     session = data && data.session;
   } catch (e) {
@@ -152,7 +156,19 @@
     access_token:  session.access_token,
     refresh_token: session.refresh_token,
     tier:          verdict.tier || '',
+    // The app re-verifies this itself before trusting the tokens, and checks
+    // the token's subject against the session's buyer. A crafted link with an
+    // attacker's tokens therefore cannot log a victim into the attacker's
+    // account (login-CSRF) — verify-session would name a different userId.
+    session_id:    sessionId,
   });
+  // HAND OVER, don't copy. After this line the app owns the session. Supabase
+  // rotates refresh tokens with reuse detection: if this origin kept its copy,
+  // whichever side refreshed second would trip the reuse check and revoke the
+  // whole family — signing the buyer out of the app at some random later
+  // moment, typically the next time they visited this site. scope:'local'
+  // clears THIS origin's storage only; the tokens in `frag` stay valid.
+  try { await sb.auth.signOut({ scope: 'local' }); } catch (_) {}
   location.replace(APP_SUCCESS + '#' + frag.toString());
 })();
 </script>
