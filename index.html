@@ -14310,6 +14310,10 @@ function App() {
     const [currentUser, setCurrentUser] = React.useState(null);
     const [_restoreBusy, _setRestoreBusy] = React.useState(false);
     const [_restoreMsg, _setRestoreMsg]   = React.useState(null);
+    // Account controls (ME tab): "Download my data" / "Delete account".
+    // One busy flag for both so the two cannot run at once.
+    const [_acctBusy, _setAcctBusy] = React.useState(false);
+    const [_acctMsg, _setAcctMsg]   = React.useState(null);
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -15373,6 +15377,72 @@ function App() {
     // nothing visible or tripped onunhandledrejection and replaced the whole app.
     try { if (sb) await sb.auth.signOut(); } catch (e) { console.warn("SG: signOut network error", e); }
         clearSessionState();
+    }
+
+    // ── Account controls: export + erasure (privacy policy §7) ──────────────
+    // Both need a fresh access token; a 401 is retried once after a refresh,
+    // exactly as openBillingPortal does, so an expired token never dead-ends
+    // the user on a "please sign in" alert while they are visibly signed in.
+    async function _acctFetch(path, init) {
+        const sb = getSB();
+        if (!sb) throw new Error("You're offline. Try again when you're connected.");
+        let { data: { session } } = await withTimeout(sb.auth.getSession(), 12000, "Sign-in check");
+        let token = session && session.access_token;
+        if (!token) throw new Error("Your session has expired. Please sign in again.");
+        const call = t => fetchT("/.netlify/functions/" + path, {
+            ...init, headers: { ...(init.headers || {}), "Authorization": "Bearer " + t },
+        }, 20000);
+        let res = await call(token);
+        if (res.status === 401) {
+            try { const { data } = await sb.auth.refreshSession(); token = data && data.session && data.session.access_token; if (token) res = await call(token); }
+            catch (e) { console.error("SG: session refresh failed", e); }
+        }
+        return res;
+    }
+    async function downloadMyData() {
+        if (_acctBusy) return;
+        _setAcctBusy(true); _setAcctMsg(null);
+        try {
+            const res = await _acctFetch("export-data", { method: "GET" });
+            const text = await res.text();
+            if (!res.ok) { let m = "Export failed"; try { m = JSON.parse(text).error || m; } catch (_) {} throw new Error(m); }
+            const blob = new Blob([text], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = "soulgainz-data-" + localDateKey(new Date()) + ".json";
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            _setAcctMsg({ ok: true, text: "Your data file has been downloaded." });
+        } catch (e) {
+            _setAcctMsg({ ok: false, text: e.message || "Export failed. Please try again." });
+        } finally { _setAcctBusy(false); }
+    }
+    async function deleteMyAccount() {
+        if (_acctBusy) return;
+        const typed = window.prompt(
+            "This permanently deletes your account, profile, meal logs and favourites, and cancels any active membership. " +
+            "It cannot be undone.\n\nType DELETE to confirm:");
+        if (typed == null) return;
+        if (typed.trim() !== "DELETE") { _setAcctMsg({ ok: false, text: "Not deleted — you need to type DELETE exactly." }); return; }
+        _setAcctBusy(true); _setAcctMsg(null);
+        try {
+            const res = await _acctFetch("delete-account", {
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || "Deletion failed. Please contact support@soulgainz.app.");
+            // The auth user is gone server-side; the local session is now
+            // orphaned. Wipe everything, including preserved prefixes, so the
+            // next person on this device starts clean.
+            try { const sb = getSB(); if (sb) await sb.auth.signOut({ scope: "local" }); } catch (_) {}
+            try { localStorage.clear(); } catch (_) {}
+            clearSessionState();
+            window.alert("Your account has been deleted. Sorry to see you go.");
+            location.replace("/index.html");
+        } catch (e) {
+            _setAcctMsg({ ok: false, text: e.message || "Deletion failed." });
+            _setAcctBusy(false);
+        }
     }
 
     async function saveProfileToSupabase(p) {
@@ -16710,7 +16780,27 @@ function App() {
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Sign Out"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Sign out of your account")),
-                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→"))),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        // ── Your data: export + delete (privacy policy §7) ──────────
+                        React.createElement("button", {
+                            disabled: _acctBusy,
+                            onClick: downloadMyData,
+                            style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: C.card2, border: `1px solid ${C.dim}`, textAlign: "left", cursor: _acctBusy ? "wait" : "pointer", marginTop: 8, opacity: _acctBusy ? 0.6 : 1 } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "📦"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "Download my data"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "A copy of everything we hold about you (JSON)")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        React.createElement("button", {
+                            disabled: _acctBusy,
+                            onClick: deleteMyAccount,
+                            style: { display: "flex", width: "100%", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", textAlign: "left", cursor: _acctBusy ? "wait" : "pointer", marginTop: 8, opacity: _acctBusy ? 0.6 : 1 } },
+                            React.createElement("span", { style: { fontSize: 20 } }, "🗑️"),
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#ef4444" } }, "Delete account"),
+                                React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Permanently erase your account and cancel any membership")),
+                            React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        _acctMsg && React.createElement("div", { style: { marginTop: 8, fontSize: 11, lineHeight: 1.4, color: _acctMsg.ok ? C.green : "#ef4444" } }, _acctMsg.text)),
                     !currentUser && React.createElement("button", {
                         onClick: () => setOnboardStep("signup"),
                         style: { width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12,

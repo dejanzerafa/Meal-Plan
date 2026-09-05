@@ -459,13 +459,22 @@ exports.handler = async (event) => {
         // Normalised, like the grant path and extendEntitlement. This one was
         // missed: a Stripe email of "Dejan@Icloud.com" never matched a profile row
         // stored lowercase, so the revocation quietly matched zero rows.
-        let custEmail = null;
+        let custEmail = null, _deletedCustomer = null;
         try {
           const customer = await stripe.customers.retrieve(sub.customer);
+          _deletedCustomer = customer;
           custEmail = customer && customer.email ? customer.email.trim().toLowerCase() : null;
         } catch (e) {
           console.error("subscription.deleted: customer lookup failed", e);
           return { statusCode: 500, body: "customer lookup failed" };
+        }
+        // Self-service deletion (delete-account.js) cancels the subscription
+        // and then removes every row, so by the time this event arrives there
+        // is nothing to downgrade. It stamps the customer first; honour that
+        // rather than paging "REVOCATION UNMATCHED" for every account closure.
+        if (_deletedCustomer && _deletedCustomer.metadata && _deletedCustomer.metadata.deleted_at) {
+          console.log(`subscription.deleted for closed account ${sub.customer} — nothing to revoke`);
+          break;
         }
         if (custEmail) {
           // This whole block used to sit inside a try/catch that swallowed every
