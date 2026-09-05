@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   first_name            text,
   last_name             text,
   date_of_birth         date,                    -- for birthday emails + macro calculator
-  marketing_opt_in      boolean DEFAULT true,
+  marketing_opt_in      boolean DEFAULT false,  -- opt-IN. Was true: assumed consent is not consent (part 13)
   welcome_sent          boolean DEFAULT false,
   created_at            timestamptz DEFAULT now(),
   updated_at            timestamptz DEFAULT now()
