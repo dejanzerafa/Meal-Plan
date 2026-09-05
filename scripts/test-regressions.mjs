@@ -647,6 +647,55 @@ section("Sign-up — email confirmation must not be a dead end");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+section("Marketing pages — inline scripts must load alongside the vendored bundle");
+// Shipped bug: pricing.html declared `let supabase = null` at global scope.
+// That was fine against the CDN build, which assigns window.supabase. The
+// commit that self-hosted the bundle (2026-08-23) vendored a UMD that declares
+// `var supabase` — same global scope, same name — so every inline script on
+// the page died with "Identifier 'supabase' has already been declared" before
+// a single handler was attached. Both Subscribe buttons did nothing, for two
+// weeks, and the smoke test (which checks price IDs) stayed green. Found the
+// moment someone actually clicked.
+//
+// This runs the vendored bundle and each page's inline blocks in ONE shared
+// context, the way a browser does, and fails on any SyntaxError. Runtime
+// errors from the stubbed DOM are expected and ignored — a SyntaxError is not.
+{
+  const vm = await import("node:vm");
+  const vendorPath = join(ROOT, "marketing-site", "vendor", "supabase.min.js");
+  const vendor = readFileSync(vendorPath, "utf8");
+  t("the vendored bundle declares a global `supabase`", /^var supabase\s*=/m.test(vendor),
+     "if this changes, the collision class below changes with it — re-check every page");
+  const pages = ["index.html", "pricing.html", "sign-up.html", "success.html", "about.html", "contact.html"];
+  for (const f of pages) {
+    const html = readFileSync(join(ROOT, "marketing-site", f), "utf8");
+    if (!/vendor\/supabase\.min\.js/.test(html)) { t(`${f} does not load the bundle — skipped`, true); continue; }
+    const blocks = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+      .filter(m => !/\bsrc\s*=/.test(m[1]) && m[2].trim());
+    const noop = () => {};
+    const ctx = vm.createContext({
+      console: { log: noop, warn: noop, error: noop, info: noop },
+      location: { search: "", hash: "", origin: "https://x", pathname: "/", href: "https://x/" },
+      navigator: {}, fetch: () => new Promise(noop), setTimeout, clearTimeout,
+      history: { replaceState: noop }, URLSearchParams, URL,
+      localStorage: { getItem: () => null, setItem: noop, removeItem: noop },
+      document: { getElementById: () => null, querySelector: () => null, querySelectorAll: () => [],
+                  addEventListener: noop, write: noop, body: {}, readyState: "loading" },
+      addEventListener: noop,
+    });
+    ctx.window = ctx; ctx.self = ctx; ctx.globalThis = ctx;
+    let syntax = null;
+    try { vm.runInContext(vendor, ctx, { filename: "vendor" }); } catch (e) { syntax = "vendor: " + e.message; }
+    blocks.forEach((b, i) => {
+      if (syntax) return;
+      try { vm.runInContext(b[2], ctx, { filename: `${f}#${i}` }); }
+      catch (e) { if (e && e.name === "SyntaxError") syntax = `block ${i}: ${e.message}`; }
+    });
+    t(`${f}: no inline script dies at parse time against the vendored bundle`, !syntax, syntax || "");
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 section("Floating promises and stale memos");
 {
   const bare = [...src.matchAll(/crypto\.subtle\.digest\(/g)].filter(m => {

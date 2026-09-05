@@ -666,9 +666,13 @@
       annual:  'price_1TXc8dGjmPEqu9q9sIA4RenP',  // TEST €150/yr
     };
 
-    let supabase = null;
+    // `sb`, NOT `supabase`. The vendored UMD bundle declares `var supabase` at
+    // global scope; a `let supabase` in this script is the same scope and the
+    // same name, which is a SyntaxError before a single line runs — every
+    // button on the page was dead from the commit that self-hosted the bundle.
+    let sb = null;
     try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     } catch(e) { console.warn('Supabase init failed', e); }
 
     let pendingTier = null;
@@ -723,11 +727,11 @@
     }
 
     async function _handleCheckout(tier) {
-      if (!supabase) { authUnavailable(); resetPlanBtn(tier); return; }
+      if (!sb) { authUnavailable(); resetPlanBtn(tier); return; }
 
       let session = null;
       try {
-        const { data } = await supabase.auth.getSession();
+        const { data } = await sb.auth.getSession();
         session = data?.session;
       } catch (err) {
         console.error('getSession failed', err);
@@ -803,7 +807,7 @@
 
       // Auth library never loaded — say so plainly instead of showing a
       // "create your account" button that silently does nothing.
-      if (!supabase) {
+      if (!sb) {
         bar.className = 'account-bar signed-out';
         bar.innerHTML =
           '<span class="ab-step">Sign-in unavailable</span>' +
@@ -816,7 +820,7 @@
       }
 
       let session = null;
-      try { const { data } = await supabase.auth.getSession(); session = data?.session; } catch (_) {}
+      try { const { data } = await sb.auth.getSession(); session = data?.session; } catch (_) {}
 
       if (session) {
         const email = session.user?.email || 'your account';
@@ -840,7 +844,7 @@
     }
 
     async function signOutAndReset() {
-      try { if (supabase) await supabase.auth.signOut(); } catch (_) {}
+      try { if (sb) await sb.auth.signOut(); } catch (_) {}
       pendingTier = null;
       renderAccountBar();
     }
@@ -848,7 +852,7 @@
     // Run on load, and keep in sync if the session changes in another tab
     renderAccountBar();
     try {
-      if (supabase) supabase.auth.onAuthStateChange(() => { renderAccountBar(); });
+      if (sb) sb.auth.onAuthStateChange(() => { renderAccountBar(); });
     } catch (_) {}
 
     // ── Auth modal ────────────────────────────────────────────────────────────
@@ -881,7 +885,7 @@
     switchTab('signup'); // init
 
     async function submitAuth() {
-      if (!supabase) { authUnavailable(); return; }
+      if (!sb) { authUnavailable(); return; }
 
       const email    = document.getElementById('input-email').value.trim();
       const password = document.getElementById('input-password').value;
@@ -901,7 +905,7 @@
       try {
         let session = null;
         if (currentTab === 'signup') {
-          const { data, error } = await supabase.auth.signUp({
+          const { data, error } = await sb.auth.signUp({
             email, password,
             // Land back HERE after confirming, with the session in the hash, so
             // they can pick a plan and pay. Without it the link used Supabase's
@@ -920,7 +924,7 @@
             return;
           }
         } else {
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
           if (error) throw error;
           session = data?.session;
         }
