@@ -10234,7 +10234,19 @@ function clearDevSessionUnlock() {
     try { localStorage.removeItem(DEV_SESSION_KEY); } catch (_) {}
     try { sessionStorage.removeItem(DEV_SESSION_KEY); } catch (_) {}
 }
-function getDevOverride() {
+// The override is a developer tool, and it must NOT be reachable by anyone
+// who can write localStorage. Two keys (sg_dev_unlocked, mp_dev_override)
+// used to be sufficient on their own: set them in DevTools and the full
+// library opened with a faked _serverVerified — a revenue leak waiting to be
+// found, gated only by an unsalted SHA-256 of a PIN sitting in this file.
+//
+// Now the override is honoured only for a user who is actually SIGNED IN via
+// Supabase as an admin address. A Supabase session cannot be forged from
+// localStorage; you need that account's password. The PIN and the two keys
+// still exist for convenience, but they are a UI preference, not an
+// entitlement.
+function getDevOverride(email) {
+    if (!email || !isAdmin(email)) return null;
     if (!devSessionUnlocked()) return null;
     try {
         const v = localStorage.getItem("mp_dev_override");
@@ -14808,7 +14820,7 @@ function App() {
             // A dev tier override wins over the server row for the whole of this
             // call. Read once up front so a refresh that is already in flight when
             // the tier is picked cannot land stale data on top of the new choice.
-            const _devTier = getDevOverride();
+            const _devTier = getDevOverride(userEmail);
             const _applyDev = () => setUnlocks(devUnlockShape(_devTier));
 
             // Sync email cross-device so canUseCalculator works without re-onboarding
@@ -15669,6 +15681,7 @@ function App() {
                     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
                     if (hash === "0e465f7ccdb023f35c37a5770c4aca439c6fe2a4ab36d603988687ff3ad4dd87") {
                         // Sole caller. Everything else only READS this flag.
+                        if (!currentUser || !isAdmin(currentUser.email)) return;
                         markDevSessionUnlocked();
                         setShowDevTierPicker(true);
                     }
@@ -15685,6 +15698,8 @@ function App() {
     // Persisting the override is what makes it stick — loadUserData re-applies the
     // server row on every focus and visibility change and would otherwise wipe it.
     const applyDevTier = (tier) => {
+        // Signed in as an admin, or nothing happens. See getDevOverride.
+        if (!currentUser || !isAdmin(currentUser.email)) { setShowDevTierPicker(false); return; }
         const t = DEV_TIERS.includes(tier) ? tier : "dev";
         setDevOverride(t);
         setUnlocks(devUnlockShape(t));
@@ -16793,7 +16808,7 @@ function App() {
                         // Tick the ACTIVE OVERRIDE, not the rendered tier. Those differ for
                         // a real subscriber previewing another tier, and the tick must show
                         // what the picker will keep applying, not what happens to be on screen.
-                        const _ov = getDevOverride();
+                        const _ov = getDevOverride(currentUser && currentUser.email);
                         const _cur = _ov ? _ov === t : ((t === "free" && !unlocks.tier) || unlocks.tier === t);
                         return React.createElement("button", {
                             key: t,
@@ -16811,7 +16826,7 @@ function App() {
                     }),
                     // Without this there is no way back to your real subscription short of a
                     // full wipe — the override survives reloads by design.
-                    getDevOverride() && React.createElement("button", {
+                    getDevOverride(currentUser && currentUser.email) && React.createElement("button", {
                         onClick: () => { clearDevTier(); setShowDevTierPicker(false); },
                         style:{ width:"100%", marginTop:4, padding:"10px", borderRadius:8, border:"1px solid rgba(239,68,68,0.4)", background:"rgba(239,68,68,0.10)", color:"#ef4444", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }
                     }, "↩︎ Stop simulating — use my real tier"),
