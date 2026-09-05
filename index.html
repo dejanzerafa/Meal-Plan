@@ -10320,6 +10320,10 @@ function sendWelcomeEmail(email, firstName, lastName, accessToken) {
                 // the second call (confirmation-on projects reach both moments)
                 // a true no-op.
                 welcome_only: true,
+                // Recorded server-side on profiles by save-user. The auth
+                // metadata copy is user-writable and therefore repudiable.
+                terms_accepted_at: new Date().toISOString(),
+                terms_version: "2026-08",
             }),
         }).catch(() => {});
     } catch (_) {}

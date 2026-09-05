@@ -223,6 +223,10 @@
       <input type="password" id="input-password" placeholder="Min. 8 characters" autocomplete="new-password" />
     </div>
 
+    <label id="field-terms" style="display:none;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5;margin:4px 0 12px;cursor:pointer;">
+      <input type="checkbox" id="input-terms" style="margin-top:3px;flex:none;">
+      <span>I agree to the <a href="https://soulgainz.app/terms" target="_blank" rel="noopener" style="text-decoration:underline;">Terms of Service</a> and <a href="https://soulgainz.app/privacy" target="_blank" rel="noopener" style="text-decoration:underline;">Privacy Policy</a>.</span>
+    </label>
     <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">Create account →</button>
     <div class="msg" id="msg"></div>
 
@@ -274,7 +278,7 @@
       void fetch('https://soulgainz.app/.netlify/functions/save-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-        body: JSON.stringify({ email: session.user && session.user.email, first_name: parts[0] || '', last_name: parts.slice(1).join(' '), marketing_opt_in: false, welcome_only: true }),
+        body: JSON.stringify({ email: session.user && session.user.email, first_name: parts[0] || '', last_name: parts.slice(1).join(' '), marketing_opt_in: false, welcome_only: true, terms_accepted_at: new Date().toISOString(), terms_version: '2026-08' }),
       }).catch(() => {});
     } catch (_) {}
   }
@@ -307,6 +311,7 @@
     document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
     document.getElementById('tab-login').classList.toggle('active', tab === 'login');
     document.getElementById('group-name').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('field-terms').style.display = tab === 'signup' ? 'flex' : 'none';
     document.getElementById('submit-btn').textContent = tab === 'signup' ? 'Create account →' : 'Sign in →';
     document.getElementById('input-password').autocomplete = tab === 'signup' ? 'new-password' : 'current-password';
     document.getElementById('msg').textContent = '';
@@ -326,6 +331,7 @@
     if (!email) { showMsg('Email is required.', 'err'); return; }
     if (!password) { showMsg('Password is required.', 'err'); return; }
     if (currentTab === 'signup' && password.length < 8) { showMsg('Password must be at least 8 characters.', 'err'); return; }
+    if (currentTab === 'signup' && !document.getElementById('input-terms').checked) { showMsg('Please accept the Terms and Privacy Policy to create an account.', 'err'); return; }
 
     btn.disabled = true;
     btn.textContent = currentTab === 'signup' ? 'Creating account…' : 'Signing in…';
@@ -337,7 +343,7 @@
           email, password,
           // See pricing.html — the confirmation link must land somewhere that
           // holds a Supabase client and can continue to checkout.
-          options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name || undefined, first_name: (name||'').trim().split(/\s+/)[0] || undefined, last_name: (name||'').trim().split(/\s+/).slice(1).join(' ') || undefined } },
+          options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name || undefined, first_name: (name||'').trim().split(/\s+/)[0] || undefined, last_name: (name||'').trim().split(/\s+/).slice(1).join(' ') || undefined, terms_accepted_at: new Date().toISOString(), terms_version: '2026-08' } },
         }));
       } else {
         ({ data, error } = await sb.auth.signInWithPassword({ email, password }));

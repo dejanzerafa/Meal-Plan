@@ -632,6 +632,10 @@
           <label for="input-password">Password</label>
           <input type="password" id="input-password" placeholder="Min. 8 characters" autocomplete="current-password">
         </div>
+        <label id="field-terms" style="display:none;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5;margin:4px 0 12px;cursor:pointer;">
+          <input type="checkbox" id="input-terms" style="margin-top:3px;flex:none;">
+          <span>I agree to the <a href="https://soulgainz.app/terms" target="_blank" rel="noopener" style="text-decoration:underline;">Terms of Service</a> and <a href="https://soulgainz.app/privacy" target="_blank" rel="noopener" style="text-decoration:underline;">Privacy Policy</a>.</span>
+        </label>
         <button class="modal-submit" id="auth-submit" onclick="submitAuth()">Create account &amp; continue</button>
         <div class="modal-error" id="auth-error" role="alert" aria-live="assertive"></div>
       </div>
@@ -684,7 +688,7 @@
         void fetch('https://soulgainz.app/.netlify/functions/save-user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-          body: JSON.stringify({ email: session.user && session.user.email, first_name: parts[0] || '', last_name: parts.slice(1).join(' '), marketing_opt_in: false, welcome_only: true }),
+          body: JSON.stringify({ email: session.user && session.user.email, first_name: parts[0] || '', last_name: parts.slice(1).join(' '), marketing_opt_in: false, welcome_only: true, terms_accepted_at: new Date().toISOString(), terms_version: '2026-08' }),
         }).catch(() => {});
       } catch (_) {}
     }
@@ -893,6 +897,7 @@
       document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
       document.getElementById('tab-login').classList.toggle('active', tab === 'login');
       document.getElementById('field-name').style.display = tab === 'signup' ? 'block' : 'none';
+      document.getElementById('field-terms').style.display = tab === 'signup' ? 'block' : 'none' === 'none' ? 'none' : 'flex';
       document.getElementById('auth-submit').textContent =
         tab === 'signup' ? 'Create account & continue' : 'Log in & continue';
       document.getElementById('auth-error').textContent = '';
@@ -915,6 +920,7 @@
       errEl.style.color = '#f87171';   // reset — stays green after a success msg otherwise
 
       if (!email || !password) { errEl.textContent = 'Email and password are required.'; return; }
+      if (currentTab === 'signup' && !document.getElementById('input-terms').checked) { errEl.textContent = 'Please accept the Terms and Privacy Policy to create an account.'; return; }
       if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
 
       btn.disabled = true;
@@ -928,7 +934,7 @@
             // Land back HERE after confirming, with the session in the hash, so
             // they can pick a plan and pay. Without it the link used Supabase's
             // Site URL — the app's waitlist page, which cannot consume the token.
-            options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name, first_name: (name||'').trim().split(/\s+/)[0] || undefined, last_name: (name||'').trim().split(/\s+/).slice(1).join(' ') || undefined } },
+            options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name, first_name: (name||'').trim().split(/\s+/)[0] || undefined, last_name: (name||'').trim().split(/\s+/).slice(1).join(' ') || undefined, terms_accepted_at: new Date().toISOString(), terms_version: '2026-08' } },
           });
           if (error) throw error;
           session = data?.session;

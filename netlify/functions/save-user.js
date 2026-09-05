@@ -63,7 +63,7 @@ exports.handler = async (event) => {
   // Default FALSE. This used to default true here, in the schema, and be
   // hard-coded true by the client — so every user was enrolled in marketing
   // without ever being asked. Assumed consent is not consent.
-  let { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used, welcome_only = false } = payload;
+  let { email, first_name, last_name, marketing_opt_in = false, skip_email = false, calc_used, welcome_only = false, terms_accepted_at, terms_version } = payload;
 
   // ── Who is asking? ──────────────────────────────────────────────────────────
   // This endpoint sends mail from support@soulgainz.app to a caller-supplied
@@ -111,6 +111,27 @@ exports.handler = async (event) => {
   }
 
   try {
+    // -- 0. Terms acceptance, recorded where the USER cannot rewrite it --------
+    // Both sign-up paths pass terms_accepted_at/terms_version. The in-app form
+    // also stores them in auth metadata, but raw_user_meta_data is writable by
+    // the user via updateUser(), so on its own it is repudiable. profiles has
+    // the two columns and the client has no grant on them; only this
+    // service-role write fills them, and only for the token's own user.
+    if (authedUser && terms_accepted_at) {
+      const ts = new Date(terms_accepted_at);
+      const v  = String(terms_version || "").slice(0, 16);
+      if (!isNaN(ts) && v) {
+        try {
+          const r = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(authedUser.id)}&terms_accepted_at=is.null`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}`, "Prefer": "return=minimal" },
+            body: JSON.stringify({ terms_accepted_at: ts.toISOString(), terms_version: v }),
+          });
+          if (!r.ok) console.error("terms acceptance write failed:", r.status, await r.text());
+        } catch (e) { console.error("terms acceptance write error:", e.message); }
+      }
+    }
+
     // -- 1. Save user in Supabase - PATCH existing, INSERT if new ----------------
     let userData = null;
     let isNewUser = false;

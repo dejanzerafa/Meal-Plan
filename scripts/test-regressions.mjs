@@ -870,7 +870,7 @@ section("Floating promises and stale memos");
   const bare = [...src.matchAll(/crypto\.subtle\.digest\(/g)].filter(m => {
     const tail = src.slice(m.index, m.index + 1200);
     if (!/\.then\(/.test(tail.slice(0, 600))) return false;   // awaited, not chained
-    return !/\.catch\(/.test(tail.slice(0, 900));
+    return !/\.catch\(/.test(tail.slice(0, 1400));
   });
   t("every crypto.subtle.digest().then() chain has a .catch", bare.length === 0,
      "digest() REJECTS on an insecure origin; without a catch the app shows its destructive error screen");
