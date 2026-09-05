@@ -266,9 +266,17 @@ exports.handler = async (event) => {
         try {
           const sub = await stripe.subscriptions.retrieve(inv.subscription);
           const periodEnd = new Date(sub.current_period_end * 1000).toISOString();
-          await supabase.from("subscriptions")
+          // PostgREST resolves on a failed write rather than throwing, so a bare
+          // `await` here discarded the error. This is the write that was failing
+          // with 42703 on every renewal for as long as `at_risk` did not exist
+          // (schema-fix part 11 adds it) — and nothing said so. The ledger row
+          // is bookkeeping, not entitlement, so a failure here is logged loudly
+          // but does not 500: extendEntitlement below is what the customer
+          // actually needs, and it must still run.
+          const { error: ledgerErr } = await supabase.from("subscriptions")
             .update({ status: sub.status, current_period_end: periodEnd, at_risk: false })
             .eq("stripe_subscription_id", sub.id);
+          if (ledgerErr) console.error("subscriptions ledger update failed (renewal):", sub.id, ledgerErr);
           const ok = await extendEntitlement(supabase, stripe, sub, periodEnd);
           if (!ok) return { statusCode: 500, body: "renewal entitlement write failed" };
         } catch (e) {
@@ -320,10 +328,11 @@ exports.handler = async (event) => {
             const customer = await stripe.customers.retrieve(sub.customer);
             if (customer.email) {
               // Mark subscription as at-risk in subscriptions table
-              await supabase
+              const { error: riskErr } = await supabase
                 .from("subscriptions")
                 .update({ at_risk: true })
                 .eq("stripe_subscription_id", sub.id);
+              if (riskErr) console.error("at_risk=true write failed:", sub.id, riskErr);
               // Note: we do NOT downgrade yet — Stripe will retry.
               // The invoice.payment_failed handler sends dunning emails.
             }
@@ -332,10 +341,11 @@ exports.handler = async (event) => {
 
         // Reactivated — clear at_risk flag
         if (sub.status === "active" && prevStatus === "past_due") {
-          await supabase
+          const { error: clearErr } = await supabase
             .from("subscriptions")
             .update({ at_risk: false })
             .eq("stripe_subscription_id", sub.id);
+          if (clearErr) console.error("at_risk=false write failed:", sub.id, clearErr);
           // Send a confirmation email that access is restored
           try {
             const customer = await stripe.customers.retrieve(sub.customer);
@@ -359,7 +369,11 @@ exports.handler = async (event) => {
         const sub = stripeEvent.data.object;
 
         // 1. Update subscriptions table
-        await supabase
+        // This is the write the old 'cancelled' CHECK rejected on every single
+        // cancellation, and being a bare await it never said so. Captured now;
+        // still non-fatal, because step 2 (the profile downgrade) is what
+        // actually revokes access and must run regardless.
+        const { error: delErr } = await supabase
           .from("subscriptions")
           .update({
             status: sub.status,   // "canceled"
@@ -367,6 +381,7 @@ exports.handler = async (event) => {
             current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
           })
           .eq("stripe_subscription_id", sub.id);
+        if (delErr) console.error("subscriptions ledger update failed (deleted):", sub.id, delErr);
 
         // 2. Downgrade the user's profile to free tier in Supabase
         //

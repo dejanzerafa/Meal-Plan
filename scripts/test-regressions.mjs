@@ -502,6 +502,29 @@ section("Netlify functions — the method gate must match what the client sends"
      !/const clientIp = [^\n]*clientIp\(/.test(ra), "temporal dead zone: ReferenceError at runtime");
   t("restore-account requires a bearer token", /_auth\.startsWith\("Bearer "\)/.test(ra),
      "it returned name and paid-subscription status for ANY email, to anyone");
+
+  // ── The subscriptions ledger ──
+  // Shipped bug: the webhook wrote `at_risk` in four places and no SQL created
+  // it; the status CHECK said 'cancelled' and Stripe sends 'canceled'. Every
+  // renewal and every cancellation update failed silently for months. The app
+  // grants access from profiles.tier, so nobody noticed — until cancelled
+  // subscribers kept receiving product mail.
+  const wh = stripJS(readFileSync(join(fnDir, "stripe-webhook.js"), "utf8"));
+  const schema = readFileSync(join(ROOT, "supabase-schema.sql"), "utf8");
+  const part11 = readFileSync(join(ROOT, "supabase-schema-fix-part11-RUN-THIS.sql"), "utf8");
+  t("every column the webhook writes to subscriptions exists in the schema",
+     ["at_risk", "status", "current_period_end", "cancel_at_period_end", "stripe_subscription_id"]
+       .every(c => new RegExp("\\b" + c + "\\b").test(schema)),
+     "a column written by code that no SQL creates fails with 42703 on every write");
+  t("the schema's status CHECK uses Stripe's spelling", /'canceled'/.test(schema) && !/CHECK \(status IN \([^)]*'cancelled'/.test(schema),
+     "Stripe sends `canceled`; a CHECK on `cancelled` rejects every cancellation");
+  t("part 11 adds at_risk and widens the CHECK", /add column if not exists at_risk/.test(part11) && /'canceled'/.test(part11));
+  // Every subscriptions write must capture its error. The renewal write at
+  // invoice.payment_succeeded was a bare `await` and discarded the 42703.
+  const subWrites = [...wh.matchAll(/(?:const \{ error: \w+ \} = )?await supabase\s*\.from\("subscriptions"\)\s*\.(?:update|insert)\(/g)];
+  const bare = subWrites.filter(m => !/^const \{ error/.test(m[0]));
+  t(`every subscriptions write captures its error (${subWrites.length} writes)`, bare.length === 0,
+     "PostgREST resolves on failure; a bare await silently discards a failed write");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

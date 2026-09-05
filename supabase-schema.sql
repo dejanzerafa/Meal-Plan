@@ -55,10 +55,17 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   stripe_subscription_id   text UNIQUE,
   stripe_session_id        text UNIQUE,
   tier                     text CHECK (tier IN ('lifetime','annual','quarterly','monthly','seasonal','calculator')) NOT NULL,
-  status                   text CHECK (status IN ('active','cancelled','past_due','trialing','expired')) DEFAULT 'active',
+  -- Stripe's vocabulary, Stripe's spelling. The webhook writes sub.status
+  -- straight through, and Stripe spells it `canceled`. This originally read
+  -- 'cancelled' (two Ls) and every cancellation update failed the CHECK for
+  -- months, leaving cancelled subscribers marked active. See part 11.
+  status                   text CHECK (status IN ('active','trialing','past_due','canceled','unpaid','incomplete','incomplete_expired','paused','expired')) DEFAULT 'active',
   current_period_start     timestamptz,
   current_period_end       timestamptz,  -- NULL = lifetime
   cancel_at_period_end     boolean DEFAULT false,
+  -- Set on invoice.payment_failed, cleared on payment_succeeded / reactivation.
+  -- Written by the webhook from day one; only added to the schema in part 11.
+  at_risk                  boolean NOT NULL DEFAULT false,
   amount_paid              numeric(10,2),
   created_at               timestamptz DEFAULT now()
 );
