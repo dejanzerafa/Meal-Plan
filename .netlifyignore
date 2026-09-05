@@ -41,6 +41,13 @@ social/
 *.bak
 *.backup
 
+# The marketing site is its OWN Netlify site (marketing.soulgainz.app, built
+# from marketing-site/ with its own netlify.toml). It must never be served from
+# the app domain: soulgainz.app/marketing-site/pricing.html was a full pricing
+# page with € amounts and live Subscribe buttons, inside the PWA's scope — which
+# is exactly the App Store rule this whole two-site split exists to satisfy.
+marketing-site/
+
 # Supabase — NEVER serve. cron-jobs.sql carried a live CRON_SECRET and the whole
 # directory was reachable at soulgainz.app/supabase/*.sql because publish = "."
 supabase/

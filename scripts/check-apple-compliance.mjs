@@ -62,6 +62,15 @@ const RULES = [
   { name: "price then plan word",
     re: /[€$]\s?\d[\d.,]*\s?(\/\s?mo\b|\/\s?yr\b|per month|per year|a month|a year)/i,
     why: "a subscription price on the app domain", excludeSpend: true },
+  { name: "structured-data price",
+    // JSON-LD writes the amount BARE with the currency in a sibling field, so
+    // neither rule above can see it — and landing.html shipped Monthly 16.99 /
+    // Annual 150 offers this way for weeks while the guard stayed green. Google
+    // surfaces these as price-annotated rich results attributed to the app
+    // domain, which is the same disclosure by another route. A non-zero "price"
+    // in an Offer on the app domain is the violation; a "0" Free offer is not.
+    re: /"@type"\s*:\s*"Offer"[\s\S]{0,200}?"price"\s*:\s*"?(?!0["\s,}])\d/i,
+    why: "a non-free Offer price in structured data on the app domain" },
   { name: "stripe.js",
     re: /js\.stripe\.com|Stripe\s*\(\s*['"]pk_/i,
     why: "the Stripe SDK loaded on the app domain" },
