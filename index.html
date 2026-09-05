@@ -47,14 +47,8 @@
     // ReferenceError whenever the script was blocked.
     if (window.Sentry && window.Sentry.onLoad) { window.Sentry.onLoad(window.sentryOnLoad); }
   </script>
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K4FXCEWNFC"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag("js", new Date());
-    gtag("config", "G-K4FXCEWNFC");
-  </script>
+  <!-- Analytics only after opt-in consent — see /consent.js -->
+  <script src="/consent.js" defer></script>
   <script src="/vendor/react.min.js"></script>
   <script src="/vendor/react-dom.min.js"></script>
   <script src="/vendor/supabase.min.js"></script>
@@ -15289,6 +15283,9 @@ function App() {
             "sg_custom_recipes", "mp_note_", "mp_steps_",
             // Calculator
             "sg_calc_results", "sg_calc_email",
+            // Analytics consent choice — a decision, not user data; asking again
+            // after every sign-out would be its own dark pattern.
+            "sg_consent",
             // Supplements — sg_supplements REMOVED: it syncs to user_supplements and
             // is per-person. Preserving it showed the next user the previous one's
             // supplement schedule. The three UI-state keys are not personal.
@@ -16562,7 +16559,7 @@ function App() {
                             },
                             {
                                 title: "Data & Privacy",
-                                body: "This application processes user-provided profile data and email addresses solely to deliver the service and send product communications where consent is given. Nutritional tracking data is stored locally on your device via browser localStorage and is not shared with third parties. You may request removal of your data at any time by contacting support@soulgainz.app."
+                                body: "We process your profile data and email address solely to deliver the service and send product communications where consent is given. Favourites, supplements, meal-prep dates and macro targets sync to your account; recipe selections, notes, pantry and custom recipes stay on your device. Analytics runs only if you accept it; crash reports go to Sentry with identifiers scrubbed. Use Download my data and Delete account above at any time, or email support@soulgainz.app. Full policy: soulgainz.app/privacy."
                             },
                             {
                                 title: "Governing Law",

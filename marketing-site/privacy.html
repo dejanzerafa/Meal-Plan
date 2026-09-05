@@ -123,7 +123,8 @@
           <tr><td><strong>Communication data</strong></td><td>Email address, message content</td><td>When you contact us via feedback form or email</td></tr>
         </tbody>
       </table>
-      <p>We use Google Analytics and Sentry (error monitoring) on our website and app. Both receive your IP address and the pages you visit. Google Fonts, which we use for typography, also receives your IP address when a page loads. We do not build advertising profiles and we do not sell your data.</p>
+      <p><strong>Analytics (optional, opt-in).</strong> With your consent we use Google Analytics 4 to see which pages are used. It sets <code>_ga</code> cookies and sends your IP address, device type and the pages you visit to Google. Nothing from Google loads until you accept in the banner, and you can change your mind at any time (see section 8). We do not build advertising profiles and we do not sell your data.</p>
+      <p><strong>Error monitoring.</strong> We use Sentry to capture crash reports in the app and on our servers so we can fix bugs. A report contains the error, the page and browser involved, and your IP address; we scrub email addresses and other identifiers before sending. This runs on the basis of our legitimate interest in keeping the service working. Google Fonts, which we use for typography, also receives your IP address when a page loads.</p>
       <p>We do not collect your precise location, and we do not fingerprint your device.</p>
     </section>
 
@@ -153,7 +154,9 @@
           <tr><td><strong>Stripe</strong></td><td>Payment processing</td><td>Email, plan type. Card details go directly to Stripe — we never see them.</td></tr>
           <tr><td><strong>Resend</strong></td><td>Transactional email delivery</td><td>Name, email address</td></tr>
           <tr><td><strong>Netlify</strong></td><td>App hosting and serverless functions</td><td>Standard web server logs (auto-deleted after 30 days)</td></tr>
-          <tr><td><strong>Formspree</strong></td><td>Feedback form submission routing</td><td>Name, email, message content you submit</td></tr>
+          <tr><td><strong>Google Analytics</strong></td><td>Page usage statistics — <em>only if you accept analytics</em></td><td>IP address, device and browser type, pages visited, cookie identifier</td></tr>
+          <tr><td><strong>Sentry</strong></td><td>Error and crash monitoring</td><td>Error details, page, browser, IP address (emails scrubbed)</td></tr>
+          <tr><td><strong>Google Fonts</strong></td><td>Typography</td><td>IP address when fonts are fetched</td></tr>
         </tbody>
       </table>
       <p>All third-party services used are reputable, GDPR-compliant providers. Data is processed on their infrastructure only as necessary to deliver the service.</p>
@@ -175,7 +178,7 @@
 
     <section id="retention">
       <h2>6. Data Retention</h2>
-      <p>We retain your account data for as long as your account is active. If you request account deletion, we will permanently remove your personal data from our database within 30 days. Some data may be retained for longer periods where required by law (e.g., financial transaction records for tax purposes — Stripe retains these per their legal obligations).</p>
+      <p>We retain your account data for as long as your account is active. You can delete your account yourself from the app (ME tab → Delete account); this cancels any active membership and permanently removes your personal data from our database immediately. If you email us instead, we will complete the deletion within 30 days. Some data may be retained for longer periods where required by law (e.g., financial transaction records for tax purposes — Stripe retains these per their legal obligations).</p>
     </section>
 
     <section id="rights">
@@ -193,14 +196,15 @@
       </ul>
       <p>Health and body data you enter (weight, height, goals) is treated as <strong>data of a special nature</strong> and is processed only with your explicit consent. You can withdraw that consent at any time and we will delete it.</p>
       <p>If you are in the <strong>European Economic Area or the United Kingdom</strong>, you also hold these rights under the GDPR / UK GDPR, including the right to restrict processing and to lodge a complaint with your national data protection authority.</p>
-      <p>To exercise any of these rights, email us at <a href="mailto:support@soulgainz.app">support@soulgainz.app</a>. We will respond within 30 days.</p>
+      <p><strong>Self-service.</strong> In the app, the ME tab has <em>Download my data</em> (a machine-readable JSON copy of everything we hold about you) and <em>Delete account</em>. For anything else, or if you no longer have access to the app, email us at <a href="mailto:support@soulgainz.app">support@soulgainz.app</a>. We will respond within 30 days.</p>
       <p><strong>Complaints.</strong> If you are not satisfied with our response, you may complain to Qatar's <strong>National Cyber Governance and Assurance Affairs (NCGAA)</strong>, part of the National Cyber Security Agency, at <a href="https://ncsa.gov.qa">ncsa.gov.qa</a>. EEA and UK users may instead complain to their own national data protection authority.</p>
       <p><strong>Data breaches.</strong> If a breach occurs that is likely to cause you serious harm, we will notify the competent authority and affected users without undue delay and, where required, within <strong>72 hours</strong> of becoming aware of it.</p>
     </section>
 
     <section id="cookies">
       <h2>8. Cookies &amp; Local Storage</h2>
-      <p>SoulGainz does not use tracking cookies or advertising cookies. We use <strong>browser localStorage</strong> to save your app preferences, selected recipes, macro settings, and onboarding state locally on your device. This data never leaves your device and is not accessible to us.</p>
+      <p><strong>Strictly necessary storage.</strong> We use <strong>browser localStorage</strong> to keep you signed in and to save your app preferences, selected recipes, macro settings and onboarding state on your device. Favourites, supplements, meal-prep dates and your macro targets are also synced to your account (section 2) so they follow you across devices; recipe selections, notes, pantry contents and custom recipes stay on your device only. We do not use advertising cookies.</p>
+      <p><strong>Analytics cookies (optional).</strong> If you accept analytics, Google Analytics sets <code>_ga</code> and <code>_ga_*</code> cookies (up to 2 years) to tell returning visits apart. If you decline, or do not answer, no Google script loads and no analytics cookie is set. Your choice is stored in localStorage for 12 months, after which we ask again. <button type="button" onclick="window.sgConsent &amp;&amp; window.sgConsent.reset()" style="font:inherit;color:#E07B2A;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer">Change your analytics choice</button>.</p>
       <p>Stripe may set session cookies during the payment process. These are strictly necessary for completing your transaction and are governed by Stripe's privacy policy.</p>
     </section>
 
