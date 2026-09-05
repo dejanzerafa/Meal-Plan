@@ -614,6 +614,24 @@ section("Sign-up — email confirmation must not be a dead end");
     t(`marketing ${f} signUp has emailRedirectTo`, /emailRedirectTo: location\.origin \+ '\/pricing'/.test(m),
        "same dead end on the marketing site");
   }
+
+  // ── Welcome email ──
+  // Shipped bug: save-user.js sends the welcome unless skip_email; the only
+  // caller hardcoded skip_email: true and the sign-up handler never called it.
+  // No user ever received one.
+  const welcome = fnSrc("sendWelcomeEmail") || "";
+  t("sendWelcomeEmail exists and calls save-user", /\/\.netlify\/functions\/save-user/.test(welcome));
+  t("it does NOT pass skip_email", !/skip_email/.test(welcome),
+     "that flag is exactly what suppressed the welcome for every user");
+  t("it sends marketing_opt_in: false", /marketing_opt_in: false/.test(welcome),
+     "the in-app sign-up has no marketing checkbox; assumed consent is not consent");
+  t("it is called on the immediate-session sign-up path",
+     /window\._sg_upload_on_auth = true;\s*sendWelcomeEmail\(em, name\.trim\(\), surname\.trim\(\)\)/.test(src));
+  t("and on the confirmation-landing path",
+     /localStorage\.removeItem\("sg_pending_confirm_email"\);[\s\S]{0,600}sendWelcomeEmail\(currentUser\.email/.test(src));
+  const saveUser = stripJS(readFileSync(join(ROOT, "netlify", "functions", "save-user.js"), "utf8"));
+  t("save-user still guards on welcome_sent so the two paths send once",
+     /alreadySent = userData\?\.welcome_sent/.test(saveUser) && /welcome_sent: true/.test(saveUser));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

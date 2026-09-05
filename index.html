@@ -10272,6 +10272,36 @@ function getSB() {
 }
 function isAdmin(email) { return email && ADMIN_EMAILS.includes(email.toLowerCase()); }
 
+// Welcome email. Fire-and-forget; the account is already created by the time
+// this runs, so a failure here must never surface as a sign-up error.
+//
+// Nothing called this before. save-user.js has sent the welcome since day one
+// — unless `skip_email` is set — and the only live caller (the calculator's
+// free-use stamp) hardcodes skip_email: true. The sign-up handler never called
+// save-user at all. So no user, ever, received a welcome email, and the Resend
+// audience never grew.
+//
+// marketing_opt_in is FALSE: the in-app sign-up has no marketing checkbox, and
+// assumed consent is not consent. save-user's welcome_sent flag makes this
+// idempotent, so calling it twice (immediate session AND a later confirmation
+// landing) sends once.
+function sendWelcomeEmail(email, firstName, lastName) {
+    try {
+        const em = String(email || "").trim().toLowerCase();
+        if (!em || !em.includes("@")) return;
+        void fetch("/.netlify/functions/save-user", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: em,
+                first_name: String(firstName || "").slice(0, 50),
+                last_name:  String(lastName  || "").slice(0, 50),
+                marketing_opt_in: false,
+            }),
+        }).catch(() => {});
+    } catch (_) {}
+}
+
 // Convert Supabase profile row → app profile object
 function sbRowToProfile(row) {
     // A row whose identity and macro fields are all null is NOT a profile — it is
@@ -12951,6 +12981,7 @@ function OnboardingSignup({ onDone }) {
             safeSet("sg_onboarded",      "registered");
             // Flag auth listener to upload local data instead of overwriting it
             window._sg_upload_on_auth = true;
+            sendWelcomeEmail(em, name.trim(), surname.trim());
             setStatus("success");
             // "macros" is the tab id of the FOODS ingredient browser, NOT the macro
             // calculator — the calculator lives in the ME tab ("profile"). New users
@@ -15188,6 +15219,11 @@ function App() {
             localStorage.removeItem("sg_pending_confirm_email");
             // Local data is uploaded by the SIGNED_IN handler: the onboardStep
             // initialiser armed _sg_upload_on_auth before the listener existed.
+            // The account is real as of now — this is the welcome moment for the
+            // confirmation-on path.
+            sendWelcomeEmail(currentUser.email,
+                localStorage.getItem("mp_acc_first_name") || "",
+                localStorage.getItem("mp_acc_last_name")  || "");
         } catch (_) {}
         if (onboardStep !== "app") setOnboardStep("app");
         try {
