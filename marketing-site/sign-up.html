@@ -317,7 +317,9 @@
       if (currentTab === 'signup') {
         ({ data, error } = await sb.auth.signUp({
           email, password,
-          options: { data: { full_name: name || undefined } },
+          // See pricing.html — the confirmation link must land somewhere that
+          // holds a Supabase client and can continue to checkout.
+          options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name || undefined } },
         }));
       } else {
         ({ data, error } = await sb.auth.signInWithPassword({ email, password }));

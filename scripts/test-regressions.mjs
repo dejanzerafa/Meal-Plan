@@ -582,6 +582,41 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+section("Sign-up — email confirmation must not be a dead end");
+// Shipped bug: signUp() had no emailRedirectTo, so the confirmation link used
+// Supabase's Site URL, which 301s to landing.html — a page with no Supabase
+// client. The token was never consumed. Meanwhile the UI showed "You're in!"
+// and marked onboarding complete, so the user was silently anonymous forever.
+{
+  const su = raw.slice(raw.indexOf("async function handleSignup"), raw.indexOf("async function handleSignin"));
+  t("signUp passes emailRedirectTo pointing at the APP",
+     /emailRedirectTo: window\.location\.origin \+ "\/index\.html\?confirmed=1"/.test(su),
+     "the same fix already applied to resetPasswordForEmail; never applied here");
+  t("no session after signUp means 'confirm', not 'success'",
+     /if \(!data\.session\) \{[\s\S]{0,300}setStatus\("confirm"\)/.test(su) &&
+     su.indexOf('setStatus("confirm")') < su.indexOf('setStatus("success")'),
+     "the old code showed You're in! regardless");
+  t("a pending confirmation is recorded, not marked registered",
+     /safeSet\("sg_onboarded", "pending_confirm"\)/.test(su));
+  t("the duplicate-email (empty identities) case is caught",
+     /data\.user\.identities\.length === 0/.test(su),
+     "Supabase answers a duplicate sign-up with a user and no identities, not an error");
+  t("the onboarding gate routes pending_confirm to sign-in", /if \(status === "pending_confirm"\)/.test(src));
+  t("the confirmation landing arms the local-data upload BEFORE the auth listener",
+     /get\("confirmed"\) === "1"\) window\._sg_upload_on_auth = true/.test(src),
+     "SIGNED_IN otherwise calls loadUserData, which wipes local favourites against an empty server");
+  t("a signed-in pending user is promoted to registered",
+     /localStorage\.getItem\("sg_onboarded"\) === "pending_confirm"/.test(src) &&
+     /safeSet\("sg_onboarded", "registered"\);\s*localStorage\.removeItem\("sg_pending_confirm_email"\)/.test(src));
+  t("the sign-in screen can resend the confirmation", /sb\.auth\.resend\(\{ type: "signup"/.test(src));
+  for (const f of ["pricing.html", "sign-up.html"]) {
+    const m = readFileSync(join(ROOT, "marketing-site", f), "utf8");
+    t(`marketing ${f} signUp has emailRedirectTo`, /emailRedirectTo: location\.origin \+ '\/pricing'/.test(m),
+       "same dead end on the marketing site");
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 section("Floating promises and stale memos");
 {
   const bare = [...src.matchAll(/crypto\.subtle\.digest\(/g)].filter(m => {

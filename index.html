@@ -12869,8 +12869,18 @@ function sbErrMsg(e, fallback) {
 }
 
 function OnboardingSignup({ onDone }) {
-    const [mode, setMode] = React.useState("signup"); // signup | signin | forgot
-    const [email, setEmail] = React.useState("");
+    // Relaunched with a confirmation still pending? Open on sign-in with the
+    // pending address pre-filled and a banner saying so, instead of the blank
+    // create-account form — which invited a second sign-up of the same email
+    // and an "already exists" error.
+    const _pendingEmail = (() => { try {
+        return localStorage.getItem("sg_onboarded") === "pending_confirm"
+            ? (localStorage.getItem("sg_pending_confirm_email") || "") : "";
+    } catch (_) { return ""; } })();
+    const [mode, setMode] = React.useState(_pendingEmail ? "signin" : "signup"); // signup | signin | forgot
+    const [email, setEmail] = React.useState(_pendingEmail);
+    const [pendingConfirm, setPendingConfirm] = React.useState(!!_pendingEmail);
+    const [resendState, setResendState] = React.useState("idle"); // idle | sending | sent | error
     const [password, setPassword] = React.useState("");
     const [confirmPw, setConfirmPw] = React.useState("");
     const [name, setName] = React.useState("");
@@ -12898,19 +12908,47 @@ function OnboardingSignup({ onDone }) {
             const sb = getSB();
             if (!sb) { setErrMsg("App not ready — please refresh and try again."); setStatus("error"); return; }
             const { data, error } = await withTimeout(sb.auth.signUp({ email: em, password,
-                options: { data: { first_name: name.trim(), last_name: surname.trim(),
+                options: {
+                    // MUST land on the app, not "/". Without this the confirmation
+                    // link used Supabase's Site URL, which netlify.toml 301s to
+                    // landing.html — a page with no Supabase client, so the token
+                    // in the hash was never consumed and the account never
+                    // activated. The exact bug already fixed for password reset
+                    // at resetPasswordForEmail below; it was never applied here.
+                    emailRedirectTo: window.location.origin + "/index.html?confirmed=1",
+                    data: { first_name: name.trim(), last_name: surname.trim(),
                     terms_accepted_at: new Date().toISOString(),
                     terms_version: "2026-08" } } }), 20000, "Sign-up");
 
             if (error) throw error;
             // Supabase returns user=null when email already exists (confirmation mode) or other silent fail
             if (!data?.user) { setErrMsg("Account may already exist — try signing in instead."); setStatus("error"); return; }
+            // With confirmation ON, Supabase answers a duplicate sign-up with a
+            // user object whose identities array is EMPTY (anti-enumeration), not
+            // an error. That used to fall through to "You're in!".
+            if (Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+                setErrMsg("An account with this email already exists — sign in instead."); setStatus("error"); return;
+            }
             safeSet("mp_acc_email",      em);
             safeSet("mp_acc_first_name", name.trim());
             safeSet("mp_acc_last_name",  surname.trim());
             safeSet("mp_acc_name",       (name.trim()+" "+surname.trim()).trim());
-            safeSet("sg_onboarded",      "registered");
             localStorage.removeItem("sg_skip_ts");
+
+            // No session means email confirmation is on and the account is not
+            // active yet. The old code showed "You're in! Setting up your
+            // profile…" here regardless and marked onboarding complete — so the
+            // user was silently anonymous forever, and the sign-up screen never
+            // came back to tell them. Show the real state instead, and leave
+            // onboarding at "pending" so the next launch says "check your email"
+            // rather than pretending they have an account.
+            if (!data.session) {
+                safeSet("sg_onboarded", "pending_confirm");
+                safeSet("sg_pending_confirm_email", em);
+                setStatus("confirm");
+                return;
+            }
+            safeSet("sg_onboarded",      "registered");
             // Flag auth listener to upload local data instead of overwriting it
             window._sg_upload_on_auth = true;
             setStatus("success");
@@ -12937,6 +12975,7 @@ function OnboardingSignup({ onDone }) {
             const { error } = await withTimeout(sb.auth.signInWithPassword({ email: em, password }), 20000, "Sign-in");
             if (error) throw error;
             safeSet("sg_onboarded", "registered");
+            try { localStorage.removeItem("sg_pending_confirm_email"); } catch(_) {}
             localStorage.removeItem("sg_skip_ts");
             setStatus("success");
             setTimeout(() => finishOnboarding("meals"), 1000);
@@ -13002,6 +13041,18 @@ function OnboardingSignup({ onDone }) {
                         "A reset link has been sent to "+email+". Click it to set a new password, then sign in here.")),
                 React.createElement("button", { onClick:()=>{ setMode("signin"); setStatus("idle"); setErrMsg(""); }, style:btn }, "Back to Sign In"))
 
+        // Email confirmation required (signUp returned a user but no session)
+        : status==="confirm"
+            ? React.createElement("div", { style:{width:"100%",maxWidth:380,textAlign:"center"} },
+                React.createElement("div", { style:{background:"rgba(224,123,42,0.10)",border:"1px solid rgba(224,123,42,0.35)",borderRadius:16,padding:28,marginBottom:16} },
+                    React.createElement("div", { style:{fontSize:40,marginBottom:10} }, "📬"),
+                    React.createElement("div", { style:{fontSize:18,fontWeight:700,color:"#F2EDE6",marginBottom:8} }, "Confirm your email"),
+                    React.createElement("div", { style:{fontSize:13,color:"#9C8C7C",lineHeight:1.65} },
+                        "We sent a confirmation link to "+email.trim().toLowerCase()+". Tap it on this device and you’ll land straight back here, signed in."),
+                    React.createElement("div", { style:{fontSize:12,color:"#6F675F",lineHeight:1.6,marginTop:12} },
+                        "Not there? Check spam, or wait a minute — it can take a moment.")),
+                React.createElement("button", { onClick:()=>{ setMode("signin"); setStatus("idle"); setErrMsg(""); }, style:btn }, "Already confirmed? Sign in"))
+
         // Success
         : status==="success"
             ? React.createElement("div", { style:{width:"100%",maxWidth:380,textAlign:"center"} },
@@ -13014,6 +13065,22 @@ function OnboardingSignup({ onDone }) {
 
         // Form
         : React.createElement("div", { style:{width:"100%",maxWidth:380,display:"flex",flexDirection:"column",gap:12} },
+            pendingConfirm && mode==="signin" && React.createElement("div", { style:{background:"rgba(224,123,42,0.10)",border:"1px solid rgba(224,123,42,0.35)",borderRadius:12,padding:"12px 14px",fontSize:12,color:"#C8BFB5",lineHeight:1.6,textAlign:"left"} },
+                React.createElement("div", { style:{fontWeight:700,color:"#F2EDE6",marginBottom:4} }, "📬 Confirm your email first"),
+                "We sent a link to "+_pendingEmail+". Tap it, then sign in here. ",
+                React.createElement("button", { type:"button", disabled: resendState==="sending" || resendState==="sent",
+                    onClick: async () => {
+                        setResendState("sending");
+                        try {
+                            const sb = getSB(); if (!sb) throw new Error("no client");
+                            const { error } = await sb.auth.resend({ type: "signup", email: _pendingEmail,
+                                options: { emailRedirectTo: window.location.origin + "/index.html?confirmed=1" } });
+                            if (error) throw error;
+                            setResendState("sent");
+                        } catch (e) { console.warn("resend confirmation", e); setResendState("error"); }
+                    },
+                    style:{background:"none",border:"none",color:"#E07B2A",fontWeight:700,cursor:"pointer",padding:0,fontSize:12,textDecoration:"underline"} },
+                    resendState==="sent" ? "Sent — check your inbox" : resendState==="sending" ? "Sending…" : resendState==="error" ? "Couldn’t resend — try again" : "Resend the link")),
             mode==="signup" && React.createElement("div", { style:{display:"flex",gap:10} },
                 React.createElement("input", { value:name, onChange:e=>setName(e.target.value), placeholder:"First name", "aria-label":"First name", style:inp }),
                 React.createElement("input", { value:surname, onChange:e=>setSurname(e.target.value), placeholder:"Last name", "aria-label":"Last name", style:inp })),
@@ -14367,6 +14434,22 @@ function App() {
         try {
             const status = localStorage.getItem("sg_onboarded");
             if (status === "registered") return "app";
+            // Signed up, never clicked the confirmation link. Back to the sign-in
+            // screen — which knows about the pending email and says so — rather
+            // than replaying the story or, worse, opening the app as if they had
+            // an account. An effect below promotes this to "registered" the
+            // moment the confirmation link lands.
+            if (status === "pending_confirm") {
+                // If THIS load is the confirmation link landing, arm the upload
+                // flag now — synchronously, before the auth listener is even
+                // registered. SIGNED_IN otherwise calls loadUserData, which
+                // treats an empty server result as authoritative and would wipe
+                // whatever they favourited or logged before confirming.
+                try {
+                    if (new URLSearchParams(window.location.search).get("confirmed") === "1") window._sg_upload_on_auth = true;
+                } catch (_) {}
+                return "signup";
+            }
             if (status === "skipped") {
                 const ts = parseInt(localStorage.getItem("sg_skip_ts") || "0", 10);
                 const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -15089,6 +15172,30 @@ function App() {
     React.useEffect(() => {
         if (showSetPassword && onboardStep !== "app") setOnboardStep("app");
     }, [showSetPassword, onboardStep]);
+
+    // Email confirmation landed. The link points at /index.html?confirmed=1 and
+    // carries the session in its hash; supabase-js consumes that on load and
+    // fires SIGNED_IN, which sets currentUser. Nothing else ever promoted
+    // "pending_confirm" to "registered" — so the sign-in screen stayed up over
+    // a user who was, by then, actually signed in.
+    React.useEffect(() => {
+        if (!currentUser) return;
+        let pending = false;
+        try { pending = localStorage.getItem("sg_onboarded") === "pending_confirm"; } catch (_) {}
+        if (!pending) return;
+        try {
+            safeSet("sg_onboarded", "registered");
+            localStorage.removeItem("sg_pending_confirm_email");
+            // Local data is uploaded by the SIGNED_IN handler: the onboardStep
+            // initialiser armed _sg_upload_on_auth before the listener existed.
+        } catch (_) {}
+        if (onboardStep !== "app") setOnboardStep("app");
+        try {
+            // Drop ?confirmed=1 so a refresh does not look like a fresh landing.
+            const u = new URL(window.location.href);
+            if (u.searchParams.has("confirmed")) { u.searchParams.delete("confirmed"); history.replaceState(null, "", u.pathname + (u.search || "") + u.hash); }
+        } catch (_) {}
+    }, [currentUser, onboardStep]);
 
     function clearSessionState() {
         // Drop the Supabase session token unconditionally.

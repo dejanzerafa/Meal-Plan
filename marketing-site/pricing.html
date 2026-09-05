@@ -903,7 +903,10 @@
         if (currentTab === 'signup') {
           const { data, error } = await supabase.auth.signUp({
             email, password,
-            options: { data: { full_name: name } },
+            // Land back HERE after confirming, with the session in the hash, so
+            // they can pick a plan and pay. Without it the link used Supabase's
+            // Site URL — the app's waitlist page, which cannot consume the token.
+            options: { emailRedirectTo: location.origin + '/pricing', data: { full_name: name } },
           });
           if (error) throw error;
           session = data?.session;
