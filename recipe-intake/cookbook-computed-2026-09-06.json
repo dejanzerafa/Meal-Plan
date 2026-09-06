@@ -1,0 +1,2937 @@
+{
+ "14": {
+  "computed": {
+   "kcal": 304,
+   "p": 11.1,
+   "c": 41.7,
+   "f": 10.8
+  },
+  "unparsed": [
+   "(plant-based or whey)"
+  ],
+  "parsed": 8,
+  "total": 9
+ },
+ "15": {
+  "computed": {
+   "kcal": 306,
+   "p": 14.5,
+   "c": 23.8,
+   "f": 18.3
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "16": {
+  "computed": {
+   "kcal": 244,
+   "p": 17.5,
+   "c": 24.5,
+   "f": 8.9
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "17": {
+  "computed": {
+   "kcal": 273,
+   "p": 7.6,
+   "c": 50.1,
+   "f": 5.6
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "18": {
+  "computed": {
+   "kcal": 238,
+   "p": 11.6,
+   "c": 27.8,
+   "f": 9.5
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "19": {
+  "computed": {
+   "kcal": 406,
+   "p": 13.7,
+   "c": 56.0,
+   "f": 16.5
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "20": {
+  "computed": {
+   "kcal": 216,
+   "p": 20.2,
+   "c": 26.7,
+   "f": 3.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "21": {
+  "computed": {
+   "kcal": 114,
+   "p": 9.1,
+   "c": 1.5,
+   "f": 7.7
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "22": {
+  "computed": {
+   "kcal": 258,
+   "p": 4.6,
+   "c": 14.6,
+   "f": 20.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "23": {
+  "computed": {
+   "kcal": 246,
+   "p": 9.6,
+   "c": 23.9,
+   "f": 12.6
+  },
+  "unparsed": [
+   "\u00bd red bell pepper, chopped"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "24": {
+  "computed": {
+   "kcal": 253,
+   "p": 3.9,
+   "c": 32.5,
+   "f": 12.6
+  },
+  "unparsed": [
+   "(optional)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "25": {
+  "computed": {
+   "kcal": 320,
+   "p": 20.8,
+   "c": 34.1,
+   "f": 10.4
+  },
+  "unparsed": [
+   "Coconut oil spray (for waffle iron)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "26": {
+  "computed": {
+   "kcal": 322,
+   "p": 24.9,
+   "c": 4.6,
+   "f": 21.8
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "27": {
+  "computed": {
+   "kcal": 279,
+   "p": 8.2,
+   "c": 46.3,
+   "f": 7.5
+  },
+  "unparsed": [
+   "Hollow Bee Farm, if available)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "28": {
+  "computed": {
+   "kcal": 184,
+   "p": 6.7,
+   "c": 17.1,
+   "f": 11.3
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "29": {
+  "computed": {
+   "kcal": 170,
+   "p": 2.8,
+   "c": 26.2,
+   "f": 7.3
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "30": {
+  "computed": {
+   "kcal": 135,
+   "p": 8.6,
+   "c": 21.8,
+   "f": 1.3
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "31": {
+  "computed": {
+   "kcal": 247,
+   "p": 9.4,
+   "c": 39.0,
+   "f": 6.6
+  },
+  "unparsed": [
+   "raspberries, blackberries)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "32": {
+  "computed": {
+   "kcal": 256,
+   "p": 17.0,
+   "c": 25.3,
+   "f": 10.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "33": {
+  "computed": {
+   "kcal": 220,
+   "p": 9.8,
+   "c": 25.2,
+   "f": 9.4
+  },
+  "unparsed": [
+   "toasted"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "34": {
+  "computed": {
+   "kcal": 246,
+   "p": 8.2,
+   "c": 24.2,
+   "f": 12.1
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "35": {
+  "computed": {
+   "kcal": 202,
+   "p": 20.1,
+   "c": 19.2,
+   "f": 5.6
+  },
+  "unparsed": [
+   "blueberries"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "36": {
+  "computed": {
+   "kcal": 193,
+   "p": 14.1,
+   "c": 21.5,
+   "f": 6.4
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "37": {
+  "computed": {
+   "kcal": 310,
+   "p": 6.8,
+   "c": 53.3,
+   "f": 9.3
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "38": {
+  "computed": {
+   "kcal": 258,
+   "p": 16.0,
+   "c": 27.5,
+   "f": 9.5
+  },
+  "unparsed": [
+   "2 cups low-sodium vegetable",
+   "broth"
+  ],
+  "parsed": 4,
+  "total": 6
+ },
+ "39": {
+  "computed": {
+   "kcal": 243,
+   "p": 6.5,
+   "c": 53.2,
+   "f": 2.4
+  },
+  "unparsed": [
+   "chopped"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "40": {
+  "computed": {
+   "kcal": 316,
+   "p": 8.8,
+   "c": 40.1,
+   "f": 14.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "41": {
+  "computed": {
+   "kcal": 267,
+   "p": 17.6,
+   "c": 1.4,
+   "f": 20.8
+  },
+  "unparsed": [
+   "Fresh chives (optional)"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "42": {
+  "computed": {
+   "kcal": 157,
+   "p": 5.2,
+   "c": 27.5,
+   "f": 3.4
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "43": {
+  "computed": {
+   "kcal": 282,
+   "p": 5.0,
+   "c": 38.9,
+   "f": 13.7
+  },
+  "unparsed": [
+   "flakes, or granola"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "44": {
+  "computed": {
+   "kcal": 122,
+   "p": 4.9,
+   "c": 18.4,
+   "f": 3.3
+  },
+  "unparsed": [
+   "rolled oats)"
+  ],
+  "parsed": 8,
+  "total": 9
+ },
+ "45": {
+  "computed": {
+   "kcal": 309,
+   "p": 14.1,
+   "c": 36.0,
+   "f": 11.6
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "46": {
+  "computed": {
+   "kcal": 209,
+   "p": 3.7,
+   "c": 50.4,
+   "f": 1.4
+  },
+  "unparsed": [
+   "Pinch of black pepper (enhances",
+   "turmeric absorption)"
+  ],
+  "parsed": 5,
+  "total": 7
+ },
+ "47": {
+  "computed": {
+   "kcal": 197,
+   "p": 15.5,
+   "c": 1.8,
+   "f": 13.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "48": {
+  "computed": {
+   "kcal": 183,
+   "p": 12.4,
+   "c": 26.4,
+   "f": 3.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "49": {
+  "computed": {
+   "kcal": 357,
+   "p": 13.4,
+   "c": 48.6,
+   "f": 13.9
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "50": {
+  "computed": {
+   "kcal": 214,
+   "p": 6.1,
+   "c": 40.8,
+   "f": 1.9
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "51": {
+  "computed": {
+   "kcal": 250,
+   "p": 5.3,
+   "c": 50.3,
+   "f": 3.1
+  },
+  "unparsed": [
+   "Pinch of salt"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "52": {
+  "computed": {
+   "kcal": 297,
+   "p": 15.1,
+   "c": 33.4,
+   "f": 11.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "53": {
+  "computed": {
+   "kcal": 221,
+   "p": 20.9,
+   "c": 22.9,
+   "f": 6.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "54": {
+  "computed": {
+   "kcal": 236,
+   "p": 6.0,
+   "c": 43.1,
+   "f": 5.4
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "55": {
+  "computed": {
+   "kcal": 344,
+   "p": 14.3,
+   "c": 23.6,
+   "f": 22.8
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "56": {
+  "computed": {
+   "kcal": 339,
+   "p": 11.8,
+   "c": 45.8,
+   "f": 13.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "57": {
+  "computed": {
+   "kcal": 284,
+   "p": 3.1,
+   "c": 31.8,
+   "f": 15.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "58": {
+  "computed": {
+   "kcal": 246,
+   "p": 18.0,
+   "c": 21.0,
+   "f": 8.7
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "59": {
+  "computed": {
+   "kcal": 230,
+   "p": 26.0,
+   "c": 20.6,
+   "f": 5.2
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "60": {
+  "computed": {
+   "kcal": 201,
+   "p": 4.8,
+   "c": 21.8,
+   "f": 10.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "61": {
+  "computed": {
+   "kcal": 98,
+   "p": 2.8,
+   "c": 13.2,
+   "f": 4.3
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "62": {
+  "computed": {
+   "kcal": 221,
+   "p": 16.3,
+   "c": 6.6,
+   "f": 14.4
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "63": {
+  "computed": {
+   "kcal": 260,
+   "p": 6.6,
+   "c": 37.5,
+   "f": 11.7
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "65": {
+  "computed": {
+   "kcal": 234,
+   "p": 9.5,
+   "c": 26.3,
+   "f": 11.2
+  },
+  "unparsed": [
+   "canned, drained and rinsed)"
+  ],
+  "parsed": 9,
+  "total": 10
+ },
+ "66": {
+  "computed": {
+   "kcal": 310,
+   "p": 24.9,
+   "c": 22.6,
+   "f": 12.8
+  },
+  "unparsed": [
+   "sliced"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "67": {
+  "computed": {
+   "kcal": 367,
+   "p": 11.2,
+   "c": 53.5,
+   "f": 13.6
+  },
+  "unparsed": [
+   "drained"
+  ],
+  "parsed": 9,
+  "total": 10
+ },
+ "68": {
+  "computed": {
+   "kcal": 488,
+   "p": 34.2,
+   "c": 20.5,
+   "f": 28.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "69": {
+  "computed": {
+   "kcal": 136,
+   "p": 7.1,
+   "c": 16.9,
+   "f": 4.9
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "70": {
+  "computed": {
+   "kcal": 408,
+   "p": 21.0,
+   "c": 33.3,
+   "f": 21.4
+  },
+  "unparsed": [
+   "Lettuce leaves"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "71": {
+  "computed": {
+   "kcal": 283,
+   "p": 24.4,
+   "c": 30.0,
+   "f": 7.2
+  },
+  "unparsed": [
+   "sliced",
+   "Water, to thin"
+  ],
+  "parsed": 8,
+  "total": 10
+ },
+ "72": {
+  "computed": {
+   "kcal": 253,
+   "p": 6.2,
+   "c": 30.6,
+   "f": 13.0
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "73": {
+  "computed": {
+   "kcal": 306,
+   "p": 14.4,
+   "c": 44.4,
+   "f": 7.9
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "74": {
+  "computed": {
+   "kcal": 205,
+   "p": 21.1,
+   "c": 6.4,
+   "f": 10.6
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "75": {
+  "computed": {
+   "kcal": 237,
+   "p": 28.2,
+   "c": 21.7,
+   "f": 3.9
+  },
+  "unparsed": [
+   "shredded"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "76": {
+  "computed": {
+   "kcal": 131,
+   "p": 10.3,
+   "c": 8.8,
+   "f": 7.4
+  },
+  "unparsed": [
+   "\u00bd red bell pepper, sliced"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "77": {
+  "computed": {
+   "kcal": 147,
+   "p": 15.0,
+   "c": 7.0,
+   "f": 6.2
+  },
+  "unparsed": [
+   "shredded"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "78": {
+  "computed": {
+   "kcal": 208,
+   "p": 5.1,
+   "c": 27.5,
+   "f": 8.7
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "79": {
+  "computed": {
+   "kcal": 214,
+   "p": 17.9,
+   "c": 26.4,
+   "f": 3.9
+  },
+  "unparsed": [
+   "deveined"
+  ],
+  "parsed": 8,
+  "total": 9
+ },
+ "80": {
+  "computed": {
+   "kcal": 412,
+   "p": 15.3,
+   "c": 56.4,
+   "f": 14.4
+  },
+  "unparsed": [
+   "rinsed"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "81": {
+  "computed": {
+   "kcal": 434,
+   "p": 27.5,
+   "c": 43.7,
+   "f": 16.2
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "82": {
+  "computed": {
+   "kcal": 210,
+   "p": 6.6,
+   "c": 31.0,
+   "f": 7.2
+  },
+  "unparsed": [
+   "roasted"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "83": {
+  "computed": {
+   "kcal": 168,
+   "p": 7.1,
+   "c": 20.6,
+   "f": 7.0
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "84": {
+  "computed": {
+   "kcal": 256,
+   "p": 20.9,
+   "c": 18.7,
+   "f": 11.3
+  },
+  "unparsed": [
+   "sliced"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "85": {
+  "computed": {
+   "kcal": 281,
+   "p": 41.5,
+   "c": 2.1,
+   "f": 10.7
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "86": {
+  "computed": {
+   "kcal": 151,
+   "p": 3.5,
+   "c": 12.4,
+   "f": 11.0
+  },
+  "unparsed": [
+   "1 can (15 oz) chickpeas, rinsed",
+   "and drained"
+  ],
+  "parsed": 8,
+  "total": 10
+ },
+ "87": {
+  "computed": {
+   "kcal": 458,
+   "p": 10.2,
+   "c": 48.7,
+   "f": 26.5
+  },
+  "unparsed": [
+   "(optional)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "88": {
+  "computed": {
+   "kcal": 367,
+   "p": 32.0,
+   "c": 6.8,
+   "f": 22.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "89": {
+  "computed": {
+   "kcal": 683,
+   "p": 25.3,
+   "c": 114.4,
+   "f": 15.6
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "90": {
+  "computed": {
+   "kcal": 122,
+   "p": 6.5,
+   "c": 18.7,
+   "f": 2.6
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "91": {
+  "computed": {
+   "kcal": 268,
+   "p": 5.6,
+   "c": 28.2,
+   "f": 15.6
+  },
+  "unparsed": [
+   "1 can (4 oz) tuna in water,",
+   "drained"
+  ],
+  "parsed": 7,
+  "total": 9
+ },
+ "92": {
+  "computed": {
+   "kcal": 428,
+   "p": 24.5,
+   "c": 44.1,
+   "f": 18.0
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "93": {
+  "computed": {
+   "kcal": 191,
+   "p": 22.9,
+   "c": 7.2,
+   "f": 8.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "94": {
+  "computed": {
+   "kcal": 131,
+   "p": 2.1,
+   "c": 14.7,
+   "f": 7.4
+  },
+  "unparsed": [
+   "\u00bd red bell pepper, chopped"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "95": {
+  "computed": {
+   "kcal": 412,
+   "p": 42.2,
+   "c": 31.2,
+   "f": 12.2
+  },
+  "unparsed": [
+   "sliced"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "96": {
+  "computed": {
+   "kcal": 305,
+   "p": 9.0,
+   "c": 18.2,
+   "f": 23.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "97": {
+  "computed": {
+   "kcal": 154,
+   "p": 19.5,
+   "c": 9.3,
+   "f": 4.6
+  },
+  "unparsed": [
+   "romaine)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "98": {
+  "computed": {
+   "kcal": 188,
+   "p": 4.6,
+   "c": 25.7,
+   "f": 7.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "99": {
+  "computed": {
+   "kcal": 180,
+   "p": 12.9,
+   "c": 15.1,
+   "f": 7.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "100": {
+  "computed": {
+   "kcal": 317,
+   "p": 9.8,
+   "c": 32.5,
+   "f": 18.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "101": {
+  "computed": {
+   "kcal": 339,
+   "p": 10.1,
+   "c": 44.9,
+   "f": 14.8
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "102": {
+  "computed": {
+   "kcal": 216,
+   "p": 11.6,
+   "c": 27.6,
+   "f": 7.5
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "103": {
+  "computed": {
+   "kcal": 216,
+   "p": 14.9,
+   "c": 11.2,
+   "f": 13.1
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "104": {
+  "computed": {
+   "kcal": 250,
+   "p": 14.6,
+   "c": 6.2,
+   "f": 19.1
+  },
+  "unparsed": [
+   "\u00bd red bell pepper, sliced"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "105": {
+  "computed": {
+   "kcal": 198,
+   "p": 4.8,
+   "c": 29.9,
+   "f": 6.7
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "106": {
+  "computed": {
+   "kcal": 166,
+   "p": 22.0,
+   "c": 6.9,
+   "f": 6.0
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "107": {
+  "computed": {
+   "kcal": 201,
+   "p": 7.0,
+   "c": 23.5,
+   "f": 9.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "108": {
+  "computed": {
+   "kcal": 138,
+   "p": 4.2,
+   "c": 23.7,
+   "f": 3.1
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "109": {
+  "computed": {
+   "kcal": 115,
+   "p": 18.9,
+   "c": 4.5,
+   "f": 2.0
+  },
+  "unparsed": [
+   "shredded"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "110": {
+  "computed": {
+   "kcal": 231,
+   "p": 7.9,
+   "c": 26.4,
+   "f": 11.7
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "111": {
+  "computed": {
+   "kcal": 245,
+   "p": 8.7,
+   "c": 23.4,
+   "f": 13.4
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "112": {
+  "computed": {
+   "kcal": 260,
+   "p": 24.7,
+   "c": 4.7,
+   "f": 16.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "113": {
+  "computed": {
+   "kcal": 418,
+   "p": 13.1,
+   "c": 52.8,
+   "f": 18.4
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "114": {
+  "computed": {
+   "kcal": 265,
+   "p": 9.3,
+   "c": 37.2,
+   "f": 10.1
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "116": {
+  "computed": {
+   "kcal": 508,
+   "p": 35.6,
+   "c": 25.0,
+   "f": 28.3
+  },
+  "unparsed": [
+   "spinach mix"
+  ],
+  "parsed": 9,
+  "total": 10
+ },
+ "117": {
+  "computed": {
+   "kcal": 308,
+   "p": 5.2,
+   "c": 36.8,
+   "f": 16.0
+  },
+  "unparsed": [
+   "1 can (15 oz) chickpeas, drained",
+   "Fresh cilantro for garnish"
+  ],
+  "parsed": 8,
+  "total": 10
+ },
+ "118": {
+  "computed": {
+   "kcal": 299,
+   "p": 39.4,
+   "c": 4.1,
+   "f": 13.3
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "119": {
+  "computed": {
+   "kcal": 615,
+   "p": 18.4,
+   "c": 100.6,
+   "f": 16.0
+  },
+  "unparsed": [
+   "diced",
+   "Fresh lime wedges and cilantro"
+  ],
+  "parsed": 7,
+  "total": 9
+ },
+ "120": {
+  "computed": {
+   "kcal": 246,
+   "p": 19.1,
+   "c": 25.7,
+   "f": 7.8
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "121": {
+  "computed": {
+   "kcal": 251,
+   "p": 32.0,
+   "c": 11.7,
+   "f": 8.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "122": {
+  "computed": {
+   "kcal": 147,
+   "p": 12.2,
+   "c": 10.4,
+   "f": 6.1
+  },
+  "unparsed": [
+   "seeded"
+  ],
+  "parsed": 8,
+  "total": 9
+ },
+ "123": {
+  "computed": {
+   "kcal": 411,
+   "p": 15.4,
+   "c": 64.5,
+   "f": 10.4
+  },
+  "unparsed": [
+   "(optional)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "124": {
+  "computed": {
+   "kcal": 321,
+   "p": 39.6,
+   "c": 13.7,
+   "f": 11.6
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "125": {
+  "computed": {
+   "kcal": 154,
+   "p": 7.3,
+   "c": 21.2,
+   "f": 4.9
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "126": {
+  "computed": {
+   "kcal": 102,
+   "p": 16.2,
+   "c": 7.8,
+   "f": 1.2
+  },
+  "unparsed": [
+   "deveined",
+   "for dairy-free)"
+  ],
+  "parsed": 6,
+  "total": 8
+ },
+ "127": {
+  "computed": {
+   "kcal": 351,
+   "p": 41.0,
+   "c": 4.7,
+   "f": 18.2
+  },
+  "unparsed": [
+   "(optional)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "128": {
+  "computed": {
+   "kcal": 510,
+   "p": 47.0,
+   "c": 35.2,
+   "f": 20.3
+  },
+  "unparsed": [
+   "cubed"
+  ],
+  "parsed": 9,
+  "total": 10
+ },
+ "129": {
+  "computed": {
+   "kcal": 352,
+   "p": 41.1,
+   "c": 18.8,
+   "f": 11.8
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "130": {
+  "computed": {
+   "kcal": 300,
+   "p": 12.0,
+   "c": 48.3,
+   "f": 7.4
+  },
+  "unparsed": [
+   "and mashed"
+  ],
+  "parsed": 8,
+  "total": 9
+ },
+ "131": {
+  "computed": {
+   "kcal": 264,
+   "p": 17.3,
+   "c": 19.3,
+   "f": 15.6
+  },
+  "unparsed": [
+   "thickening)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "132": {
+  "computed": {
+   "kcal": 91,
+   "p": 1.3,
+   "c": 6.7,
+   "f": 7.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "133": {
+  "computed": {
+   "kcal": 503,
+   "p": 36.3,
+   "c": 32.9,
+   "f": 23.6
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "134": {
+  "computed": {
+   "kcal": 225,
+   "p": 6.7,
+   "c": 28.5,
+   "f": 9.6
+  },
+  "unparsed": [
+   "bell pepper, peas)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "135": {
+  "computed": {
+   "kcal": 225,
+   "p": 28.1,
+   "c": 6.1,
+   "f": 9.7
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "136": {
+  "computed": {
+   "kcal": 220,
+   "p": 30.3,
+   "c": 8.1,
+   "f": 8.0
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "137": {
+  "computed": {
+   "kcal": 233,
+   "p": 8.1,
+   "c": 31.5,
+   "f": 9.2
+  },
+  "unparsed": [
+   "canned",
+   "Fresh parsley for garnish"
+  ],
+  "parsed": 10,
+  "total": 12
+ },
+ "138": {
+  "computed": {
+   "kcal": 288,
+   "p": 39.9,
+   "c": 5.0,
+   "f": 11.4
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "139": {
+  "computed": {
+   "kcal": 238,
+   "p": 6.9,
+   "c": 35.3,
+   "f": 9.1
+  },
+  "unparsed": [
+   "lengthwise"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "140": {
+  "computed": {
+   "kcal": 379,
+   "p": 32.8,
+   "c": 8.3,
+   "f": 22.4
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "141": {
+  "computed": {
+   "kcal": 210,
+   "p": 10.7,
+   "c": 22.7,
+   "f": 9.2
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "142": {
+  "computed": {
+   "kcal": 261,
+   "p": 22.6,
+   "c": 6.5,
+   "f": 16.2
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "143": {
+  "computed": {
+   "kcal": 114,
+   "p": 7.2,
+   "c": 10.0,
+   "f": 5.6
+  },
+  "unparsed": [
+   "carrots, corn)",
+   "Green onions for garnish"
+  ],
+  "parsed": 6,
+  "total": 8
+ },
+ "144": {
+  "computed": {
+   "kcal": 280,
+   "p": 10.5,
+   "c": 26.4,
+   "f": 15.1
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "145": {
+  "computed": {
+   "kcal": 440,
+   "p": 25.1,
+   "c": 64.7,
+   "f": 9.0
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "146": {
+  "computed": {
+   "kcal": 255,
+   "p": 17.6,
+   "c": 14.5,
+   "f": 16.0
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "147": {
+  "computed": {
+   "kcal": 363,
+   "p": 40.7,
+   "c": 21.8,
+   "f": 11.4
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "148": {
+  "computed": {
+   "kcal": 240,
+   "p": 7.0,
+   "c": 28.6,
+   "f": 10.9
+  },
+  "unparsed": [
+   "deseeded"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "149": {
+  "computed": {
+   "kcal": 286,
+   "p": 10.9,
+   "c": 39.3,
+   "f": 9.9
+  },
+  "unparsed": [
+   "(optional)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "150": {
+  "computed": {
+   "kcal": 483,
+   "p": 42.6,
+   "c": 37.7,
+   "f": 16.5
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "151": {
+  "computed": {
+   "kcal": 259,
+   "p": 8.6,
+   "c": 43.4,
+   "f": 6.3
+  },
+  "unparsed": [
+   "(zucchini, carrots, peppers)"
+  ],
+  "parsed": 7,
+  "total": 8
+ },
+ "152": {
+  "computed": {
+   "kcal": 236,
+   "p": 16.3,
+   "c": 24.0,
+   "f": 8.2
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "153": {
+  "computed": {
+   "kcal": 556,
+   "p": 21.4,
+   "c": 87.5,
+   "f": 14.3
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "154": {
+  "computed": {
+   "kcal": 187,
+   "p": 27.1,
+   "c": 1.0,
+   "f": 7.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "155": {
+  "computed": {
+   "kcal": 228,
+   "p": 7.4,
+   "c": 21.7,
+   "f": 13.0
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "156": {
+  "computed": {
+   "kcal": 281,
+   "p": 39.9,
+   "c": 3.6,
+   "f": 11.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "157": {
+  "computed": {
+   "kcal": 245,
+   "p": 26.8,
+   "c": 5.9,
+   "f": 12.5
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "158": {
+  "computed": {
+   "kcal": 167,
+   "p": 14.0,
+   "c": 1.9,
+   "f": 11.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "159": {
+  "computed": {
+   "kcal": 176,
+   "p": 6.8,
+   "c": 20.5,
+   "f": 9.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "160": {
+  "computed": {
+   "kcal": 486,
+   "p": 34.2,
+   "c": 20.2,
+   "f": 28.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "161": {
+  "computed": {
+   "kcal": 263,
+   "p": 11.6,
+   "c": 39.2,
+   "f": 7.5
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "162": {
+  "computed": {
+   "kcal": 184,
+   "p": 16.0,
+   "c": 10.0,
+   "f": 10.9
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "163": {
+  "computed": {
+   "kcal": 191,
+   "p": 27.6,
+   "c": 1.8,
+   "f": 7.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "164": {
+  "computed": {
+   "kcal": 276,
+   "p": 13.1,
+   "c": 34.5,
+   "f": 10.0
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "165": {
+  "computed": {
+   "kcal": 131,
+   "p": 7.6,
+   "c": 20.2,
+   "f": 2.7
+  },
+  "unparsed": [],
+  "parsed": 8,
+  "total": 8
+ },
+ "167": {
+  "computed": {
+   "kcal": 88,
+   "p": 2.6,
+   "c": 10.1,
+   "f": 4.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "168": {
+  "computed": {
+   "kcal": 80,
+   "p": 2.9,
+   "c": 8.6,
+   "f": 4.7
+  },
+  "unparsed": [
+   "thick rounds",
+   "Paprika & parsley for garnish"
+  ],
+  "parsed": 3,
+  "total": 5
+ },
+ "169": {
+  "computed": {
+   "kcal": 162,
+   "p": 14.2,
+   "c": 17.4,
+   "f": 4.6
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "170": {
+  "computed": {
+   "kcal": 136,
+   "p": 6.2,
+   "c": 18.5,
+   "f": 4.5
+  },
+  "unparsed": [
+   "dried"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "171": {
+  "computed": {
+   "kcal": 191,
+   "p": 12.9,
+   "c": 36.5,
+   "f": 0.9
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "172": {
+  "computed": {
+   "kcal": 27,
+   "p": 0.9,
+   "c": 1.1,
+   "f": 2.4
+  },
+  "unparsed": [],
+  "parsed": 2,
+  "total": 2
+ },
+ "173": {
+  "computed": {
+   "kcal": 108,
+   "p": 3.0,
+   "c": 15.8,
+   "f": 4.4
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "174": {
+  "computed": {
+   "kcal": 153,
+   "p": 14.1,
+   "c": 7.2,
+   "f": 7.4
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "175": {
+  "computed": {
+   "kcal": 132,
+   "p": 3.6,
+   "c": 26.0,
+   "f": 1.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "176": {
+  "computed": {
+   "kcal": 305,
+   "p": 14.3,
+   "c": 23.6,
+   "f": 18.3
+  },
+  "unparsed": [
+   "Pinch of salt & pepper"
+  ],
+  "parsed": 3,
+  "total": 4
+ },
+ "177": {
+  "computed": {
+   "kcal": 124,
+   "p": 4.7,
+   "c": 21.2,
+   "f": 2.5
+  },
+  "unparsed": [
+   "thin fries"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "178": {
+  "computed": {
+   "kcal": 60,
+   "p": 4.8,
+   "c": 9.6,
+   "f": 0.6
+  },
+  "unparsed": [
+   "Pinch of sea salt",
+   "Squeeze of lemon juice"
+  ],
+  "parsed": 1,
+  "total": 3
+ },
+ "179": {
+  "computed": {
+   "kcal": 46,
+   "p": 4.0,
+   "c": 0.8,
+   "f": 2.9
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "180": {
+  "computed": {
+   "kcal": 309,
+   "p": 29.6,
+   "c": 23.1,
+   "f": 12.1
+  },
+  "unparsed": [
+   "powder"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "181": {
+  "computed": {
+   "kcal": 193,
+   "p": 9.8,
+   "c": 6.7,
+   "f": 15.9
+  },
+  "unparsed": [
+   "Pinch of sea salt"
+  ],
+  "parsed": 3,
+  "total": 4
+ },
+ "182": {
+  "computed": {
+   "kcal": 148,
+   "p": 14.4,
+   "c": 13.4,
+   "f": 4.1
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "183": {
+  "computed": {
+   "kcal": 69,
+   "p": 3.4,
+   "c": 6.3,
+   "f": 3.7
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "184": {
+  "computed": {
+   "kcal": 48,
+   "p": 0.3,
+   "c": 12.9,
+   "f": 0.2
+  },
+  "unparsed": [],
+  "parsed": 2,
+  "total": 2
+ },
+ "185": {
+  "computed": {
+   "kcal": 101,
+   "p": 7.1,
+   "c": 5.6,
+   "f": 6.3
+  },
+  "unparsed": [
+   "Balsamic drizzle (optional)"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "186": {
+  "computed": {
+   "kcal": 165,
+   "p": 4.5,
+   "c": 19.2,
+   "f": 8.8
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "187": {
+  "computed": {
+   "kcal": 167,
+   "p": 5.1,
+   "c": 7.6,
+   "f": 13.9
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "188": {
+  "computed": {
+   "kcal": 76,
+   "p": 2.7,
+   "c": 5.9,
+   "f": 5.9
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "189": {
+  "computed": {
+   "kcal": 73,
+   "p": 0.9,
+   "c": 18.6,
+   "f": 0.4
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "190": {
+  "computed": {
+   "kcal": 97,
+   "p": 12.5,
+   "c": 5.5,
+   "f": 2.8
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "191": {
+  "computed": {
+   "kcal": 298,
+   "p": 3.9,
+   "c": 62.5,
+   "f": 6.5
+  },
+  "unparsed": [
+   "melted"
+  ],
+  "parsed": 2,
+  "total": 3
+ },
+ "192": {
+  "computed": {
+   "kcal": 88,
+   "p": 7.1,
+   "c": 1.9,
+   "f": 6.5
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "193": {
+  "computed": {
+   "kcal": 83,
+   "p": 7.2,
+   "c": 13.2,
+   "f": 0.5
+  },
+  "unparsed": [
+   "Pinch of salt"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "194": {
+  "computed": {
+   "kcal": 216,
+   "p": 5.1,
+   "c": 29.4,
+   "f": 11.0
+  },
+  "unparsed": [
+   "warmed)"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "195": {
+  "computed": {
+   "kcal": 118,
+   "p": 13.6,
+   "c": 8.9,
+   "f": 2.9
+  },
+  "unparsed": [],
+  "parsed": 2,
+  "total": 2
+ },
+ "196": {
+  "computed": {
+   "kcal": 161,
+   "p": 25.1,
+   "c": 10.0,
+   "f": 2.0
+  },
+  "unparsed": [
+   "powder"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "197": {
+  "computed": {
+   "kcal": 144,
+   "p": 2.5,
+   "c": 17.5,
+   "f": 8.2
+  },
+  "unparsed": [],
+  "parsed": 7,
+  "total": 7
+ },
+ "198": {
+  "computed": {
+   "kcal": 70,
+   "p": 1.4,
+   "c": 1.3,
+   "f": 6.9
+  },
+  "unparsed": [
+   "Pinch of sea salt"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "199": {
+  "computed": {
+   "kcal": 207,
+   "p": 13.9,
+   "c": 31.1,
+   "f": 4.1
+  },
+  "unparsed": [
+   "low-fat)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "200": {
+  "computed": {
+   "kcal": 191,
+   "p": 3.0,
+   "c": 21.9,
+   "f": 11.8
+  },
+  "unparsed": [
+   "Pinch of sea salt"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "201": {
+  "computed": {
+   "kcal": 78,
+   "p": 3.5,
+   "c": 9.9,
+   "f": 3.7
+  },
+  "unparsed": [
+   "lengthwise"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "202": {
+  "computed": {
+   "kcal": 208,
+   "p": 5.6,
+   "c": 24.3,
+   "f": 11.1
+  },
+  "unparsed": [
+   "into \u00bd-inch rounds"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "203": {
+  "computed": {
+   "kcal": 62,
+   "p": 4.8,
+   "c": 10.2,
+   "f": 0.6
+  },
+  "unparsed": [],
+  "parsed": 3,
+  "total": 3
+ },
+ "204": {
+  "computed": {
+   "kcal": 203,
+   "p": 25.8,
+   "c": 20.7,
+   "f": 2.2
+  },
+  "unparsed": [
+   "powder"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "205": {
+  "computed": {
+   "kcal": 114,
+   "p": 4.5,
+   "c": 13.4,
+   "f": 5.0
+  },
+  "unparsed": [
+   "rinsed",
+   "Pinch of salt"
+  ],
+  "parsed": 4,
+  "total": 6
+ },
+ "206": {
+  "computed": {
+   "kcal": 94,
+   "p": 8.1,
+   "c": 6.7,
+   "f": 4.2
+  },
+  "unparsed": [
+   "Assorted fruit slices (apple, pear,",
+   "or strawberries)"
+  ],
+  "parsed": 3,
+  "total": 5
+ },
+ "207": {
+  "computed": {
+   "kcal": 83,
+   "p": 2.3,
+   "c": 11.6,
+   "f": 3.5
+  },
+  "unparsed": [
+   "\u00bd cup shredded unsweetened",
+   "coconut"
+  ],
+  "parsed": 5,
+  "total": 7
+ },
+ "208": {
+  "computed": {
+   "kcal": 60,
+   "p": 6.4,
+   "c": 6.9,
+   "f": 1.0
+  },
+  "unparsed": [
+   "raspberries, strawberries)"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "209": {
+  "computed": {
+   "kcal": 100,
+   "p": 3.0,
+   "c": 5.7,
+   "f": 8.2
+  },
+  "unparsed": [
+   "Pinch of sea salt"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "210": {
+  "computed": {
+   "kcal": 98,
+   "p": 2.9,
+   "c": 16.5,
+   "f": 3.0
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "211": {
+  "computed": {
+   "kcal": 177,
+   "p": 18.8,
+   "c": 14.4,
+   "f": 6.5
+  },
+  "unparsed": [
+   "Pinch of salt and pepper",
+   "rounds"
+  ],
+  "parsed": 5,
+  "total": 7
+ },
+ "212": {
+  "computed": {
+   "kcal": 121,
+   "p": 4.5,
+   "c": 15.2,
+   "f": 4.9
+  },
+  "unparsed": [
+   "dried"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "213": {
+  "computed": {
+   "kcal": 148,
+   "p": 14.4,
+   "c": 13.4,
+   "f": 4.1
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "214": {
+  "computed": {
+   "kcal": 72,
+   "p": 6.1,
+   "c": 0.4,
+   "f": 4.9
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "215": {
+  "computed": {
+   "kcal": 342,
+   "p": 5.4,
+   "c": 19.6,
+   "f": 29.1
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "216": {
+  "computed": {
+   "kcal": 118,
+   "p": 2.8,
+   "c": 21.2,
+   "f": 2.1
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "218": {
+  "computed": {
+   "kcal": 170,
+   "p": 2.7,
+   "c": 29.2,
+   "f": 6.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "219": {
+  "computed": {
+   "kcal": 131,
+   "p": 8.1,
+   "c": 23.4,
+   "f": 1.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "220": {
+  "computed": {
+   "kcal": 69,
+   "p": 1.1,
+   "c": 17.5,
+   "f": 0.4
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "221": {
+  "computed": {
+   "kcal": 159,
+   "p": 3.4,
+   "c": 20.6,
+   "f": 8.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "222": {
+  "computed": {
+   "kcal": 160,
+   "p": 4.8,
+   "c": 24.0,
+   "f": 6.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "223": {
+  "computed": {
+   "kcal": 107,
+   "p": 2.9,
+   "c": 12.5,
+   "f": 5.6
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "224": {
+  "computed": {
+   "kcal": 79,
+   "p": 1.8,
+   "c": 18.8,
+   "f": 0.6
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "225": {
+  "computed": {
+   "kcal": 58,
+   "p": 1.7,
+   "c": 13.7,
+   "f": 0.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "226": {
+  "computed": {
+   "kcal": 117,
+   "p": 2.4,
+   "c": 26.6,
+   "f": 1.4
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "227": {
+  "computed": {
+   "kcal": 56,
+   "p": 0.8,
+   "c": 14.3,
+   "f": 0.3
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "228": {
+  "computed": {
+   "kcal": 150,
+   "p": 3.5,
+   "c": 35.5,
+   "f": 0.7
+  },
+  "unparsed": [
+   "chopped"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "229": {
+  "computed": {
+   "kcal": 170,
+   "p": 14.0,
+   "c": 25.4,
+   "f": 0.7
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "230": {
+  "computed": {
+   "kcal": 224,
+   "p": 6.1,
+   "c": 41.1,
+   "f": 5.9
+  },
+  "unparsed": [
+   "frozen)"
+  ],
+  "parsed": 6,
+  "total": 7
+ },
+ "231": {
+  "computed": {
+   "kcal": 284,
+   "p": 18.5,
+   "c": 29.4,
+   "f": 11.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "232": {
+  "computed": {
+   "kcal": 230,
+   "p": 27.0,
+   "c": 23.2,
+   "f": 3.7
+  },
+  "unparsed": [
+   "powder"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "233": {
+  "computed": {
+   "kcal": 95,
+   "p": 2.1,
+   "c": 23.6,
+   "f": 0.4
+  },
+  "unparsed": [],
+  "parsed": 4,
+  "total": 4
+ },
+ "234": {
+  "computed": {
+   "kcal": 252,
+   "p": 7.3,
+   "c": 51.9,
+   "f": 3.7
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "235": {
+  "computed": {
+   "kcal": 99,
+   "p": 13.4,
+   "c": 9.2,
+   "f": 0.7
+  },
+  "unparsed": [
+   "1 cup honeydew melon"
+  ],
+  "parsed": 3,
+  "total": 4
+ },
+ "236": {
+  "computed": {
+   "kcal": 101,
+   "p": 2.6,
+   "c": 24.2,
+   "f": 0.4
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "237": {
+  "computed": {
+   "kcal": 166,
+   "p": 3.5,
+   "c": 35.5,
+   "f": 2.5
+  },
+  "unparsed": [
+   "1 tsp food-grade dried lavender"
+  ],
+  "parsed": 4,
+  "total": 5
+ },
+ "238": {
+  "computed": {
+   "kcal": 337,
+   "p": 4.8,
+   "c": 26.5,
+   "f": 26.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "239": {
+  "computed": {
+   "kcal": 108,
+   "p": 1.9,
+   "c": 24.3,
+   "f": 1.3
+  },
+  "unparsed": [],
+  "parsed": 6,
+  "total": 6
+ },
+ "240": {
+  "computed": {
+   "kcal": 143,
+   "p": 9.1,
+   "c": 14.7,
+   "f": 5.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "241": {
+  "computed": {
+   "kcal": 18,
+   "p": 1.1,
+   "c": 3.9,
+   "f": 0.1
+  },
+  "unparsed": [
+   "1 cup honeydew or cantaloupe,",
+   "cubed"
+  ],
+  "parsed": 4,
+  "total": 6
+ },
+ "242": {
+  "computed": {
+   "kcal": 326,
+   "p": 4.5,
+   "c": 22.7,
+   "f": 26.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "243": {
+  "computed": {
+   "kcal": 149,
+   "p": 8.0,
+   "c": 28.0,
+   "f": 1.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "244": {
+  "computed": {
+   "kcal": 117,
+   "p": 1.8,
+   "c": 30.2,
+   "f": 0.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "245": {
+  "computed": {
+   "kcal": 114,
+   "p": 3.4,
+   "c": 13.2,
+   "f": 5.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "246": {
+  "computed": {
+   "kcal": 87,
+   "p": 2.0,
+   "c": 20.7,
+   "f": 0.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "247": {
+  "computed": {
+   "kcal": 100,
+   "p": 7.5,
+   "c": 17.9,
+   "f": 0.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "248": {
+  "computed": {
+   "kcal": 111,
+   "p": 2.7,
+   "c": 22.7,
+   "f": 2.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "249": {
+  "computed": {
+   "kcal": 75,
+   "p": 7.0,
+   "c": 10.4,
+   "f": 0.8
+  },
+  "unparsed": [
+   "1 cup papaya, cubed"
+  ],
+  "parsed": 5,
+  "total": 6
+ },
+ "250": {
+  "computed": {
+   "kcal": 142,
+   "p": 8.2,
+   "c": 25.7,
+   "f": 1.8
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "251": {
+  "computed": {
+   "kcal": 60,
+   "p": 1.5,
+   "c": 14.2,
+   "f": 0.2
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "252": {
+  "computed": {
+   "kcal": 111,
+   "p": 2.6,
+   "c": 24.9,
+   "f": 1.3
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "253": {
+  "computed": {
+   "kcal": 125,
+   "p": 3.4,
+   "c": 18.3,
+   "f": 5.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "254": {
+  "computed": {
+   "kcal": 127,
+   "p": 7.8,
+   "c": 23.9,
+   "f": 0.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "255": {
+  "computed": {
+   "kcal": 92,
+   "p": 2.4,
+   "c": 21.5,
+   "f": 0.7
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "256": {
+  "computed": {
+   "kcal": 88,
+   "p": 1.7,
+   "c": 21.0,
+   "f": 0.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "257": {
+  "computed": {
+   "kcal": 80,
+   "p": 1.6,
+   "c": 15.9,
+   "f": 1.8
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "258": {
+  "computed": {
+   "kcal": 129,
+   "p": 3.2,
+   "c": 17.4,
+   "f": 5.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "259": {
+  "computed": {
+   "kcal": 132,
+   "p": 8.1,
+   "c": 23.6,
+   "f": 1.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "260": {
+  "computed": {
+   "kcal": 133,
+   "p": 2.1,
+   "c": 32.6,
+   "f": 0.8
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "261": {
+  "computed": {
+   "kcal": 185,
+   "p": 4.9,
+   "c": 14.9,
+   "f": 14.1
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "262": {
+  "computed": {
+   "kcal": 85,
+   "p": 1.8,
+   "c": 18.5,
+   "f": 1.3
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "263": {
+  "computed": {
+   "kcal": 114,
+   "p": 8.1,
+   "c": 19.8,
+   "f": 0.9
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "264": {
+  "computed": {
+   "kcal": 110,
+   "p": 7.8,
+   "c": 16.5,
+   "f": 1.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "265": {
+  "computed": {
+   "kcal": 84,
+   "p": 8.1,
+   "c": 11.7,
+   "f": 1.0
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "266": {
+  "computed": {
+   "kcal": 108,
+   "p": 2.6,
+   "c": 21.3,
+   "f": 2.6
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ },
+ "267": {
+  "computed": {
+   "kcal": 117,
+   "p": 7.7,
+   "c": 19.8,
+   "f": 1.5
+  },
+  "unparsed": [],
+  "parsed": 5,
+  "total": 5
+ }
+}
