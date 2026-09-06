@@ -1134,6 +1134,17 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
        /function saveExportFile\(\)/.test(src) && /_setAcctExportFile\(file\)/.test(src) && !/await navigator\.share/.test(src));
   }
 
+  // ── Live test 2026-09-06 ──
+  {
+    const toml = readFileSync(join(ROOT, "netlify.toml"), "utf8");
+    t("CSP has no mid-label wildcard (Chrome drops the whole source)", !/https:\/\/o\*\./.test(toml) && /https:\/\/\*\.ingest\.sentry\.io/.test(toml),
+       "'https://o*.ingest.sentry.io' was logged as invalid on every page load");
+    t("recipe tab captions count free recipes from RECIPE_TIER_FREE (breakfast tab said 'All free' over locked cards)",
+       !/recipeCat === "breakfast" && " · All free"/.test(src) && /filteredRecipes\.filter\(r => canView\(r\.id\)\)\.length\} free/.test(src));
+    t("the unlock banner's numbers come from the data, not a hard-coded 14 and mains − 1",
+       !/"\\uD83D\\uDD13 14 recipes free/.test(src) && /RECIPE_TIER_FREE\.has\(r\.id\)\)\.length,\s*" recipes free/.test(src));
+  }
+
   // ── S2: analytics only after opt-in ──
   {
     const consent = stripJS(readFileSync(join(ROOT, "consent.js"), "utf8"));

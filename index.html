@@ -16468,17 +16468,24 @@ function App() {
                         " recipe",
                         filteredRecipes.length !== 1 ? "s" : "",
                         recipeCat === "all" && " · Full recipe library",
-                        recipeCat === "breakfast" && " · All free",
-                        recipeCat === "preworkout" && " · All free · Pick one 30–45 min before training",
+                        // These said "All free" while only bf1–bf3 / pw0, pw2 are in
+                        // RECIPE_TIER_FREE — the tab then showed locked cards under a
+                        // banner promising the opposite. Count from the source of truth.
+                        recipeCat === "breakfast" && (unlocked ? " · Start the day right" : ` · ${filteredRecipes.filter(r => canView(r.id)).length} free`),
+                        recipeCat === "preworkout" && (unlocked ? " · Pick one 30–45 min before training" : ` · ${filteredRecipes.filter(r => canView(r.id)).length} free · Pick one 30–45 min before training`),
                         recipeCat === "dessert" && " · High protein treats",
                         recipeCat === "salad" && " · Light & fresh",
                         recipeCat === "smoothie" && " · Blend & go",
 ),
                     !unlocked && (React.createElement("div", { style: { fontSize: 10, color: C.sub, background: C.card2, border: `1px solid ${C.dim}`,
                             borderRadius: 8, padding: "6px 12px", marginBottom: 10, textAlign: "center" } },
-                        "\uD83D\uDD13 14 recipes free \u00B7 \uD83D\uDD12 Unlock ",
-                        allRecipes.filter(r => (r.category || "main") === "main").length - 1,
-                        " more + all breakfast & desserts")),
+                        // Both numbers from the data: "14" was hard-coded and the
+                        // "more" figure was mains − 1, so the two never added up to
+                        // the library count shown two lines above.
+                        "\uD83D\uDD13 ", allRecipes.filter(r => !r.id.startsWith("custom_") && RECIPE_TIER_FREE.has(r.id)).length,
+                        " recipes free \u00B7 \uD83D\uDD12 Unlock ",
+                        allRecipes.filter(r => !r.id.startsWith("custom_") && !RECIPE_TIER_FREE.has(r.id) && !RECIPE_TIER_PENDING.has(r.id)).length,
+                        " more \u2014 every main, breakfast & dessert")),
                     filteredRecipes.length === 0 && (function() {
                         const hasSearch = !!recipeQuery;
                         const hasFilters = filter !== "All" || dietaryFilter !== null || proteinFilter !== null;
