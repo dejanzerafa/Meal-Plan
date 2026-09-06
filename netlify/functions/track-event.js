@@ -33,6 +33,7 @@ const ALLOWED_EVENTS = new Set([
   "checkout_start",
   "checkout_started",
   "checkout_cancel",
+  "handoff",
   "checkout_success",
   "subscription_start",
   "restore_account_click",

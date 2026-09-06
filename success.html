@@ -206,6 +206,7 @@
   <a href="/index.html?tab=profile" class="btn-primary">Sign in to SoulGainz →</a>
   <a href="https://marketing.soulgainz.app/pricing" class="btn-secondary">Back to pricing</a>
   <p class="sub" style="margin-top:20px;font-size:13px;">Already signed in and still see the free tier? Open the ME tab and tap <strong>Restore purchase</strong>.</p>
+  <p id="signin-reason" class="sub" style="margin-top:12px;font-size:11px;opacity:.55;" hidden></p>
 </div>
 
 <!-- State: signed in, paid. Shown ONLY after setSession() succeeded. -->
@@ -262,6 +263,19 @@
       const n = document.getElementById(el); if (n) n.hidden = (el !== id);
     }
   };
+  // Why a handoff was refused. Logged server-side (no tokens, no PII) so a
+  // silent fall-through to "Sign in" can be diagnosed, and shown as a small
+  // reference code on the page for support.
+  const refuse = (code) => {
+    console.warn('handoff refused: ' + code);
+    try {
+      const el = document.getElementById('signin-reason');
+      if (el) { el.textContent = 'Ref: ' + code; el.hidden = false; }
+      navigator.sendBeacon && navigator.sendBeacon('/.netlify/functions/track-event',
+        new Blob([JSON.stringify({ event_name: 'handoff', properties: { stage: 'app', result: 'refused', code } })], { type: 'application/json' }));
+    } catch (_) {}
+    show('state-signin');
+  };
 
   // The tokens arrive in the FRAGMENT, never the query string: fragments are
   // not sent to the server and do not appear in Netlify's logs. Read them and
@@ -291,20 +305,19 @@
   const cookieNonce = (document.cookie.match(/(?:^|;\s*)sg_hand=([a-f0-9]{32})/) || [])[1] || '';
   try { document.cookie = 'sg_hand=; Domain=soulgainz.app; Path=/; Secure; SameSite=Lax; Max-Age=0'; } catch (_) {}
   if (!nonce || !cookieNonce || nonce !== cookieNonce) {
-    console.warn('handoff refused: nonce missing or mismatched');
-    show('state-signin');
+    refuse(!nonce ? 'nonce-absent' : !cookieNonce ? 'cookie-absent' : 'nonce-mismatch');
     return;
   }
 
-  let verdict = null;
+  let verdict = null, vstatus = 0;
   try {
     const r = await fetch('/.netlify/functions/verify-session?session_id=' + encodeURIComponent(sessionId),
       { credentials: 'omit', headers: { Authorization: 'Bearer ' + access } });
+    vstatus = r.status;
     if (r.ok) verdict = await r.json();
   } catch (_) {}
   if (!verdict || !verdict.paid || verdict.sameUser !== true) {
-    console.warn('handoff refused: session/token mismatch');
-    show('state-signin');
+    refuse(!verdict ? 'verify-' + (vstatus || 'network') : !verdict.paid ? 'unpaid' : 'not-buyer');
     return;
   }
 
@@ -324,7 +337,7 @@
     if (error || !data || !data.session) throw error || new Error('no session');
   } catch (e) {
     console.error('setSession failed', e);
-    show('state-signin');
+    refuse('session-' + String((e && e.message) || 'failed').replace(/[^a-z0-9]+/gi, '-').slice(0, 40));
     return;
   }
 
@@ -354,6 +367,8 @@
     document.getElementById('install-nudge').style.display = 'block';
   }
 
+  try { navigator.sendBeacon && navigator.sendBeacon('/.netlify/functions/track-event',
+    new Blob([JSON.stringify({ event_name: 'handoff', properties: { stage: 'app', result: 'ok' } })], { type: 'application/json' })); } catch (_) {}
   show('state-in');
 })();
 </script>
