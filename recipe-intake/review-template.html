@@ -5,148 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SoulGainz · Recipe Review</title>
 <style>
-  :root { --bg:#1a1612; --card:#2c2520; --card2:#3a312a; --dim:rgba(255,255,255,.09); --text:#f0e8dc; --sub:#a89880; --muted:#6b5c4e;
+  :root { --bg:#1a1612; --card:#2c2520; --card2:#3a312a; --dim:rgba(255,255,255,.1); --text:#f0e8dc; --sub:#a89880; --muted:#6b5c4e;
           --accent:#E07B2A; --green:#22c55e; --blue:#60a5fa; --red:#ef4444; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-  header { position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:1px solid var(--dim); padding:12px 18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; display:flex; flex-direction:column; }
+  header { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid var(--dim); }
   header b span { color:var(--accent); }
-  .stat { font-size:12px; color:var(--sub); }
-  .stat strong { color:var(--text); }
-  input[type=search], select { background:var(--card2); color:var(--text); border:1px solid var(--dim); border-radius:8px; padding:7px 10px; font:inherit; }
-  button { font:inherit; font-weight:800; border-radius:8px; padding:7px 12px; cursor:pointer; border:1px solid var(--dim); background:var(--card2); color:var(--text); }
-  button.primary { background:var(--accent); border-color:var(--accent); color:#000; }
-  main { max-width:1200px; margin:0 auto; padding:18px; }
-  .cand { background:var(--card); border:1px solid var(--dim); border-radius:14px; margin-bottom:14px; overflow:hidden; }
-  .cand.keep-ours { border-color:var(--blue); } .cand.replace { border-color:var(--red); } .cand.both, .cand.new { border-color:var(--green); } .cand.skip { opacity:.55; }
-  .head { display:flex; gap:12px; align-items:center; padding:12px 14px; cursor:pointer; }
-  .head .t { flex:1; min-width:0; }
-  .head .t b { font-size:15px; }
-  .head .meta { font-size:11px; color:var(--sub); margin-top:2px; }
-  .pill { font-size:10px; font-weight:900; letter-spacing:.08em; padding:3px 8px; border-radius:20px; border:1px solid var(--dim); color:var(--sub); white-space:nowrap; }
-  .pill.dec-keep-ours { color:var(--blue); border-color:var(--blue); } .pill.dec-replace { color:var(--red); border-color:var(--red); }
-  .pill.dec-both, .pill.dec-new { color:var(--green); border-color:var(--green); } .pill.dec-skip { color:var(--muted); }
-  .pill.built { color:var(--green); border-color:var(--green); }
-  .body { display:none; border-top:1px solid var(--dim); }
-  .cand.open .body { display:block; }
-  .cols { display:grid; grid-template-columns:1fr 1fr; gap:0; }
-  @media (max-width:820px) { .cols { grid-template-columns:1fr; } }
-  .col { padding:14px; }
-  .col + .col { border-left:1px solid var(--dim); }
-  .col h4 { margin:0 0 6px; font-size:11px; letter-spacing:.1em; color:var(--sub); }
-  .col h3 { margin:0 0 4px; font-size:15px; }
-  .macros { display:flex; gap:10px; font-size:12px; margin:6px 0 10px; flex-wrap:wrap; }
-  .macros span { background:var(--card2); border-radius:6px; padding:3px 8px; }
+  .prog { flex:1; height:8px; background:var(--card2); border-radius:4px; overflow:hidden; }
+  .prog i { display:block; height:100%; background:var(--accent); width:0; transition:width .2s; }
+  .count { font-size:13px; color:var(--sub); white-space:nowrap; }
+  .count b { color:var(--text); }
+  header button { font:inherit; font-size:12px; font-weight:700; border-radius:8px; padding:6px 10px; cursor:pointer; border:1px solid var(--dim); background:transparent; color:var(--sub); }
+  main { flex:1; overflow:auto; padding:20px; }
+  .wrap { max-width:980px; margin:0 auto; }
+  .title { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .title h1 { margin:0; font-size:26px; line-height:1.2; }
+  .src { font-size:13px; color:var(--sub); }
+  .verdict { margin:10px 0 16px; padding:12px 14px; border-radius:12px; background:var(--card); border-left:4px solid var(--accent); font-size:15px; }
+  .verdict.dup { border-left-color:var(--blue); }
+  .verdict.built { border-left-color:var(--green); }
+  .macros { display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 12px; }
+  .macros span { background:var(--card2); border-radius:8px; padding:6px 12px; font-size:14px; }
   .macros .p { color:var(--accent); font-weight:800; }
-  .warn { font-size:11px; color:var(--red); margin-bottom:8px; }
-  ul, ol { margin:0 0 10px; padding-left:18px; font-size:12px; color:var(--text); }
-  li { margin-bottom:2px; }
-  .libpick { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-  .libpick button { font-size:11px; padding:5px 9px; font-weight:700; }
-  .libpick button.on { border-color:var(--accent); color:var(--accent); }
-  .actions { display:flex; gap:8px; flex-wrap:wrap; padding:12px 14px; border-top:1px solid var(--dim); align-items:center; }
-  .actions button.on { outline:2px solid var(--accent); }
-  .actions textarea { flex:1; min-width:200px; background:var(--card2); color:var(--text); border:1px solid var(--dim); border-radius:8px; padding:7px 10px; font:inherit; font-size:12px; resize:vertical; min-height:34px; }
-  .empty { color:var(--sub); padding:30px; text-align:center; }
-  #out { position:fixed; left:0; right:0; bottom:0; background:#0f0c0a; border-top:1px solid var(--dim); padding:10px 18px; display:flex; gap:10px; align-items:center; font-size:12px; color:var(--sub); z-index:5; }
+  .macros .lbl { background:transparent; color:var(--sub); padding-left:0; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:800px) { .cols { grid-template-columns:1fr; } }
+  .box { background:var(--card); border:1px solid var(--dim); border-radius:14px; padding:14px 16px; }
+  .box h3 { margin:0 0 2px; font-size:16px; }
+  .box h4 { margin:12px 0 4px; font-size:11px; letter-spacing:.12em; color:var(--sub); }
+  .box .meta { font-size:12px; color:var(--sub); }
+  ul, ol { margin:0; padding-left:18px; font-size:14px; }
+  li { margin-bottom:3px; }
+  details summary { cursor:pointer; color:var(--sub); font-size:13px; margin-top:8px; }
+  .pick { display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 10px; }
+  .pick button { font:inherit; font-size:12px; font-weight:700; padding:5px 9px; border-radius:8px; border:1px solid var(--dim); background:var(--card2); color:var(--sub); cursor:pointer; }
+  .pick button.on { border-color:var(--accent); color:var(--accent); }
+  footer { border-top:1px solid var(--dim); padding:12px 20px calc(12px + env(safe-area-inset-bottom)); background:#14110e; }
+  .acts { max-width:980px; margin:0 auto; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .acts button { font:inherit; font-size:15px; font-weight:800; padding:14px 18px; border-radius:12px; border:1px solid var(--dim); background:var(--card2); color:var(--text); cursor:pointer; flex:1; min-width:140px; }
+  .acts button small { display:block; font-weight:500; font-size:11px; color:var(--sub); margin-top:2px; }
+  .acts button.yes { background:var(--green); border-color:var(--green); color:#000; } .acts button.yes small { color:#0008; }
+  .acts button.ours { background:rgba(96,165,250,.15); border-color:var(--blue); color:var(--blue); }
+  .acts button.rep { background:rgba(239,68,68,.15); border-color:var(--red); color:var(--red); }
+  .acts button.on { outline:3px solid #fff8; }
+  .acts .nav { flex:0 0 auto; min-width:0; padding:14px; }
+  .note { max-width:980px; margin:10px auto 0; display:flex; gap:10px; }
+  .note input { flex:1; font:inherit; font-size:13px; background:var(--card2); color:var(--text); border:1px solid var(--dim); border-radius:10px; padding:9px 12px; }
+  .keys { font-size:11px; color:var(--muted); text-align:center; margin-top:8px; }
+  .done { text-align:center; padding:40px 20px; }
+  .done h2 { font-size:24px; }
+  .done button { font:inherit; font-weight:800; padding:14px 22px; border-radius:12px; border:none; background:var(--accent); color:#000; cursor:pointer; font-size:15px; margin:6px; }
+  .list { max-width:980px; margin:0 auto; }
+  .row { display:flex; gap:10px; align-items:center; padding:9px 12px; border-bottom:1px solid var(--dim); cursor:pointer; font-size:14px; }
+  .row:hover { background:var(--card); }
+  .row .n { flex:1; }
+  .row .d { font-size:11px; font-weight:800; letter-spacing:.06em; color:var(--sub); }
+  .d.new, .d.both { color:var(--green); } .d.keep-ours { color:var(--blue); } .d.replace { color:var(--red); }
 </style>
 </head>
 <body>
 <header>
-  <b>Soul<span>Gainz</span> · Recipe Review</b>
-  <input type="search" id="q" placeholder="Search…" oninput="render()">
-  <select id="src" onchange="render()">
-    <option value="all">All sources</option><option value="ig">Instagram</option><option value="cb">Cookbook</option>
-  </select>
-  <select id="flt" onchange="render()">
-    <option value="all">All</option><option value="dup">With a library match</option><option value="nodup">No match</option>
-    <option value="undecided">Undecided</option><option value="decided">Decided</option><option value="built">Already built</option>
-  </select>
-  <span class="stat" id="stats"></span>
+  <b>Soul<span>Gainz</span> Review</b>
+  <div class="prog"><i id="bar"></i></div>
+  <span class="count" id="count"></span>
+  <button onclick="toggleList()" id="listBtn">List</button>
+  <button onclick="exportDecisions()">Copy decisions</button>
 </header>
-<main id="list"></main>
-<div id="out">
-  <span id="outmsg">Decisions save automatically in this browser.</span>
-  <button class="primary" onclick="exportDecisions()">Copy decisions</button>
-  <button onclick="downloadDecisions()">Download .json</button>
-  <button onclick="if(confirm('Clear every decision?')){localStorage.removeItem(KEY);dec={};render();}">Reset</button>
-</div>
+<main id="main"></main>
+<footer id="foot"></footer>
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const DATA = JSON.parse(document.getElementById('data').textContent);
 const KEY = 'sg_review_' + DATA.generated;
 let dec = {}; try { dec = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (_) {}
-let open = null;
+// Order: Instagram first, then cookbook by computed protein (highest first) so the
+// worthwhile ones come early and the 4 g smoothies sit at the end.
+const ORDER = DATA.candidates.slice().sort((a, b) => {
+  const ia = a.id.startsWith('ig') ? 0 : 1, ib = b.id.startsWith('ig') ? 0 : 1;
+  if (ia !== ib) return ia - ib;
+  if (ia === 0) return parseInt(a.id.slice(2)) - parseInt(b.id.slice(2));
+  return ((b.computed || b.claim || {}).protein || 0) - ((a.computed || a.claim || {}).protein || 0);
+});
+let idx = Math.max(0, ORDER.findIndex(c => !(dec[c.id] && dec[c.id].decision)));
+if (idx < 0) idx = 0;
+let listMode = false;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const mac = (m, label) => !m ? `<div class="macros"><span>${label}: no figures</span></div>` :
-  `<div class="macros"><span>${m.kcal ?? '–'} kcal</span><span class="p">${m.protein ?? '–'} P</span><span>${m.carbs ?? '–'} C</span><span>${m.fat ?? '–'} F</span><span style="color:var(--sub)">${label}</span></div>`;
-function save() { localStorage.setItem(KEY, JSON.stringify(dec)); }
-function decide(id, d) { dec[id] = { ...(dec[id] || {}), decision: d, ours: (dec[id] || {}).ours || (DATA.candidates.find(c => c.id === id).matches[0] || null) }; save(); render(); }
-function note(id, v) { dec[id] = { ...(dec[id] || {}), note: v }; save(); }
-function pickOurs(id, lib) { dec[id] = { ...(dec[id] || {}), ours: lib }; save(); render(); }
-function toggle(id) { open = open === id ? null : id; render(); }
-function libCard(l) {
-  if (!l) return '<div class="empty">No matching recipe in the library — nothing to compare.</div>';
-  return `<h3>${esc(l.name)}</h3><div class="meta" style="font-size:11px;color:var(--sub)">${esc(l.id)} · ${esc(l.category)} · ${esc(l.subtitle || '')} · ${l.portions || 1} portion(s) as written${l.allergens && l.allergens.length ? ' · ⚠ ' + esc(l.allergens.join(', ')) : ''}</div>
-  ${mac(l.perPortion, 'per portion, computed')}
-  <h4>INGREDIENTS</h4><ul>${(l.batchItems || []).map(i => `<li>${i.qty} ${esc(i.unit)} ${esc(i.label)}</li>`).join('')}</ul>
-  <h4>METHOD</h4><ol>${(l.steps || []).map(s => `<li>${esc(s)}</li>`).join('')}</ol>`;
+const save = () => localStorage.setItem(KEY, JSON.stringify(dec));
+const macros = (m, label) => !m ? '' : `<div class="macros"><span>${m.kcal ?? '–'} kcal</span><span class="p">${m.protein ?? '–'} g protein</span><span>${m.carbs ?? '–'} C</span><span>${m.fat ?? '–'} F</span><span class="lbl">${label}</span></div>`;
+const decLabel = { 'new': 'ADD', 'both': 'ADD (keep ours too)', 'keep-ours': 'KEEP OURS', 'replace': 'REPLACE OURS', 'skip': 'SKIP' };
+
+function verdict(c, l) {
+  const cm = c.computed, cl = c.claim;
+  const bits = [];
+  if (c.built_as) bits.push(`Already built and checked (${c.built_as}) — waiting for your approval.`);
+  if (cm && cl && cl.kcal) { const d = Math.round((cm.kcal - cl.kcal) / cl.kcal * 100); if (Math.abs(d) >= 15) bits.push(`The post's calories are ${Math.abs(d)}% ${d > 0 ? 'under' : 'over'}stated (claims ${cl.kcal}, ingredients give ${cm.kcal}).`); }
+  if (cm && cm.protein != null) { if (cm.protein < 20) bits.push(`Only ${cm.protein} g protein per serving — low for the app unless rebuilt.`); else if (cm.protein >= 30) bits.push(`${cm.protein} g protein per serving — meets the app's target.`); }
+  if (l) bits.push(`Similar to ours: <b>${esc(l.name)}</b> (${l.perPortion.kcal} kcal · ${l.perPortion.protein} g protein).`); else bits.push('Nothing like it in the library.');
+  return bits.join(' ');
 }
-function render() {
-  const q = document.getElementById('q').value.toLowerCase(), src = document.getElementById('src').value, flt = document.getElementById('flt').value;
-  const list = DATA.candidates.filter(c => {
-    if (src !== 'all' && !c.id.startsWith(src)) return false;
-    const d = dec[c.id] && dec[c.id].decision;
-    if (flt === 'dup' && !c.matches.length) return false;
-    if (flt === 'nodup' && c.matches.length) return false;
-    if (flt === 'undecided' && d) return false;
-    if (flt === 'decided' && !d) return false;
-    if (flt === 'built' && !c.built_as) return false;
-    if (q && !(c.title + ' ' + c.source + ' ' + c.matches.map(m => DATA.library[m].name).join(' ')).toLowerCase().includes(q)) return false;
-    return true;
-  });
-  const decided = Object.values(dec).filter(d => d.decision).length;
-  document.getElementById('stats').innerHTML = `<strong>${list.length}</strong> shown · <strong>${DATA.candidates.length}</strong> candidates · <strong>${decided}</strong> decided`;
-  document.getElementById('list').innerHTML = list.length ? list.map(c => {
-    const d = dec[c.id] || {}; const cls = d.decision ? d.decision : '';
-    const ours = d.ours || c.matches[0]; const l = ours ? DATA.library[ours] : null;
-    const drift = c.claim && c.computed && c.claim.kcal ? Math.round((c.computed.kcal - c.claim.kcal) / c.claim.kcal * 100) : null;
-    const decLabel = { 'keep-ours': 'KEEP OURS', 'replace': 'REPLACE WITH NEW', 'both': 'KEEP BOTH', 'new': 'BUILD IT', 'skip': 'SKIP' }[d.decision] || 'UNDECIDED';
-    return `<div class="cand ${cls} ${open === c.id ? 'open' : ''}">
-      <div class="head" onclick="toggle('${c.id}')">
-        <div class="t"><b>${esc(c.title)}</b><div class="meta">${esc(c.source)} · serves ${c.serves ?? '?'}${c.matches.length ? ' · matches: ' + c.matches.map(m => esc(DATA.library[m].name)).join(', ') : ' · no library match'}</div></div>
-        ${c.built_as ? `<span class="pill built">BUILT · ${esc(c.built_as.split(' ')[0])}</span>` : ''}
-        <span class="pill dec-${d.decision || ''}">${decLabel}</span>
+
+function renderCard() {
+  const c = ORDER[idx]; const d = dec[c.id] || {};
+  const ours = d.ours || c.matches[0]; const l = ours ? DATA.library[ours] : null;
+  document.getElementById('main').innerHTML = `<div class="wrap">
+    <div class="title"><h1>${esc(c.title)}</h1><span class="src">${esc(c.source)} · serves ${c.serves ?? '?'}</span></div>
+    <div class="verdict ${c.built_as ? 'built' : l ? 'dup' : ''}">${verdict(c, l)}</div>
+    <div class="cols">
+      <div class="box"><h3>New recipe</h3>
+        ${macros(c.computed, 'from the ingredients')}${macros(c.claim, 'as the post claims')}
+        ${c.coverage ? `<div class="meta">${esc(c.coverage)}</div>` : ''}
+        <h4>INGREDIENTS</h4><ul>${c.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+        <details><summary>Method (${c.steps.length} steps)</summary><ol>${c.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></details>
       </div>
-      <div class="body">
-        <div class="cols">
-          <div class="col"><h4>NEW — AS POSTED</h4><h3>${esc(c.title)}</h3>
-            ${mac(c.claim, 'per serving, as claimed')}${c.computed ? mac(c.computed, 'per serving, computed from ingredients') : ''}${c.coverage ? `<div class="meta" style="font-size:11px;color:var(--sub);margin-bottom:8px">${esc(c.coverage)}</div>` : ''}
-            ${drift !== null && Math.abs(drift) >= 10 ? `<div class="warn">Post's calories are ${drift > 0 ? 'under' : 'over'}stated by ${Math.abs(drift)}%</div>` : ''}
-            ${c.built_as ? `<div class="warn" style="color:var(--green)">Already built as ${esc(c.built_as)}</div>` : ''}
-            <h4>INGREDIENTS</h4><ul>${c.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
-            <h4>METHOD</h4><ol>${c.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>
-          <div class="col"><h4>OURS — IN THE LIBRARY</h4>
-            ${c.matches.length > 1 ? `<div class="libpick">${c.matches.map(m => `<button class="${m === ours ? 'on' : ''}" onclick="pickOurs('${c.id}','${m}')">${esc(DATA.library[m].name)}</button>`).join('')}</div>` : ''}
-            ${libCard(l)}</div>
-        </div>
-        <div class="actions">
-          ${l ? `<button class="${d.decision === 'keep-ours' ? 'on' : ''}" onclick="decide('${c.id}','keep-ours')">Keep ours</button>
-                 <button class="${d.decision === 'replace' ? 'on' : ''}" onclick="decide('${c.id}','replace')">Replace with new</button>
-                 <button class="${d.decision === 'both' ? 'on' : ''}" onclick="decide('${c.id}','both')">Keep both</button>`
-              : `<button class="${d.decision === 'new' ? 'on' : ''}" onclick="decide('${c.id}','new')">Build it</button>`}
-          <button class="${d.decision === 'skip' ? 'on' : ''}" onclick="decide('${c.id}','skip')">Skip</button>
-          <textarea placeholder="Note for the build (portion size, swaps, tier…)" onchange="note('${c.id}', this.value)">${esc(d.note || '')}</textarea>
-        </div>
-      </div></div>`;
-  }).join('') : '<div class="empty">Nothing matches.</div>';
+      <div class="box">${l ? `<h3>Ours: ${esc(l.name)}</h3><div class="meta">${esc(l.id)} · ${esc(l.category)} · ${esc(l.subtitle || '')}</div>
+        ${c.matches.length > 1 ? `<div class="pick">${c.matches.map(m => `<button class="${m === ours ? 'on' : ''}" onclick="pickOurs('${c.id}','${m}')">${esc(DATA.library[m].name)}</button>`).join('')}</div>` : ''}
+        ${macros(l.perPortion, 'per portion, verified')}
+        <h4>INGREDIENTS (1 portion)</h4><ul>${(l.batchItems || []).map(i => `<li>${i.qty} ${esc(i.unit)} ${esc(i.label)}</li>`).join('')}</ul>
+        <details><summary>Method (${(l.steps || []).length} steps)</summary><ol>${(l.steps || []).map(s => `<li>${esc(s)}</li>`).join('')}</ol></details>`
+        : `<h3>No match in the library</h3><div class="meta">This would be a new dish, not a variant.</div>`}</div>
+    </div></div>`;
+  const b = (cls, dcode, label, sub) => `<button class="${cls} ${d.decision === dcode ? 'on' : ''}" onclick="decide('${dcode}')">${label}<small>${sub}</small></button>`;
+  document.getElementById('foot').innerHTML = `<div class="acts">
+    <button class="nav" onclick="go(-1)">←</button>
+    ${l ? b('ours', 'keep-ours', 'Keep ours', 'skip the new one') + b('rep', 'replace', 'Replace ours', 'new one takes its place') + b('yes', 'both', 'Add as well', 'keep both')
+        : b('yes', 'new', 'Add it', 'build into pending')}
+    ${b('', 'skip', 'Skip', 'not for us')}
+    <button class="nav" onclick="go(1)">→</button>
+  </div>
+  <div class="note"><input placeholder="Note for the build (optional): portion, swap, tier…" value="${esc(d.note || '')}" onchange="note(this.value)"></div>
+  <div class="keys">Keys: 1 keep ours · 2 replace · 3 add · 4 skip · ← → move · L list</div>`;
+  updateHeader();
 }
+function renderList() {
+  document.getElementById('main').innerHTML = `<div class="list">${ORDER.map((c, i) => { const d = dec[c.id] || {}; return `<div class="row" onclick="jump(${i})"><span class="n">${esc(c.title)} <span class="src">${esc(c.source)}</span></span><span class="d ${d.decision || ''}">${decLabel[d.decision] || ''}</span></div>`; }).join('')}</div>`;
+  document.getElementById('foot').innerHTML = '';
+  updateHeader();
+}
+function renderDone() {
+  const n = Object.values(dec).filter(x => x.decision && x.decision !== 'skip').length;
+  document.getElementById('main').innerHTML = `<div class="done"><h2>All ${ORDER.length} reviewed</h2><p>${n} to build. Copy the decisions and paste them to Claude.</p>
+    <button onclick="exportDecisions()">Copy decisions</button><button onclick="toggleList()" style="background:var(--card2);color:var(--text)">Review the list</button></div>`;
+  document.getElementById('foot').innerHTML = '';
+  updateHeader();
+}
+function updateHeader() {
+  const done = ORDER.filter(c => dec[c.id] && dec[c.id].decision).length;
+  document.getElementById('bar').style.width = (done / ORDER.length * 100) + '%';
+  document.getElementById('count').innerHTML = `<b>${done}</b> / ${ORDER.length} decided · #${idx + 1}`;
+}
+function render() { if (listMode) renderList(); else if (idx >= ORDER.length) renderDone(); else renderCard(); }
+function decide(code) { const c = ORDER[idx]; dec[c.id] = { ...(dec[c.id] || {}), decision: code, ours: (dec[c.id] || {}).ours || c.matches[0] || null }; save(); go(1); }
+function note(v) { const c = ORDER[idx]; dec[c.id] = { ...(dec[c.id] || {}), note: v }; save(); }
+function pickOurs(id, lib) { dec[id] = { ...(dec[id] || {}), ours: lib }; save(); render(); }
+function go(n) { idx = Math.min(ORDER.length, Math.max(0, idx + n)); listMode = false; render(); window.scrollTo(0, 0); document.getElementById('main').scrollTop = 0; }
+function jump(i) { idx = i; listMode = false; render(); }
+function toggleList() { listMode = !listMode; render(); }
 function payload() {
   return JSON.stringify({ generated: DATA.generated, decisions: Object.fromEntries(Object.entries(dec).filter(([, d]) => d.decision).map(([id, d]) => {
     const c = DATA.candidates.find(x => x.id === id); return [id, { title: c.title, decision: d.decision, ours: d.ours || c.matches[0] || null, note: d.note || '' }]; })) }, null, 2);
 }
-function exportDecisions() { navigator.clipboard.writeText(payload()).then(() => { document.getElementById('outmsg').textContent = 'Copied — paste it to Claude.'; }); }
-function downloadDecisions() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([payload()], { type: 'application/json' })); a.download = 'recipe-decisions-' + DATA.generated + '.json'; a.click(); }
+function exportDecisions() { navigator.clipboard.writeText(payload()).then(() => alert('Copied. Paste it to Claude.')).catch(() => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([payload()], { type: 'application/json' })); a.download = 'recipe-decisions.json'; a.click(); }); }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  const c = ORDER[idx]; if (!c) return; const hasOurs = !!(c.matches && c.matches.length);
+  if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === '1' && hasOurs) decide('keep-ours'); else if (e.key === '2' && hasOurs) decide('replace');
+  else if (e.key === '3') decide(hasOurs ? 'both' : 'new'); else if (e.key === '4') decide('skip'); else if (e.key.toLowerCase() === 'l') toggleList();
+});
 render();
 </script>
 </body>
