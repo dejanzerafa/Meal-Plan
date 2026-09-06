@@ -30,10 +30,12 @@ const { createClient } = require("@supabase/supabase-js");
 exports.handler = async (event) => {
   // ── Rate limit ──────────────────────────────────────────────────────────────
   // Mails the entire waitlist on success.
-  {
+  // Preflights must not consume the quota, and this block used to run before
+  // the OPTIONS branch (and reference an undeclared corsHeaders).
+  if (event.httpMethod !== "OPTIONS") {
     const _rl = await rateLimit(`migratewl:${clientIp(event)}`, { max: 3, windowMs: 3600000 });
     if (!_rl.ok) {
-      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+      return { statusCode: 429, headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
     }
   }
@@ -85,6 +87,7 @@ exports.handler = async (event) => {
     if (wErr) throw new Error(`Waitlist read error: ${wErr.message}`);
     results.total_waitlist = waitlistUsers?.length || 0;
 
+    let _authByEmail = null;
     for (const wUser of (waitlistUsers || [])) {
       const email    = wUser.email?.toLowerCase().trim();
       const firstName = wUser.first_name || null;
@@ -97,16 +100,21 @@ exports.handler = async (event) => {
         // typeof is undefined). Calling it threw "not a function", and the
         // trailing `.catch()` could not rescue it because the throw happened
         // first — so this whole migration aborted on its first row. v2 exposes
-        // listUsers, which does not filter by email, so match on the page.
-        let existingUser = null;
-        try {
-          const { data: listed, error: listErr } = await sb.auth.admin.listUsers({ page: 1, perPage: 200 });
-          if (listErr) console.error("listUsers failed:", listErr.message);
-          const needle = email.toLowerCase();
-          existingUser = (listed?.users || []).find(u => (u.email || "").toLowerCase() === needle) || null;
-        } catch (e) {
-          console.error("auth lookup failed for", email, e.message);
+        // listUsers does not filter by email. It used to fetch page 1 (200
+        // users) once PER ROW: anyone past user 200 looked like "no account"
+        // and was re-invited. Paginate the whole directory once, up front.
+        if (!_authByEmail) {
+          _authByEmail = new Map();
+          try {
+            for (let page = 1; page < 200; page++) {
+              const { data: listed, error: listErr } = await sb.auth.admin.listUsers({ page, perPage: 1000 });
+              if (listErr) { console.error("listUsers failed:", listErr.message); break; }
+              for (const u of listed?.users || []) if (u.email) _authByEmail.set(u.email.toLowerCase(), u);
+              if (!listed || !listed.users || listed.users.length < 1000) break;
+            }
+          } catch (e) { console.error("auth directory load failed", e.message); }
         }
+        const existingUser = _authByEmail.get(email.toLowerCase()) || null;
 
         if (existingUser) {
           // ── 3a. User has account → sync name to profiles if missing ────────

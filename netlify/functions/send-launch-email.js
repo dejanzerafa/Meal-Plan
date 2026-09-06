@@ -26,10 +26,12 @@ const BATCH_SIZE = 100; // Resend batch limit
 exports.handler = async (event) => {
   // ── Rate limit ──────────────────────────────────────────────────────────────
   // Mails the entire waitlist on success.
-  {
+  // Preflights must not consume the quota, and this block used to run before
+  // the OPTIONS branch (and reference an undeclared corsHeaders).
+  if (event.httpMethod !== "OPTIONS") {
     const _rl = await rateLimit(`launchmail:${clientIp(event)}`, { max: 3, windowMs: 3600000 });
     if (!_rl.ok) {
-      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+      return { statusCode: 429, headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
     }
   }

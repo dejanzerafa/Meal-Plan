@@ -74,9 +74,9 @@ exports.handler = async (event) => {
     };
   }
 
-  const email = (body.email || "").trim().toLowerCase();
-  const name  = (body.name  || "").trim().slice(0, 100);
-  const source = (body.source || "waitlist_page").slice(0, 50);
+  const email = String(body.email ?? "").trim().toLowerCase();
+  const name  = String(body.name  ?? "").trim().slice(0, 100);
+  const source = String(body.source || "waitlist_page").slice(0, 50);
 
   // ── Validate email ─────────────────────────────────────────────────────────
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

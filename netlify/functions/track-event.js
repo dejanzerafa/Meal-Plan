@@ -77,7 +77,7 @@ async function _checkIpRateLimit(ip) {
     }
 
     // Write back with 120s TTL (2× window to avoid premature expiry)
-    await store.set(key, JSON.stringify(entry), { ttl: 120 });
+    await store.set(key, JSON.stringify(entry));   // Blobs has no ttl option; the window start lives in `entry`
     return true;
   } catch (_) {
     // ── Fallback: in-process Map (local dev or Blobs unavailable) ─────────

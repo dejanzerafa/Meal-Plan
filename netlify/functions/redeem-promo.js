@@ -107,7 +107,11 @@ exports.handler = async (event) => {
   const dbCode = codeRows[0];
 
   // ── 2. Check expiry ───────────────────────────────────────────────────────
-  if (dbCode.expires && new Date(dbCode.expires + "T23:59:59") < new Date()) {
+  // `expires` may be a bare calendar date ("YYYY-MM-DD") or a full timestamp.
+  // Appending "T23:59:59" to a timestamp produced Invalid Date, whose
+  // comparison is always false — so such codes never expired.
+  const _exp = dbCode.expires ? (/^\d{4}-\d{2}-\d{2}$/.test(String(dbCode.expires)) ? new Date(dbCode.expires + "T23:59:59") : new Date(dbCode.expires)) : null;
+  if (_exp && (isNaN(_exp) || _exp < new Date())) {
     return { statusCode: 410, headers: corsHeaders, body: JSON.stringify({ error: "This code has expired" }) };
   }
 

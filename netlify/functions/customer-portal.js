@@ -72,7 +72,7 @@ exports.handler = async (event) => {
   const { data: userData, error: userErr } = await supabase
     .from("users")
     .select("stripe_customer_id")
-    .eq("email", user.email)
+    .eq("email", String(user.email || "").trim().toLowerCase())   // every writer lowercases
     .maybeSingle();
 
   if (userErr) {

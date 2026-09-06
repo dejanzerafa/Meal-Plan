@@ -2,11 +2,11 @@
 // Sends a confirmation email when a promo code is successfully redeemed.
 // Called client-side after redeem() succeeds.
 //
-// POST { email, tier, label, tierExpires }
+// POST { tier, label, tierExpires }   (Authorization: Bearer <supabase jwt> — recipient = token's user)
 //
 // Required env vars: RESEND_API_KEY, FROM_EMAIL, APP_URL
 
-const { rateLimit, clientIp, escHtml } = require("./_shared/auth");
+const { rateLimit, clientIp, escHtml, requireUser } = require("./_shared/auth");
 
 const TIER_LABELS = {
   annual:     "Annual Access",
@@ -45,8 +45,15 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { email, tier, label, tierExpires } = payload;
-  if (!email || !email.includes("@")) {
+  // The recipient is the SIGNED-IN user, from a verified token — never the
+  // body. Unauthenticated, this was a relay for "Your promo code is live —
+  // Annual Access unlocked" from support@ to any address, and a non-string
+  // body email crashed it with a 502.
+  const auth = await requireUser(event);
+  if (auth.error) return { statusCode: auth.status, body: JSON.stringify({ error: auth.error }) };
+  const email = String(auth.user.email || "").trim().toLowerCase();
+  const { tier, label, tierExpires } = payload;
+  if (!email.includes("@")) {
     return { statusCode: 400, body: JSON.stringify({ error: "Valid email required" }) };
   }
 

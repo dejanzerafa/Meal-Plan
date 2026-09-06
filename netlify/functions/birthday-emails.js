@@ -105,7 +105,10 @@ exports.handler = async (event) => {
     if (profiles.length) {
       const emails = profiles.map(p => String(p.email || "").toLowerCase()).filter(Boolean);
       const consentRes = await fetch(
-        `${supabaseUrl}/rest/v1/users?email=in.(${emails.map(e => `"${e.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`).join(",")})&marketing_opt_in=eq.true&select=id,email,first_name`,
+        // The whole in-list is URL-encoded: a "+" in name+tag@x.com would
+        // otherwise decode to a space and "&"/"#" would truncate the filter,
+        // so that person's consent lookup missed and their birthday was skipped.
+        `${supabaseUrl}/rest/v1/users?email=in.${encodeURIComponent(`(${emails.map(e => `"${e.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`).join(",")})`)}&marketing_opt_in=eq.true&select=id,email,first_name`,
         { headers: { "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}` } }
       );
       const consented = consentRes.ok ? await consentRes.json() : [];
@@ -188,7 +191,12 @@ exports.handler = async (event) => {
         }
 
         // \u2500\u2500 Store the code in Supabase \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-        await fetch(`${supabaseUrl}/rest/v1/birthday_codes`, {
+        // The dedupe row is the ONLY thing stopping a second run (or tomorrow's)
+        // from issuing another code and another email. It used to be
+        // fire-and-forget with the status ignored: a failed insert meant a new
+        // Stripe code and email every day for the rest of the month. Insert
+        // first, treat a conflict as "already sent", and only mail on success.
+        const storeRes = await fetch(`${supabaseUrl}/rest/v1/birthday_codes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -202,7 +210,14 @@ exports.handler = async (event) => {
             promo_code:     promoCode,
             stripe_promo_id: stripePromoId,
           }),
-        }).catch((e) => console.error("Store birthday code error:", e));
+        });
+        if (storeRes.status === 409) { results.skipped.push(user.email); continue; }
+        if (!storeRes.ok) {
+          const txt = await storeRes.text().catch(() => "");
+          console.error("Store birthday code error:", storeRes.status, txt);
+          results.failed.push(user.email);
+          continue;
+        }
 
         // \u2500\u2500 Send birthday email \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
         const firstName = user.first_name || user.email.split("@")[0] || "there";

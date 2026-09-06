@@ -1098,6 +1098,42 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     t("marketing pricing: the Terms field toggles to flex (was a precedence bug)", /style\.display = tab === 'signup' \? 'flex' : 'none';/.test(pr));
   }
 
+  // ── Audit round 2 (functions + runtime) ──
+  {
+    const ra = fn("restore-account.js");
+    t("restore-account verifies the token with requireUser (no SUPABASE_ANON_KEY dependency)",
+       /requireUser\(event\)/.test(ra) && !/SUPABASE_ANON_KEY/.test(ra),
+       "the deploy never had SUPABASE_ANON_KEY; the gateway 401'd before reading the JWT, so 'Check my subscription' always failed");
+    t("restore-account answers OPTIONS before the auth gate", ra.indexOf('httpMethod === "OPTIONS"') < ra.indexOf("requireUser(event)"));
+    const sw = readFileSync(join(ROOT, "sw.js"), "utf8");
+    t("service worker never caches function responses", /url\.pathname\.startsWith\('\/\.netlify\/'\)\) return;/.test(sw),
+       "the personal-data export was landing in Cache Storage and surviving sign-out");
+    t("notification click opens the app, not '/', and matches absolute client URLs",
+       !/data: \{ url: '\/' \}/.test(sw) && /new URL\(.*'\/index\.html', self\.location\.origin\)\.href/.test(sw));
+    t("update banner does not double-reload", /else window\.location\.reload\(\);/.test(src) && /controllerchange/.test(src));
+    t("confirmation landing promotes a signed-in user even without the local pending flag (link opened in another browser)",
+       /confirmedUrl = new URLSearchParams\(window\.location\.search\)\.get\("confirmed"\) === "1"/.test(src) && /if \(!pending && !confirmedUrl\) return;/.test(src));
+    const spc = fn("send-promo-confirm.js");
+    t("send-promo-confirm takes the recipient from a verified token, never the body",
+       /requireUser\(event\)/.test(spc) && /const email = String\(auth\.user\.email/.test(spc) && !/const \{ email, tier/.test(spc),
+       "it was an unauthenticated relay from support@ to any address");
+    t("the app sends the bearer to send-promo-confirm", /send-promo-confirm", \{\s*method: "POST",\s*headers: \{ "Content-Type": "application\/json", "Authorization": "Bearer " \+ accessToken \}/.test(src));
+    const be = fn("birthday-emails.js");
+    t("birthday-emails only mails after the dedupe row is stored (409 = already sent)", /if \(storeRes\.status === 409\)/.test(be) && be.indexOf("storeRes.status === 409") < be.indexOf("api.resend.com/emails"),
+       "a failed insert re-issued a code and email every day for the rest of the month");
+    t("birthday-emails URL-encodes the consent in-list", /email=in\.\$\{encodeURIComponent\(/.test(be));
+    const he = fn("holiday-emails.js");
+    t("holiday-emails is idempotent per day and refuses without its marker store", /getStore\(\{ name: "email-sends"/.test(he) && /statusCode: 503/.test(he) && he.indexOf("store.setJSON(key") < he.indexOf("rest/v1/users?marketing_opt_in"));
+    t("migrate-waitlist loads the auth directory once, paginated", /perPage: 1000/.test(fn("migrate-waitlist.js")) && !/perPage: 200/.test(fn("migrate-waitlist.js")));
+    t("redeem-promo expiry handles both bare dates and timestamps", /isNaN\(_exp\)/.test(fn("redeem-promo.js")));
+    t("waitlist coerces body fields to strings", /String\(body\.email \?\? ""\)/.test(fn("waitlist.js")));
+    for (const f of ["admin-friend-code.js", "admin-list-users.js", "check-user.js", "migrate-waitlist.js", "send-launch-email.js"])
+      t(`${f}: preflights do not consume the rate limit and no undeclared corsHeaders`, /if \(event\.httpMethod !== "OPTIONS"\) \{\s*const _rl/.test(fn(f)) && !/typeof corsHeaders/.test(fn(f)));
+    t("crypto.subtle is guarded on insecure origins", /if \(!\(window\.crypto && crypto\.subtle\)\) return;/.test(src) && /crypto\.subtle unavailable/.test(src));
+    t("iOS export: the share sheet is opened from a fresh tap (saveExportFile), not after the fetch await",
+       /function saveExportFile\(\)/.test(src) && /_setAcctExportFile\(file\)/.test(src) && !/await navigator\.share/.test(src));
+  }
+
   // ── S2: analytics only after opt-in ──
   {
     const consent = stripJS(readFileSync(join(ROOT, "consent.js"), "utf8"));

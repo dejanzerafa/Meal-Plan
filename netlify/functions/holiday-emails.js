@@ -166,6 +166,28 @@ exports.handler = async (event) => {
   console.log(`Holiday: ${todayHoliday.label} (${todayHoliday.faith}) \u2014 ${isoDate}`);
 
   try {
+    // \u2500\u2500 Idempotency: one send per holiday per day \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    // pg_cron retries, a manual test run and a second job on the same day all
+    // used to mail the entire opted-in base again. The marker is written
+    // BEFORE the loop so a retry that arrives mid-send cannot double up; a
+    // crash mid-loop loses the remainder of a courtesy email, which is the
+    // better failure.
+    try {
+      const { getStore } = await import("@netlify/blobs");
+      const store = getStore({ name: "email-sends", consistency: "strong" });
+      const key = `holiday_${isoDate}`;
+      const prior = await store.get(key, { type: "json" }).catch(() => null);
+      if (prior) {
+        console.log(`Holiday email for ${isoDate} already sent at ${prior.at} \u2014 skipping`);
+        return { statusCode: 200, body: JSON.stringify({ holiday: todayHoliday.label, sent: 0, skipped: "already sent today" }) };
+      }
+      await store.setJSON(key, { at: new Date().toISOString(), holiday: todayHoliday.label });
+    } catch (e) {
+      // Blobs unavailable: refuse rather than risk a mass double-send.
+      console.error("holiday-emails: idempotency store unavailable, refusing to send:", e.message);
+      return { statusCode: 503, body: JSON.stringify({ error: "idempotency store unavailable" }) };
+    }
+
     // \u2500\u2500 Fetch all opted-in users \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     const usersRes = await fetch(
       `${supabaseUrl}/rest/v1/users?marketing_opt_in=eq.true&select=email,first_name`,

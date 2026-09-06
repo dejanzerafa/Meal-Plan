@@ -14,10 +14,12 @@ exports.handler = async (event) => {
   // admin-verify limits password attempts to 10 per 15 minutes, but this
   // endpoint accepts the SAME ADMIN_SECRET with no limit — so the secret could be
   // ground here, never touching the limiter, and this one dumps every user.
-  {
+  // Preflights must not consume the quota, and this block used to run before
+  // the OPTIONS branch (and reference an undeclared corsHeaders).
+  if (event.httpMethod !== "OPTIONS") {
     const _rl = await rateLimit(`adminlist:${clientIp(event)}`, { max: 10, windowMs: 900000 });
     if (!_rl.ok) {
-      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+      return { statusCode: 429, headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
     }
   }

@@ -35,10 +35,12 @@ exports.handler = async (event) => {
   // ── Rate limit ──────────────────────────────────────────────────────────────
   // Same bypass as admin-list-users: accepts ADMIN_SECRET with no limit,
   // so the brute-force protection on admin-verify could be walked around.
-  {
+  // Preflights must not consume the quota, and this block used to run before
+  // the OPTIONS branch (and reference an undeclared corsHeaders).
+  if (event.httpMethod !== "OPTIONS") {
     const _rl = await rateLimit(`adminfriend:${clientIp(event)}`, { max: 10, windowMs: 900000 });
     if (!_rl.ok) {
-      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+      return { statusCode: 429, headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
     }
   }

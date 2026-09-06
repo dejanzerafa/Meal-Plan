@@ -10504,6 +10504,7 @@ const DEV_TIER_HASHES = {
     "ace818b02ac88cdbae7bb99b2eaa7e79618ace47d406ae685c0cba64a0eff041": { tier: "dev",     allRecipes: true,  label: "Dev Master" },
 };
 async function _hashInput(input) {
+    if (!(window.crypto && crypto.subtle)) throw new Error("crypto.subtle unavailable (insecure origin)");
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.toUpperCase().trim()));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
@@ -10910,8 +10911,9 @@ function PromoCodeInput({ C, onRedeemed, defaultOpen, hideToggle }) {
         if (userEmail) {
             fetch("/.netlify/functions/send-promo-confirm", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: userEmail, tier: result.tier, label: result.label, tierExpires: result.tierExpires || null }),
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + accessToken },
+                // Recipient is taken from the token server-side.
+                body: JSON.stringify({ tier: result.tier, label: result.label, tierExpires: result.tierExpires || null }),
             }).catch(() => {});
         }
     }
@@ -11003,12 +11005,12 @@ function DevModal({ onClose, onApplyTier }) {
     const [preview, setPreview] = useState(null); // { tier, allRecipes, label }
     const checkPreview = async (val) => {
         if (!val.trim()) { setPreview(null); return; }
-        const hash = await _hashInput(val);
-        setPreview(DEV_TIER_HASHES[hash] || null);
+        let hash = null; try { hash = await _hashInput(val); } catch (_) {}
+        setPreview((hash && DEV_TIER_HASHES[hash]) || null);
     };
     const submit = async () => {
-        const hash = await _hashInput(code);
-        const match = DEV_TIER_HASHES[hash];
+        let hash = null; try { hash = await _hashInput(code); } catch (_) {}
+        const match = hash && DEV_TIER_HASHES[hash];
         if (match) { onApplyTier(match.tier, match.allRecipes); onClose(); }
         else { setError(true); setPreview(null); setTimeout(() => setError(false), 1500); }
     };
@@ -14312,6 +14314,10 @@ function App() {
     // prompt() returns null immediately in iOS standalone PWAs.
     const [_acctConfirmOpen, _setAcctConfirmOpen] = React.useState(false);
     const [_acctConfirmText, _setAcctConfirmText] = React.useState("");
+    // iOS standalone: the share sheet needs a user gesture, and the gesture is
+    // gone by the time the export has been fetched. So the file is held here
+    // and a second, synchronous tap on "Save file" opens the sheet.
+    const [_acctExportFile, _setAcctExportFile] = React.useState(null);
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -15242,7 +15248,15 @@ function App() {
         if (!currentUser) return;
         let pending = false;
         try { pending = localStorage.getItem("sg_onboarded") === "pending_confirm"; } catch (_) {}
-        if (!pending) return;
+        // The link often lands in a DIFFERENT browser context from the one that
+        // signed up: iOS opens Mail links in Safari, not the installed PWA; or
+        // it is a second device. There sg_onboarded is null, the initialiser
+        // chose "story", and a signed-in user was left behind the onboarding
+        // slides with a sign-up form that said "already exists". ?confirmed=1
+        // in the URL is the same signal as the local flag.
+        let confirmedUrl = false;
+        try { confirmedUrl = new URLSearchParams(window.location.search).get("confirmed") === "1"; } catch (_) {}
+        if (!pending && !confirmedUrl) return;
         try {
             safeSet("sg_onboarded", "registered");
             localStorage.removeItem("sg_pending_confirm_email");
@@ -15410,24 +15424,24 @@ function App() {
             const fname = "soulgainz-data-" + localDateKey(new Date()) + ".json";
             const blob = new Blob([text], { type: "application/json" });
             // iOS standalone PWAs ignore <a download> on a blob (it opens a
-            // blank tab). The share sheet works there and lets the user save
-            // to Files; fall back to the anchor everywhere else.
+            // blank tab). The share sheet works there, but only from a user
+            // gesture — which this no longer is, after the network await. So:
+            // keep the file and show a "Save file" button (saveExportFile).
             const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
-            let shared = false;
-            if (standalone && navigator.share && navigator.canShare) {
-                try {
-                    const file = new File([blob], fname, { type: "application/json" });
-                    if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "SoulGainz data" }); shared = true; }
-                } catch (e) { if (e && e.name === "AbortError") { _setAcctMsg(null); return; } }
+            if (standalone && navigator.share && navigator.canShare && typeof File === "function") {
+                const file = new File([blob], fname, { type: "application/json" });
+                if (navigator.canShare({ files: [file] })) {
+                    _setAcctExportFile(file);
+                    _setAcctMsg({ ok: true, text: "Your data file is ready — tap Save file." });
+                    return;
+                }
             }
-            if (!shared) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url; a.download = fname;
-                document.body.appendChild(a); a.click(); a.remove();
-                setTimeout(() => URL.revokeObjectURL(url), 10000);
-            }
-            _setAcctMsg({ ok: true, text: shared ? "Your data file is ready to save." : "Your data file has been downloaded." });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = fname;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            _setAcctMsg({ ok: true, text: "Your data file has been downloaded." });
         } catch (e) {
             _setAcctMsg({ ok: false, text: e.message || "Export failed. Please try again." });
         } finally { _setAcctBusy(false); }
@@ -15455,6 +15469,14 @@ function App() {
             _setAcctMsg({ ok: false, text: e.message || "Deletion failed." });
             _setAcctBusy(false);
         }
+    }
+    function saveExportFile() {
+        // Must stay synchronous up to navigator.share(): that is the gesture.
+        const file = _acctExportFile;
+        if (!file) return;
+        navigator.share({ files: [file], title: "SoulGainz data" })
+            .then(() => { _setAcctExportFile(null); _setAcctMsg({ ok: true, text: "Saved." }); })
+            .catch(e => { if (!(e && e.name === "AbortError")) _setAcctMsg({ ok: false, text: "Could not open the share sheet. Try again." }); });
     }
     function cancelDeleteMyAccount() { _setAcctConfirmOpen(false); _setAcctConfirmText(""); _setAcctMsg(null); }
 
@@ -15763,6 +15785,9 @@ function App() {
             // Silent PIN guard — no hints, no labels, no context leaked to accidental tappers
             const pin = window.prompt("");
             if (!pin) return;
+            // crypto.subtle is undefined on an insecure origin (http://<lan-ip>);
+            // .digest would then throw synchronously, before any .catch.
+            if (!(window.crypto && crypto.subtle)) return;
             crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
                 .then(buf => {
                     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
@@ -16813,6 +16838,10 @@ function App() {
                                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#ef4444" } }, "Delete account"),
                                 React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "Permanently erase your account and cancel any membership")),
                             React.createElement("span", { style: { fontSize: 14, color: C.muted } }, "→")),
+                        _acctExportFile && React.createElement("button", {
+                            onClick: saveExportFile,
+                            style: { display: "flex", width: "100%", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px 12px", borderRadius: 10, background: C.accent, border: "none", color: "#0C0B0A", fontWeight: 800, fontSize: 12, cursor: "pointer", marginTop: 8 } },
+                            "💾 Save file"),
                         _acctConfirmOpen && React.createElement("div", { style: { marginTop: 8, padding: "12px", borderRadius: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.35)" } },
                             React.createElement("div", { style: { fontSize: 12, lineHeight: 1.45, color: C.text, marginBottom: 8 } },
                                 "This permanently deletes your account, profile, meal logs and favourites, and cancels any active membership. It cannot be undone."),
@@ -17028,9 +17057,14 @@ function App() {
                 display: 'flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap',
             },
             onClick: () => {
+                // Ask the waiting worker to take over; the controllerchange
+                // listener above does the ONE reload once it has. Reloading
+                // here as well produced a double reload (and, with no waiting
+                // worker, a pointless one). Fallback reload only if nothing
+                // is waiting, so the tap still does something visible.
                 navigator.serviceWorker.ready.then(reg => {
                     if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                    window.location.reload();
+                    else window.location.reload();
                 }).catch(() => window.location.reload());
             }
         }, '\uD83D\uDD04 Update available \u2014 tap to refresh'),

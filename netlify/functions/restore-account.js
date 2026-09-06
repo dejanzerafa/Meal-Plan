@@ -8,7 +8,7 @@
 // Exact matching (correctly) replaced startsWith, but browsers send
 // "http://localhost:8888" WITH the port, which no exact list can contain.
 // Allow loopback separately, and only outside production.
-const { clientIp } = require("./_shared/auth");
+const { clientIp, requireUser } = require("./_shared/auth");
 const { report } = require("./_shared/report");
 const _isLocalOrigin = o => process.env.CONTEXT !== "production" &&
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o || "");
@@ -73,40 +73,43 @@ exports.handler = async (event) => {
   // Restore is inherently a signed-in action — you are recovering entitlements
   // onto a device where you have just authenticated — so a JWT costs the real
   // user nothing and closes the oracle entirely.
-  {
-    const _auth = (event.headers && (event.headers.authorization || event.headers.Authorization)) || "";
-    if (!_auth.startsWith("Bearer ")) {
-      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Sign in to restore your account." }) };
-    }
-    try {
-      const _r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
-        headers: { apikey: process.env.SUPABASE_ANON_KEY || "", Authorization: _auth },
-      });
-      if (!_r.ok) throw new Error("bad token");
-      const _u = await _r.json();
-      // Bind the lookup to the token. Even a valid user must not be able to ask
-      // about somebody else's address.
-      const _claimed = ((JSON.parse(event.body || "{}").email) || "").trim().toLowerCase();
-      const _actual  = (_u && _u.email ? _u.email : "").trim().toLowerCase();
-      if (!_actual || (_claimed && _claimed !== _actual)) {
-        return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "You can only restore your own account." }) };
-      }
-    } catch (_e) {
-      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Session expired. Sign in again." }) };
-    }
-  }
-
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
       headers: {
         "Access-Control-Allow-Origin": "https://soulgainz.app",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Max-Age": "86400",
       },
       body: "",
     };
+  }
+
+  // The token check used to call /auth/v1/user with `apikey:
+  // SUPABASE_ANON_KEY` — an env var the deploy has never had. The gateway
+  // rejects a request with no apikey before it looks at the JWT, so every
+  // caller got "Session expired" and the ME tab's "Check my subscription"
+  // button could never succeed. requireUser() verifies with the service key,
+  // the same way every other authenticated function does.
+  {
+    const _auth = (event.headers && (event.headers.authorization || event.headers.Authorization)) || "";
+    if (!_auth.startsWith("Bearer ")) {
+      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Sign in to restore your account." }) };
+    }
+    const _r = await requireUser(event);
+    if (_r.error) {
+      return { statusCode: _r.status === 401 ? 401 : _r.status, headers: corsHeaders, body: JSON.stringify({ error: _r.status === 401 ? "Session expired. Sign in again." : _r.error }) };
+    }
+    let _claimed = "";
+    try { _claimed = ((JSON.parse(event.body || "{}").email) || "").trim().toLowerCase(); }
+    catch (_) { return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON" }) }; }
+    const _actual = String(_r.user.email || "").trim().toLowerCase();
+    // Bind the lookup to the token. Even a valid user must not be able to ask
+    // about somebody else's address.
+    if (!_actual || (_claimed && _claimed !== _actual)) {
+      return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "You can only restore your own account." }) };
+    }
   }
 
   if (event.httpMethod !== "POST") {

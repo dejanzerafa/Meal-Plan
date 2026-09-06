@@ -1,7 +1,7 @@
 // SoulGainz — Service Worker v246
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v249';
+const CACHE_NAME = 'meal-plan-v251';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -72,6 +72,12 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
   const isApp = url.hostname === self.location.hostname;
+  // Never cache function responses. They are per-user (export-data returns
+  // the whole personal-data file; check-user answers about an email) and the
+  // network-first branch below used to cache.put any 200 — so an export sat
+  // in Cache Storage, survived sign-out, and was served to the next person on
+  // the device when offline.
+  if (isApp && url.pathname.startsWith('/.netlify/')) return;
   // For external requests (Google Fonts etc.) — serve from cache when offline, else network
   if (!isApp) {
     event.respondWith(
@@ -145,7 +151,7 @@ self.addEventListener('message', event => {
       badge: '/icon-192.png',
       tag: 'soulgainz-reminder',
       renotify: true,
-      data: { url: '/' },
+      data: { url: '/index.html' },
     };
     event.waitUntil(self.registration.showNotification(title, options));
   }
@@ -162,19 +168,23 @@ self.addEventListener('push', event => {
     badge: '/icon-192.png',
     tag: data.tag || 'soulgainz-reminder',
     renotify: true,
-    data: { url: data.url || '/' },
+    data: { url: data.url || '/index.html' },
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  // '/' 301s to the marketing landing page, so a tap on a reminder used to
+  // open the sales site. And client.url is absolute, so the focus() match
+  // against a path never hit and a second window opened every time.
+  const url = new URL((event.notification.data && event.notification.data.url) || '/index.html', self.location.origin).href;
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
       for (const client of list) {
-        if (client.url === url && 'focus' in client) return client.focus();
+        if (client.url.split('#')[0].split('?')[0] === url.split('#')[0].split('?')[0] && 'focus' in client) return client.focus();
       }
+      for (const client of list) { if ('focus' in client) { client.focus(); return client.navigate ? client.navigate(url) : undefined; } }
       if (clients.openWindow) return clients.openWindow(url);
     })
   );

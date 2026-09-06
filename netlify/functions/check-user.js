@@ -15,10 +15,12 @@ exports.handler = async (event) => {
   // address, and the origin check above is `if (origin && ...)` so any non-browser
   // client simply omits the header and passes. Rate limiting was the only missing
   // control, so enumeration was unbounded.
-  {
+  // Preflights must not consume the quota, and this block used to run before
+  // the OPTIONS branch (and reference an undeclared corsHeaders).
+  if (event.httpMethod !== "OPTIONS") {
     const _rl = await rateLimit(`checkuser:${clientIp(event)}`, { max: 20, windowMs: 60000 });
     if (!_rl.ok) {
-      return { statusCode: 429, headers: (typeof corsHeaders !== "undefined" ? corsHeaders : {}),
+      return { statusCode: 429, headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ error: "Too many requests. Please try again shortly." }) };
     }
   }
