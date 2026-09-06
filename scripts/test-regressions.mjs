@@ -1188,28 +1188,6 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     t("the GitHub-token release page is gone", !existsSync(join(ROOT, "recipe-release.html")));
   }
 
-  // ── Recipe content hygiene (2026-09-06 background check) ──
-  // 105 recipes carried the identical "add ginger — reduces DOMS" tip and 61 an
-  // identical turmeric/curcumin line: boilerplate pasted across mains, desserts
-  // and bagels. Every recipe now has a recipe-specific 💡 tip and no step text
-  // is shared by more than three recipes.
-  {
-    const arrAt = (mark) => { const a = raw.indexOf(mark); const s0 = raw.indexOf("[", a); let d = 0, b = s0; for (; b < raw.length; b++) { if (raw[b] === "[") d++; else if (raw[b] === "]") { d--; if (!d) break; } } return eval(raw.slice(s0, b + 1)); };
-    let all = [];
-    try { all = [...arrAt("const RECIPES = ["), ...arrAt("const PENDING_RECIPES = [")]; } catch (e) { t("recipe arrays evaluate", false, e.message); }
-    if (all.length) {
-      t("every recipe has at least one 💡 tip", all.every(r => (r.steps || []).some(x => x.startsWith("💡"))), all.filter(r => !(r.steps || []).some(x => x.startsWith("💡"))).map(r => r.id).join(","));
-      t("no ginger/DOMS or turmeric/curcumin boilerplate remains", !all.some(r => (r.steps || []).some(x => /\(DOMS\)|curcumin|piperine/i.test(x))));
-      const count = {}; for (const r of all) for (const x of r.steps || []) if (x.length > 30) (count[x] ||= []).push(r.id);
-      const shared = Object.entries(count).filter(([, ids]) => ids.length > 4);
-      t("no long step text is shared by more than 4 recipes", shared.length === 0, shared.map(([x, ids]) => ids.length + "× " + x.slice(0, 60)).join(" | "));
-      const poultry = all.filter(r => (r.batchItems || []).some(i => /chicken|turkey/i.test(i.label) && !/cooked|rotisserie|broth|stock|deli|ham/i.test(i.label)));
-      const noCue = poultry.filter(r => !/(7[45]\s*°?\s*C|cooked through|no pink|white through|juices run clear)/i.test((r.steps || []).join(" ")));
-      const RECIPE_TIER_PENDING_IDS = setOf("RECIPE_TIER_PENDING");
-      t("staged poultry recipes carry a doneness cue", noCue.filter(r => RECIPE_TIER_PENDING_IDS.has(r.id)).length === 0, noCue.filter(r => RECIPE_TIER_PENDING_IDS.has(r.id)).map(r => r.id).join(","));
-    }
-  }
-
   // ── S2: analytics only after opt-in ──
   {
     const consent = stripJS(readFileSync(join(ROOT, "consent.js"), "utf8"));

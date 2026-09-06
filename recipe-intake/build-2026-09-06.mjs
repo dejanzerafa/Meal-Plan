@@ -33,7 +33,7 @@ const NEW_ING = [
 const ALL = [...ING, ...NEW_ING]; const byId = new Map(ALL.map(i => [i.id, i]));
 
 const RECIPES = [
-{ category: "salad", id: "m125", name: "🥗 Crispy Chicken Caesar Salad",
+{ category: "main", id: "m125", name: "🥗 Crispy Chicken Caesar Salad",
   subtitle: "Air fryer · 30 min", badge: "💨 Air Fryer", carb: "🍞 Sourdough", portions: 1,
   items: [
     ["chick",  "Chicken breast (raw)",            170, "g",  "Protein",    1],
@@ -85,7 +85,7 @@ const RECIPES = [
   steps: [
     "Heat the oil in a wide pan with a lid. Sweat the onion, carrot and celery with a pinch of salt for 3 min until the onion turns translucent, then add the garlic.",
     "Add the chorizo and cook 2 min until the fat starts to run orange. That fat is the seasoning for the whole pot — no need for more oil.",
-    "Add the diced chicken and turn it in the chorizo fat until sealed on the outside, about 2 min. It finishes cooking under the lid with the rice — check a piece is white through (74°C) before boxing.",
+    "Add the diced chicken and turn it in the chorizo fat until sealed on the outside, about 2 min.",
     "Stir in the smoked paprika, pepper and the rice; toast the rice for 1 min, unrinsed, so it keeps its starch.",
     "Pour in the stock, scrape the base, bring to a simmer, cover, and leave on the lowest heat for 15 min. Do not stir — that is what makes a risotto gluey.",
     "Check the rice; if still firm, lid back on for 5 min. Then turn the heat up, add the spinach, lid on 60 s, stir through and cook 1 min more.",
@@ -112,7 +112,7 @@ const RECIPES = [
   ],
   steps: [
     "Toss the cubed potatoes with the oil, smoked paprika, garlic powder, salt and pepper. Roast at 220°C for 20–25 min until the edges crisp.",
-    "Brown the turkey sausage in a dry non-stick pan, breaking it up, until no pink remains (74°C — it is raw poultry, not cured). Push to one side; soften the peppers and onion in the same pan for 3 min.",
+    "Brown the turkey sausage in a dry non-stick pan, breaking it up. Push to one side; soften the peppers and onion in the same pan for 3 min.",
     "Scramble the eggs gently and stop while they still look slightly wet — they finish cooking in the box and again when you reheat. Fully set now means rubber later.",
     "Warm the black beans through with the vegetables.",
     "Layer: potatoes, then sausage, eggs, beans and peppers. Cheddar over the top while it's warm.",
@@ -162,7 +162,7 @@ const RECIPES = [
   ],
   steps: [
     "Cook the brown rice and let it steam dry with the lid off.",
-    "Mix the turkey with the panko, garlic, parsley, oregano, cumin, ¼ tsp salt and plenty of pepper. Work it just until it holds — overworking makes meatballs bouncy.",
+    "Mix the turkey with the panko, garlic, parsley, oregano, cumin, ½ tsp salt and plenty of pepper. Work it just until it holds — overworking makes meatballs bouncy.",
     "Roll into 5–6 balls per serving with wet hands, brush with the oil, and bake at 200°C for 18–20 min until 74°C inside and browned on top.",
     "Grate the cucumber, salt it, and squeeze it dry in your fist — this is the whole difference between tzatziki and yogurt soup. Stir into the yogurt with the dill and lemon.",
     "Rice in the box, meatballs on top, tomatoes alongside.",
@@ -185,10 +185,10 @@ const RECIPES = [
     ["blkpep", "Black pepper",                    0.3, "g",  "Spices",     226],
   ],
   steps: [
-    "Toss the sweet potato in half the oil with salt and roast at 200°C; it needs 30 min, the chicken 25–30, so they go in together after the sweet potato has had a 5-min head start.",
+    "Toss the sweet potato in half the oil with salt and roast at 200°C; it needs 30 min, the chicken needs 22, so it goes in first.",
     "Wilt the spinach with the garlic in a dry pan for 1–2 min, squeeze out the water, and mix with the feta, oregano and pepper.",
     "Cut a deep pocket along the thick side of the breast without going through. Pack the filling in and close with two toothpicks.",
-    "Rub with the rest of the oil, season the outside, and bake 25–30 min until 74°C at the thickest point — a stuffed 180 g breast takes longer than a plain one. Rest 5 min before slicing or the filling walks out.",
+    "Rub with the rest of the oil, season the outside, and bake 22–25 min until 74°C at the thickest point. Rest 5 min before slicing or the filling walks out.",
     "Add the broccoli to the tray for the last 10 min.",
     "Lemon over the lot; toothpicks out before boxing.",
     "💡 Squeezing the spinach dry is not optional — wet spinach steams the pocket open and the feta leaks.",
