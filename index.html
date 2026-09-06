@@ -15256,7 +15256,19 @@ function App() {
         // in the URL is the same signal as the local flag.
         let confirmedUrl = false;
         try { confirmedUrl = new URLSearchParams(window.location.search).get("confirmed") === "1"; } catch (_) {}
-        if (!pending && !confirmedUrl) return;
+        // A signed-in user is never shown the onboarding story or the sign-up
+        // form, whatever the local flag says. The paid handoff (success.html →
+        // setSession on this origin) is the common case: the session is real,
+        // sg_onboarded is empty, and "Open SoulGainz" landed on the launch page
+        // asking the buyer to sign in again. Promote silently; the welcome
+        // email below is only for the confirmation-landing paths.
+        const behindGate = onboardStep !== "app";
+        if (!pending && !confirmedUrl && !behindGate) return;
+        if (!pending && !confirmedUrl) {
+            try { if (localStorage.getItem("sg_onboarded") !== "registered") safeSet("sg_onboarded", "registered"); } catch (_) {}
+            setOnboardStep("app");
+            return;
+        }
         try {
             safeSet("sg_onboarded", "registered");
             localStorage.removeItem("sg_pending_confirm_email");

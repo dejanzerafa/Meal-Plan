@@ -1114,7 +1114,10 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
        !/data: \{ url: '\/' \}/.test(sw) && /new URL\(.*'\/index\.html', self\.location\.origin\)\.href/.test(sw));
     t("update banner does not double-reload", /else window\.location\.reload\(\);/.test(src) && /controllerchange/.test(src));
     t("confirmation landing promotes a signed-in user even without the local pending flag (link opened in another browser)",
-       /confirmedUrl = new URLSearchParams\(window\.location\.search\)\.get\("confirmed"\) === "1"/.test(src) && /if \(!pending && !confirmedUrl\) return;/.test(src));
+       /confirmedUrl = new URLSearchParams\(window\.location\.search\)\.get\("confirmed"\) === "1"/.test(src) && /if \(!pending && !confirmedUrl && !behindGate\) return;/.test(src));
+    t("a signed-in user is never left behind the onboarding gate (paid handoff → 'Open SoulGainz' showed the launch page)",
+       /const behindGate = onboardStep !== "app";/.test(src) && /if \(!pending && !confirmedUrl\) \{[\s\S]{0,300}setOnboardStep\("app"\);\s*return;/.test(src),
+       "sg_onboarded is a local flag; a session established by success.html does not set it");
     const spc = fn("send-promo-confirm.js");
     t("send-promo-confirm takes the recipient from a verified token, never the body",
        /requireUser\(event\)/.test(spc) && /const email = String\(auth\.user\.email/.test(spc) && !/const \{ email, tier/.test(spc),
