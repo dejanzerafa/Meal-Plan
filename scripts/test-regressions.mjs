@@ -585,7 +585,7 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
     const els = {}; const el = id => (els[id] ||= { id, hidden: false, textContent: "", innerHTML: "", style: {} });
     for (const id of html.matchAll(/id="([^"]+)"/g)) el(id[1]);
     for (const id of html.matchAll(/<div id="([^"]+)" hidden>/g)) el(id[1]).hidden = true;
-    const calls = { replace: null, signOut: null, setSession: null, fetch: [] };
+    const calls = { replace: null, signOut: null, setSession: null, fetch: [], removed: [] };
     const sb = {
       auth: {
         getSession: async () => ({ data: { session: opts.session || null } }),
@@ -600,7 +600,8 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
       navigator: { standalone: false }, setTimeout, clearTimeout, URLSearchParams, URL,
       atob: (b) => Buffer.from(b, "base64").toString("binary"),
       history: { replaceState() {} },
-      localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
+      localStorage: { "sb-rjreunvnsfjclpighogp-auth-token": "{}", getItem: () => null, setItem() {}, removeItem(k) { calls.removed.push(k); } },
+      sessionStorage: { getItem: () => null, setItem() {}, removeItem(k) { calls.removed.push(k); } },
       matchMedia: () => ({ matches: true }),
       // verify-session's contract: sameUser is decided from the bearer. The
       // scenario's `verdict.userId` is the buyer; the harness compares it to
@@ -650,8 +651,9 @@ section("Paid path — the buyer must arrive in the app SIGNED IN");
        !!jar.sg_hand && new RegExp("[#&]nonce=" + jar.sg_hand + "(&|$)").test(r.calls.replace || ""), "jar=" + JSON.stringify(jar));
     const handoffHash = "#" + (r.calls.replace || "").split("#")[1];
     t("marketing: the fragment carries session_id for the app to re-verify", /[#&]session_id=cs_test_abc/.test(r.calls.replace || ""));
-    t("marketing: signs itself out LOCALLY after handing over", r.calls.signOut && r.calls.signOut.scope === "local",
-       "both origins holding one refresh-token family → reuse detection revokes it → buyer signed out later");
+    t("marketing: drops its stored session WITHOUT calling signOut (scope:'local' revokes the token server-side → app verify 401)",
+       r.calls.signOut === null && r.calls.removed.some(k => /^sb-.*-auth-token/.test(k)),
+       "signOut=" + JSON.stringify(r.calls.signOut) + " removed=" + r.calls.removed);
     t("marketing: tokens are in the fragment, not the query", !/\?[^#]*access_token/.test(r.calls.replace || ""));
 
     r = await runPage(ms, { search: "?session_id=cs_test_abc", verdict: paidOwner, session: sess("other-user") });
