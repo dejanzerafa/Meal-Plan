@@ -5332,8 +5332,13 @@ RECIPES.sort((a, b) => _stripEmoji(a.name).localeCompare(_stripEmoji(b.name)));
 //   1. Add recipe object below following the same format as RECIPES above
 //   2. Add its ID to RECIPE_TIER_PENDING (around line 8084) — keeps it hidden from users
 //   3. Push to RECIPES array at the bottom of this block via spread
-//   4. TO RELEASE: move the ID from RECIPE_TIER_PENDING into RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL
-//      and add to NEWLY_RELEASED_IDS for the 🔥 NEW badge (auto-expires after 60 days)
+//   4. TO RELEASE: sign in as the admin → ME tab → Promo Admin → Recipes tab →
+//      "Release → Monthly / Annual". That writes a row to Supabase
+//      `recipe_releases`; the app overlays it on RECIPE_TIER_PENDING at launch
+//      (see RELEASED / applyReleases below). No deploy. "Hold" keeps it hidden.
+//      The 🔥 NEW badge follows released_at automatically for 60 days.
+//      (Moving the id into RECIPE_TIER_MONTHLY/ANNUAL in code still works and
+//      is the permanent home once a drop is settled.)
 //
 // Naming convention for new IDs — NEXT FREE in each family as of 31 Aug 2026.
 // Do not trust this list blindly; it goes stale every time a batch is added.
@@ -10164,7 +10169,36 @@ const ANNUAL_VISIBLE  = new Set([...RECIPE_TIER_FREE, ...RECIPE_TIER_MONTHLY, ..
 // Newly released recipes — show 🔥 NEW badge for 60 days after release
 // To release pending recipes: move their IDs from RECIPE_TIER_PENDING into RECIPE_TIER_MONTHLY or RECIPE_TIER_ANNUAL
 // Use recipe-release.html admin tool to manage releases
-const NEWLY_RELEASED_IDS = new Set([]); // populated by recipe-release.html patches
+// ── Runtime releases (Supabase `recipe_releases`) ────────────────────────────
+// Releasing used to mean editing RECIPE_TIER_PENDING and redeploying. Now a
+// row with status='released' in recipe_releases makes a staged recipe visible
+// to its tier from the next launch. The static sets above stay the baseline;
+// RELEASED overlays them. Populated from the localStorage cache at boot
+// (offline / first paint) and refreshed from Supabase by the App.
+const RELEASED = new Map();                   // id → { tier: "monthly"|"annual", released_at }
+const NEWLY_RELEASED_IDS = new Set();         // released within the last 60 days — 🔥 NEW badge
+const NEW_BADGE_DAYS = 60;
+function applyReleases(rows) {
+    RELEASED.clear(); NEWLY_RELEASED_IDS.clear();
+    const cutoff = Date.now() - NEW_BADGE_DAYS * 864e5;
+    for (const r of rows || []) {
+        if (!r || !r.recipe_id || !["monthly", "annual"].includes(r.tier)) continue;
+        // Only ids the app actually ships as pending can be released; anything
+        // else in the table is ignored so a typo cannot unlock a paid recipe.
+        if (!RECIPE_TIER_PENDING.has(r.recipe_id)) continue;
+        RELEASED.set(r.recipe_id, { tier: r.tier, released_at: r.released_at || null });
+        const t = r.released_at ? Date.parse(r.released_at) : 0;
+        if (t && t > cutoff) NEWLY_RELEASED_IDS.add(r.recipe_id);
+    }
+}
+// Visible-to-tier helpers that include runtime releases.
+function isReleasedTo(id, tier) {
+    const rel = RELEASED.get(id);
+    if (!rel) return false;
+    return tier === "annual" ? true : rel.tier === "monthly";
+}
+function isPendingHidden(id) { return RECIPE_TIER_PENDING.has(id) && !RELEASED.has(id); }
+try { applyReleases(JSON.parse(localStorage.getItem("sg_releases") || "[]")); } catch (_) {}
 // ── Analytics ──────────────────────────────────────────────────────────────────
 const _sessionId = (() => {
     try {
@@ -13562,7 +13596,8 @@ function OnboardingSignup({ onDone }) {
 
 
 // ── AdminPanel — promo code management (admin emails only) ───────────────────
-function AdminPanel({ C, currentUser, onClose }) {
+function AdminPanel({ C, currentUser, onClose, onReleasesChanged }) {
+    const [adminTab, setAdminTab] = React.useState("recipes");
     const TIERS = [
         { value:"monthly",   label:"SoulGainz Monthly",   color:"#22c55e", days:30   },
         { value:"annual",    label:"SoulGainz Annual",    color:"#3b82f6", days:365  },
@@ -13662,16 +13697,25 @@ function AdminPanel({ C, currentUser, onClose }) {
     const inp     = { width:"100%",background:C.card2,border:"1px solid "+C.dim,borderRadius:10,
         padding:"12px 14px",fontSize:14,color:C.text,fontFamily:"inherit",outline:"none",boxSizing:"border-box" };
 
+    const tabBtn = (id, label) => React.createElement("button", { onClick:()=>setAdminTab(id),
+        style:{ flex:1, padding:"9px 10px", borderRadius:9, fontSize:12, fontWeight:800, cursor:"pointer",
+            background: adminTab===id ? C.accent : "transparent", color: adminTab===id ? "#000" : C.sub,
+            border: "1px solid " + (adminTab===id ? C.accent : C.dim) } }, label);
+
     return React.createElement("div", { style:overlay, onClick:e=>{ if(e.target===e.currentTarget) onClose(); } },
         React.createElement("div", { style:sheet },
 
             // Header
-            React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20} },
+            React.createElement("div", { style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12} },
                 React.createElement("div", null,
-                    React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} }, "🔑 Promo Codes"),
-                    React.createElement("div", { style:{fontSize:11,color:C.muted,marginTop:2} }, codes.length+" total codes issued")),
+                    React.createElement("div", { style:{fontSize:16,fontWeight:800,color:C.text} }, adminTab==="recipes" ? "🧑‍🍳 Recipe Releases" : "🔑 Promo Codes"),
+                    React.createElement("div", { style:{fontSize:11,color:C.muted,marginTop:2} }, adminTab==="recipes" ? "Staged recipes — release or hold, live on next launch" : codes.length+" total codes issued")),
                 React.createElement("button", { onClick:onClose,
                     style:{background:C.card2,border:"none",borderRadius:10,padding:"8px 14px",fontSize:13,color:C.muted,cursor:"pointer"} }, "Close")),
+            React.createElement("div", { style:{display:"flex",gap:8,marginBottom:16} }, tabBtn("recipes","Recipes"), tabBtn("promo","Promo codes")),
+
+            adminTab==="recipes" && React.createElement(RecipeReleasePanel, { C, currentUser, onChanged:onReleasesChanged }),
+            adminTab==="promo" && React.createElement(React.Fragment, null,
 
             // Last generated — prominent display
             lastCode && React.createElement("div", { style:{background:C.accentDim,border:"1px solid "+C.accentBorder,
@@ -13740,8 +13784,103 @@ function AdminPanel({ C, currentUser, onClose }) {
                                         style:{background:"none",border:"1px solid "+C.dim,borderRadius:7,
                                             padding:"4px 10px",fontSize:12,color:C.muted,cursor:"pointer"}}, "×"))))
                     })
-        )
+        ))
     );
+}
+
+// ── Recipe release control (admin) ───────────────────────────────────────────
+// Lists every recipe that is shipped in the app but gated by RECIPE_TIER_PENDING
+// and lets the admin release it to a tier, hold it, or put it back to pending.
+// Writes go straight to Supabase `recipe_releases` under the admin RLS policy
+// (profiles.is_admin); readers only ever see released rows.
+function RecipeReleasePanel({ C, currentUser, onChanged }) {
+    const [rows, setRows]       = React.useState({});      // recipe_id → row
+    const [loading, setLoading] = React.useState(true);
+    const [busy, setBusy]       = React.useState(null);     // recipe id being written
+    const [err, setErr]         = React.useState("");
+    const [open, setOpen]       = React.useState(null);     // expanded recipe id
+    const [filter, setFilter]   = React.useState("all");    // all | pending | released | held
+    const [q, setQ]             = React.useState("");
+
+    const staged = React.useMemo(() => RECIPES.filter(r => RECIPE_TIER_PENDING.has(r.id)), []);
+
+    async function load() {
+        const sb = getSB(); if (!sb) { setLoading(false); return; }
+        setLoading(true); setErr("");
+        const { data, error } = await sb.from("recipe_releases").select("*");
+        if (error) setErr(error.message || "Could not load releases");
+        const m = {}; for (const r of data || []) m[r.recipe_id] = r;
+        setRows(m); setLoading(false);
+    }
+    React.useEffect(() => { load(); }, []);
+
+    async function setStatus(id, status, tier) {
+        const sb = getSB(); if (!sb) return;
+        setBusy(id); setErr("");
+        const row = { recipe_id: id, status, tier: tier || (rows[id] && rows[id].tier) || null,
+                      updated_by: currentUser && currentUser.email || null };
+        if (status !== "released") row.tier = tier || row.tier;
+        // .select() so a silently-refused write (RLS) surfaces as zero rows
+        const { data, error } = await sb.from("recipe_releases").upsert(row, { onConflict: "recipe_id" }).select();
+        if (error) setErr(error.message || "Write refused");
+        else if (!data || !data.length) setErr("Write refused — is this account an admin (profiles.is_admin)?");
+        else { setRows(m => ({ ...m, [id]: data[0] })); if (onChanged) onChanged(); }
+        setBusy(null);
+    }
+
+    const statusOf = id => (rows[id] && rows[id].status) || "pending";
+    const counts = { all: staged.length, pending: 0, released: 0, held: 0 };
+    for (const r of staged) counts[statusOf(r.id)]++;
+    const list = staged.filter(r => (filter === "all" || statusOf(r.id) === filter) &&
+        (!q || (r.name + " " + r.id + " " + (r.category||"")).toLowerCase().includes(q.toLowerCase())));
+
+    const pill = (label, on, color) => React.createElement("span", { style:{ fontSize:9, fontWeight:900, letterSpacing:"0.08em",
+        padding:"3px 8px", borderRadius:20, color: on ? color : C.sub, background: on ? color+"22" : "transparent", border:"1px solid "+(on ? color : C.dim) } }, label);
+    const btn = (label, onClick, opts={}) => React.createElement("button", { onClick, disabled: !!busy,
+        style:{ padding:"7px 10px", borderRadius:8, fontSize:11, fontWeight:800, cursor: busy ? "wait" : "pointer",
+            background: opts.bg || C.card2, color: opts.color || C.text, border:"1px solid "+(opts.border || C.dim), opacity: busy ? 0.6 : 1 } }, label);
+    const fBtn = (id, label) => React.createElement("button", { onClick:()=>setFilter(id),
+        style:{ padding:"6px 10px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer",
+            background: filter===id ? C.card2 : "transparent", color: filter===id ? C.text : C.sub, border:"1px solid "+(filter===id ? C.accent : C.dim) } },
+        label + " " + counts[id]);
+
+    return React.createElement("div", null,
+        React.createElement("div", { style:{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:10 } },
+            fBtn("all","All"), fBtn("pending","Pending"), fBtn("released","Released"), fBtn("held","Held")),
+        React.createElement("input", { value:q, onChange:e=>setQ(e.target.value), placeholder:"Search staged recipes…", "aria-label":"Search staged recipes",
+            style:{ width:"100%", boxSizing:"border-box", background:C.card2, border:"1px solid "+C.dim, borderRadius:10, padding:"10px 12px", fontSize:13, color:C.text, marginBottom:12 } }),
+        err && React.createElement("div", { style:{ fontSize:12, color:"#ef4444", marginBottom:10 } }, err),
+        loading && React.createElement("div", { style:{ fontSize:12, color:C.sub } }, "Loading…"),
+        !loading && list.length === 0 && React.createElement("div", { style:{ fontSize:12, color:C.sub } }, "Nothing here."),
+        list.map(r => {
+            const st = statusOf(r.id); const row = rows[r.id] || {};
+            const isOpen = open === r.id;
+            const macro = r.perPortion || {};
+            return React.createElement("div", { key:r.id, style:{ background:C.card, border:"1px solid "+(st==="released" ? "rgba(34,197,94,0.4)" : st==="held" ? "rgba(239,68,68,0.35)" : C.border), borderRadius:12, padding:"12px", marginBottom:8 } },
+                React.createElement("div", { style:{ display:"flex", alignItems:"flex-start", gap:10 } },
+                    React.createElement("div", { style:{ flex:1, minWidth:0 } },
+                        React.createElement("div", { style:{ fontSize:13, fontWeight:800, color:C.text, lineHeight:1.3 } }, r.name),
+                        React.createElement("div", { style:{ fontSize:10, color:C.muted, marginTop:2 } },
+                            r.id + " · " + (r.category || "main") + " · " + (r.subtitle || "") + " · " +
+                            Math.round(macro.kcal||0) + " kcal · " + (macro.protein||0) + "P " + (macro.carbs||0) + "C " + (macro.fat||0) + "F"),
+                        (r.allergens && r.allergens.length) ? React.createElement("div", { style:{ fontSize:10, color:C.sub, marginTop:2 } }, "⚠ " + r.allergens.join(", ")) : null),
+                    React.createElement("div", { style:{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:4 } },
+                        st==="released" ? pill((row.tier||"").toUpperCase(), true, "#22c55e") : st==="held" ? pill("HELD", true, "#ef4444") : pill("PENDING", true, C.accent),
+                        row.released_at && React.createElement("div", { style:{ fontSize:9, color:C.muted } }, "since " + new Date(row.released_at).toLocaleDateString()))),
+                React.createElement("div", { style:{ display:"flex", gap:6, flexWrap:"wrap", marginTop:10 } },
+                    st!=="released" && btn("Release → Monthly", ()=>setStatus(r.id,"released","monthly"), { bg:"rgba(96,165,250,0.12)", color:"#60a5fa", border:"rgba(96,165,250,0.4)" }),
+                    st!=="released" && btn("Release → Annual", ()=>setStatus(r.id,"released","annual"), { bg:"rgba(224,123,42,0.12)", color:C.accent, border:"rgba(224,123,42,0.4)" }),
+                    st==="released" && row.tier==="monthly" && btn("Move → Annual", ()=>setStatus(r.id,"released","annual")),
+                    st==="released" && row.tier==="annual" && btn("Move → Monthly", ()=>setStatus(r.id,"released","monthly")),
+                    st!=="held" && btn("Hold", ()=>setStatus(r.id,"held"), { color:"#ef4444", border:"rgba(239,68,68,0.35)" }),
+                    st!=="pending" && btn("Back to pending", ()=>setStatus(r.id,"pending")),
+                    btn(isOpen ? "Hide" : "View", ()=>setOpen(isOpen ? null : r.id))),
+                isOpen && React.createElement("div", { style:{ marginTop:10, paddingTop:10, borderTop:"1px solid "+C.dim, fontSize:11, color:C.sub, lineHeight:1.5 } },
+                    React.createElement("div", { style:{ fontWeight:800, color:C.text, marginBottom:4 } }, "Ingredients (1 portion)"),
+                    (r.batchItems||[]).map((it,i) => React.createElement("div", { key:i }, "• " + it.qty + " " + it.unit + " " + it.label)),
+                    React.createElement("div", { style:{ fontWeight:800, color:C.text, margin:"8px 0 4px" } }, "Method"),
+                    (r.steps||[]).map((sx,i) => React.createElement("div", { key:i, style:{ marginBottom:3 } }, (sx.startsWith("💡") ? "" : (i+1)+". ") + sx))));
+        }));
 }
 
 // ─── EMPTY SLOT CARD ──────────────────────────────────────────────────────────
@@ -14656,6 +14795,21 @@ function App() {
     // gone by the time the export has been fetched. So the file is held here
     // and a second, synchronous tap on "Save file" opens the sheet.
     const [_acctExportFile, _setAcctExportFile] = React.useState(null);
+    // Runtime recipe releases. Bumped whenever RELEASED changes so memos that
+    // depend on visibility (filteredRecipes) recompute.
+    const [releasesVersion, setReleasesVersion] = React.useState(0);
+    const refreshReleases = React.useCallback(async () => {
+        const sb = getSB(); if (!sb) return;
+        try {
+            const { data, error } = await sb.from("recipe_releases")
+                .select("recipe_id,tier,released_at").eq("status", "released");
+            if (error) { console.warn("SG: recipe_releases", error.message); return; }
+            applyReleases(data || []);
+            try { safeSet("sg_releases", JSON.stringify(data || [])); } catch (_) {}
+            setReleasesVersion(v => v + 1);
+        } catch (e) { console.warn("SG: recipe_releases fetch failed", e); }
+    }, []);
+    React.useEffect(() => { refreshReleases(); }, [refreshReleases]);
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -15651,6 +15805,8 @@ function App() {
             "sg_custom_recipes", "mp_note_", "mp_steps_",
             // Calculator
             "sg_calc_results", "sg_calc_email",
+            // Public data (which staged recipes are released) — keep for offline boot
+            "sg_releases",
             // Analytics consent choice — a decision, not user data; asking again
             // after every sign-out would be its own dark pattern.
             "sg_consent",
@@ -16178,7 +16334,8 @@ function App() {
         // Custom recipes always visible
         if (id && id.startsWith("custom_")) return true;
         // Pending: staged recipes completely hidden from everyone until released
-        if (RECIPE_TIER_PENDING.has(id)) return false;
+        // (statically, by moving the id, or at runtime via recipe_releases).
+        if (isPendingHidden(id)) return false;
         // Free tier: always visible to all
         if (RECIPE_TIER_FREE.has(id)) return true;
         // For authenticated users require server verification to prevent localStorage spoofing
@@ -16201,13 +16358,13 @@ function App() {
         // Dev: sees everything — also requires canTrustUnlocks
         if (tier === "dev" && canTrustUnlocks) return true;
         // Annual: sees free + monthly + annual tiers + seasonal bundle
-        if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
+        if (tier === "annual" && canTrustUnlocks) return ANNUAL_VISIBLE.has(id) || isReleasedTo(id, "annual");
         // Monthly: sees free + monthly tiers
-        if (tier === "monthly" && canTrustUnlocks) return MONTHLY_VISIBLE.has(id);
+        if (tier === "monthly" && canTrustUnlocks) return MONTHLY_VISIBLE.has(id) || isReleasedTo(id, "monthly");
         // Individual single-recipe purchases (legacy)
         if (unlocks.recipes && unlocks.recipes.includes(id) && canTrustUnlocks) return true;
         // allRecipes flag (legacy promo / grandfathered access) — treat as annual
-        if (unlocks.allRecipes && canTrustUnlocks) return ANNUAL_VISIBLE.has(id);
+        if (unlocks.allRecipes && canTrustUnlocks) return ANNUAL_VISIBLE.has(id) || isReleasedTo(id, "annual");
         return false;
     };
     // canUseCalculator — free ONCE per email address, paid to recalculate
@@ -16358,7 +16515,7 @@ function App() {
     const profileName = profile ? (profile.firstName || "").trim() : "";
     const filteredRecipes = React.useMemo(() => allRecipes.filter(r => {
         // Pending recipes are completely hidden (not shown even as locked cards)
-        if (RECIPE_TIER_PENDING.has(r.id)) return false;
+        if (isPendingHidden(r.id)) return false;
         if (recipeCat === "favourites") {
             if (!favourites.has(r.id)) return false;
             // fall through — search + dietary + protein filters still apply
@@ -16392,7 +16549,7 @@ function App() {
         // you used the app and the same list never read the same way twice.
         // Emoji are stripped first, or every name sorts by its leading icon.
         _stripEmoji(a.name).localeCompare(_stripEmoji(b.name), undefined, { sensitivity: "base", numeric: true })
-    ), [recipeCat, recipeQuery, dietaryFilter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes, unlocks]);
+    ), [recipeCat, recipeQuery, dietaryFilter, proteinFilter, lunch, dinner, breakfastRecipe, dessert, preRecipe, favourites, allRecipes, unlocks, releasesVersion]);
     const handleSetLunch = id => { track('recipe_selected', { slot: 'lunch', recipe_id: id }); setLunch(id); setLunchScale(1); setShowBalance(false); setPendingSlot(null); };
     const handleSetDinner = id => { track('recipe_selected', { slot: 'dinner', recipe_id: id }); setDinner(id); setDinnerScale(1); setShowBalance(false); setPendingSlot(null); };
     // ── Sidebar width ────────────────────────────────────────────────────────
@@ -16834,7 +16991,7 @@ function App() {
                         // the library count shown two lines above.
                         "\uD83D\uDD13 ", allRecipes.filter(r => !r.id.startsWith("custom_") && RECIPE_TIER_FREE.has(r.id)).length,
                         " recipes free \u00B7 \uD83D\uDD12 Unlock ",
-                        allRecipes.filter(r => !r.id.startsWith("custom_") && !RECIPE_TIER_FREE.has(r.id) && !RECIPE_TIER_PENDING.has(r.id)).length,
+                        allRecipes.filter(r => !r.id.startsWith("custom_") && !RECIPE_TIER_FREE.has(r.id) && !isPendingHidden(r.id)).length,
                         " more \u2014 every main, breakfast & dessert")),
                     filteredRecipes.length === 0 && (function() {
                         const hasSearch = !!recipeQuery;
@@ -16853,7 +17010,7 @@ function App() {
                                     fontSize: 12, fontWeight: 700, color: C.bg, cursor: "pointer" }
                             }, "Clear all filters"));
                     })(),
-                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: () => setShowUpgrade(true), onUnlockSeasonal: () => setShowUpgrade(true), isAnnualExclusive: RECIPE_TIER_ANNUAL.has(r.id), isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
+                    filteredRecipes.slice(0, recipeShowCount).map(r => canView(r.id) ? (React.createElement(RecipeCard, { key: r.id, r: r, activeLunch: lunch, activeDinner: dinner, activeBreakfast: breakfastRecipe, activeDessert: dessert, activePreWorkout: preRecipe, setLunch: handleSetLunch, setDinner: handleSetDinner, setBreakfastRecipe: setBreakfastRecipe, setDessert: setDessert, setPreWorkout: handleSetPreWorkout, pendingSlot: pendingSlot, portions: portions, profileScale: profileScale, effectiveTargets: effectiveTargets, lunchScale: lunchScale, dinnerScale: dinnerScale, bfScale: bfScale, preScale: preScale, desScale: desScale, favourites: favourites, toggleFavourite: toggleFavourite, onDeleteCustom: r.isCustom ? deleteCustomRecipe : null, cookedRecipes: cookedRecipes, toggleCooked: toggleCooked })) : (React.createElement(LockedRecipeCard, { key: r.id, r: r, onUnlock: () => setShowUpgrade(true), onUnlockSingle: () => setShowUpgrade(true), onUnlockSeasonal: () => setShowUpgrade(true), isAnnualExclusive: RECIPE_TIER_ANNUAL.has(r.id) || (RELEASED.get(r.id) || {}).tier === "annual", isSeasonal: SOULFOOD_RECIPE_IDS.includes(r.id)}))),
                     filteredRecipes.length > recipeShowCount && React.createElement("button", { onClick: () => setRecipeShowCount(c => c + 15), style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 12, padding: "12px", fontSize: 12, fontWeight: 700, color: C.sub, cursor: "pointer", marginBottom: 10 } }, "Show more (" + (filteredRecipes.length - recipeShowCount) + " remaining)"),
                     !unlocked && (React.createElement("button", { onClick: () => setShowUpgrade(true), style: { width: "100%", background: C.accent, border: "none", borderRadius: 12,
                             padding: "13px", fontSize: 13, fontWeight: 800, color: "#000", cursor: "pointer",
@@ -17248,7 +17405,7 @@ function App() {
                 React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } },
                     React.createElement("button", { onClick: () => { try { localStorage.removeItem('mp_new_unlock'); } catch(_) {} setShowWelcomeUnlock(false); }, style: { width: "100%", background: C.accent, border: "none", borderRadius: 12, padding: "15px", fontSize: 14, fontWeight: 800, color: "#000", cursor: "pointer" } }, "Go to Recipes →")))),
         React.createElement(SeasonalPopup, { show: showSeasonalPopup, onClose: () => setShowSeasonalPopup(false), onBuy: () => { setShowSeasonalPopup(false); setShowUpgrade(true); } }),
-        showAdminPanel && currentUser && React.createElement(AdminPanel, { C:C, currentUser:currentUser, onClose:()=>setShowAdminPanel(false) }),
+        showAdminPanel && currentUser && React.createElement(AdminPanel, { C:C, currentUser:currentUser, onClose:()=>{ setShowAdminPanel(false); refreshReleases(); }, onReleasesChanged: refreshReleases }),
         // ── Set a new password (recovery) ──────────────────────────────────────
         // Before this existed, "Forgot your password?" was a dead end end-to-end:
         // the email arrived, the link signed the user in, and the password was

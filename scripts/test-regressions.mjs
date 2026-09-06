@@ -22,7 +22,7 @@
 //      out and executed, it is executed. Regexes are the fallback, not the norm.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -1148,6 +1148,44 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
        !/recipeCat === "breakfast" && " · All free"/.test(src) && /filteredRecipes\.filter\(r => canView\(r\.id\)\)\.length\} free/.test(src));
     t("the unlock banner's numbers come from the data, not a hard-coded 14 and mains − 1",
        !/"\\uD83D\\uDD13 14 recipes free/.test(src) && /RECIPE_TIER_FREE\.has\(r\.id\)\)\.length,\s*" recipes free/.test(src));
+  }
+
+  // ── Recipe release system (runtime overlay on RECIPE_TIER_PENDING) ──
+  {
+    const rel = fnSrc("applyReleases"), rt = fnSrc("isReleasedTo"), ph = fnSrc("isPendingHidden");
+    t("release helpers extracted", !!rel && !!rt && !!ph);
+    if (rel && rt && ph) {
+      const run = new Function("RECIPE_TIER_PENDING", "Date",
+        "const RELEASED = new Map(); const NEWLY_RELEASED_IDS = new Set(); const NEW_BADGE_DAYS = 60;\n" +
+        rel + "\n" + rt + "\n" + ph + "\nreturn { applyReleases, isReleasedTo, isPendingHidden, RELEASED, NEWLY_RELEASED_IDS };");
+      const now = Date.parse("2026-09-06T12:00:00Z");
+      const FakeDate = { now: () => now, parse: Date.parse };
+      const api = run(new Set(["m125", "m126", "hol1"]), FakeDate);
+      api.applyReleases([
+        { recipe_id: "m125", tier: "monthly", released_at: "2026-09-01T00:00:00Z" },
+        { recipe_id: "m126", tier: "annual",  released_at: "2026-06-01T00:00:00Z" },
+        { recipe_id: "m13",  tier: "monthly", released_at: "2026-09-01T00:00:00Z" },   // NOT pending — must be ignored
+        { recipe_id: "hol1", tier: "lifetime", released_at: "2026-09-01T00:00:00Z" },  // bad tier — ignored
+      ]);
+      t("a released pending id is no longer hidden", api.isPendingHidden("m125") === false && api.isPendingHidden("hol1") === true);
+      t("a row for a non-pending id is ignored (a typo cannot unlock a paid recipe)", !api.RELEASED.has("m13"));
+      t("an unknown tier is ignored", !api.RELEASED.has("hol1"));
+      t("monthly release is visible to monthly AND annual", api.isReleasedTo("m125", "monthly") && api.isReleasedTo("m125", "annual"));
+      t("annual release is visible to annual only", !api.isReleasedTo("m126", "monthly") && api.isReleasedTo("m126", "annual"));
+      t("🔥 NEW follows released_at (60 days)", api.NEWLY_RELEASED_IDS.has("m125") && !api.NEWLY_RELEASED_IDS.has("m126"));
+    }
+    const cv = constFnSrc("const canView = id");
+    t("canView consults the runtime overlay for pending, monthly and annual", !!cv && /isPendingHidden\(id\)/.test(cv) && /isReleasedTo\(id, "monthly"\)/.test(cv) && /isReleasedTo\(id, "annual"\)/.test(cv) && !/RECIPE_TIER_PENDING\.has\(id\)\) return false/.test(cv));
+    t("filteredRecipes hides only still-pending recipes and recomputes on release", /if \(isPendingHidden\(r\.id\)\) return false;/.test(src) && /allRecipes, unlocks, releasesVersion\]\);/.test(src));
+    t("releases are fetched at boot and cached for offline", /from\("recipe_releases"\)\s*\.select\("recipe_id,tier,released_at"\)\.eq\("status", "released"\)/.test(src) && /"sg_releases",/.test(slice("const PRESERVE_PREFIXES = [", "[", "];")));
+    // fnSrc would stop at the destructured-props brace; take the whole function body.
+    const panel = (() => { const i = raw.indexOf("function RecipeReleasePanel"); const j = raw.indexOf("\n}\n", i); return i < 0 ? null : raw.slice(i, j); })();
+    t("admin panel writes with .select() so an RLS-refused upsert is reported, not swallowed", !!panel && /\.upsert\(row, \{ onConflict: "recipe_id" \}\)\.select\(\)/.test(panel) && /Write refused/.test(panel));
+    t("admin panel lists exactly the recipes gated by RECIPE_TIER_PENDING", !!panel && /RECIPES\.filter\(r => RECIPE_TIER_PENDING\.has\(r\.id\)\)/.test(panel));
+    const p15 = readFileSync(join(ROOT, "supabase-schema-fix-part15-RUN-THIS.sql"), "utf8");
+    t("part 15: public can read released rows only; admins manage; status/tier constrained",
+       /for select using \(status = 'released'\)/.test(p15) && /is_admin = true/.test(p15) && /check \(status in \('pending','released','held'\)\)/.test(p15) && /recipe_releases_tier_when_released/.test(p15));
+    t("the GitHub-token release page is gone", !existsSync(join(ROOT, "recipe-release.html")));
   }
 
   // ── S2: analytics only after opt-in ──
