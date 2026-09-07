@@ -103,8 +103,25 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { priceId, tier, recipeId, userId } = payload;
-  let { email } = payload;
+  const { priceId, tier, recipeId } = payload;
+  let { email, userId } = payload;
+  // The webhook grants the tier to whatever userId is in the session metadata.
+  // Taken from the body, a caller could buy for (or mis-attribute a purchase
+  // to) any account id. When a bearer is sent — both marketing pages send one
+  // when signed in — the token decides; a body userId that disagrees is refused.
+  {
+    const hasBearer = /^Bearer\s+/i.test((event.headers && (event.headers.authorization || event.headers.Authorization)) || "");
+    if (hasBearer) {
+      const { requireUser } = require("./_shared/auth");
+      const r = await requireUser(event);
+      if (r.error) return { statusCode: r.status, headers: corsHeaders, body: JSON.stringify({ error: r.error }) };
+      if (userId && userId !== r.user.id) return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: "Account mismatch" }) };
+      userId = r.user.id; email = r.user.email || email;
+    } else if (userId) {
+      // No token but a userId: refuse rather than provision blind.
+      return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: "Sign in to purchase" }) };
+    }
+  }
   if (!priceId || !tier) {
     return {
       statusCode: 400,

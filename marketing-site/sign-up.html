@@ -357,7 +357,7 @@
       if (currentTab === 'signup' && !session) {
         // The confirmation link lands on /pricing, which sends the welcome
         // (and records Terms acceptance server-side) once a session exists.
-        try { localStorage.setItem('sg_mkt_welcome_pending', name || ''); } catch (_) {}
+        try { localStorage.setItem('sg_mkt_welcome_pending', JSON.stringify({ name: name || '', email: email.toLowerCase() })); } catch (_) {}
         showMsg('✓ Account created! Check your email to confirm, then sign in.', 'ok');
         btn.disabled = false; btn.textContent = 'Create account →';
         switchTab('login');
@@ -401,7 +401,7 @@
     try {
       const res = await fetch(CHECKOUT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(session && session.access_token ? { 'Authorization': 'Bearer ' + session.access_token } : {}) },
         body: JSON.stringify({
           priceId: PRICE_IDS[tier],
           tier,

@@ -1,7 +1,7 @@
-// SoulGainz — Service Worker v246
+// SoulGainz — Service Worker (version = CACHE_NAME below)
 // Caches app shell + icons so updates propagate to all installed PWAs
 
-const CACHE_NAME = 'meal-plan-v258';
+const CACHE_NAME = 'meal-plan-v259';
 
 // App shell + manifest + icons — all versioned via CACHE_NAME
 const PRECACHE = [
@@ -168,7 +168,8 @@ self.addEventListener('push', event => {
     badge: '/icon-192.png',
     tag: data.tag || 'soulgainz-reminder',
     renotify: true,
-    data: { url: data.url || '/index.html' },
+    // Same-origin only: a push payload must not be able to open another site.
+    data: { url: (() => { try { const u = new URL(data.url || '/index.html', self.location.origin); return u.origin === self.location.origin ? u.pathname + u.search : '/index.html'; } catch (_) { return '/index.html'; } })() },
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -184,7 +185,8 @@ self.addEventListener('notificationclick', event => {
       for (const client of list) {
         if (client.url.split('#')[0].split('?')[0] === url.split('#')[0].split('?')[0] && 'focus' in client) return client.focus();
       }
-      for (const client of list) { if ('focus' in client) { client.focus(); return client.navigate ? client.navigate(url) : undefined; } }
+      // Only re-point an app page; never yank /success mid-handoff.
+      for (const client of list) { if ('focus' in client && /\/(index\.html)?$/.test(new URL(client.url).pathname)) { client.focus(); return client.navigate ? client.navigate(url) : undefined; } }
       if (clients.openWindow) return clients.openWindow(url);
     })
   );

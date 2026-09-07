@@ -47,7 +47,8 @@ async function report(fn, errOrMessage, extra = {}, level) {
   const isErr = errOrMessage instanceof Error;
   const message = isErr ? errOrMessage.message : String(errOrMessage);
   // Always log, so Netlify's own log still has it even with no DSN.
-  console.error(`[${fn}]`, message, extra && Object.keys(extra).length ? JSON.stringify(extra) : "");
+  // Netlify logs are a store too: scrub before printing, not only before sending.
+  console.error(`[${fn}]`, scrub(message), extra && Object.keys(extra).length ? scrub(JSON.stringify(extra)) : "");
 
   const dsn = parseDsn(process.env.SENTRY_DSN || "");
   if (!dsn) return false;

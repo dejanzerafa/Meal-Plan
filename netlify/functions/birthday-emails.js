@@ -154,6 +154,34 @@ exports.handler = async (event) => {
         // Format: BDAY-XXXXXX-YYYY (6 random uppercase alphanumeric chars)
         const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
         const promoCode  = `BDAY-${randomPart}-${year}`;
+        // The dedupe row is the ONLY thing stopping a second run (or tomorrow's)
+        // from issuing another code and another email. It used to be
+        // fire-and-forget with the status ignored: a failed insert meant a new
+        // Stripe code and email every day for the rest of the month. Insert
+        // first, treat a conflict as "already sent", and only mail on success.
+        const storeRes = await fetch(`${supabaseUrl}/rest/v1/birthday_codes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": supabaseKey,
+            "Authorization": `Bearer ${supabaseKey}`,
+            "Prefer": "return=minimal",
+          },
+          body: JSON.stringify({
+            user_id:        user.id,
+            year,
+            promo_code:     promoCode,
+            stripe_promo_id: null,
+          }),
+        });
+        if (storeRes.status === 409) { results.skipped.push(user.email); continue; }
+        if (!storeRes.ok) {
+          const txt = await storeRes.text().catch(() => "");
+          console.error("Store birthday code error:", storeRes.status, txt);
+          results.failed.push(user.email);
+          continue;
+        }
+        // Only now — the dedupe row is ours — mint the Stripe code, then attach its id.
         let stripePromoId = null;
 
         // \u2500\u2500 Create Stripe promotional code (if Stripe is configured) \u2500\u2500\u2500\u2500\u2500
@@ -191,32 +219,11 @@ exports.handler = async (event) => {
         }
 
         // \u2500\u2500 Store the code in Supabase \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-        // The dedupe row is the ONLY thing stopping a second run (or tomorrow's)
-        // from issuing another code and another email. It used to be
-        // fire-and-forget with the status ignored: a failed insert meant a new
-        // Stripe code and email every day for the rest of the month. Insert
-        // first, treat a conflict as "already sent", and only mail on success.
-        const storeRes = await fetch(`${supabaseUrl}/rest/v1/birthday_codes`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": supabaseKey,
-            "Authorization": `Bearer ${supabaseKey}`,
-            "Prefer": "return=minimal",
-          },
-          body: JSON.stringify({
-            user_id:        user.id,
-            year,
-            promo_code:     promoCode,
-            stripe_promo_id: stripePromoId,
-          }),
-        });
-        if (storeRes.status === 409) { results.skipped.push(user.email); continue; }
-        if (!storeRes.ok) {
-          const txt = await storeRes.text().catch(() => "");
-          console.error("Store birthday code error:", storeRes.status, txt);
-          results.failed.push(user.email);
-          continue;
+        if (stripePromoId) {
+          await fetch(`${supabaseUrl}/rest/v1/birthday_codes?user_id=eq.${user.id}&year=eq.${year}`, {
+            method: "PATCH", headers: { "Content-Type": "application/json", "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}`, "Prefer": "return=minimal" },
+            body: JSON.stringify({ stripe_promo_id: stripePromoId }),
+          }).catch(e => console.error("birthday_codes PATCH failed:", e.message));
         }
 
         // \u2500\u2500 Send birthday email \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500

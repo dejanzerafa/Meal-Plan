@@ -688,10 +688,14 @@
     const WELCOME_KEY = 'sg_mkt_welcome_pending';
     function flushPendingWelcome(session) {
       try {
-        const name = localStorage.getItem(WELCOME_KEY);
-        if (name === null || !session || !session.access_token) return;
+        const rawv = localStorage.getItem(WELCOME_KEY);
+        if (rawv === null || !session || !session.access_token) return;
+        let pend = null; try { pend = JSON.parse(rawv); } catch (_) { pend = { name: rawv, email: null }; }
+        // Only flush for the account that signed up — on a shared device the
+        // next person to log in must not inherit a stranger's name and Terms stamp.
+        if (pend.email && session.user && String(session.user.email || '').toLowerCase() !== pend.email) return;
         localStorage.removeItem(WELCOME_KEY);
-        sendWelcome(session, name);
+        sendWelcome(session, pend.name || '');
       } catch (_) {}
     }
     function sendWelcome(session, name) {
@@ -791,7 +795,7 @@
       try {
         const res = await fetch(CHECKOUT_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(session && session.access_token ? { 'Authorization': 'Bearer ' + session.access_token } : {}) },
           body: JSON.stringify({
             priceId: PRICE_IDS[tier],
             tier,
@@ -957,7 +961,7 @@
           if (session) sendWelcome(session, name);
           // If email confirmation required, session may be null
           if (!session) {
-            try { localStorage.setItem(WELCOME_KEY, name || ''); } catch (_) {}
+            try { localStorage.setItem(WELCOME_KEY, JSON.stringify({ name: name || '', email: email.toLowerCase() })); } catch (_) {}
             errEl.style.color = '#4ade80';
             errEl.textContent = 'Account created! Check your email to confirm, then log in.';
             btn.disabled = false;

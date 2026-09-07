@@ -1095,7 +1095,7 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     const pr = readFileSync(join(ROOT, "marketing-site", "pricing.html"), "utf8");
     const msu = readFileSync(join(ROOT, "marketing-site", "sign-up.html"), "utf8");
     t("marketing: sign-up with confirmation ON remembers the welcome and flushes it when the session appears",
-       /localStorage\.setItem\(WELCOME_KEY, name/.test(pr) && /flushPendingWelcome\(session\)/.test(pr) && /'sg_mkt_welcome_pending'/.test(msu),
+       /localStorage\.setItem\(WELCOME_KEY, JSON\.stringify\(\{ name: name \|\| '', email: email\.toLowerCase\(\) \}\)\)/.test(pr) && /flushPendingWelcome\(session\)/.test(pr) && /!== pend\.email\) return;/.test(pr) && /'sg_mkt_welcome_pending', JSON\.stringify/.test(msu),
        "signUp() returns no session when confirmation is on, so the welcome + server-side Terms record never happened");
     t("marketing pricing: the Terms field toggles to flex (was a precedence bug)", /style\.display = tab === 'signup' \? 'flex' : 'none';/.test(pr));
   }
@@ -1186,6 +1186,38 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     t("part 15: public can read released rows only; admins manage; status/tier constrained",
        /for select using \(status = 'released'\)/.test(p15) && /is_admin = true/.test(p15) && /check \(status in \('pending','released','held'\)\)/.test(p15) && /recipe_releases_tier_when_released/.test(p15));
     t("the GitHub-token release page is gone", !existsSync(join(ROOT, "recipe-release.html")));
+  }
+
+  // ── Full audit 2026-09-07 ──
+  {
+    const fnDir = join(ROOT, "netlify", "functions"); const fn = f => stripJS(readFileSync(join(fnDir, f), "utf8"));
+    t("weekly macro score reads perPortion via computePerPortion (was lrec.protein → always 0%)", /var lm = computePerPortion\(lrec, profileScale\), dm = computePerPortion\(drec, profileScale\);/.test(src) && !/\(lrec\.protein\|\|0\)/.test(src));
+    t("release fetch refuses to overwrite the cache on anything but a clean 200 array", /if \(error \|\| status !== 200 \|\| !Array\.isArray\(data\)\)/.test(src),
+       "a failed fetch used to write [] and un-release every recipe");
+    t("releases re-read on focus / visibilitychange", /window\.addEventListener\("focus", refreshReleases\)/.test(src) && /visibilitychange/.test(src));
+    t("new-drop banner counts only recipes this user can open", /const _newVisible = React\.useMemo\(\(\) => \[\.\.\.NEWLY_RELEASED_IDS\]\.filter\(id => canView\(id\)\)\.length/.test(src) && /_newVisible > 0 &&/.test(src));
+    t("plan / prep modals receive only visible recipes", (src.match(/allRecipes: visibleRecipes/g) || []).length === 3);
+    t("💡 tips are not counted as method steps", /const methodSteps = \(r\.steps \|\| \[\]\)\.filter\(s => !String\(s\)\.startsWith\("💡"\)\);/.test(src) && /methodSteps\.map\(\(s, i\)/.test(src));
+    t("Blender / No-Cook badges are recognised as cooking-method badges", (src.match(/"🌀 Blender", "🥗 No-Cook"/g) || []).length === 2);
+    t("first SW install does not reload the page (controllerchange only when it had a controller)", /const _hadController = !!navigator\.serviceWorker\.controller;/.test(src) && /if \(_reloading \|\| !_hadController\) return;/.test(src));
+    t("create-checkout takes userId/email from the bearer when present and refuses a bare userId", /if \(userId && userId !== r\.user\.id\) return \{ statusCode: 403/.test(fn("create-checkout.js")) && /Sign in to purchase/.test(fn("create-checkout.js")));
+    t("marketing checkout calls send the bearer", /'Authorization': 'Bearer ' \+ session\.access_token \} : \{\}\) \},/.test(readFileSync(join(ROOT, "marketing-site", "pricing.html"), "utf8")));
+    t("marketing success page disables auto refresh before the handoff", /autoRefreshToken: false/.test(readFileSync(join(ROOT, "marketing-site", "success.html"), "utf8")));
+    t("restore-account reads profiles.tier before the ledger and never echoes err.message", /from\("profiles"\)\.select\("tier, tier_expires, tier_via"\)/.test(fn("restore-account.js")) && !/error: err\.message/.test(fn("restore-account.js")));
+    t("birthday-emails mints the Stripe code only after the dedupe row is stored", fn("birthday-emails.js").indexOf("rest/v1/birthday_codes`") < fn("birthday-emails.js").indexOf("api.stripe.com/v1/promotion_codes"));
+    t("report() scrubs the console line too", /console\.error\(`\[\$\{fn\}\]`, scrub\(message\)/.test(fn(join("_shared", "report.js"))));
+    t("save-user anonymous branch is capped per IP", /saveuser_anon_/.test(fn("save-user.js")));
+    t("sw: push url is same-origin only; notification click never re-points /success", /u\.origin === self\.location\.origin/.test(readFileSync(join(ROOT, "sw.js"), "utf8")) && /index\\\.html\)\?\$/.test(readFileSync(join(ROOT, "sw.js"), "utf8")));
+    // every recipe classifies under a protein chip
+    const arrAt = (mark) => { const a = raw.indexOf(mark); const s0 = raw.indexOf("[", a); let d = 0, b = s0; for (; b < raw.length; b++) { if (raw[b] === "[") d++; else if (raw[b] === "]") { d--; if (!d) break; } } return eval(raw.slice(s0, b + 1)); };
+    try {
+      const gpt = new Function(fnSrc("getProteinType") + "\nreturn getProteinType;")();
+      const all = [...arrAt("const RECIPES = ["), ...arrAt("const PENDING_RECIPES = [")];
+      const none = all.filter(r => gpt(r) == null);
+      t("every recipe matches a protein chip (filter cannot hide a recipe forever)", none.length === 0, none.map(r => r.id).join(","));
+      const badCat = all.filter(r => !["main","salad","breakfast","dessert","smoothie","preworkout"].includes(r.category));
+      t("every recipe has a category the tabs know", badCat.length === 0, badCat.map(r => r.id + ":" + r.category).join(","));
+    } catch (e) { t("recipe classification check ran", false, e.message); }
   }
 
   // ── S2: analytics only after opt-in ──

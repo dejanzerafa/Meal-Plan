@@ -116,7 +116,7 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
-  const headers = { "Content-Type": "application/json" };
+  const headers = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://soulgainz.app", "Vary": "Origin" };
 
   // ── Payload size guard ───────────────────────────────────────────────────
   if (event.body && event.body.length > 1024) {
@@ -205,7 +205,21 @@ exports.handler = async (event) => {
       (["lifetime", "seasonal"].includes(s.tier) && s.status !== "canceled")
     );
 
-    if (activeSub) {
+    // profiles.tier is what the app actually grants from (promo codes and
+    // admin grants write ONLY there; the webhook tolerates a failed ledger
+    // insert). Read it first so a customer with access is never told
+    // "No active subscription found".
+    try {
+      const { data: prof } = await supabase.from("profiles").select("tier, tier_expires, tier_via").eq("email", email).maybeSingle();
+      if (prof && ["monthly", "annual", "dev"].includes(prof.tier)) {
+        const exp = prof.tier_expires ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(String(prof.tier_expires)) ? prof.tier_expires + "T23:59:59" : prof.tier_expires) : null;
+        if (!exp || isNaN(exp) || exp > new Date()) {
+          unlocks.calculator = true; unlocks.allRecipes = true; unlocks.tier = prof.tier === "dev" ? "annual" : prof.tier;
+        }
+      }
+    } catch (e) { console.warn("restore-account: profiles lookup failed", e && e.message); }
+
+    if (!unlocks.tier && activeSub) {
       const tier = activeSub.tier;
 
       if (["lifetime", "annual", "quarterly", "monthly"].includes(tier)) {
@@ -242,6 +256,6 @@ exports.handler = async (event) => {
   } catch (err) {
     console.error("restore-account error:", err);
     await report("restore-account", err instanceof Error ? err : new Error(String(err)), { where: "restore-account " });
-    return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: "Could not check your account right now. Please try again." }) };
   }
 };

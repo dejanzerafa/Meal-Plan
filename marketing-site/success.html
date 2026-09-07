@@ -118,7 +118,10 @@
   let session = null, sb = null;
   try {
     if (!window.supabase) throw new Error('supabase-js not loaded');
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    // autoRefreshToken OFF: the client's 30-second refresh tick could rotate the
+    // refresh token between building the fragment and the redirect, handing the
+    // app a superseded token that trips reuse-detection an hour later.
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { autoRefreshToken: false } });
     const { data } = await sb.auth.getSession();
     session = data && data.session;
   } catch (e) {

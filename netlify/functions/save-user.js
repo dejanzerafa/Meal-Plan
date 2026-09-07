@@ -103,7 +103,10 @@ exports.handler = async (event) => {
   }
 
   const _rl = await rateLimit(`saveuser_${(email || "").toLowerCase().trim()}_${clientIp(event)}`, { max: 5, windowMs: 60000 });
-  if (email && !_rl.ok) {
+  // The anonymous branch can stamp calc_used / create a users row for ANY
+  // address; per-email+IP alone let one IP walk a whole list. Cap the IP too.
+  const _rlIp = authedUser ? { ok: true } : await rateLimit(`saveuser_anon_${clientIp(event)}`, { max: 20, windowMs: 3600000 });
+  if (email && (!_rl.ok || !_rlIp.ok)) {
     return { statusCode: 429, headers: cors, body: JSON.stringify({ error: "Too many requests. Please wait a moment." }) };
   }
 
@@ -173,7 +176,7 @@ exports.handler = async (event) => {
     if (patchRes.ok) {
       const rows = await patchRes.json();
       userData = Array.isArray(rows) ? rows[0] : (rows || null);
-      if (userData) console.log("Supabase: updated existing user", email);
+      if (userData) console.log("Supabase: updated existing user", email.replace(/^(.).*(@.*)$/, "$1***$2"));
     }
 
     // No existing row found - insert new user
@@ -200,7 +203,7 @@ exports.handler = async (event) => {
       if (insertRes.ok) {
         const rows = await insertRes.json();
         userData = Array.isArray(rows) ? rows[0] : rows;
-        console.log("Supabase: inserted new user", email);
+        console.log("Supabase: inserted new user", email.replace(/^(.).*(@.*)$/, "$1***$2"));
       } else {
         const err = await insertRes.text();
         console.error("Supabase insert error:", err);
@@ -253,7 +256,7 @@ exports.handler = async (event) => {
           });
 
           if (emailRes.ok) {
-            console.log("Welcome email sent to", email);
+            console.log("Welcome email sent to", email.replace(/^(.).*(@.*)$/, "$1***$2"));
             // Mark so we don't send the new-user welcome again
             await fetch(
               `${supabaseUrl}/rest/v1/users?email=eq.${encodeURIComponent(email)}`,

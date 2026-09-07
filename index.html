@@ -16425,6 +16425,10 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
         return next;
     });
     const doneCount = Object.values(stepsDone).filter(Boolean).length;
+    // 💡 lines are storage / technique tips, not steps to tick off. They were
+    // being counted in "N/N done" and numbered as if you had to do them.
+    const methodSteps = (r.steps || []).filter(s => !String(s).startsWith("💡"));
+    const tipSteps = (r.steps || []).filter(s => String(s).startsWith("💡"));
     const allergenEl = (function() {
         const allergens = detectAllergens(r);
         if (!allergens.length) return React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "No common allergens detected — always double-check ingredient labels.");
@@ -16435,7 +16439,7 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                     background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.25)",
                     borderRadius: 6, padding: "3px 8px" } }, a.icon, " ", a.name); })));
     })();
-    const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot"];
+    const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot", "🌀 Blender", "🥗 No-Cook", "❄️ No Cook", "🍳 Oven", "🥘 Crockpot"];
     const isCookingMethodBadge = r.badge && COOKING_METHOD_BADGES.includes(r.badge);
     const displayBadge = isCookingMethodBadge ? (r.carb && r.carb !== "—" ? r.carb : null) : r.badge;
     return (React.createElement("div", { style: { background: C.card, border: `1.5px solid ${active ? C.accentBorder : C.border}`, transition: "border-color 0.2s",
@@ -16583,11 +16587,11 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                         "STEPS \u2014 ",
                         doneCount,
                         "/",
-                        (r.steps || []).length,
+                        methodSteps.length,
                         " done"),
                     doneCount > 0 && (React.createElement("button", { onClick: () => setStepsDone({}), style: { fontSize: 10, color: C.muted, background: "none", border: `1px solid ${C.dim}`,
                             borderRadius: 6, padding: "2px 8px", cursor: "pointer" } }, "Reset"))),
-                r.steps.map((s, i) => (React.createElement("div", { key: i, onClick: () => toggleStep(i), style: { display: "flex", gap: 10, marginBottom: 10, cursor: "pointer",
+                methodSteps.map((s, i) => (React.createElement("div", { key: i, onClick: () => toggleStep(i), style: { display: "flex", gap: 10, marginBottom: 10, cursor: "pointer",
                         opacity: stepsDone[i] ? 0.45 : 1, transition: "opacity 0.2s" } },
                     React.createElement("div", { style: { width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 1,
                             border: `2px solid ${stepsDone[i] ? C.green : C.accent}`,
@@ -16596,7 +16600,9 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
                         stepsDone[i] && React.createElement("span", { style: { fontSize: 12, color: "#000", fontWeight: 800 } }, "\u2713"),
                         !stepsDone[i] && React.createElement("span", { style: { fontSize: 10, color: C.accent, fontWeight: 700 } }, i + 1)),
                     React.createElement("span", { style: { fontSize: 12, color: C.text, lineHeight: 1.6,
-                            textDecoration: stepsDone[i] ? "line-through" : "none" } }, s)))))),
+                            textDecoration: stepsDone[i] ? "line-through" : "none" } }, s)))),
+                tipSteps.length > 0 && React.createElement("div", { style: { marginTop: 6, padding: "10px 12px", borderRadius: 10, background: C.accentDim, border: "1px solid " + C.accentBorder } },
+                    tipSteps.map((s, i) => React.createElement("div", { key: "tip" + i, style: { fontSize: 12, color: C.text, lineHeight: 1.55, marginBottom: i < tipSteps.length - 1 ? 8 : 0 } }, s))))),
             view === "notes" && (React.createElement("div", null,
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.sub, letterSpacing: "0.08em", marginBottom: 8 } }, "MY NOTES & TWEAKS"),
                 React.createElement("textarea", { value: note, onChange: e => saveNote(e.target.value), placeholder: "Add your tweaks, adjustments, tips... e.g. add extra garlic, reduce sour cream", style: { width: "100%", background: C.card2, border: `1px solid ${C.dim}`, borderRadius: 10,
@@ -17649,7 +17655,7 @@ async function _hashInput(input) {
 }
 
 function LockedRecipeCard({ r, onUnlock, onUnlockSingle, onUnlockSeasonal, isAnnualExclusive, isSeasonal }) {
-    const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot"];
+    const COOKING_METHOD_BADGES = ["🍳 Stovetop", "🌬️ Oven", "💨 Air Fryer", "⚡ Instant Pot", "🌀 Blender", "🥗 No-Cook", "❄️ No Cook", "🍳 Oven", "🥘 Crockpot"];
     const isCookingMethodBadge = r.badge && COOKING_METHOD_BADGES.includes(r.badge);
     var tierLabel = isAnnualExclusive
         ? React.createElement("span", { style: { fontSize: 9, fontWeight: 800, color: "#b45309", background: "rgba(180,83,9,0.10)", border: "1px solid rgba(180,83,9,0.3)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" } }, "⭐ ANNUAL ONLY")
@@ -18206,7 +18212,7 @@ function getProteinType(r) {
     if (n.startsWith("🥓")) return "Pork";
     // Check NAME keywords (not subtitle — subtitles list secondary ingredients and cause false positives)
     const nm = n.toLowerCase();
-    if (nm.includes("beef") || nm.includes("steak") || nm.includes("sirloin") || nm.includes("brisket") || nm.includes("minced beef") || nm.includes("ground beef")) return "Beef";
+    if (nm.includes("beef") || nm.includes("steak") || nm.includes("sirloin") || nm.includes("brisket") || nm.includes("minced beef") || nm.includes("ground beef") || nm.includes("burger") || nm.includes("big mac")) return "Beef";
     if (nm.includes("chicken") || nm.includes("buffalo")) return "Chicken";
     if (nm.includes("salmon") || nm.includes("tuna") || nm.includes("cod") || nm.includes("tilapia") || nm.includes("trout") || nm.includes(" fish") || nm.includes("fish ")) return "Fish";
     if (nm.includes("turkey")) return "Turkey";
@@ -18216,8 +18222,17 @@ function getProteinType(r) {
     if (nm.includes("mince") || nm.includes("shakshuka") || nm.includes("frittata")) return "Eggs";
     if (nm.includes("egg") && !nm.includes("eggplant")) return "Eggs";
     // Veg / plant-based catch-all — covers smoothies, bowls, yogurt, oats, desserts, etc.
-    const VEG_STARTERS = ["🌿","🦴","🧀","🪴","🍛","🥦","🥢","🥬","🍄","🎃","🫙","🥛","🍫","🫐","🍓","🥭","☕","💜","🍉","🫓","🍌","🥞","🥯","📅","🥥","🍎","🌞","🌯","🌶","🥑","🫘","🧆","🍕","⚡","🥜"];
+    const VEG_STARTERS = ["🌿","🦴","🧀","🪴","🍛","🥦","🥢","🥬","🍄","🎃","🫙","🥛","🍫","🫐","🍓","🥭","☕","💜","🍉","🫓","🍌","🥞","🥯","📅","🥥","🍎","🌞","🌯","🌶","🥑","🫘","🧆","🍕","⚡","🥜",
+        // 2026-09-07 intake emoji — without these 35 recipes matched no protein chip at all
+        "🍪","🍽️","🌾","🥣","🧃","🍝","🥤","🍑","🍲","🥕","🍒","🧇","🍋","🥗","🍯"];
     if (VEG_STARTERS.some(e => n.startsWith(e))) return "Veg";
+    // Name carries no protein word (🥔 Japanese Potato Salad, 🥔 Crispy Potato
+    // Breakfast Box): look at the ingredients before giving up.
+    if (n.startsWith("🥔") || n.startsWith("🍠")) {
+        const il = (r.batchItems || []).map(i => String(i.label || "").toLowerCase()).join(" ");
+        if (/chicken/.test(il)) return "Chicken"; if (/turkey/.test(il)) return "Turkey"; if (/beef|steak|mince/.test(il)) return "Beef";
+        if (/salmon|tuna|cod|fish/.test(il)) return "Fish"; if (/egg/.test(il)) return "Eggs"; return "Veg";
+    }
     const t = nm + " " + (r.subtitle || "").toLowerCase();
     if (t.includes("tofu") || t.includes("chickpea") || t.includes("lentil") || t.includes("bean") ||
         t.includes("paneer") || t.includes("veggie") || t.includes("vegan") || t.includes("couscous") ||
@@ -21568,15 +21583,26 @@ function App() {
     const refreshReleases = React.useCallback(async () => {
         const sb = getSB(); if (!sb) return;
         try {
-            const { data, error } = await sb.from("recipe_releases")
+            const { data, error, status } = await sb.from("recipe_releases")
                 .select("recipe_id,tier,released_at").eq("status", "released");
-            if (error) { console.warn("SG: recipe_releases", error.message); return; }
-            applyReleases(data || []);
-            try { safeSet("sg_releases", JSON.stringify(data || [])); } catch (_) {}
+            // Only a clean 200 with an array may replace the cache. Anything else
+            // (offline, 4xx, an odd body) keeps what we have — an empty answer
+            // from a failed request must not un-release every recipe.
+            if (error || status !== 200 || !Array.isArray(data)) { console.warn("SG: recipe_releases", (error && error.message) || status); return; }
+            applyReleases(data);
+            try { safeSet("sg_releases", JSON.stringify(data)); } catch (_) {}
             setReleasesVersion(v => v + 1);
         } catch (e) { console.warn("SG: recipe_releases fetch failed", e); }
     }, []);
-    React.useEffect(() => { refreshReleases(); }, [refreshReleases]);
+    React.useEffect(() => {
+        refreshReleases();
+        // A resident PWA never reloads; re-read releases when the app comes back
+        // to the foreground so a release or a Hold shows without a restart.
+        const onVis = () => { if (document.visibilityState === "visible") refreshReleases(); };
+        window.addEventListener("focus", refreshReleases);
+        document.addEventListener("visibilitychange", onVis);
+        return () => { window.removeEventListener("focus", refreshReleases); document.removeEventListener("visibilitychange", onVis); };
+    }, [refreshReleases]);
     // Password recovery. Set by the PASSWORD_RECOVERY auth event, and also by the
     // ?recovery=1 query param as a fallback for the case where Supabase processes
     // the hash and fires the event before this listener is attached.
@@ -21936,8 +21962,13 @@ function App() {
         // → new worker activates → controllerchange). The service worker no longer
         // calls skipWaiting() on install, so this can no longer fire unprompted
         // and interrupt someone mid-typing.
+        // First install: activate() calls clients.claim(), which fires
+        // controllerchange on a page that had NO controller. That reloaded every
+        // first-time visitor a few seconds in — mid-calculator, mid-sign-up.
+        // Only a page that was already controlled has an update to pick up.
+        const _hadController = !!navigator.serviceWorker.controller;
         const onControllerChange = () => {
-            if (_reloading) return;      // guard against a double-fire reload loop
+            if (_reloading || !_hadController) return;
             _reloading = true;
             window.location.reload();
         };
@@ -23264,6 +23295,9 @@ function App() {
     const bfr = _vis(breakfastRecipe ? (allRecipes.find(r => r.id === breakfastRecipe) || null) : null);
     const prer = _vis(preRecipe ? (allRecipes.find(r => r.id === preRecipe) || null) : null);
     const desr = _vis(dessert ? (allRecipes.find(r => r.id === dessert) || null) : null);
+    // Modals that resolve slot ids themselves get only what this user may see,
+    // so a recipe that was released, chosen, then Held cannot surface by name.
+    const visibleRecipes = React.useMemo(() => allRecipes.filter(r => canView(r.id)), [allRecipes, unlocks, currentUser, releasesVersion]);
     // Effective targets — profile macros override defaults when available; nudge is applied on top
     const effectiveTargets = (() => {
         const base = (profile && profile.result && profile.result.macros && profile.result.macros.kcal)
@@ -23280,6 +23314,9 @@ function App() {
     const profileScale = (effectiveTargets.kcal && TARGETS.kcal && Math.abs(effectiveTargets.kcal - TARGETS.kcal) > 50) ? +(effectiveTargets.kcal / TARGETS.kcal).toFixed(4) : 1;
     const { L, D, BF, DS, PRE_M, total } = React.useMemo(() => computeMeals(lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale), [lr, dr, breakfastSkipped, bfr, desr, lunchScale, dinnerScale, preSkipped, prer, bfScale, preScale, desScale, profileScale]);
     const profileName = profile ? (profile.firstName || "").trim() : "";
+    // New-drop banner: count only releases this user can actually open (an
+    // annual-only release is not "new" for a monthly member).
+    const _newVisible = React.useMemo(() => [...NEWLY_RELEASED_IDS].filter(id => canView(id)).length, [releasesVersion, unlocks, currentUser]);
     const filteredRecipes = React.useMemo(() => allRecipes.filter(r => {
         // Pending recipes are completely hidden (not shown even as locked cards)
         if (isPendingHidden(r.id)) return false;
@@ -23555,10 +23592,13 @@ function App() {
                             var lrec = allRecipes.find(function(r) { return r.id === log.lunchId; });
                             var drec = allRecipes.find(function(r) { return r.id === log.dinnerId; });
                             if (!lrec || !drec) return;
-                            var dp = (lrec.protein||0) + (drec.protein||0);
-                            var dc = (lrec.carbs||0) + (drec.carbs||0);
-                            var df = (lrec.fat||0) + (drec.fat||0);
-                            var dk = (lrec.kcal||0) + (drec.kcal||0);
+                            // Recipes carry perPortion, not top-level macros; reading
+                            // lrec.protein scored every week 0% ("Room to grow").
+                            var lm = computePerPortion(lrec, profileScale), dm = computePerPortion(drec, profileScale);
+                            var dp = (lm.protein||0) + (dm.protein||0);
+                            var dc = (lm.carbs||0) + (dm.carbs||0);
+                            var df = (lm.fat||0) + (dm.fat||0);
+                            var dk = (lm.kcal||0) + (dm.kcal||0);
                             var pS = effectiveTargets.protein > 0 ? Math.min(1, dp/effectiveTargets.protein) : 1;
                             var cS = effectiveTargets.carbs > 0 ? Math.min(1, dc/effectiveTargets.carbs) : 1;
                             var fS = effectiveTargets.fat > 0 ? Math.min(1, df/effectiveTargets.fat) : 1;
@@ -23594,11 +23634,11 @@ function App() {
                             : "Prep day \u2014 time to cook your new batch"),
                         React.createElement("button", { onClick: () => { setShopAlert(false); setPrepAlert(false); }, style: { background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 15, padding: "0 2px", flexShrink: 0 } }, "\u2715")),
                     // ── New-drop banner (dynamic — shows when NEWLY_RELEASED_IDS is populated) ──
-                    NEWLY_RELEASED_IDS.size > 0 && ["monthly","annual","dev"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
+                    _newVisible > 0 && ["monthly","annual","dev"].includes(unlocks.tier) && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 10, padding: "9px 12px", marginBottom: 10 } },
                         React.createElement("div", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDD25"),
                         React.createElement("div", { style: { flex: 1 } },
                             React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: C.text } }, "New recipes just dropped!"),
-                            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, NEWLY_RELEASED_IDS.size + " new recipes added \u2014 look for the \uD83D\uDD25 NEW badge in the Recipes tab.")),
+                            React.createElement("div", { style: { fontSize: 11, color: C.sub, marginTop: 1 } }, _newVisible + (_newVisible === 1 ? " new recipe added" : " new recipes added") + " \u2014 look for the \uD83D\uDD25 NEW badge in the Recipes tab.")),
                         React.createElement("button", { onClick: function() { setTab("recipes"); }, style: { background: C.accent, border: "none", color: "#000", borderRadius: 8, padding: "5px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", flexShrink: 0 } }, "View \u2192")),
                     // ── Cooking milestone card ──────────────────────────────────────
                     cookedRecipes.size > 0 && (function() {
@@ -23762,7 +23802,7 @@ function App() {
                         " more \u2014 every main, breakfast & dessert")),
                     filteredRecipes.length === 0 && (function() {
                         const hasSearch = !!recipeQuery;
-                        const hasFilters = filter !== "All" || dietaryFilter !== null || proteinFilter !== null;
+                        const hasFilters = dietaryFilter !== null || proteinFilter !== null;
                         const clearAll = () => { setRecipeQuery(""); setDietaryFilter(null); setProteinFilter(null); };
                         return React.createElement("div", { style: { textAlign: "center", padding: "40px 20px", color: C.sub } },
                             React.createElement("div", { style: { fontSize: 32, marginBottom: 10 } }, "\uD83D\uDD0D"),
@@ -24153,12 +24193,12 @@ function App() {
                     // ── Legal (collapsed) ─────────────────────────────────────────────
                     React.createElement(LegalAccordion, { C: C })),
         ))),
-        showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, portions, profileScale, effectiveTargets,
+        showPrepFlow && React.createElement(PrepItFlow, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes: visibleRecipes, portions, profileScale, effectiveTargets,
             breakfastSkipped, preSkipped,
             onGotoRecipes:(slot)=>{ if(slot==="breakfast") setBreakfastSkipped(false); if(slot==="preworkout") setPreSkipped(false); setPendingSlot(slot); setRecipeCat(slot==="main"?"main":slot); setRecipeQuery(""); setTab("recipes"); },
             onGotoShopping:()=>setTab("shopping"), onClose:()=>setShowPrepFlow(false) }),
-        showSavePlanModal && React.createElement(SavePlanModal, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes, onSave:savePlan, onClose:()=>setShowSavePlanModal(false) }),
-        showPlansDrawer && React.createElement(PlansDrawer, { C, savedPlans, allRecipes, onLoad:loadPlan, onDelete:deletePlan, onClose:()=>setShowPlansDrawer(false) }),
+        showSavePlanModal && React.createElement(SavePlanModal, { C, lunch, dinner, breakfastRecipe, preRecipe, dessert, allRecipes: visibleRecipes, onSave:savePlan, onClose:()=>setShowSavePlanModal(false) }),
+        showPlansDrawer && React.createElement(PlansDrawer, { C, savedPlans, allRecipes: visibleRecipes, onLoad:loadPlan, onDelete:deletePlan, onClose:()=>setShowPlansDrawer(false) }),
         showFeedback && React.createElement(FeedbackModal, { onClose: () => setShowFeedback(false), currentTab: tab }),
         showRecipeBuilder && React.createElement(CustomRecipeBuilder, { C, onSave: saveCustomRecipe, onClose: () => setShowRecipeBuilder(false) }),
         showOnboarding && React.createElement(OnboardingModal, { onClose: () => { setShowOnboarding(false); try{ safeSet("mp_onboarded","1"); }catch(e){} } }),

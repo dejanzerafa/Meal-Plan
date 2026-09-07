@@ -183,6 +183,6 @@ exports.handler = async (event) => {
       } catch (_) {}
     }
     await report("delete-account", err instanceof Error ? err : new Error(String(err)), { userId: user.id, completed: steps.join(",") });
-    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: "Deletion could not be completed. Nothing irreversible happened past: " + (steps.join(", ") || "nothing") + ". Please contact support@soulgainz.app." }) };
+    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: "Deletion stopped part-way. Completed: " + (steps.join(", ") || "nothing") + ". Your sign-in still works; please contact support@soulgainz.app and we will finish it." }) };
   }
 };
