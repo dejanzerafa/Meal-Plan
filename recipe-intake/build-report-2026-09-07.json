@@ -1,7 +1,7 @@
 [
  {
   "id": "m125",
-  "name": "🥗 Crispy Chicken Caesar Salad",
+  "name": "\ud83e\udd57 Crispy Chicken Caesar Salad",
   "source": "prebuilt",
   "per": {
    "kcal": 418,
@@ -23,7 +23,7 @@
  },
  {
   "id": "m126",
-  "name": "🥘 Chorizo & Chicken One-Pot Rice",
+  "name": "\ud83e\udd58 Chorizo & Chicken One-Pot Rice",
   "source": "prebuilt",
   "per": {
    "kcal": 548,
@@ -41,7 +41,7 @@
  },
  {
   "id": "m127",
-  "name": "🐟 Honey Garlic Salmon Tray Bake",
+  "name": "\ud83d\udc1f Honey Garlic Salmon Tray Bake",
   "source": "prebuilt",
   "per": {
    "kcal": 583,
@@ -61,7 +61,7 @@
  },
  {
   "id": "m128",
-  "name": "🧆 Greek Turkey Meatballs & Tzatziki Rice Bowl",
+  "name": "\ud83e\uddc6 Greek Turkey Meatballs & Tzatziki Rice Bowl",
   "source": "prebuilt",
   "per": {
    "kcal": 544,
@@ -80,7 +80,7 @@
  },
  {
   "id": "m129",
-  "name": "🥬 Spinach & Feta Stuffed Chicken with Roast Sweet Potato",
+  "name": "\ud83e\udd6c Spinach & Feta Stuffed Chicken with Roast Sweet Potato",
   "source": "prebuilt",
   "per": {
    "kcal": 491,
@@ -98,7 +98,7 @@
  },
  {
   "id": "ds10",
-  "name": "🍪 Strawberry Cheesecake Protein Jars",
+  "name": "\ud83c\udf6a Strawberry Cheesecake Protein Jars",
   "source": "ig4",
   "per": {
    "kcal": 302,
@@ -122,7 +122,7 @@
  },
  {
   "id": "bf43",
-  "name": "🍌 Banana Bread Protein Bowl",
+  "name": "\ud83c\udf4c Banana Bread Protein Bowl",
   "source": "ig5",
   "per": {
    "kcal": 486,
@@ -142,7 +142,7 @@
  },
  {
   "id": "bf44",
-  "name": "🫙 Protein Berry Yoghurt Bowl",
+  "name": "\ud83e\uded9 Protein Berry Yoghurt Bowl",
   "source": "ig7",
   "per": {
    "kcal": 345,
@@ -165,7 +165,7 @@
  },
  {
   "id": "m131",
-  "name": "🍗 Garlic Chicken, Crispy Potatoes & Broccoli",
+  "name": "\ud83c\udf57 Garlic Chicken, Crispy Potatoes & Broccoli",
   "source": "ig8",
   "per": {
    "kcal": 606,
@@ -186,7 +186,7 @@
  },
  {
   "id": "ds11",
-  "name": "🍪 Protein Brownies",
+  "name": "\ud83c\udf6a Protein Brownies",
   "source": "ig12",
   "per": {
    "kcal": 112,
@@ -211,7 +211,7 @@
  },
  {
   "id": "m132",
-  "name": "🍗 Thai Peanut Chicken Rice Bowl",
+  "name": "\ud83c\udf57 Thai Peanut Chicken Rice Bowl",
   "source": "cb128",
   "per": {
    "kcal": 513,
@@ -236,7 +236,7 @@
  },
  {
   "id": "m133",
-  "name": "🍗 Turmeric Chicken with Coconut Rice",
+  "name": "\ud83c\udf57 Turmeric Chicken with Coconut Rice",
   "source": "cb150",
   "per": {
    "kcal": 517,
@@ -250,16 +250,14 @@
    "carbs": 34,
    "fat": 18
   },
-  "scaled": "Chicken thighs 110 → 132 g",
-  "issues": [
-   "protein 30.0 g — no scalable source"
-  ],
+  "scaled": "Chicken thighs 110 \u2192 132 g",
+  "issues": [],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m134",
-  "name": "🍗 Chicken Caesar Wrap",
+  "name": "\ud83c\udf57 Chicken Caesar Wrap",
   "source": "cb95",
   "per": {
    "kcal": 479,
@@ -284,7 +282,7 @@
  },
  {
   "id": "m135",
-  "name": "🍗 Balsamic Glazed Chicken with Roasted Veggies",
+  "name": "\ud83c\udf57 Balsamic Glazed Chicken with Roasted Veggies",
   "source": "cb129",
   "per": {
    "kcal": 354,
@@ -307,7 +305,7 @@
  },
  {
   "id": "m136",
-  "name": "🍗 Balsamic Chicken with Roasted Sweetpotatoes",
+  "name": "\ud83c\udf57 Balsamic Chicken with Roasted Sweetpotatoes",
   "source": "cb147",
   "per": {
    "kcal": 359,
@@ -330,7 +328,7 @@
  },
  {
   "id": "m137",
-  "name": "🍗 Baked Herb Chicken with Roasted Brussels Sprouts",
+  "name": "\ud83c\udf57 Baked Herb Chicken with Roasted Brussels Sprouts",
   "source": "cb138",
   "per": {
    "kcal": 339,
@@ -344,14 +342,14 @@
    "carbs": 10,
    "fat": 22
   },
-  "scaled": "Chicken thighs 110 → 144 g",
+  "scaled": "Chicken thighs 110 \u2192 144 g",
   "issues": [],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m138",
-  "name": "🍗 Mediterranean Chicken Skillet with Olives & Spinach",
+  "name": "\ud83c\udf57 Mediterranean Chicken Skillet with Olives & Spinach",
   "source": "cb118",
   "per": {
    "kcal": 319,
@@ -372,7 +370,7 @@
  },
  {
   "id": "m139",
-  "name": "🐟 Miso Ginger Salmon with Brown Rice",
+  "name": "\ud83d\udc1f Miso Ginger Salmon with Brown Rice",
   "source": "cb133",
   "per": {
    "kcal": 490,
@@ -398,7 +396,7 @@
  },
  {
   "id": "m140",
-  "name": "🐟 Lemon Herb Grilled Salmon with Quinoa & Steamed Greens",
+  "name": "\ud83d\udc1f Lemon Herb Grilled Salmon with Quinoa & Steamed Greens",
   "source": "cb116",
   "per": {
    "kcal": 496,
@@ -421,7 +419,7 @@
  },
  {
   "id": "m141",
-  "name": "🐟 Honey Mustard Salmon with Greens",
+  "name": "\ud83d\udc1f Honey Mustard Salmon with Greens",
   "source": "cb88",
   "per": {
    "kcal": 366,
@@ -445,7 +443,7 @@
  },
  {
   "id": "m142",
-  "name": "🐟 Baked Lemon Dill Cod with Garlic Green Beans",
+  "name": "\ud83d\udc1f Baked Lemon Dill Cod with Garlic Green Beans",
   "source": "cb121",
   "per": {
    "kcal": 230,
@@ -459,10 +457,8 @@
    "carbs": 10,
    "fat": 12
   },
-  "scaled": "Cod fillets 150 → 154 g",
-  "issues": [
-   "protein 30.0 g — no scalable source"
-  ],
+  "scaled": "Cod fillets 150 \u2192 154 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Fish"
@@ -470,7 +466,7 @@
  },
  {
   "id": "m143",
-  "name": "🐟 One-Pan Lemon Garlic Tilapia with Asparagus",
+  "name": "\ud83d\udc1f One-Pan Lemon Garlic Tilapia with Asparagus",
   "source": "cb136",
   "per": {
    "kcal": 244,
@@ -493,7 +489,7 @@
  },
  {
   "id": "m144",
-  "name": "🍗 Greek Chicken Pita Pockets",
+  "name": "\ud83c\udf57 Greek Chicken Pita Pockets",
   "source": "cb75",
   "per": {
    "kcal": 320,
@@ -517,7 +513,7 @@
  },
  {
   "id": "m145",
-  "name": "🐟 Garlic Butter Cod with Spinach",
+  "name": "\ud83d\udc1f Garlic Butter Cod with Spinach",
   "source": "cb163",
   "per": {
    "kcal": 204,
@@ -531,10 +527,8 @@
    "carbs": 4,
    "fat": 18
   },
-  "scaled": "Cod fillets 150 → 163 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Cod fillets 150 \u2192 163 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy",
@@ -543,7 +537,7 @@
  },
  {
   "id": "m146",
-  "name": "🍗 Pesto Chicken Pasta Salad",
+  "name": "\ud83c\udf57 Pesto Chicken Pasta Salad",
   "source": "cb81",
   "per": {
    "kcal": 447,
@@ -566,7 +560,7 @@
  },
  {
   "id": "m147",
-  "name": "🐟 Zesty Lemon Herb Cod",
+  "name": "\ud83d\udc1f Zesty Lemon Herb Cod",
   "source": "cb154",
   "per": {
    "kcal": 202,
@@ -580,7 +574,7 @@
    "carbs": 5,
    "fat": 16
   },
-  "scaled": "Cod fillets 150 → 166 g",
+  "scaled": "Cod fillets 150 \u2192 166 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -589,7 +583,7 @@
  },
  {
   "id": "sm10",
-  "name": "🥤 Energizing Chocolate-Mint Protein Shake",
+  "name": "\ud83e\udd64 Energizing Chocolate-Mint Protein Shake",
   "source": "cb232",
   "per": {
    "kcal": 210,
@@ -613,7 +607,7 @@
  },
  {
   "id": "m148",
-  "name": "🦃 Turkey & Zucchini Meatballs",
+  "name": "\ud83e\udd83 Turkey & Zucchini Meatballs",
   "source": "cb157",
   "per": {
    "kcal": 251,
@@ -627,10 +621,8 @@
    "carbs": 6,
    "fat": 13
   },
-  "scaled": "Ground turkey 113 → 141 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Ground turkey 113 \u2192 141 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Eggs",
@@ -639,7 +631,7 @@
  },
  {
   "id": "bf45",
-  "name": "🫙 Walnut & Berry Greek Yogurt Bowl",
+  "name": "\ud83e\uded9 Walnut & Berry Greek Yogurt Bowl",
   "source": "cb59",
   "per": {
    "kcal": 268,
@@ -663,7 +655,7 @@
  },
  {
   "id": "ds12",
-  "name": "🍪 Chocolate Protein Mug Cake",
+  "name": "\ud83c\udf6a Chocolate Protein Mug Cake",
   "source": "cb204",
   "per": {
    "kcal": 202,
@@ -688,7 +680,7 @@
  },
  {
   "id": "m149",
-  "name": "🦐 Garlic Herb Shrimp Pasta",
+  "name": "\ud83e\udd90 Garlic Herb Shrimp Pasta",
   "source": "cb145",
   "per": {
    "kcal": 442,
@@ -702,7 +694,7 @@
    "carbs": 48,
    "fat": 10
   },
-  "scaled": "Shrimp 75 → 89 g",
+  "scaled": "Shrimp 75 \u2192 89 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -712,7 +704,7 @@
  },
  {
   "id": "bf46",
-  "name": "🥚 Veggie-Packed Breakfast Scramble",
+  "name": "\ud83e\udd5a Veggie-Packed Breakfast Scramble",
   "source": "cb26",
   "per": {
    "kcal": 214,
@@ -736,7 +728,7 @@
  },
  {
   "id": "m150",
-  "name": "🍗 Grilled Chicken & Quinoa Salad",
+  "name": "\ud83c\udf57 Grilled Chicken & Quinoa Salad",
   "source": "cb66",
   "per": {
    "kcal": 339,
@@ -750,7 +742,7 @@
    "carbs": 34,
    "fat": 12
   },
-  "scaled": "Chicken breast 85 → 108 g",
+  "scaled": "Chicken breast 85 \u2192 108 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -759,7 +751,7 @@
  },
  {
   "id": "sn10",
-  "name": "🦃 Spiced Turkey Lettuce Cups",
+  "name": "\ud83e\udd83 Spiced Turkey Lettuce Cups",
   "source": "cb112",
   "per": {
    "kcal": 272,
@@ -773,10 +765,8 @@
    "carbs": 5,
    "fat": 17
   },
-  "scaled": "Lean ground turkey 113 → 122 g",
-  "issues": [
-   "protein 24.9 g — no scalable source"
-  ],
+  "scaled": "Lean ground turkey 113 \u2192 122 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Gluten / Wheat",
@@ -785,7 +775,7 @@
  },
  {
   "id": "m151",
-  "name": "🌯 Caprese Pesto Sandwich",
+  "name": "\ud83c\udf2f Caprese Pesto Sandwich",
   "source": "cb92",
   "per": {
    "kcal": 477,
@@ -799,7 +789,7 @@
    "carbs": 30,
    "fat": 22
   },
-  "scaled": "Fresh mozzarella 57 → 84 g",
+  "scaled": "Fresh mozzarella 57 \u2192 84 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -810,7 +800,7 @@
  },
  {
   "id": "m152",
-  "name": "🦐 Lemon-Garlic Shrimp with Zoodles",
+  "name": "\ud83e\udd90 Lemon-Garlic Shrimp with Zoodles",
   "source": "cb93",
   "per": {
    "kcal": 216,
@@ -824,10 +814,8 @@
    "carbs": 6,
    "fat": 9
   },
-  "scaled": "Shrimp 113 → 137 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Shrimp 113 \u2192 137 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Crustaceans",
@@ -836,7 +824,7 @@
  },
  {
   "id": "m153",
-  "name": "🦃 Spiced Turkey & Veggie Skillet",
+  "name": "\ud83e\udd83 Spiced Turkey & Veggie Skillet",
   "source": "cb142",
   "per": {
    "kcal": 323,
@@ -850,14 +838,14 @@
    "carbs": 8,
    "fat": 19
   },
-  "scaled": "Ground turkey 113 → 153 g",
+  "scaled": "Ground turkey 113 \u2192 153 g",
   "issues": [],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "sn11",
-  "name": "🦐 Citrus Shrimp Salad",
+  "name": "\ud83e\udd90 Citrus Shrimp Salad",
   "source": "cb106",
   "per": {
    "kcal": 175,
@@ -871,10 +859,8 @@
    "carbs": 8,
    "fat": 11
   },
-  "scaled": "Shrimp 113 → 117 g",
-  "issues": [
-   "protein 24.9 g — no scalable source"
-  ],
+  "scaled": "Shrimp 113 \u2192 117 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Crustaceans"
@@ -882,7 +868,7 @@
  },
  {
   "id": "m154",
-  "name": "🦃 Turkey Veggie Stir-Fry",
+  "name": "\ud83e\udd83 Turkey Veggie Stir-Fry",
   "source": "cb74",
   "per": {
    "kcal": 276,
@@ -896,7 +882,7 @@
    "carbs": 14,
    "fat": 18
   },
-  "scaled": "Lean ground turkey 100 → 148 g",
+  "scaled": "Lean ground turkey 100 \u2192 148 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -907,7 +893,7 @@
  },
  {
   "id": "sn12",
-  "name": "🥚 Avocado Egg Salad Wrap",
+  "name": "\ud83e\udd5a Avocado Egg Salad Wrap",
   "source": "cb70",
   "per": {
    "kcal": 455,
@@ -921,10 +907,8 @@
    "carbs": 25,
    "fat": 18
   },
-  "scaled": "Boiled eggs 120 → 152 g",
-  "issues": [
-   "protein 25.0 g — no scalable source"
-  ],
+  "scaled": "Boiled eggs 120 \u2192 152 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy",
@@ -934,7 +918,7 @@
  },
  {
   "id": "bf47",
-  "name": "🫙 Peach Chia Yogurt Bowl",
+  "name": "\ud83e\uded9 Peach Chia Yogurt Bowl",
   "source": "cb53",
   "per": {
    "kcal": 251,
@@ -958,7 +942,7 @@
  },
  {
   "id": "sn13",
-  "name": "🍗 Harvest Chicken Salad",
+  "name": "\ud83c\udf57 Harvest Chicken Salad",
   "source": "cb84",
   "per": {
    "kcal": 280,
@@ -972,7 +956,7 @@
    "carbs": 22,
    "fat": 16
   },
-  "scaled": "Chicken breast 85 → 104 g",
+  "scaled": "Chicken breast 85 \u2192 104 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -982,7 +966,7 @@
  },
  {
   "id": "bf48",
-  "name": "🫙 Lemon Poppy Seed Greek Yogurt Bowl",
+  "name": "\ud83e\uded9 Lemon Poppy Seed Greek Yogurt Bowl",
   "source": "cb35",
   "per": {
    "kcal": 239,
@@ -1006,7 +990,7 @@
  },
  {
   "id": "sn14",
-  "name": "🍗 Asian-Inspired Chicken Lettuce Wraps",
+  "name": "\ud83c\udf57 Asian-Inspired Chicken Lettuce Wraps",
   "source": "cb97",
   "per": {
    "kcal": 252,
@@ -1020,7 +1004,7 @@
    "carbs": 9,
    "fat": 14
   },
-  "scaled": "Ground chicken 112 → 131 g",
+  "scaled": "Ground chicken 112 \u2192 131 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -1031,7 +1015,7 @@
  },
  {
   "id": "sm11",
-  "name": "🥤 Strawberry–Almond Glow Shake",
+  "name": "\ud83e\udd64 Strawberry\u2013Almond Glow Shake",
   "source": "cb231",
   "per": {
    "kcal": 391,
@@ -1055,7 +1039,7 @@
  },
  {
   "id": "m155",
-  "name": "🦐 Shrimp & Veggie Rice Bowl",
+  "name": "\ud83e\udd90 Shrimp & Veggie Rice Bowl",
   "source": "cb79",
   "per": {
    "kcal": 257,
@@ -1069,10 +1053,8 @@
    "carbs": 41,
    "fat": 9
   },
-  "scaled": "Shrimp 75 → 130 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Shrimp 75 \u2192 130 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Crustaceans",
@@ -1082,7 +1064,7 @@
  },
  {
   "id": "bf49",
-  "name": "🧀 Mushroom & Goat Cheese Scramble",
+  "name": "\ud83e\uddc0 Mushroom & Goat Cheese Scramble",
   "source": "cb41",
   "per": {
    "kcal": 261,
@@ -1106,7 +1088,7 @@
  },
  {
   "id": "bf50",
-  "name": "🫙 Strawberry Chia Parfait",
+  "name": "\ud83e\uded9 Strawberry Chia Parfait",
   "source": "cb16",
   "per": {
    "kcal": 253,
@@ -1130,7 +1112,7 @@
  },
  {
   "id": "bf51",
-  "name": "🍽️ Savory Tomato & Basil Scramble",
+  "name": "\ud83c\udf7d\ufe0f Savory Tomato & Basil Scramble",
   "source": "cb62",
   "per": {
    "kcal": 202,
@@ -1153,7 +1135,7 @@
  },
  {
   "id": "m156",
-  "name": "🦐 Garlic Butter Shrimp with Zucchini Noodles",
+  "name": "\ud83e\udd90 Garlic Butter Shrimp with Zucchini Noodles",
   "source": "cb126",
   "per": {
    "kcal": 206,
@@ -1167,10 +1149,8 @@
    "carbs": 9,
    "fat": 13
   },
-  "scaled": "Shrimp 75 → 136 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Shrimp 75 \u2192 136 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Crustaceans",
@@ -1180,7 +1160,7 @@
  },
  {
   "id": "bf52",
-  "name": "🥚 Savory Oatmeal with Spinach & Poached Egg",
+  "name": "\ud83e\udd5a Savory Oatmeal with Spinach & Poached Egg",
   "source": "cb38",
   "per": {
    "kcal": 275,
@@ -1207,7 +1187,7 @@
  },
  {
   "id": "m157",
-  "name": "🍝 Creamy Mushroom & Spinach Pasta",
+  "name": "\ud83c\udf5d Creamy Mushroom & Spinach Pasta",
   "source": "cb123",
   "per": {
    "kcal": 406,
@@ -1223,7 +1203,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 16.2 g — no scalable source"
+   "protein 16.2 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1234,7 +1214,7 @@
  },
  {
   "id": "sn15",
-  "name": "🫘 Spiced Chickpea Wraps",
+  "name": "\ud83e\uded8 Spiced Chickpea Wraps",
   "source": "cb80",
   "per": {
    "kcal": 582,
@@ -1248,9 +1228,9 @@
    "carbs": 42,
    "fat": 14
   },
-  "scaled": "Chickpeas 120 → 240 g",
+  "scaled": "Chickpeas 120 \u2192 240 g",
   "issues": [
-   "protein 22.9 g — no scalable source"
+   "protein 22.9 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1260,7 +1240,7 @@
  },
  {
   "id": "bf53",
-  "name": "🌯 Savory Mushroom Breakfast Wrap",
+  "name": "\ud83c\udf2f Savory Mushroom Breakfast Wrap",
   "source": "cb52",
   "per": {
    "kcal": 298,
@@ -1285,7 +1265,7 @@
  },
  {
   "id": "m158",
-  "name": "🍗 Hearty Chicken Vegetable Soup",
+  "name": "\ud83c\udf57 Hearty Chicken Vegetable Soup",
   "source": "cb77",
   "per": {
    "kcal": 225,
@@ -1299,7 +1279,7 @@
    "carbs": 14,
    "fat": 9
   },
-  "scaled": "Cooked chicken breast 46.5 → 88 g",
+  "scaled": "Cooked chicken breast 46.5 \u2192 88 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -1308,7 +1288,7 @@
  },
  {
   "id": "m159",
-  "name": "🧀 Savory Cottage Cheese Bowl",
+  "name": "\ud83e\uddc0 Savory Cottage Cheese Bowl",
   "source": "cb103",
   "per": {
    "kcal": 316,
@@ -1322,9 +1302,9 @@
    "carbs": 7,
    "fat": 10
   },
-  "scaled": "Low-fat cottage cheese 112 → 224 g",
+  "scaled": "Low-fat cottage cheese 112 \u2192 224 g",
   "issues": [
-   "protein 28.3 g — no scalable source"
+   "protein 28.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1333,7 +1313,7 @@
  },
  {
   "id": "sn16",
-  "name": "🥚 Grilled Veggie & Halloumi Salad",
+  "name": "\ud83e\udd5a Grilled Veggie & Halloumi Salad",
   "source": "cb104",
   "per": {
    "kcal": 405,
@@ -1347,10 +1327,8 @@
    "carbs": 10,
    "fat": 18
   },
-  "scaled": "Halloumi cheese 57 → 104 g",
-  "issues": [
-   "protein 25.0 g — no scalable source"
-  ],
+  "scaled": "Halloumi cheese 57 \u2192 104 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy",
@@ -1359,7 +1337,7 @@
  },
  {
   "id": "bf54",
-  "name": "🥚 Avocado Egg Toast with Microgreens",
+  "name": "\ud83e\udd5a Avocado Egg Toast with Microgreens",
   "source": "cb15",
   "per": {
    "kcal": 307,
@@ -1383,7 +1361,7 @@
  },
  {
   "id": "m160",
-  "name": "🐟 Creamy Tuna & Spinach Pasta",
+  "name": "\ud83d\udc1f Creamy Tuna & Spinach Pasta",
   "source": "cb73",
   "per": {
    "kcal": 441,
@@ -1408,7 +1386,7 @@
  },
  {
   "id": "sn17",
-  "name": "🧀 Strawberry Cottage Cheese Bowl",
+  "name": "\ud83e\uddc0 Strawberry Cottage Cheese Bowl",
   "source": "cb182",
   "per": {
    "kcal": 221,
@@ -1422,10 +1400,8 @@
    "carbs": 11,
    "fat": 6
   },
-  "scaled": "Low-fat cottage cheese 112 → 201 g",
-  "issues": [
-   "protein 25.0 g — no scalable source"
-  ],
+  "scaled": "Low-fat cottage cheese 112 \u2192 201 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy"
@@ -1433,7 +1409,7 @@
  },
  {
   "id": "sn18",
-  "name": "🧀 Cottage Cheese Berry Bowl",
+  "name": "\ud83e\uddc0 Cottage Cheese Berry Bowl",
   "source": "cb213",
   "per": {
    "kcal": 227,
@@ -1447,10 +1423,8 @@
    "carbs": 10,
    "fat": 5
   },
-  "scaled": "Cottage cheese 112 → 201 g",
-  "issues": [
-   "protein 25.0 g — no scalable source"
-  ],
+  "scaled": "Cottage cheese 112 \u2192 201 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy"
@@ -1458,7 +1432,7 @@
  },
  {
   "id": "bf55",
-  "name": "🥚 Creamy Avocado Toast with Soft-Boiled Egg",
+  "name": "\ud83e\udd5a Creamy Avocado Toast with Soft-Boiled Egg",
   "source": "cb55",
   "per": {
    "kcal": 344,
@@ -1482,7 +1456,7 @@
  },
  {
   "id": "ds13",
-  "name": "🫙 Greek Yogurt Parfait with Berries & Flax",
+  "name": "\ud83e\uded9 Greek Yogurt Parfait with Berries & Flax",
   "source": "cb169",
   "per": {
    "kcal": 162,
@@ -1505,7 +1479,7 @@
  },
  {
   "id": "bf56",
-  "name": "🫙 Tropical Sunrise Parfait",
+  "name": "\ud83e\uded9 Tropical Sunrise Parfait",
   "source": "cb36",
   "per": {
    "kcal": 206,
@@ -1530,7 +1504,7 @@
  },
  {
   "id": "bf57",
-  "name": "🥞 Lemon Ricotta Pancakes",
+  "name": "\ud83e\udd5e Lemon Ricotta Pancakes",
   "source": "cb45",
   "per": {
    "kcal": 287,
@@ -1556,7 +1530,7 @@
  },
  {
   "id": "m161",
-  "name": "🦐 Coconut Curry Shrimp",
+  "name": "\ud83e\udd90 Coconut Curry Shrimp",
   "source": "cb158",
   "per": {
    "kcal": 239,
@@ -1570,10 +1544,8 @@
    "carbs": 7,
    "fat": 21
   },
-  "scaled": "Shrimp 75 → 146 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Shrimp 75 \u2192 146 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Crustaceans"
@@ -1581,7 +1553,7 @@
  },
  {
   "id": "ds14",
-  "name": "🫙 Apple Cinnamon Yogurt Parfait",
+  "name": "\ud83e\uded9 Apple Cinnamon Yogurt Parfait",
   "source": "cb199",
   "per": {
    "kcal": 220,
@@ -1606,7 +1578,7 @@
  },
  {
   "id": "sn19",
-  "name": "🧀 Cottage Cheese & Pineapple Cups",
+  "name": "\ud83e\uddc0 Cottage Cheese & Pineapple Cups",
   "source": "cb195",
   "per": {
    "kcal": 207,
@@ -1620,7 +1592,7 @@
    "carbs": 11,
    "fat": 4
   },
-  "scaled": "Low-fat cottage cheese 112 → 207 g",
+  "scaled": "Low-fat cottage cheese 112 \u2192 207 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -1629,7 +1601,7 @@
  },
  {
   "id": "bf58",
-  "name": "🌾 Peanut Butter Banana Overnight Oats",
+  "name": "\ud83c\udf3e Peanut Butter Banana Overnight Oats",
   "source": "cb49",
   "per": {
    "kcal": 358,
@@ -1655,7 +1627,7 @@
  },
  {
   "id": "m162",
-  "name": "🫘 Curried Chickpea Bowl",
+  "name": "\ud83e\uded8 Curried Chickpea Bowl",
   "source": "cb113",
   "per": {
    "kcal": 583,
@@ -1669,16 +1641,16 @@
    "carbs": 49,
    "fat": 16
   },
-  "scaled": "Chickpeas 120 → 240 g",
+  "scaled": "Chickpeas 120 \u2192 240 g",
   "issues": [
-   "protein 20.9 g — no scalable source"
+   "protein 20.9 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m163",
-  "name": "🥚 Veggie-Packed Chickpea Pasta",
+  "name": "\ud83e\udd5a Veggie-Packed Chickpea Pasta",
   "source": "cb164",
   "per": {
    "kcal": 279,
@@ -1694,7 +1666,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 13.1 g — no scalable source"
+   "protein 13.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1704,7 +1676,7 @@
  },
  {
   "id": "sn20",
-  "name": "🫙 Apple Cinnamon Greek Yogurt Dip",
+  "name": "\ud83e\uded9 Apple Cinnamon Greek Yogurt Dip",
   "source": "cb171",
   "per": {
    "kcal": 207,
@@ -1720,7 +1692,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 11.6 g — no scalable source"
+   "protein 11.6 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1729,7 +1701,7 @@
  },
  {
   "id": "sn21",
-  "name": "🫙 Savory Yogurt Bowl with Herbs & Cucumber",
+  "name": "\ud83e\uded9 Savory Yogurt Bowl with Herbs & Cucumber",
   "source": "cb190",
   "per": {
    "kcal": 113,
@@ -1745,7 +1717,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 11.2 g — no scalable source"
+   "protein 11.2 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1754,7 +1726,7 @@
  },
  {
   "id": "bf59",
-  "name": "🧀 Strawberry Cottage Cheese Toast",
+  "name": "\ud83e\uddc0 Strawberry Cottage Cheese Toast",
   "source": "cb48",
   "per": {
    "kcal": 176,
@@ -1778,7 +1750,7 @@
  },
  {
   "id": "m164",
-  "name": "🦃 Turkey & Vegetable Stuffed Peppers",
+  "name": "\ud83e\udd83 Turkey & Vegetable Stuffed Peppers",
   "source": "cb122",
   "per": {
    "kcal": 237,
@@ -1792,16 +1764,16 @@
    "carbs": 18,
    "fat": 10
   },
-  "scaled": "Ground turkey 57 → 114 g",
+  "scaled": "Ground turkey 57 \u2192 114 g",
   "issues": [
-   "protein 23.1 g — no scalable source"
+   "protein 23.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m165",
-  "name": "🌿 Lentil & Sweet Potato Shepherd's Pie",
+  "name": "\ud83c\udf3f Lentil & Sweet Potato Shepherd's Pie",
   "source": "cb130",
   "per": {
    "kcal": 420,
@@ -1815,9 +1787,9 @@
    "carbs": 52,
    "fat": 8
   },
-  "scaled": "Cooked lentils 99 → 198 g",
+  "scaled": "Cooked lentils 99 \u2192 198 g",
   "issues": [
-   "protein 21.1 g — no scalable source"
+   "protein 21.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1826,7 +1798,7 @@
  },
  {
   "id": "bf60",
-  "name": "🌾 Banana Almond Butter Overnight Oats",
+  "name": "\ud83c\udf3e Banana Almond Butter Overnight Oats",
   "source": "cb56",
   "per": {
    "kcal": 339,
@@ -1851,7 +1823,7 @@
  },
  {
   "id": "bf61",
-  "name": "🌾 Banana-Oat-Pancakes",
+  "name": "\ud83c\udf3e Banana-Oat-Pancakes",
   "source": "cb18",
   "per": {
    "kcal": 238,
@@ -1876,7 +1848,7 @@
  },
  {
   "id": "m166",
-  "name": "🍝 Creamy Spinach & Mushroom Orzo",
+  "name": "\ud83c\udf5d Creamy Spinach & Mushroom Orzo",
   "source": "cb149",
   "per": {
    "kcal": 416,
@@ -1892,7 +1864,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 14.5 g — no scalable source"
+   "protein 14.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1903,7 +1875,7 @@
  },
  {
   "id": "sn22",
-  "name": "🌿 Mediterranean Lentil Salad with Feta",
+  "name": "\ud83c\udf3f Mediterranean Lentil Salad with Feta",
   "source": "cb141",
   "per": {
    "kcal": 327,
@@ -1917,9 +1889,9 @@
    "carbs": 28,
    "fat": 13
   },
-  "scaled": "Cooked lentils 99 → 198 g",
+  "scaled": "Cooked lentils 99 \u2192 198 g",
   "issues": [
-   "protein 19.6 g — no scalable source"
+   "protein 19.6 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1928,7 +1900,7 @@
  },
  {
   "id": "m167",
-  "name": "🌿 Creamy Coconut Lentil Curry",
+  "name": "\ud83c\udf3f Creamy Coconut Lentil Curry",
   "source": "cb144",
   "per": {
    "kcal": 574,
@@ -1942,10 +1914,8 @@
    "carbs": 45,
    "fat": 12
   },
-  "scaled": "Red lentils 95 → 111 g",
-  "issues": [
-   "protein 29.9 g — no scalable source"
-  ],
+  "scaled": "Red lentils 95 \u2192 111 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Celery"
@@ -1953,7 +1923,7 @@
  },
  {
   "id": "m168",
-  "name": "🥚 Tofu & Veggie Stir-Fry Bowl",
+  "name": "\ud83e\udd5a Tofu & Veggie Stir-Fry Bowl",
   "source": "cb76",
   "per": {
    "kcal": 206,
@@ -1967,9 +1937,9 @@
    "carbs": 20,
    "fat": 18
   },
-  "scaled": "Firm tofu 100 → 200 g",
+  "scaled": "Firm tofu 100 \u2192 200 g",
   "issues": [
-   "protein 18.5 g — no scalable source"
+   "protein 18.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -1980,7 +1950,7 @@
  },
  {
   "id": "m169",
-  "name": "🥑 Creamy Avocado Pasta",
+  "name": "\ud83e\udd51 Creamy Avocado Pasta",
   "source": "cb87",
   "per": {
    "kcal": 455,
@@ -1996,7 +1966,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 10.8 g — no scalable source"
+   "protein 10.8 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2006,7 +1976,7 @@
  },
  {
   "id": "sn23",
-  "name": "🥚 Veggie-Packed Hummus Wrap",
+  "name": "\ud83e\udd5a Veggie-Packed Hummus Wrap",
   "source": "cb101",
   "per": {
    "kcal": 339,
@@ -2022,7 +1992,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 10.1 g — no scalable source"
+   "protein 10.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2032,7 +2002,7 @@
  },
  {
   "id": "bf62",
-  "name": "🌯 Sweet Almond Toast with Ricotta & Honey",
+  "name": "\ud83c\udf2f Sweet Almond Toast with Ricotta & Honey",
   "source": "cb33",
   "per": {
    "kcal": 217,
@@ -2057,7 +2027,7 @@
  },
  {
   "id": "m170",
-  "name": "🫘 Roasted Chickpea & Avocado Toast",
+  "name": "\ud83e\uded8 Roasted Chickpea & Avocado Toast",
   "source": "cb100",
   "per": {
    "kcal": 373,
@@ -2071,9 +2041,9 @@
    "carbs": 25,
    "fat": 18
   },
-  "scaled": "Roasted chickpeas 41.0 → 82 g",
+  "scaled": "Roasted chickpeas 41.0 \u2192 82 g",
   "issues": [
-   "protein 12.5 g — no scalable source"
+   "protein 12.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2082,7 +2052,7 @@
  },
  {
   "id": "sn24",
-  "name": "🍽️ Roasted Pumpkin Seeds with Cinnamon & Honey",
+  "name": "\ud83c\udf7d\ufe0f Roasted Pumpkin Seeds with Cinnamon & Honey",
   "source": "cb181",
   "per": {
    "kcal": 193,
@@ -2098,14 +2068,14 @@
   },
   "scaled": null,
   "issues": [
-   "protein 9.8 g — no scalable source"
+   "protein 9.8 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "bf63",
-  "name": "🌾 Brain-Boosting Berry Oatmeal",
+  "name": "\ud83c\udf3e Brain-Boosting Berry Oatmeal",
   "source": "cb31",
   "per": {
    "kcal": 246,
@@ -2129,7 +2099,7 @@
  },
  {
   "id": "bf64",
-  "name": "🥚 Spinach & Feta Egg Muffins",
+  "name": "\ud83e\udd5a Spinach & Feta Egg Muffins",
   "source": "cb21",
   "per": {
    "kcal": 115,
@@ -2154,7 +2124,7 @@
  },
  {
   "id": "sm12",
-  "name": "🥤 Raspberry Almond Dream Smoothie",
+  "name": "\ud83e\udd64 Raspberry Almond Dream Smoothie",
   "source": "cb240",
   "per": {
    "kcal": 301,
@@ -2179,7 +2149,7 @@
  },
  {
   "id": "sn25",
-  "name": "🧀 Roasted Beet & Goat Cheese Salad",
+  "name": "\ud83e\uddc0 Roasted Beet & Goat Cheese Salad",
   "source": "cb96",
   "per": {
    "kcal": 343,
@@ -2193,9 +2163,9 @@
    "carbs": 22,
    "fat": 18
   },
-  "scaled": "Goat cheese 17.5 → 35.0 g",
+  "scaled": "Goat cheese 17.5 \u2192 35.0 g",
   "issues": [
-   "protein 11.5 g — no scalable source"
+   "protein 11.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2206,7 +2176,7 @@
  },
  {
   "id": "bf65",
-  "name": "🌾 Coconut Mango Overnight Oats",
+  "name": "\ud83c\udf3e Coconut Mango Overnight Oats",
   "source": "cb40",
   "per": {
    "kcal": 327,
@@ -2229,7 +2199,7 @@
  },
  {
   "id": "m171",
-  "name": "🌾 Broccoli & Cheddar Quinoa Bowl",
+  "name": "\ud83c\udf3e Broccoli & Cheddar Quinoa Bowl",
   "source": "cb111",
   "per": {
    "kcal": 228,
@@ -2245,7 +2215,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 9.2 g — no scalable source"
+   "protein 9.2 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2254,7 +2224,7 @@
  },
  {
   "id": "m172",
-  "name": "🥚 Roasted Veggie Grain Bowl with Tahini Drizzle",
+  "name": "\ud83e\udd5a Roasted Veggie Grain Bowl with Tahini Drizzle",
   "source": "cb151",
   "per": {
    "kcal": 319,
@@ -2268,9 +2238,9 @@
    "carbs": 48,
    "fat": 14
   },
-  "scaled": "Roasted chickpeas 41.0 → 82 g",
+  "scaled": "Roasted chickpeas 41.0 \u2192 82 g",
   "issues": [
-   "protein 11.5 g — no scalable source"
+   "protein 11.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2280,7 +2250,7 @@
  },
  {
   "id": "bf66",
-  "name": "🌾 Honey Nut Quinoa Breakfast Bowl",
+  "name": "\ud83c\udf3e Honey Nut Quinoa Breakfast Bowl",
   "source": "cb27",
   "per": {
    "kcal": 284,
@@ -2303,7 +2273,7 @@
  },
  {
   "id": "sm13",
-  "name": "🥤 Strawberry Kiwi Glow Smoothie",
+  "name": "\ud83e\udd64 Strawberry Kiwi Glow Smoothie",
   "source": "cb250",
   "per": {
    "kcal": 258,
@@ -2327,7 +2297,7 @@
  },
  {
   "id": "m173",
-  "name": "🫘 Moroccan Chickpea Tagine",
+  "name": "\ud83e\uded8 Moroccan Chickpea Tagine",
   "source": "cb137",
   "per": {
    "kcal": 360,
@@ -2341,9 +2311,9 @@
    "carbs": 45,
    "fat": 10
   },
-  "scaled": "Chickpeas 82 → 164 g",
+  "scaled": "Chickpeas 82 \u2192 164 g",
   "issues": [
-   "protein 14.0 g — no scalable source"
+   "protein 14.0 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2353,7 +2323,7 @@
  },
  {
   "id": "ds15",
-  "name": "🫙 Peanut Butter Yogurt Dip with Fruit",
+  "name": "\ud83e\uded9 Peanut Butter Yogurt Dip with Fruit",
   "source": "cb206",
   "per": {
    "kcal": 102,
@@ -2377,7 +2347,7 @@
  },
  {
   "id": "sm14",
-  "name": "🥤 Strawberry Peach Silk Smoothie",
+  "name": "\ud83e\udd64 Strawberry Peach Silk Smoothie",
   "source": "cb219",
   "per": {
    "kcal": 246,
@@ -2401,7 +2371,7 @@
  },
  {
   "id": "sm15",
-  "name": "🥤 Mango Kale Energy Smoothie",
+  "name": "\ud83e\udd64 Mango Kale Energy Smoothie",
   "source": "cb263",
   "per": {
    "kcal": 253,
@@ -2424,7 +2394,7 @@
  },
  {
   "id": "sm16",
-  "name": "🥤 Cucumber Mint Refresh Smoothie",
+  "name": "\ud83e\udd64 Cucumber Mint Refresh Smoothie",
   "source": "cb265",
   "per": {
    "kcal": 199,
@@ -2447,7 +2417,7 @@
  },
  {
   "id": "sm17",
-  "name": "🥤 Blueberry Coconut Bliss Smoothie",
+  "name": "\ud83e\udd64 Blueberry Coconut Bliss Smoothie",
   "source": "cb254",
   "per": {
    "kcal": 262,
@@ -2470,7 +2440,7 @@
  },
  {
   "id": "sm18",
-  "name": "🥤 Peach Raspberry Protein Smoothie",
+  "name": "\ud83e\udd64 Peach Raspberry Protein Smoothie",
   "source": "cb264",
   "per": {
    "kcal": 169,
@@ -2494,7 +2464,7 @@
  },
  {
   "id": "sm19",
-  "name": "🥤 Berry Banana Bliss Smoothie",
+  "name": "\ud83e\udd64 Berry Banana Bliss Smoothie",
   "source": "cb267",
   "per": {
    "kcal": 242,
@@ -2518,7 +2488,7 @@
  },
  {
   "id": "sn26",
-  "name": "🌿 Savory Mushroom Lentil Stew",
+  "name": "\ud83c\udf3f Savory Mushroom Lentil Stew",
   "source": "cb165",
   "per": {
    "kcal": 376,
@@ -2532,7 +2502,7 @@
    "carbs": 36,
    "fat": 8
   },
-  "scaled": "Dry brown lentils 47.5 → 82 g",
+  "scaled": "Dry brown lentils 47.5 \u2192 82 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -2541,7 +2511,7 @@
  },
  {
   "id": "sm20",
-  "name": "🥤 Peach Mango Immunity Smoothie",
+  "name": "\ud83e\udd64 Peach Mango Immunity Smoothie",
   "source": "cb247",
   "per": {
    "kcal": 280,
@@ -2564,7 +2534,7 @@
  },
  {
   "id": "m174",
-  "name": "🫘 Chickpea & Spinach Coconut Stew",
+  "name": "\ud83e\uded8 Chickpea & Spinach Coconut Stew",
   "source": "cb155",
   "per": {
    "kcal": 358,
@@ -2578,16 +2548,16 @@
    "carbs": 35,
    "fat": 19
   },
-  "scaled": "Chickpeas 82 → 164 g",
+  "scaled": "Chickpeas 82 \u2192 164 g",
   "issues": [
-   "protein 13.3 g — no scalable source"
+   "protein 13.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m175",
-  "name": "🌿 Lentil & Vegetable Stew",
+  "name": "\ud83c\udf3f Lentil & Vegetable Stew",
   "source": "cb125",
   "per": {
    "kcal": 472,
@@ -2601,7 +2571,7 @@
    "carbs": 44,
    "fat": 8
   },
-  "scaled": "Dried lentils 63 → 110 g",
+  "scaled": "Dried lentils 63 \u2192 110 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -2610,7 +2580,7 @@
  },
  {
   "id": "sm21",
-  "name": "🥤 Sweet Peach & Oat Breakfast Smoothie",
+  "name": "\ud83e\udd64 Sweet Peach & Oat Breakfast Smoothie",
   "source": "cb234",
   "per": {
    "kcal": 368,
@@ -2635,7 +2605,7 @@
  },
  {
   "id": "m176",
-  "name": "🍽️ Cauliflower Fried Rice",
+  "name": "\ud83c\udf7d\ufe0f Cauliflower Fried Rice",
   "source": "cb143",
   "per": {
    "kcal": 159,
@@ -2649,9 +2619,9 @@
    "carbs": 16,
    "fat": 12
   },
-  "scaled": "Egg 30.0 → 60 g",
+  "scaled": "Egg 30.0 \u2192 60 g",
   "issues": [
-   "protein 11.2 g — no scalable source"
+   "protein 11.2 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2663,7 +2633,7 @@
  },
  {
   "id": "sn27",
-  "name": "🫙 Carrot Sticks with Spicy Greek Yogurt Dip",
+  "name": "\ud83e\uded9 Carrot Sticks with Spicy Greek Yogurt Dip",
   "source": "cb193",
   "per": {
    "kcal": 92,
@@ -2679,7 +2649,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 6.6 g — no scalable source"
+   "protein 6.6 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2688,7 +2658,7 @@
  },
  {
   "id": "m177",
-  "name": "🐟 Tuna & Avocado Open Sandwich",
+  "name": "\ud83d\udc1f Tuna & Avocado Open Sandwich",
   "source": "cb83",
   "per": {
    "kcal": 296,
@@ -2713,7 +2683,7 @@
  },
  {
   "id": "sn28",
-  "name": "🍽️ Caprese Skewers",
+  "name": "\ud83c\udf7d\ufe0f Caprese Skewers",
   "source": "cb185",
   "per": {
    "kcal": 137,
@@ -2727,9 +2697,9 @@
    "carbs": 4,
    "fat": 13
   },
-  "scaled": "Mini mozzarella balls 30.0 → 60 g",
+  "scaled": "Mini mozzarella balls 30.0 \u2192 60 g",
   "issues": [
-   "protein 12.5 g — no scalable source"
+   "protein 12.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2739,7 +2709,7 @@
  },
  {
   "id": "ds16",
-  "name": "🌱 Crispy Air-Fried Tofu Bites",
+  "name": "\ud83c\udf31 Crispy Air-Fried Tofu Bites",
   "source": "cb192",
   "per": {
    "kcal": 88,
@@ -2763,7 +2733,7 @@
  },
  {
   "id": "m178",
-  "name": "🫘 Baked Falafel Bowl",
+  "name": "\ud83e\uded8 Baked Falafel Bowl",
   "source": "cb107",
   "per": {
    "kcal": 307,
@@ -2777,9 +2747,9 @@
    "carbs": 36,
    "fat": 13
   },
-  "scaled": "Canned chickpeas 82 → 164 g",
+  "scaled": "Canned chickpeas 82 \u2192 164 g",
   "issues": [
-   "protein 12.1 g — no scalable source"
+   "protein 12.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2790,7 +2760,7 @@
  },
  {
   "id": "m179",
-  "name": "🍽️ Mediterranean Stuffed Bell Peppers",
+  "name": "\ud83c\udf7d\ufe0f Mediterranean Stuffed Bell Peppers",
   "source": "cb148",
   "per": {
    "kcal": 277,
@@ -2804,9 +2774,9 @@
    "carbs": 40,
    "fat": 11
   },
-  "scaled": "Feta cheese 9.5 → 19.0 g",
+  "scaled": "Feta cheese 9.5 \u2192 19.0 g",
   "issues": [
-   "protein 8.8 g — no scalable source"
+   "protein 8.8 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2815,7 +2785,7 @@
  },
  {
   "id": "m180",
-  "name": "🥚 Quinoa-Stuffed Eggplant Boats",
+  "name": "\ud83e\udd5a Quinoa-Stuffed Eggplant Boats",
   "source": "cb139",
   "per": {
    "kcal": 249,
@@ -2831,14 +2801,14 @@
   },
   "scaled": null,
   "issues": [
-   "protein 7.3 g — no scalable source"
+   "protein 7.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m181",
-  "name": "🥚 Baked Eggplant Parmesan",
+  "name": "\ud83e\udd5a Baked Eggplant Parmesan",
   "source": "cb159",
   "per": {
    "kcal": 197,
@@ -2852,9 +2822,9 @@
    "carbs": 22,
    "fat": 18
   },
-  "scaled": "Shredded mozzarella 14.0 → 28.0 g",
+  "scaled": "Shredded mozzarella 14.0 \u2192 28.0 g",
   "issues": [
-   "protein 9.0 g — no scalable source"
+   "protein 9.0 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2864,7 +2834,7 @@
  },
  {
   "id": "bf67",
-  "name": "🍪 Blueberry Almond Breakfast Muffins",
+  "name": "\ud83c\udf6a Blueberry Almond Breakfast Muffins",
   "source": "cb28",
   "per": {
    "kcal": 185,
@@ -2889,7 +2859,7 @@
  },
  {
   "id": "m182",
-  "name": "🥚 Quinoa & Veggie Stir-Fry",
+  "name": "\ud83e\udd5a Quinoa & Veggie Stir-Fry",
   "source": "cb134",
   "per": {
    "kcal": 230,
@@ -2905,7 +2875,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 7.0 g — no scalable source"
+   "protein 7.0 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2916,7 +2886,7 @@
  },
  {
   "id": "m183",
-  "name": "🥤 Matcha Green Smoothie Bowl",
+  "name": "\ud83e\udd64 Matcha Green Smoothie Bowl",
   "source": "cb63",
   "per": {
    "kcal": 255,
@@ -2932,7 +2902,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 6.7 g — no scalable source"
+   "protein 6.7 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -2942,7 +2912,7 @@
  },
  {
   "id": "m184",
-  "name": "🌿 Lentil & Sweet Potato Bowl",
+  "name": "\ud83c\udf3f Lentil & Sweet Potato Bowl",
   "source": "cb82",
   "per": {
    "kcal": 490,
@@ -2956,16 +2926,16 @@
    "carbs": 50,
    "fat": 11
   },
-  "scaled": "Dried lentils 47.5 → 95 g",
+  "scaled": "Dried lentils 47.5 \u2192 95 g",
   "issues": [
-   "protein 26.7 g — no scalable source"
+   "protein 26.7 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "bf68",
-  "name": "🥤 Green Apple & Cinnamon Smoothie",
+  "name": "\ud83e\udd64 Green Apple & Cinnamon Smoothie",
   "source": "cb39",
   "per": {
    "kcal": 214,
@@ -2988,7 +2958,7 @@
  },
  {
   "id": "m185",
-  "name": "🥚 Lentil Veggie Soup",
+  "name": "\ud83e\udd5a Lentil Veggie Soup",
   "source": "cb90",
   "per": {
    "kcal": 413,
@@ -3002,9 +2972,9 @@
    "carbs": 35,
    "fat": 5
   },
-  "scaled": "Dry lentils 47.5 → 95 g",
+  "scaled": "Dry lentils 47.5 \u2192 95 g",
   "issues": [
-   "protein 27.2 g — no scalable source"
+   "protein 27.2 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3013,7 +2983,7 @@
  },
  {
   "id": "m186",
-  "name": "🍽️ Green Goddess Buddha Bowl",
+  "name": "\ud83c\udf7d\ufe0f Green Goddess Buddha Bowl",
   "source": "cb72",
   "per": {
    "kcal": 298,
@@ -3029,7 +2999,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 10.3 g — no scalable source"
+   "protein 10.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3040,7 +3010,7 @@
  },
  {
   "id": "sn29",
-  "name": "🫘 Spicy Roasted Chickpeas",
+  "name": "\ud83e\uded8 Spicy Roasted Chickpeas",
   "source": "cb170",
   "per": {
    "kcal": 248,
@@ -3054,16 +3024,16 @@
    "carbs": 25,
    "fat": 6
   },
-  "scaled": "Canned chickpeas 82 → 164 g",
+  "scaled": "Canned chickpeas 82 \u2192 164 g",
   "issues": [
-   "protein 11.6 g — no scalable source"
+   "protein 11.6 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "sn30",
-  "name": "🥚 Savory Egg Muffins",
+  "name": "\ud83e\udd5a Savory Egg Muffins",
   "source": "cb214",
   "per": {
    "kcal": 134,
@@ -3077,9 +3047,9 @@
    "carbs": 1,
    "fat": 7
   },
-  "scaled": "Eggs 45.0 → 90 g",
+  "scaled": "Eggs 45.0 \u2192 90 g",
   "issues": [
-   "protein 11.9 g — no scalable source"
+   "protein 11.9 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3090,7 +3060,7 @@
  },
  {
   "id": "sm22",
-  "name": "🥤 Berry–Spinach Beauty Shake",
+  "name": "\ud83e\udd64 Berry\u2013Spinach Beauty Shake",
   "source": "cb230",
   "per": {
    "kcal": 340,
@@ -3114,7 +3084,7 @@
  },
  {
   "id": "bf69",
-  "name": "🍎 Warm Quinoa Breakfast Bowl with Cinnamon Apples",
+  "name": "\ud83c\udf4e Warm Quinoa Breakfast Bowl with Cinnamon Apples",
   "source": "cb54",
   "per": {
    "kcal": 238,
@@ -3137,7 +3107,7 @@
  },
  {
   "id": "m187",
-  "name": "🐟 Mediterranean Tuna Quinoa Bowl",
+  "name": "\ud83d\udc1f Mediterranean Tuna Quinoa Bowl",
   "source": "cb91",
   "per": {
    "kcal": 371,
@@ -3151,7 +3121,7 @@
    "carbs": 25,
    "fat": 14
   },
-  "scaled": "Tuna (canned in water) 82 → 96 g",
+  "scaled": "Tuna (canned in water) 82 \u2192 96 g",
   "issues": [],
   "replaces": null,
   "allergens": [
@@ -3160,7 +3130,7 @@
  },
  {
   "id": "sm23",
-  "name": "🥣 Mango Coconut Chia Pudding",
+  "name": "\ud83e\udd63 Mango Coconut Chia Pudding",
   "source": "cb215",
   "per": {
    "kcal": 462,
@@ -3183,7 +3153,7 @@
  },
  {
   "id": "bf70",
-  "name": "🌾 Strawberry Almond Baked Oatmeal Cups",
+  "name": "\ud83c\udf3e Strawberry Almond Baked Oatmeal Cups",
   "source": "cb42",
   "per": {
    "kcal": 156,
@@ -3208,7 +3178,7 @@
  },
  {
   "id": "m188",
-  "name": "🫘 Chickpea Coconut Curry with Basmati Rice",
+  "name": "\ud83e\uded8 Chickpea Coconut Curry with Basmati Rice",
   "source": "cb117",
   "per": {
    "kcal": 784,
@@ -3222,16 +3192,16 @@
    "carbs": 58,
    "fat": 16
   },
-  "scaled": "Chickpeas (canned, drained) 153 → 306 g",
+  "scaled": "Chickpeas (canned, drained) 153 \u2192 306 g",
   "issues": [
-   "protein 28.1 g — no scalable source"
+   "protein 28.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "m189",
-  "name": "🌾 Rainbow Grain Salad",
+  "name": "\ud83c\udf3e Rainbow Grain Salad",
   "source": "cb78",
   "per": {
    "kcal": 223,
@@ -3247,7 +3217,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 6.7 g — no scalable source"
+   "protein 6.7 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3258,7 +3228,7 @@
  },
  {
   "id": "ds17",
-  "name": "🍎 Apple Peanut Butter \"Nachos\"",
+  "name": "\ud83c\udf4e Apple Peanut Butter \"Nachos\"",
   "source": "cb194",
   "per": {
    "kcal": 216,
@@ -3282,7 +3252,7 @@
  },
  {
   "id": "bf71",
-  "name": "🍪 Apple Cinnamon Protein Muffins",
+  "name": "\ud83c\udf6a Apple Cinnamon Protein Muffins",
   "source": "cb44",
   "per": {
    "kcal": 141,
@@ -3306,7 +3276,7 @@
  },
  {
   "id": "sm24",
-  "name": "🥤 Green Goddess Spinach Smoothie",
+  "name": "\ud83e\udd64 Green Goddess Spinach Smoothie",
   "source": "cb261",
   "per": {
    "kcal": 305,
@@ -3329,7 +3299,7 @@
  },
  {
   "id": "bf72",
-  "name": "🧀 Sweet Potato Hash with Spinach & Feta",
+  "name": "\ud83e\uddc0 Sweet Potato Hash with Spinach & Feta",
   "source": "cb60",
   "per": {
    "kcal": 206,
@@ -3352,7 +3322,7 @@
  },
  {
   "id": "m190",
-  "name": "🌿 Spicy Lentil Tacos",
+  "name": "\ud83c\udf3f Spicy Lentil Tacos",
   "source": "cb105",
   "per": {
    "kcal": 97,
@@ -3368,7 +3338,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 2.3 g — no scalable source"
+   "protein 2.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3377,7 +3347,7 @@
  },
  {
   "id": "sn31",
-  "name": "🍽️ Edamame with Sea Salt & Lemon",
+  "name": "\ud83c\udf7d\ufe0f Edamame with Sea Salt & Lemon",
   "source": "cb178",
   "per": {
    "kcal": 191,
@@ -3393,7 +3363,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 17.1 g — no scalable source"
+   "protein 17.1 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3402,7 +3372,7 @@
  },
  {
   "id": "sm25",
-  "name": "🥤 Kiwi Spinach Rejuvenation Smoothie",
+  "name": "\ud83e\udd64 Kiwi Spinach Rejuvenation Smoothie",
   "source": "cb238",
   "per": {
    "kcal": 313,
@@ -3425,7 +3395,7 @@
  },
  {
   "id": "sn32",
-  "name": "🫙 Sweet Potato Fries with Greek Yogurt",
+  "name": "\ud83e\uded9 Sweet Potato Fries with Greek Yogurt",
   "source": "cb177",
   "per": {
    "kcal": 128,
@@ -3441,7 +3411,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 4.4 g — no scalable source"
+   "protein 4.4 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3450,7 +3420,7 @@
  },
  {
   "id": "sn33",
-  "name": "🍝 Tomato Basil Orzo Salad",
+  "name": "\ud83c\udf5d Tomato Basil Orzo Salad",
   "source": "cb98",
   "per": {
    "kcal": 251,
@@ -3466,7 +3436,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 5.9 g — no scalable source"
+   "protein 5.9 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3476,7 +3446,7 @@
  },
  {
   "id": "sn34",
-  "name": "🫘 Roasted Chickpea Crunch",
+  "name": "\ud83e\uded8 Roasted Chickpea Crunch",
   "source": "cb205",
   "per": {
    "kcal": 197,
@@ -3490,16 +3460,16 @@
    "carbs": 20,
    "fat": 5
   },
-  "scaled": "Chickpeas 60 → 120 g",
+  "scaled": "Chickpeas 60 \u2192 120 g",
   "issues": [
-   "protein 8.5 g — no scalable source"
+   "protein 8.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": []
  },
  {
   "id": "sm26",
-  "name": "🥤 Pineapple Coconut Recovery Smoothie",
+  "name": "\ud83e\udd64 Pineapple Coconut Recovery Smoothie",
   "source": "cb242",
   "per": {
    "kcal": 454,
@@ -3522,7 +3492,7 @@
  },
  {
   "id": "m191",
-  "name": "🍲 Mushroom Barley Soup",
+  "name": "\ud83c\udf72 Mushroom Barley Soup",
   "source": "cb108",
   "per": {
    "kcal": 149,
@@ -3538,7 +3508,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 5.3 g — no scalable source"
+   "protein 5.3 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3548,7 +3518,7 @@
  },
  {
   "id": "sn35",
-  "name": "🥚 Mini Veggie Frittatas",
+  "name": "\ud83e\udd5a Mini Veggie Frittatas",
   "source": "cb179",
   "per": {
    "kcal": 90,
@@ -3562,9 +3532,9 @@
    "carbs": 3,
    "fat": 8
   },
-  "scaled": "Eggs 30.0 → 60 g",
+  "scaled": "Eggs 30.0 \u2192 60 g",
   "issues": [
-   "protein 7.7 g — no scalable source"
+   "protein 7.7 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3575,7 +3545,7 @@
  },
  {
   "id": "bf73",
-  "name": "🥤 Mango Coconut Smoothie Bowl",
+  "name": "\ud83e\udd64 Mango Coconut Smoothie Bowl",
   "source": "cb24",
   "per": {
    "kcal": 302,
@@ -3599,7 +3569,7 @@
  },
  {
   "id": "ds18",
-  "name": "🫐 Dark Chocolate-Dipped Strawberries",
+  "name": "\ud83e\uded0 Dark Chocolate-Dipped Strawberries",
   "source": "cb191",
   "per": {
    "kcal": 95,
@@ -3620,7 +3590,7 @@
  },
  {
   "id": "bf74",
-  "name": "🥤 Mango Turmeric Smoothie",
+  "name": "\ud83e\udd64 Mango Turmeric Smoothie",
   "source": "cb46",
   "per": {
    "kcal": 211,
@@ -3641,7 +3611,7 @@
  },
  {
   "id": "ds19",
-  "name": "🌾 Oatmeal Raisin Protein Cookies",
+  "name": "\ud83c\udf3e Oatmeal Raisin Protein Cookies",
   "source": "cb175",
   "per": {
    "kcal": 185,
@@ -3665,7 +3635,7 @@
  },
  {
   "id": "sn36",
-  "name": "🫘 Greek Chickpea Salad Bowl",
+  "name": "\ud83e\uded8 Greek Chickpea Salad Bowl",
   "source": "cb86",
   "per": {
    "kcal": 595,
@@ -3679,10 +3649,8 @@
    "carbs": 35,
    "fat": 15
   },
-  "scaled": "Chickpeas (canned, drained) 153 → 306 g",
-  "issues": [
-   "protein 25.0 g — no scalable source"
-  ],
+  "scaled": "Chickpeas (canned, drained) 153 \u2192 306 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Dairy"
@@ -3690,7 +3658,7 @@
  },
  {
   "id": "sn37",
-  "name": "🫘 Cucumber Hummus Roll-Ups",
+  "name": "\ud83e\uded8 Cucumber Hummus Roll-Ups",
   "source": "cb201",
   "per": {
    "kcal": 79,
@@ -3706,7 +3674,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 3.5 g — no scalable source"
+   "protein 3.5 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3716,7 +3684,7 @@
  },
  {
   "id": "sm27",
-  "name": "🥤 Radiant Carrot-Orange Glow Smoothie",
+  "name": "\ud83e\udd64 Radiant Carrot-Orange Glow Smoothie",
   "source": "cb228",
   "per": {
    "kcal": 363,
@@ -3739,7 +3707,7 @@
  },
  {
   "id": "sm28",
-  "name": "🥤 Blueberry–Lavender Calm Smoothie",
+  "name": "\ud83e\udd64 Blueberry\u2013Lavender Calm Smoothie",
   "source": "cb237",
   "per": {
    "kcal": 294,
@@ -3763,7 +3731,7 @@
  },
  {
   "id": "sn38",
-  "name": "🥦 Baked Zucchini Fries",
+  "name": "\ud83e\udd66 Baked Zucchini Fries",
   "source": "cb183",
   "per": {
    "kcal": 62,
@@ -3779,7 +3747,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 2.8 g — no scalable source"
+   "protein 2.8 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3789,7 +3757,7 @@
  },
  {
   "id": "sm29",
-  "name": "🥤 Avocado Spinach Metabolism Smoothie",
+  "name": "\ud83e\udd64 Avocado Spinach Metabolism Smoothie",
   "source": "cb221",
   "per": {
    "kcal": 279,
@@ -3813,7 +3781,7 @@
  },
  {
   "id": "sm30",
-  "name": "🥤 Peach Almond Milkshake Smoothie",
+  "name": "\ud83e\udd64 Peach Almond Milkshake Smoothie",
   "source": "cb253",
   "per": {
    "kcal": 245,
@@ -3837,7 +3805,7 @@
  },
  {
   "id": "bf75",
-  "name": "🫙 Coconut Yogurt Parfait with Tropical Fruit",
+  "name": "\ud83e\uded9 Coconut Yogurt Parfait with Tropical Fruit",
   "source": "cb57",
   "per": {
    "kcal": 275,
@@ -3862,7 +3830,7 @@
  },
  {
   "id": "ds20",
-  "name": "🍪 Peanut Butter Banana Rice Cakes",
+  "name": "\ud83c\udf6a Peanut Butter Banana Rice Cakes",
   "source": "cb173",
   "per": {
    "kcal": 108,
@@ -3885,7 +3853,7 @@
  },
  {
   "id": "sn39",
-  "name": "🥚 Veggie Sticks with Spicy Tahini Dip",
+  "name": "\ud83e\udd5a Veggie Sticks with Spicy Tahini Dip",
   "source": "cb209",
   "per": {
    "kcal": 100,
@@ -3901,7 +3869,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 3.0 g — no scalable source"
+   "protein 3.0 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3910,7 +3878,7 @@
  },
  {
   "id": "sn40",
-  "name": "🫘 Cucumber Hummus Cups",
+  "name": "\ud83e\uded8 Cucumber Hummus Cups",
   "source": "cb168",
   "per": {
    "kcal": 80,
@@ -3926,7 +3894,7 @@
   },
   "scaled": null,
   "issues": [
-   "protein 2.9 g — no scalable source"
+   "protein 2.9 g \u2014 no scalable source"
   ],
   "replaces": null,
   "allergens": [
@@ -3935,7 +3903,7 @@
  },
  {
   "id": "ds21",
-  "name": "🌾 Banana Almond Oat Cookies",
+  "name": "\ud83c\udf3e Banana Almond Oat Cookies",
   "source": "cb210",
   "per": {
    "kcal": 98,
@@ -3959,7 +3927,7 @@
  },
  {
   "id": "sm31",
-  "name": "🥤 Blueberry Almond Radiance Smoothie",
+  "name": "\ud83e\udd64 Blueberry Almond Radiance Smoothie",
   "source": "cb223",
   "per": {
    "kcal": 233,
@@ -3983,7 +3951,7 @@
  },
  {
   "id": "bf76",
-  "name": "🥣 Peach Chia Breakfast Pudding",
+  "name": "\ud83e\udd63 Peach Chia Breakfast Pudding",
   "source": "cb61",
   "per": {
    "kcal": 98,
@@ -4007,7 +3975,7 @@
  },
  {
   "id": "sn41",
-  "name": "🐟 Avocado Tuna Salad Cups",
+  "name": "\ud83d\udc1f Avocado Tuna Salad Cups",
   "source": "cb188",
   "per": {
    "kcal": 171,
@@ -4021,10 +3989,8 @@
    "carbs": 4,
    "fat": 11
   },
-  "scaled": "Tuna in water 60 → 92 g",
-  "issues": [
-   "protein 24.9 g — no scalable source"
-  ],
+  "scaled": "Tuna in water 60 \u2192 92 g",
+  "issues": [],
   "replaces": null,
   "allergens": [
    "Fish"
@@ -4032,7 +3998,7 @@
  },
  {
   "id": "sm32",
-  "name": "🧃 Citrus–Ginger Immunity Juice",
+  "name": "\ud83e\uddc3 Citrus\u2013Ginger Immunity Juice",
   "source": "cb236",
   "per": {
    "kcal": 211,
@@ -4055,7 +4021,7 @@
  },
  {
   "id": "sm33",
-  "name": "🥤 Tropical Mango Spinach Smoothie",
+  "name": "\ud83e\udd64 Tropical Mango Spinach Smoothie",
   "source": "cb252",
   "per": {
    "kcal": 230,
@@ -4079,7 +4045,7 @@
  },
  {
   "id": "ds22",
-  "name": "🍪 Spiced Almond Energy Bites",
+  "name": "\ud83c\udf6a Spiced Almond Energy Bites",
   "source": "cb197",
   "per": {
    "kcal": 154,
@@ -4103,7 +4069,7 @@
  },
  {
   "id": "sm34",
-  "name": "🥤 Peach Vanilla Sunshine Smoothie",
+  "name": "\ud83e\udd64 Peach Vanilla Sunshine Smoothie",
   "source": "cb226",
   "per": {
    "kcal": 237,
@@ -4127,7 +4093,7 @@
  },
  {
   "id": "sm35",
-  "name": "🥤 Kiwi Cucumber Hydration Smoothie",
+  "name": "\ud83e\udd64 Kiwi Cucumber Hydration Smoothie",
   "source": "cb255",
   "per": {
    "kcal": 210,
@@ -4150,7 +4116,7 @@
  },
  {
   "id": "ds23",
-  "name": "🍽️ Coconut Matcha Bliss Balls",
+  "name": "\ud83c\udf7d\ufe0f Coconut Matcha Bliss Balls",
   "source": "cb207",
   "per": {
    "kcal": 107,
@@ -4174,7 +4140,7 @@
  },
  {
   "id": "sm36",
-  "name": "🧃 Pineapple–Cucumber Skin-Refreshing Juice",
+  "name": "\ud83e\uddc3 Pineapple\u2013Cucumber Skin-Refreshing Juice",
   "source": "cb233",
   "per": {
    "kcal": 225,
@@ -4197,7 +4163,7 @@
  },
  {
   "id": "sm37",
-  "name": "🧃 Green Apple Celery Detox Juice",
+  "name": "\ud83e\uddc3 Green Apple Celery Detox Juice",
   "source": "cb244",
   "per": {
    "kcal": 234,
@@ -4222,7 +4188,7 @@
  },
  {
   "id": "sm38",
-  "name": "🥤 Blueberry Lemon Antioxidant Smoothie",
+  "name": "\ud83e\udd64 Blueberry Lemon Antioxidant Smoothie",
   "source": "cb262",
   "per": {
    "kcal": 209,
@@ -4246,7 +4212,7 @@
  },
  {
   "id": "sm39",
-  "name": "🧃 Citrus Mint Energy Juice",
+  "name": "\ud83e\uddc3 Citrus Mint Energy Juice",
   "source": "cb225",
   "per": {
    "kcal": 165,
@@ -4269,7 +4235,7 @@
  },
  {
   "id": "sm40",
-  "name": "🥤 Tropical Berry Immunity Smoothie",
+  "name": "\ud83e\udd64 Tropical Berry Immunity Smoothie",
   "source": "cb257",
   "per": {
    "kcal": 201,
@@ -4293,7 +4259,7 @@
  },
  {
   "id": "sm41",
-  "name": "🧃 Orange Carrot Immunity Booster Juice",
+  "name": "\ud83e\uddc3 Orange Carrot Immunity Booster Juice",
   "source": "cb251",
   "per": {
    "kcal": 176,
@@ -4316,7 +4282,7 @@
  },
  {
   "id": "sm42",
-  "name": "🥤 Pineapple Ginger Refresh Smoothie",
+  "name": "\ud83e\udd64 Pineapple Ginger Refresh Smoothie",
   "source": "cb220",
   "per": {
    "kcal": 191,
@@ -4339,7 +4305,7 @@
  },
  {
   "id": "sm43",
-  "name": "🍽️ Cucumber Melon Refresher",
+  "name": "\ud83c\udf7d\ufe0f Cucumber Melon Refresher",
   "source": "cb241",
   "per": {
    "kcal": 161,
@@ -4362,7 +4328,7 @@
  },
  {
   "id": "sm44",
-  "name": "🧃 Apple Ginger Immunity Juice",
+  "name": "\ud83e\uddc3 Apple Ginger Immunity Juice",
   "source": "cb227",
   "per": {
    "kcal": 172,

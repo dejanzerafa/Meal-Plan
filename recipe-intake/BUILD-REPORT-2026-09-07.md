@@ -45,23 +45,9 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 
 | id | Recipe | kcal · P |
 |---|---|---|
-| m133 | 🍗 Turmeric Chicken with Coconut Rice | 517 · 30 P |
-| m142 | 🐟 Baked Lemon Dill Cod with Garlic Green Beans | 230 · 30 P |
-| m145 | 🐟 Garlic Butter Cod with Spinach | 204 · 29.9 P |
-| m148 | 🦃 Turkey & Zucchini Meatballs | 251 · 29.9 P |
-| sn10 | 🦃 Spiced Turkey Lettuce Cups | 272 · 24.9 P |
-| m152 | 🦐 Lemon-Garlic Shrimp with Zoodles | 216 · 29.9 P |
-| sn11 | 🦐 Citrus Shrimp Salad | 175 · 24.9 P |
-| sn12 | 🥚 Avocado Egg Salad Wrap | 455 · 25 P |
-| m155 | 🦐 Shrimp & Veggie Rice Bowl | 257 · 29.9 P |
-| m156 | 🦐 Garlic Butter Shrimp with Zucchini Noodles | 206 · 29.9 P |
 | m157 | 🍝 Creamy Mushroom & Spinach Pasta | 406 · 16.2 P |
 | sn15 | 🫘 Spiced Chickpea Wraps | 582 · 22.9 P |
 | m159 | 🧀 Savory Cottage Cheese Bowl | 316 · 28.3 P |
-| sn16 | 🥚 Grilled Veggie & Halloumi Salad | 405 · 25 P |
-| sn17 | 🧀 Strawberry Cottage Cheese Bowl | 221 · 25 P |
-| sn18 | 🧀 Cottage Cheese Berry Bowl | 227 · 25 P |
-| m161 | 🦐 Coconut Curry Shrimp | 239 · 29.9 P |
 | m162 | 🫘 Curried Chickpea Bowl | 583 · 20.9 P |
 | m163 | 🥚 Veggie-Packed Chickpea Pasta | 279 · 13.1 P |
 | sn20 | 🫙 Apple Cinnamon Greek Yogurt Dip | 207 · 11.6 P |
@@ -70,7 +56,6 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | m165 | 🌿 Lentil & Sweet Potato Shepherd's Pie | 420 · 21.1 P |
 | m166 | 🍝 Creamy Spinach & Mushroom Orzo | 416 · 14.5 P |
 | sn22 | 🌿 Mediterranean Lentil Salad with Feta | 327 · 19.6 P |
-| m167 | 🌿 Creamy Coconut Lentil Curry | 574 · 29.9 P |
 | m168 | 🥚 Tofu & Veggie Stir-Fry Bowl | 206 · 18.5 P |
 | m169 | 🥑 Creamy Avocado Pasta | 455 · 10.8 P |
 | sn23 | 🥚 Veggie-Packed Hummus Wrap | 339 · 10.1 P |
@@ -104,12 +89,10 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | sn34 | 🫘 Roasted Chickpea Crunch | 197 · 8.5 P |
 | m191 | 🍲 Mushroom Barley Soup | 149 · 5.3 P |
 | sn35 | 🥚 Mini Veggie Frittatas | 90 · 7.7 P |
-| sn36 | 🫘 Greek Chickpea Salad Bowl | 595 · 25 P |
 | sn37 | 🫘 Cucumber Hummus Roll-Ups | 79 · 3.5 P |
 | sn38 | 🥦 Baked Zucchini Fries | 62 · 2.8 P |
 | sn39 | 🥚 Veggie Sticks with Spicy Tahini Dip | 100 · 3 P |
 | sn40 | 🫘 Cucumber Hummus Cups | 80 · 2.9 P |
-| sn41 | 🐟 Avocado Tuna Salad Cups | 171 · 24.9 P |
 
 ## Every recipe (181)
 
@@ -138,11 +121,11 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | m142 | 🐟 Baked Lemon Dill Cod with Garlic Green Beans | cb121 | 230 · 30P · 10C · 8.2F | 290 · 34P | protein scaled: Cod fillets 150 → 154 g; protein 30.0 g — no scalable source | Fish |
 | m143 | 🐟 One-Pan Lemon Garlic Tilapia with Asparagus | cb136 | 244 · 33.3P · 8.1C · 9.8F | 310 · 36P |  | Fish |
 | m144 | 🍗 Greek Chicken Pita Pockets | cb75 | 320 · 30.6P · 38.4C · 4F | 365 · 29P |  | Dairy, Gluten / Wheat |
-| m145 | 🐟 Garlic Butter Cod with Spinach | cb163 | 204 · 29.9P · 1.8C · 8.2F | 320 · 33P | protein scaled: Cod fillets 150 → 163 g; protein 29.9 g — no scalable source | Dairy, Fish |
+| m145 | 🐟 Garlic Butter Cod with Spinach | cb163 | 204 · 29.9P · 1.8C · 8.2F | 320 · 33P | protein scaled: Cod fillets 150 → 163 g | Dairy, Fish |
 | m146 | 🍗 Pesto Chicken Pasta Salad | cb81 | 447 · 30.7P · 41.7C · 17.3F | 420 · 30P |  | Gluten / Wheat |
 | m147 | 🐟 Zesty Lemon Herb Cod | cb154 | 202 · 30P · 1.1C · 8.2F | 310 · 36P | protein scaled: Cod fillets 150 → 166 g | Fish |
 | sm10 | 🥤 Energizing Chocolate-Mint Protein Shake | cb232 | 210 · 26.1P · 19.8C · 3.1F | 190 · 22P |  | Dairy, Tree Nuts |
-| m148 | 🦃 Turkey & Zucchini Meatballs | cb157 | 251 · 29.9P · 5.8C · 11.9F | 280 · 33P | protein scaled: Ground turkey 113 → 141 g; protein 29.9 g — no scalable source | Eggs, Gluten / Wheat |
+| m148 | 🦃 Turkey & Zucchini Meatballs | cb157 | 251 · 29.9P · 5.8C · 11.9F | 280 · 33P | protein scaled: Ground turkey 113 → 141 g | Eggs, Gluten / Wheat |
 | bf45 | 🫙 Walnut & Berry Greek Yogurt Bowl | cb59 | 268 · 23.5P · 20.8C · 9.7F | 240 · 17P |  | Dairy, Tree Nuts |
 | ds12 | 🍪 Chocolate Protein Mug Cake | cb204 | 202 · 25.7P · 20.6C · 2.2F | 210 · 20P |  | Dairy, Gluten / Wheat, Tree Nuts |
 | m149 | 🦐 Garlic Herb Shrimp Pasta | cb145 | 442 · 30P · 60.5C · 9.7F | 400 · 32P | protein scaled: Shrimp 75 → 89 g | Crustaceans, Gluten / Wheat |
@@ -150,7 +133,7 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | m150 | 🍗 Grilled Chicken & Quinoa Salad | cb66 | 339 · 30P · 22.8C · 13.7F | 370 · 29P | protein scaled: Chicken breast 85 → 108 g | Sulphites |
 | sn10 | 🦃 Spiced Turkey Lettuce Cups | cb112 | 272 · 24.9P · 5.1C · 17.2F | 280 · 26P | protein scaled: Lean ground turkey 113 → 122 g; protein 24.9 g — no scalable source | Gluten / Wheat, Soy |
 | m151 | 🌯 Caprese Pesto Sandwich | cb92 | 477 · 30P · 44.4C · 20.9F | 390 · 17P | protein scaled: Fresh mozzarella 57 → 84 g | Dairy, Gluten / Wheat, Sulphites |
-| m152 | 🦐 Lemon-Garlic Shrimp with Zoodles | cb93 | 216 · 29.9P · 8.4C · 8.3F | 230 · 30P | protein scaled: Shrimp 113 → 137 g; protein 29.9 g — no scalable source | Crustaceans, Gluten / Wheat |
+| m152 | 🦐 Lemon-Garlic Shrimp with Zoodles | cb93 | 216 · 29.9P · 8.4C · 8.3F | 230 · 30P | protein scaled: Shrimp 113 → 137 g | Crustaceans, Gluten / Wheat |
 | m153 | 🦃 Spiced Turkey & Veggie Skillet | cb142 | 323 · 30P · 6.4C · 19.7F | 340 · 33P | protein scaled: Ground turkey 113 → 153 g |  |
 | sn11 | 🦐 Citrus Shrimp Salad | cb106 | 175 · 24.9P · 8.4C · 5.8F | 260 · 29P | protein scaled: Shrimp 113 → 117 g; protein 24.9 g — no scalable source | Crustaceans |
 | m154 | 🦃 Turkey Veggie Stir-Fry | cb74 | 276 · 30.1P · 6.2C · 14.5F | 360 · 34P | protein scaled: Lean ground turkey 100 → 148 g | Gluten / Wheat, Sesame, Soy |
@@ -160,11 +143,11 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | bf48 | 🫙 Lemon Poppy Seed Greek Yogurt Bowl | cb35 | 239 · 19.1P · 21.4C · 8.7F | 245 · 17P |  | Dairy, Tree Nuts |
 | sn14 | 🍗 Asian-Inspired Chicken Lettuce Wraps | cb97 | 252 · 25P · 9C · 13.3F | 280 · 28P | protein scaled: Ground chicken 112 → 131 g | Gluten / Wheat, Sesame, Soy |
 | sm11 | 🥤 Strawberry–Almond Glow Shake | cb231 | 391 · 40.8P · 25.3C · 14.6F | 260 · 12P |  | Dairy, Tree Nuts |
-| m155 | 🦐 Shrimp & Veggie Rice Bowl | cb79 | 257 · 29.9P · 27C · 3.9F | 380 · 30P | protein scaled: Shrimp 75 → 130 g; protein 29.9 g — no scalable source | Crustaceans, Gluten / Wheat, Soy |
+| m155 | 🦐 Shrimp & Veggie Rice Bowl | cb79 | 257 · 29.9P · 27C · 3.9F | 380 · 30P | protein scaled: Shrimp 75 → 130 g | Crustaceans, Gluten / Wheat, Soy |
 | bf49 | 🧀 Mushroom & Goat Cheese Scramble | cb41 | 261 · 17.3P · 1.4C · 20.4F | 260 · 15P |  | Dairy, Eggs |
 | bf50 | 🫙 Strawberry Chia Parfait | cb16 | 253 · 16.3P · 23.1C · 10.6F | 260 · 14P |  | Dairy, Tree Nuts |
 | bf51 | 🍽️ Savory Tomato & Basil Scramble | cb62 | 202 · 15.7P · 3.2C · 13.7F | 230 · 14P |  | Eggs |
-| m156 | 🦐 Garlic Butter Shrimp with Zucchini Noodles | cb126 | 206 · 29.9P · 9C · 7F | 280 · 31P | protein scaled: Shrimp 75 → 136 g; protein 29.9 g — no scalable source | Crustaceans, Dairy, Gluten / Wheat |
+| m156 | 🦐 Garlic Butter Shrimp with Zucchini Noodles | cb126 | 206 · 29.9P · 9C · 7F | 280 · 31P | protein scaled: Shrimp 75 → 136 g | Crustaceans, Dairy, Gluten / Wheat |
 | bf52 | 🥚 Savory Oatmeal with Spinach & Poached Egg | cb38 | 275 · 17.2P · 29.9C · 9.5F | 310 · 16P |  | Celery, Dairy, Eggs, Gluten / Wheat, Sulphites |
 | m157 | 🍝 Creamy Mushroom & Spinach Pasta | cb123 | 406 · 16.2P · 61.1C · 11.5F | 390 · 15P | protein 16.2 g — no scalable source | Dairy, Gluten / Wheat, Tree Nuts |
 | sn15 | 🫘 Spiced Chickpea Wraps | cb80 | 582 · 22.9P · 85.1C · 17.8F | 365 · 15P | protein scaled: Chickpeas 120 → 240 g; protein 22.9 g — no scalable source | Dairy, Gluten / Wheat |
@@ -180,7 +163,7 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | ds13 | 🫙 Greek Yogurt Parfait with Berries & Flax | cb169 | 162 · 14.2P · 17.4C · 4.6F | 180 · 14P |  | Dairy |
 | bf56 | 🫙 Tropical Sunrise Parfait | cb36 | 206 · 12.8P · 23.1C · 7F | 260 · 13P |  | Dairy, Gluten / Wheat, Tree Nuts |
 | bf57 | 🥞 Lemon Ricotta Pancakes | cb45 | 287 · 13.5P · 37.8C · 8.5F | 295 · 14P |  | Dairy, Eggs, Gluten / Wheat, Tree Nuts |
-| m161 | 🦐 Coconut Curry Shrimp | cb158 | 239 · 29.9P · 4.6C · 12.1F | 340 · 29P | protein scaled: Shrimp 75 → 146 g; protein 29.9 g — no scalable source | Crustaceans |
+| m161 | 🦐 Coconut Curry Shrimp | cb158 | 239 · 29.9P · 4.6C · 12.1F | 340 · 29P | protein scaled: Shrimp 75 → 146 g | Crustaceans |
 | ds14 | 🫙 Apple Cinnamon Yogurt Parfait | cb199 | 220 · 12.5P · 31.3C · 5.6F | 210 · 12P |  | Dairy, Gluten / Wheat, Tree Nuts |
 | sn19 | 🧀 Cottage Cheese & Pineapple Cups | cb195 | 207 · 25P · 13.6C · 5.2F | 140 · 13P | protein scaled: Low-fat cottage cheese 112 → 207 g | Dairy |
 | bf58 | 🌾 Peanut Butter Banana Overnight Oats | cb49 | 358 · 13.5P · 48.7C · 14F | 180 · 10P |  | Dairy, Gluten / Wheat, Peanuts, Tree Nuts |
@@ -195,7 +178,7 @@ These are legume/vegetable dishes with no single scalable protein source. Option
 | bf61 | 🌾 Banana-Oat-Pancakes | cb18 | 238 · 11.6P · 27.7C · 9.6F | 310 · 14P |  | Eggs, Gluten / Wheat, Tree Nuts |
 | m166 | 🍝 Creamy Spinach & Mushroom Orzo | cb149 | 416 · 14.5P · 64.5C · 10.6F | 340 · 13P | protein 14.5 g — no scalable source | Dairy, Gluten / Wheat, Tree Nuts |
 | sn22 | 🌿 Mediterranean Lentil Salad with Feta | cb141 | 327 · 19.6P · 42.7C · 9.9F | 2906 · 15P | protein scaled: Cooked lentils 99 → 198 g; protein 19.6 g — no scalable source | Dairy |
-| m167 | 🌿 Creamy Coconut Lentil Curry | cb144 | 574 · 29.9P · 76.3C · 16.7F | 360 · 17P | protein scaled: Red lentils 95 → 111 g; protein 29.9 g — no scalable source | Celery |
+| m167 | 🌿 Creamy Coconut Lentil Curry | cb144 | 574 · 29.9P · 76.3C · 16.7F | 360 · 17P | protein scaled: Red lentils 95 → 111 g | Celery |
 | m168 | 🥚 Tofu & Veggie Stir-Fry Bowl | cb76 | 206 · 18.5P · 10.4C · 12.2F | 320 · 20P | protein scaled: Firm tofu 100 → 200 g; protein 18.5 g — no scalable source | Gluten / Wheat, Sesame, Soy |
 | m169 | 🥑 Creamy Avocado Pasta | cb87 | 455 · 10.8P · 46.6C · 27.1F | 420 · 11P | protein 10.8 g — no scalable source | Dairy, Gluten / Wheat |
 | sn23 | 🥚 Veggie-Packed Hummus Wrap | cb101 | 339 · 10.1P · 44.9C · 14.6F | 320 · 9P | protein 10.1 g — no scalable source | Gluten / Wheat, Sesame |
