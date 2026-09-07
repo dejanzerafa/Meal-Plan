@@ -103,7 +103,8 @@ exports.handler = async (event) => {
           if (session.subscription && tier !== "lifetime" && tier !== "seasonal") {
             try {
               const stripeSub = await stripe.subscriptions.retrieve(session.subscription);
-              realPeriodEnd = new Date(stripeSub.current_period_end * 1000).toISOString();
+              realPeriodEnd = periodEndIso(stripeSub);
+              if (!realPeriodEnd) throw new Error("subscription has no current_period_end");
             } catch (subErr) {
               console.error("Could not retrieve subscription from Stripe:", subErr.message);
               realPeriodEnd = tier === "annual"
@@ -172,12 +173,31 @@ exports.handler = async (event) => {
               console.error("Profile tier update-by-email fallback error:", emailProfileErr);
               return { statusCode: 500, body: "entitlement write failed" };
             }
+            let grantedViaAuth = false;
             if (!emailRows || emailRows.length === 0) {
+              // Third try: the auth user exists but has no profiles row yet (or the
+              // row's id was the users-table id, not the auth UUID — that is the
+              // shape of "profile tier upsert failed" on the 6 Sep test purchase).
+              // Find the auth account by email and write the profile against it.
+              const authId = await findAuthUserIdByEmail(supabase, email);
+              if (authId) {
+                const { error: createErr } = await supabase
+                  .from("profiles")
+                  .upsert({ id: authId, email, tier, tier_via: "stripe", tier_expires: realPeriodEnd }, { onConflict: "id" });
+                if (!createErr) {
+                  console.log(`Profile tier granted via auth lookup to "${tier}" for ${email} (id: ${authId})`);
+                  grantedViaAuth = true;
+                } else {
+                  console.error("Profile grant via auth lookup failed:", createErr);
+                }
+              }
+            }
+            if (!grantedViaAuth && (!emailRows || emailRows.length === 0)) {
               console.error(`UNMATCHED PURCHASE: paid ${tier} for ${email} but no profiles row matched. Manual grant required.`);
               await report("stripe-webhook", "UNMATCHED PURCHASE — paid, no profile matched, manual grant required", { tier, email, sessionId: session.id, customerId: session.customer }, "fatal");
               return { statusCode: 500, body: "no matching account for this purchase" };
             }
-            console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
+            if (!grantedViaAuth) console.log(`Profile tier updated (email fallback) to "${tier}" for ${email}`);
           } else {
             console.log(`Profile tier upserted to "${tier}" for ${email} (id: ${profileId})`);
           }
@@ -271,7 +291,8 @@ exports.handler = async (event) => {
         if (!inv.subscription || inv.billing_reason === "subscription_create") break;
         try {
           const sub = await stripe.subscriptions.retrieve(inv.subscription);
-          const periodEnd = new Date(sub.current_period_end * 1000).toISOString();
+          const periodEnd = periodEndIso(sub);
+          if (!periodEnd) throw new Error("subscription has no current_period_end");
           // PostgREST resolves on a failed write rather than throwing, so a bare
           // `await` here discarded the error. This is the write that was failing
           // with 42703 on every renewal for as long as `at_risk` did not exist
@@ -297,7 +318,12 @@ exports.handler = async (event) => {
         const sub = stripeEvent.data.object;
         const prevStatus = stripeEvent.data.previous_attributes?.status;
 
-        const newPeriodEnd = new Date(sub.current_period_end * 1000).toISOString();
+        let newPeriodEnd = periodEndIso(sub);
+        if (!newPeriodEnd) {
+          // Event payload carried neither shape — re-read with the pinned SDK version.
+          try { newPeriodEnd = periodEndIso(await stripe.subscriptions.retrieve(sub.id)); }
+          catch (e) { console.error("subscription.updated: period-end re-read failed", e.message); }
+        }
 
         // Sync status + period to subscriptions table
         const { error: syncErr } = await supabase
@@ -318,6 +344,10 @@ exports.handler = async (event) => {
         //
         // Renewals surface here as an active subscription whose current_period_end
         // has moved forward, so extend whenever the sub is in a paying state.
+        if ((sub.status === "active" || sub.status === "trialing") && !newPeriodEnd) {
+          await report("stripe-webhook", "subscription.updated without a period end — entitlement not extended", { subscription: sub.id, status: sub.status });
+          return { statusCode: 500, body: "no period end on subscription" };
+        }
         if (sub.status === "active" || sub.status === "trialing") {
           const extended = await extendEntitlement(supabase, stripe, sub, newPeriodEnd);
           if (!extended) {
@@ -362,8 +392,8 @@ exports.handler = async (event) => {
             if (customer.email) {
               await sendEmail({
                 to: customer.email,
-                subject: "Cancellation confirmed — access continues until " + fmtDate(sub.current_period_end),
-                html: buildCancelRequestedEmail(APP_URL, fmtDate(sub.current_period_end)),
+                subject: "Cancellation confirmed — access continues until " + fmtDate(periodEndUnix(sub)),
+                html: buildCancelRequestedEmail(APP_URL, fmtDate(periodEndUnix(sub))),
               });
             }
           } catch (e) { console.error("cancel-requested email error:", e); }
@@ -378,7 +408,7 @@ exports.handler = async (event) => {
               await sendEmail({
                 to: customer.email,
                 subject: "Your SoulGainz subscription will continue",
-                html: buildCancelRevertedEmail(APP_URL, fmtDate(sub.current_period_end)),
+                html: buildCancelRevertedEmail(APP_URL, fmtDate(periodEndUnix(sub))),
               });
             }
           } catch (e) { console.error("cancel-reverted email error:", e); }
@@ -449,7 +479,7 @@ exports.handler = async (event) => {
           .update({
             status: sub.status,   // "canceled"
             cancel_at_period_end: sub.cancel_at_period_end,
-            current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            current_period_end: periodEndIso(sub),
           })
           .eq("stripe_subscription_id", sub.id);
         if (delErr) console.error("subscriptions ledger update failed (deleted):", sub.id, delErr);
@@ -786,8 +816,47 @@ function buildPaymentRestoredEmail(appUrl) {
     </tr>`);
 }
 
+// Stripe moved `current_period_end` off the subscription and onto each
+// subscription item in API 2025-03-31. The SDK here pins 2024-06-20 for its own
+// calls, but a webhook *event* is shaped by the endpoint's API version in the
+// dashboard — so `sub.current_period_end` arrived undefined and every
+// `new Date(undefined * 1000).toISOString()` threw RangeError: Invalid time
+// value (Sentry JAVASCRIPT-3, six events on one test purchase, each a Stripe
+// retry). Read both shapes, and never build an ISO string from NaN.
+// Auth account lookup by email, for the last-resort grant path. Paginates the
+// admin list (no getUserByEmail in this SDK); bounded so a runaway user table
+// cannot stall the webhook.
+async function findAuthUserIdByEmail(supabase, email) {
+  if (!email) return null;
+  try {
+    for (let page = 1; page <= 20; page++) {
+      const { data, error } = await supabase.auth.admin.listUsers({ page, perPage: 1000 });
+      if (error || !data || !data.users) return null;
+      const hit = data.users.find(u => (u.email || "").trim().toLowerCase() === email);
+      if (hit) return hit.id;
+      if (data.users.length < 1000) return null;
+    }
+  } catch (e) { console.error("findAuthUserIdByEmail failed:", e.message); }
+  return null;
+}
+
+function periodEndUnix(sub) {
+  if (!sub) return null;
+  if (Number.isFinite(sub.current_period_end)) return sub.current_period_end;
+  const item = sub.items && sub.items.data && sub.items.data[0];
+  if (item && Number.isFinite(item.current_period_end)) return item.current_period_end;
+  return null;
+}
+function periodEndIso(sub) {
+  const u = periodEndUnix(sub);
+  return u ? new Date(u * 1000).toISOString() : null;
+}
+
 function fmtDate(unix) {
-  try { return new Date(unix * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+  try {
+    if (!Number.isFinite(unix)) return "the end of your billing period";
+    return new Date(unix * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  }
   catch (_) { return "the end of your billing period"; }
 }
 

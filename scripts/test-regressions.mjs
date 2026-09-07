@@ -1243,6 +1243,114 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
   }
 }
 
+section("Stripe webhook — the three Sentry issues from the 6 Sep test purchase");
+{
+  const wh = readFileSync(join(ROOT, "netlify", "functions", "stripe-webhook.js"), "utf8");
+  const whSrc = stripJS(wh, "script");
+  // JAVASCRIPT-3: RangeError "Invalid time value", 6 events on one purchase.
+  // Stripe moved current_period_end onto the subscription ITEM in 2025-03-31;
+  // the event is shaped by the dashboard's API version, not the SDK's pin, so
+  // `new Date(sub.current_period_end * 1000).toISOString()` threw on NaN and
+  // Stripe retried the webhook forever.
+  t("no bare current_period_end is fed to new Date()",
+     !/new Date\(\s*\w+(?:\.\w+)*\.current_period_end\s*\*/.test(whSrc),
+     "read it through periodEndUnix/periodEndIso, which know both API shapes");
+  t("periodEndUnix reads the subscription item as well as the subscription",
+     /function periodEndUnix/.test(whSrc) && /items\s*&&\s*\w+\.items\.data/.test(whSrc));
+  t("periodEndIso returns null rather than an Invalid Date",
+     /function periodEndIso[\s\S]{0,220}\?\s*new Date\([\s\S]{0,40}:\s*null/.test(whSrc));
+  t("a paying subscription with no period end is reported, not silently extended",
+     /status === "active"[\s\S]{0,120}!newPeriodEnd[\s\S]{0,400}report\(/.test(whSrc));
+  // JAVASCRIPT-4 / -5: the profile write missed, so a paid account stayed free.
+  t("the grant falls back to the auth user when no profiles row matches",
+     /findAuthUserIdByEmail/.test(whSrc) && /auth\.admin\.listUsers/.test(whSrc));
+  t("the auth-lookup grant is bounded (a big user table cannot stall the webhook)",
+     /page <= \d+/.test(whSrc));
+  t("UNMATCHED PURCHASE only fires when the auth fallback also failed",
+     /grantedViaAuth\s*&&\s*\(!emailRows/.test(whSrc) || /!grantedViaAuth\s*&&\s*\(!emailRows/.test(whSrc));
+  t("the fallback does not break out before the event log and welcome email",
+     !/grantedViaAuth = true;[\s\S]{0,80}break;/.test(whSrc));
+}
+
+section("Recipe content — the 2026-09-07 audit fixes (all 401)");
+{
+  // Every assertion here is a class of error the audit found across the library
+  // and the fixer corrected. They are content rules, so they run over the data,
+  // not over the source text.
+  const RECIPES = eval(slice("const RECIPES =", "[", "\n];").replace(/\n];$/, "\n]"));
+  const PEND = eval(slice("const PENDING_RECIPES", "[", "\n];").replace(/\n];$/, "\n]"));
+  const ALL = [...RECIPES, ...PEND];
+  const bodyOf = r => (r.steps || []).filter(s => !/^[\u{1F4A1}\u{1F7E1}\u{23F1}]/u.test(s));
+  const list = a => a.slice(0, 6).join(", ") + (a.length > 6 ? ` +${a.length - 6} more` : "");
+
+  // 1. A method that says "1 cup" cannot be followed with a kitchen scale, which
+  //    is the whole premise of the app. "lettuce cups" and "muffin cups" are
+  //    vessels, not measures.
+  const US = /(?:\d|[½¼¾⅓⅔⅛]|\b(?:a|an|one|two|half)\s)\s*-?\s*(?:cups?|tbsps?|tablespoons?|tsps?|teaspoons?|ounces?|\boz\b|pounds?|\blbs?\b|inch(?:es)?)\b/i;
+  const usHits = ALL.filter(r => (r.steps || []).some(s =>
+    US.test(s.replace(/\b(?:lettuce|muffin|cucumber|paper|silicone|baking)\s+cups?\b/gi, "")
+             .replace(/\d+\s*[×x]\s*\d+\s*inch\s*\(\d+[×x]\d+\s*cm\)/gi, "")))).map(r => r.id);
+  t("no recipe measures in cups / tbsp / tsp / oz / inches in its method", usHits.length === 0, list(usHits));
+
+  // 2. Oven temperatures in °F alone. A dual "74°C / 165°F" doneness reading is
+  //    fine — a bare °F is not.
+  const fHits = ALL.filter(r => (r.steps || []).some(s => /\d\s*°\s*F/.test(s) && !/°\s*C\s*\/?\s*\d*\s*°\s*F|°\s*F\s*\)/.test(s))).map(r => r.id);
+  t("no temperature is given in °F alone", fHits.length === 0, list(fHits));
+  const dblC = ALL.filter(r => (r.steps || []).some(s => /\d+\s*°C\s*\(\s*\d+\s*°C\s*\)/.test(s))).map(r => r.id);
+  t("no double-converted temperature (\"175°C (175°C)\")", dblC.length === 0, list(dblC));
+
+  // 3. Ingredient rows are weighable. "2 cans" and "10 slices" are not.
+  const badUnit = [];
+  for (const r of ALL) for (const i of (r.batchItems || []))
+    if (!["g", "ml", "mL", "whole"].includes(String(i.unit))) badUnit.push(`${r.id}:${i.key} (${i.unit})`);
+  t("every ingredient quantity is g, ml or a countable whole", badUnit.length === 0, list(badUnit));
+  const zeroQty = [];
+  for (const r of ALL) for (const i of (r.batchItems || [])) if (!(i.qty > 0)) zeroQty.push(`${r.id}:${i.key}`);
+  t("no ingredient row has a zero quantity", zeroQty.length === 0, list(zeroQty));
+
+  // 4. Poultry without a temperature cue is a food-safety gap, not a style one.
+  const poultry = /chicken|turkey/i;
+  const noCue = ALL.filter(r => ((r.batchItems || []).some(i => poultry.test(i.label || "")) || poultry.test(r.name))
+    && !(r.steps || []).some(s => /74\s*°?\s*C|165\s*°?\s*F/.test(s))).map(r => r.id);
+  t("every poultry recipe states a 74°C doneness cue", noCue.length === 0, list(noCue));
+
+  // 5. The card shows the subtitle; without a duration the user cannot plan.
+  const noTime = ALL.filter(r => !/\d+\s*(?:min|hr|hour|h\b)|overnight/i.test(r.subtitle || "")).map(r => r.id);
+  t("every recipe subtitle carries a time (or says overnight)", noTime.length === 0, list(noTime));
+
+  // 6. Steps that were cut at the PDF's column edge, and the nutrition panel
+  //    that leaked into one method.
+  const frag = [];
+  for (const r of ALL) { const b = bodyOf(r);
+    b.forEach((s, i) => { if (/^[a-z]/.test(s) || (i < b.length - 1 && !/[.!?:)”"]$/.test(s.trim()))) frag.push(`${r.id}[${i + 1}]`); }); }
+  t("no method step is a sentence fragment", frag.length === 0, list(frag));
+  const junk = ALL.filter(r => (r.steps || []).some(s => /N\s*u\s*t\s*r\s*i\s*t\s*i\s*o\s*n\s*a\s*l|^[\d.]+\s*m?g\s*$/.test(s.trim()))).map(r => r.id);
+  t("no PDF artefact survived into a method", junk.length === 0, list(junk));
+  t("every recipe has at least one method step", ALL.every(r => bodyOf(r).length > 0));
+
+  // 7. Allergen labels must come from the detectAllergens vocabulary, or the
+  //    filter silently misses them ("Milk" is not "Dairy").
+  const VOCAB = new Set(eval(slice("const ALLERGEN_MAP", "[", "\n];").replace(/\n];$/, "\n]")).map(a => a.name));
+  const badAll = [];
+  for (const r of ALL) for (const a of (r.allergens || [])) if (!VOCAB.has(a)) badAll.push(`${r.id}:${a}`);
+  t("every declared allergen is one the filter knows", badAll.length === 0, list(badAll));
+
+  // 8. Shares that do not sum to 1 are auto-derived at runtime, so the stored
+  //    numbers are dead weight that hides a real drift.
+  const badShare = [];
+  for (const r of ALL) for (const role of ["protein", "carbs", "fat"]) {
+    const items = (r.batchItems || []).filter(i => (i.role || "fixed") === role);
+    if (!items.length || !items.some(i => i.share != null)) continue;
+    const sum = items.reduce((a, i) => a + (i.share || 0), 0);
+    if (Math.abs(sum - 1) > 0.05) badShare.push(`${r.id} ${role}=${sum.toFixed(3)}`);
+  }
+  t("declared macro shares sum to 1.0", badShare.length === 0, list(badShare));
+
+  // 9. Every recipe card starts with an emoji — the grid looks broken without one.
+  const noEmoji = ALL.filter(r => !/^\p{Extended_Pictographic}/u.test(r.name || "")).map(r => r.id);
+  t("every recipe name starts with an emoji", noEmoji.length === 0, list(noEmoji));
+}
+
 section("Other pages — install.html and the service worker");
 {
   const inst = readFileSync(join(ROOT, "install.html"), "utf8");
