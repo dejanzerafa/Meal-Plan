@@ -1,0 +1,39 @@
+{
+ "skipped": {
+  "cb70": [
+   "Lettuce leaves"
+  ],
+  "cb126": [
+   "for dairy-free)"
+  ],
+  "cb27": [
+   "Hollow Bee Farm, if available)"
+  ],
+  "cb206": [
+   "Assorted fruit slices (apple, pear, or strawberries)"
+  ]
+ },
+ "dropped": {
+  "cb196": "twin of cb204",
+  "cb239": "twin of cb46",
+  "cb174": "same title as cb103",
+  "cb19": "cb56 without the banana",
+  "cb256": "twin of cb220",
+  "cb259": "twin of cb219",
+  "cb260": "covered by cb252",
+  "cb246": "covered by cb252",
+  "cb243": "subset of cb267",
+  "cb161": "twin of cb130",
+  "cb22": "plain base of cb215/cb61",
+  "cb186": "plain base of cb215",
+  "cb211": "twin of cb188",
+  "cb71": "twin of cb128"
+ },
+ "prebuilt": {
+  "ig2": "m125",
+  "ig11": "m126",
+  "ig9": "m127",
+  "cb135": "m128",
+  "cb85": "m129"
+ }
+}
