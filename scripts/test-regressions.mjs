@@ -1309,10 +1309,23 @@ section("Recipe content — the 2026-09-07 audit fixes (all 401)");
   t("no ingredient row has a zero quantity", zeroQty.length === 0, list(zeroQty));
 
   // 4. Poultry without a temperature cue is a food-safety gap, not a style one.
-  const poultry = /chicken|turkey/i;
-  const noCue = ALL.filter(r => ((r.batchItems || []).some(i => poultry.test(i.label || "")) || poultry.test(r.name))
-    && !(r.steps || []).some(s => /74\s*°?\s*C|165\s*°?\s*F/.test(s))).map(r => r.id);
-  t("every poultry recipe states a 74°C doneness cue", noCue.length === 0, list(noCue));
+  //    The house number is 75°C: it satisfies the UK FSA table (75°C for 30 s)
+  //    and clears USDA/Health Canada's 74°C (165°F) outright. Researched
+  //    2026-09-08 — see recipe-intake/fix-doneness-2026-09-08.mjs.
+  //    Only a recipe that COOKS a raw bird needs it; a wrap built from
+  //    ready-cooked chicken must not carry one, which is a bug this caught.
+  const poultry = /\b(chicken|turkey|duck)\b/i;
+  const notRaw = /broth|stock|knorr|bouillon|smoked|deli|rotisserie|pre-?cooked|\bcooked\b|jerky|bacon/i;
+  const rawBird = r => (r.batchItems || []).some(i => poultry.test(i.label || "") && !notRaw.test(i.label || ""));
+  const hasCue = r => (r.steps || []).some(s => /\b(7[45]|8[02])\s*°\s*C\b|\b16[5-9]\s*°\s*F\b/.test(s));
+  const noCue = ALL.filter(r => rawBird(r) && !hasCue(r)).map(r => r.id);
+  t("every recipe that cooks raw poultry states a doneness temperature", noCue.length === 0, list(noCue));
+  const staleCue = ALL.filter(r => rawBird(r) && (r.steps || []).some(s => /\b(74\s*°\s*C|165\s*°\s*F)\b/.test(s))).map(r => r.id);
+  t("poultry doneness is quoted as 75°C throughout", staleCue.length === 0, list(staleCue));
+  const falseCue = ALL.filter(r => !rawBird(r) && (r.steps || []).some(s => /reads 7[45]°C/.test(s))).map(r => r.id);
+  t("no ready-cooked-chicken recipe tells you to cook it to temperature", falseCue.length === 0, list(falseCue));
+  const dupCue = ALL.filter(r => (r.steps || []).some(s => (s.match(/7[45]\s*°\s*C/g) || []).length > 1)).map(r => r.id);
+  t("no step states the doneness temperature twice", dupCue.length === 0, list(dupCue));
 
   // 5. The card shows the subtitle; without a duration the user cannot plan.
   const noTime = ALL.filter(r => !/\d+\s*(?:min|hr|hour|h\b)|overnight/i.test(r.subtitle || "")).map(r => r.id);
