@@ -373,6 +373,13 @@ jobs:
       # Every rule from the two recipe audits, over all 401 recipes. Also the
       # gate a new batch runs through before it is merged:
       #   node scripts/check-recipe-quality.mjs recipe-intake/build-YYYY-MM-DD.json
+      # Feeds every rule a recipe that SHOULD trip it. The library passing the
+      # rules proves nothing on its own — a rule with a typo in its regex also
+      # passes, silently. Three did exactly that until this was written.
+      - name: Guard — the recipe rules themselves fire
+        if: ${{ !cancelled() }}
+        run: node scripts/test-recipe-rules.mjs
+
       - name: Guard — recipe quality (safety, method, nutrition)
         if: ${{ !cancelled() }}
         run: node scripts/check-recipe-quality.mjs

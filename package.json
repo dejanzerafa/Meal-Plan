@@ -4,13 +4,14 @@
   "description": "Server-side functions for Meal Prep app — Stripe + Supabase + Resend",
   "private": true,
   "scripts": {
-    "check": "node scripts/check-ingredients.mjs && node scripts/check-recipe-quality.mjs && node scripts/check-copy-consistency.mjs && node scripts/check-legal-consistency.mjs && node scripts/check-apple-compliance.mjs && node scripts/next-recipe-ids.mjs && node scripts/test-regressions.mjs",
+    "check": "node scripts/check-ingredients.mjs && node scripts/check-recipe-quality.mjs && node scripts/check-copy-consistency.mjs && node scripts/check-legal-consistency.mjs && node scripts/check-apple-compliance.mjs && node scripts/next-recipe-ids.mjs && node scripts/test-recipe-rules.mjs && node scripts/test-regressions.mjs",
     "check:recipes": "node scripts/check-recipe-quality.mjs",
     "check:safety": "node scripts/check-recipe-quality.mjs --severity safety",
     "check:ingredients": "node scripts/check-ingredients.mjs",
     "test": "node scripts/test-regressions.mjs",
     "test:tz": "for tz in UTC Asia/Qatar America/Los_Angeles Pacific/Kiritimati; do echo \"── TZ=$tz\"; TZ=$tz node scripts/test-regressions.mjs | tail -1; done",
-    "smoke": "node scripts/dev/smoke-runtime.mjs"
+    "smoke": "node scripts/dev/smoke-runtime.mjs",
+    "test:rules": "node scripts/test-recipe-rules.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^11.0.1",

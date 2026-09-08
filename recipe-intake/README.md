@@ -223,6 +223,8 @@ every recipe has an allergens field.
 | `scripts/next-recipe-ids.mjs` | the next free id per category, and duplicate-id detection |
 | `scripts/test-regressions.mjs` | the full suite, one assertion per rule |
 | `scripts/dev/smoke-runtime.mjs` | loads the app in jsdom and fails on any console error |
+| `scripts/test-recipe-rules.mjs` | proves every rule fires on a broken recipe, and tolerates the lookalike |
+| `scripts/lib/recipe-file.mjs` | the only safe in-place editor — refuses a block covering two recipes |
 | `recipe-intake/audit-2026-09-08.mjs` | the exploratory audit that found this round |
 
 Fixers are dated and kept for the record: `fix-2026-09-07.mjs`,
@@ -236,14 +238,37 @@ report next to itself. They are not meant to be re-run.
 ## Two failure modes worth knowing about
 
 **Writing to the wrong recipe.** The applier anchored recipe blocks on
-`"\n    {"`, but two recipes in `index.html` open at column zero. Their edits
-landed in the *previous* recipe. Any script that edits a recipe block in place
-must refuse a block containing more than one `id:`, and you should diff every
-field against the pre-edit file afterwards.
+`"\n    {"`, but two recipes in `index.html` (sn2 and m78) open at column zero.
+For those the anchor walked back past their own brace to the *previous*
+recipe's, so the block spanned two recipes and every regex edit hit the
+neighbour's line instead. sn2's edits landed in sm9; m78's in m76.
 
-**A check that is wrong in the reassuring direction.** A first draft of the
-timing audit reported 216 recipes because `\b` after a bare `min` rejects
-"minutes". Another flagged 57 recipes for naming a cut they do not use, because
-"minced garlic" matched "mince". Both would have wasted a day of edits on
-recipes that were fine. Validate a new check against a handful of real recipes,
-by hand, before acting on its output.
+Nothing caught it — writing valid data into the wrong recipe produces a
+perfectly valid file, so the tests, the guards and the macro reconciliation all
+passed.
+
+Fixed for good: `scripts/lib/recipe-file.mjs` is now the only block editor, and
+`blockRange()` **throws** rather than returning a range that covers more than
+one `id:`. Use `editRecipe` / `setSteps` / `setItem` from it; do not write
+another one. `verifyBlocks()` checks the whole file, and the rule tests run it.
+
+**A check that is wrong in the reassuring direction.** This is the more
+dangerous of the two, because it is silent.
+
+- A first draft of the timing audit reported 216 recipes, because `\b` after a
+  bare `min` rejects "minutes".
+- Another flagged 57 recipes for naming a cut they do not use, because "minced
+  garlic" matched "mince".
+- Worse, three rules could not fire *at all*. `reheat-doneness` tested the whole
+  recipe for "75°C", so any poultry doneness cue satisfied it — "Reheat in a pan
+  with a splash of water." passed on every chicken recipe in the library.
+  `cold-marinade` accepted the rice storage note as refrigerating the marinade.
+  `oven-temperature` did not recognise "air fryer" because `\b` does not match
+  inside "fryer". Between them they were hiding 12 real safety findings.
+
+A rule that cannot fire is worse than no rule, because it reports success.
+`scripts/test-recipe-rules.mjs` therefore feeds **every** rule a recipe that
+should trip it, plus — where the distinction is subtle — a similar recipe that
+must not (a Dutch oven is not an oven; tenderloin is a steak; lettuce cups are
+not a measure; two soy sauces on one registry row are deliberate). Add a rule,
+add both fixtures. CI runs it before the quality gate.

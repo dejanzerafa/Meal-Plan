@@ -214,9 +214,31 @@ section("Access expiry — the two writers store different things");
     t("no tier_expires means no expiry", expiryOf({ tier_expires: null }) === null);
   }
 }
-t("promo codes are issued with localDateKey",
-   /expires: redeemByKey/.test(src) && /const redeemByKey = localDateKey\(redeemBy\)/.test(src),
-   "toISOString() in Qatar (UTC+3) issued a code that expired a day early");
+// Issuing moved server-side on 2026-09-08 (the browser has no access to
+// promo_codes and must not), so the date logic that this protects moved with
+// it. Same bug, same guard, new home: toISOString() in Qatar (UTC+3) issued a
+// code that expired a day before the 30 days promised.
+{
+  const promoFn = stripJS(readFileSync(join(ROOT, "netlify", "functions", "admin-promo-codes.js"), "utf8"));
+  t("the browser no longer writes to promo_codes directly",
+     !/from\("promo_codes"\)/.test(src),
+     "a SELECT grant lets any signed-in user read every live code and redeem one");
+  t("the admin panel sends its timezone offset when issuing",
+     /tzOffsetMinutes: new Date\(\)\.getTimezoneOffset\(\)/.test(src));
+  t("promo codes are issued with a local date, not toISOString",
+     /function localDateKey\(d, offsetMinutes\)/.test(promoFn)
+     && /const expires = localDateKey\(redeemBy, off\)/.test(promoFn)
+     && !/toISOString\(\)\.(split\("T"\)\[0\]|slice\(0, ?10\))/.test(promoFn),
+     "toISOString() in Qatar (UTC+3) issued a code that expired a day early");
+  t("the duration comes from the server, not the request",
+     /const TIERS = \{[\s\S]{0,200}monthly:[\s\S]{0,120}days: 30/.test(promoFn)
+     && /const days = TIERS\[tier\]\.days/.test(promoFn),
+     "the client used to send the day count, so a crafted call could issue itself 36500 days");
+  t("the code is generated server-side", /function genCode\(\)/.test(promoFn) && !/function genCode\(\)/.test(src));
+  t("issuing is admin-gated on profiles.is_admin with an ADMIN_EMAILS fallback",
+     /select\("is_admin"\)/.test(promoFn) && /ADMIN_EMAILS/.test(promoFn) && /Forbidden/.test(promoFn));
+  t("issuing is rate limited even for admins", /rateLimit\(`adminpromo:/.test(promoFn));
+}
 t("no toISOString date-slicing remains",
    !/toISOString\(\)\.(split\("T"\)\[0\]|slice\(0, ?10\))/.test(src));
 

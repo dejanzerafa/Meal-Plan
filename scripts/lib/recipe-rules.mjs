@@ -120,21 +120,38 @@ const RULES = [
     id: "reheat-doneness", severity: "safety",
     why: "'Reheat in the microwave' with no time and no doneness is a guess, not an instruction.",
     check(r) {
-      const T = (r.steps || []).join(" ");
-      if (!/\breheat/i.test(T)) return null;
-      const tail = T.slice(T.search(/\breheat/i));
-      const ok = /(steaming hot|piping hot|hot (?:all the way )?through|through(?:out)?|75\s*°C|until hot)/i.test(T)
-              || /\d+\s*W\b|\d+\s*%\s*power|\d+\s*(?:min|sec)/i.test(tail);
-      return ok ? null : "reheat advice with neither a time nor a doneness";
+      // Scoped to the sentence that says "reheat". Testing the whole recipe
+      // meant a poultry doneness cue elsewhere ("reads 75°C") satisfied the
+      // reheat rule, so "Reheat in the microwave." full stop passed on every
+      // chicken recipe in the library. Caught by test-recipe-rules.mjs.
+      // Only an instruction counts. "add the syrup after reheating" and "stir in
+      // water when reheating" are asides about something else — the gerund is
+      // the tell, and matching /reheat/ loosely flagged four of them.
+      const withReheat = (r.steps || []).flatMap(x => String(x).split(/(?<=[.!?])\s+/))
+        .filter(x => /\breheat\b/i.test(x) && !/\b(after|when|before|while|during|than)\s+reheat/i.test(x));
+      if (!withReheat.length) return null;
+      const answered = withReheat.some(x =>
+        /(steaming hot|piping hot|hot (?:all the way )?through|through(?:out)?|75\s*°C|until hot)/i.test(x)
+        // "60–70% microwave power" and "60-second bursts" are answers. The
+        // first draft of this pattern demanded "power" immediately after the %
+        // and no hyphen before "second", so it called both of them unanswered.
+        || /\d+\s*W\b/i.test(x)
+        || /\d+\s*(?:[–-]\s*\d+\s*)?%[^.]{0,20}\bpower\b/i.test(x)
+        || /\d+\s*[-–]?\s*(?:min|sec)/i.test(x));
+      return answered ? null : "reheat advice with neither a time nor a doneness";
     },
   },
   {
     id: "cold-marinade", severity: "safety",
     why: "Hours of marinating at room temperature is a bacterial incubator.",
     check(r) {
-      const T = (r.steps || []).join(" ");
-      return /\bmarinate\b/i.test(T) && /\b(overnight|\d+\s*h(?:ours?|rs?)?)\b/i.test(T) && !/fridge|refrigerat|chill|cold/i.test(T)
-        ? "marinates for hours with no mention of the fridge" : null;
+      // Scoped to the marinating step. Against the whole recipe, a "refrigerate
+      // within an hour" rice note counted as refrigerating the marinade.
+      const steps = (r.steps || []).map(String).filter(x => /\bmarinate\b/i.test(x));
+      if (!steps.length) return null;
+      const long = steps.some(x => /\b(overnight|\d+\s*h(?:ours?|rs?)?)\b/i.test(x));
+      const cold = steps.some(x => /fridge|refrigerat|chill|cold/i.test(x));
+      return long && !cold ? "marinates for hours with no mention of the fridge" : null;
     },
   },
 
@@ -205,7 +222,15 @@ const RULES = [
       const ovenVerb = B.flatMap(x => x.split(/(?<=[.!?])\s+|,\s+(?=then\b)/))
         .some(x => /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+)?(bake|roast)\b/i.test(x.trim()) && !/dutch oven|instant pot/i.test(x));
       const airFry = /\bair[- ]?fry/i.test(body);
-      return (ovenVerb || airFry) && !/\d+\s*°C/.test(body) ? "an oven or air-fryer step with no temperature" : null;
+      if (!ovenVerb && !airFry) return null;
+      // The temperature has to be on the oven step or a preheat — a poultry
+      // doneness reading of 75°C somewhere else is not an oven setting, and
+      // testing the whole method let "Roast the chicken 25 min" pass on it.
+      // "air fryer basket" — \b after "fry" does not match "fryer", so the step
+      // that carried the temperature was not recognised as an oven step at all.
+      const oven = B.filter(x => /\b(bake|roast|oven|air[- ]?fry\w*|preheat)/i.test(x) && !/dutch oven|instant pot/i.test(x));
+      const hasTemp = oven.some(x => /\d+\s*°C/.test(String(x).replace(/(?:reads?|internal(?:ly)?|core|thickest part|centre)[^.]{0,30}?\d+\s*°C/gi, " ")));
+      return hasTemp ? null : "an oven or air-fryer step with no temperature";
     },
   },
   {
