@@ -370,6 +370,13 @@ jobs:
         if: ${{ !cancelled() }}
         run: node scripts/check-ingredients.mjs
 
+      # Every rule from the two recipe audits, over all 401 recipes. Also the
+      # gate a new batch runs through before it is merged:
+      #   node scripts/check-recipe-quality.mjs recipe-intake/build-YYYY-MM-DD.json
+      - name: Guard — recipe quality (safety, method, nutrition)
+        if: ${{ !cancelled() }}
+        run: node scripts/check-recipe-quality.mjs
+
       - name: Guard — copy consistency
         if: ${{ !cancelled() }}
         run: node scripts/check-copy-consistency.mjs

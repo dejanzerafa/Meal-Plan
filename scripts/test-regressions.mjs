@@ -27,6 +27,7 @@ import { execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as acorn from "acorn";
+import { checkLibrary, RULE_IDS } from "./lib/recipe-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const raw = readFileSync(join(ROOT, "index.html"), "utf8");
@@ -1275,236 +1276,61 @@ section("Stripe webhook — the three Sentry issues from the 6 Sep test purchase
      !/grantedViaAuth = true;[\s\S]{0,80}break;/.test(whSrc));
 }
 
-section("Recipe content — the 2026-09-07 audit fixes (all 401)");
+section("Recipe content — every rule from the 2026-09-07 and 2026-09-08 audits");
 {
-  // Every assertion here is a class of error the audit found across the library
-  // and the fixer corrected. They are content rules, so they run over the data,
-  // not over the source text.
+  // The rules themselves live in scripts/lib/recipe-rules.mjs, and this asserts
+  // them. They used to live here AND in the audit script AND in each fixer, and
+  // the copies drifted apart within a day: the rice fixer skipped four recipes
+  // the assertion demanded, because the two predicates for "cooks its own rice"
+  // had diverged by a word. One module now, three consumers.
   const RECIPES = eval(slice("const RECIPES =", "[", "\n];").replace(/\n];$/, "\n]"));
   const PEND = eval(slice("const PENDING_RECIPES", "[", "\n];").replace(/\n];$/, "\n]"));
   const IM = eval("(" + slice("const INGREDIENT_MACROS = {", "{", "\n};").replace(/\n};$/, "\n}") + ")");
+  const ING = eval(slice("const ING_FLAT", "[", "\n];").replace(/\n];$/, "\n]"));
   const ALL = [...RECIPES, ...PEND];
-  const bodyOf = r => (r.steps || []).filter(s => !/^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u.test(s));
-  const list = a => a.slice(0, 6).join(", ") + (a.length > 6 ? ` +${a.length - 6} more` : "");
 
-  // 1. A method that says "1 cup" cannot be followed with a kitchen scale, which
-  //    is the whole premise of the app. "lettuce cups" and "muffin cups" are
-  //    vessels, not measures.
-  const US = /(?:\d|[½¼¾⅓⅔⅛]|\b(?:a|an|one|two|half)\s)\s*-?\s*(?:cups?|tbsps?|tablespoons?|tsps?|teaspoons?|ounces?|\boz\b|pounds?|\blbs?\b|inch(?:es)?)\b/i;
-  const usHits = ALL.filter(r => (r.steps || []).some(s =>
-    US.test(s.replace(/\b(?:lettuce|muffin|cucumber|paper|silicone|baking)\s+cups?\b/gi, "")
-             .replace(/\d+\s*[×x]\s*\d+\s*inch\s*\(\d+[×x]\d+\s*cm\)/gi, "")))).map(r => r.id);
-  t("no recipe measures in cups / tbsp / tsp / oz / inches in its method", usHits.length === 0, list(usHits));
+  const results = checkLibrary(ALL, { IM, ING });
+  const byRule = {};
+  for (const { recipe, findings } of results)
+    for (const f of findings) (byRule[f.id] = byRule[f.id] || []).push(recipe.id);
 
-  // 2. Oven temperatures in °F alone. A dual "74°C / 165°F" doneness reading is
-  //    fine — a bare °F is not.
-  const fHits = ALL.filter(r => (r.steps || []).some(s => /\d\s*°\s*F/.test(s) && !/°\s*C\s*\/?\s*\d*\s*°\s*F|°\s*F\s*\)/.test(s))).map(r => r.id);
-  t("no temperature is given in °F alone", fHits.length === 0, list(fHits));
-  const dblC = ALL.filter(r => (r.steps || []).some(s => /\d+\s*°C\s*\(\s*\d+\s*°C\s*\)/.test(s))).map(r => r.id);
-  t("no double-converted temperature (\"175°C (175°C)\")", dblC.length === 0, list(dblC));
-
-  // 3. Ingredient rows are weighable. "2 cans" and "10 slices" are not.
-  const badUnit = [];
-  for (const r of ALL) for (const i of (r.batchItems || []))
-    if (!["g", "ml", "mL", "whole"].includes(String(i.unit))) badUnit.push(`${r.id}:${i.key} (${i.unit})`);
-  t("every ingredient quantity is g, ml or a countable whole", badUnit.length === 0, list(badUnit));
-  const zeroQty = [];
-  for (const r of ALL) for (const i of (r.batchItems || [])) if (!(i.qty > 0)) zeroQty.push(`${r.id}:${i.key}`);
-  t("no ingredient row has a zero quantity", zeroQty.length === 0, list(zeroQty));
-
-  // 4. Poultry without a temperature cue is a food-safety gap, not a style one.
-  //    The house number is 75°C: it satisfies the UK FSA table (75°C for 30 s)
-  //    and clears USDA/Health Canada's 74°C (165°F) outright. Researched
-  //    2026-09-08 — see recipe-intake/fix-doneness-2026-09-08.mjs.
-  //    Only a recipe that COOKS a raw bird needs it; a wrap built from
-  //    ready-cooked chicken must not carry one, which is a bug this caught.
-  const poultry = /\b(chicken|turkey|duck)\b/i;
-  const notRaw = /broth|stock|knorr|bouillon|smoked|deli|rotisserie|pre-?cooked|\bcooked\b|jerky|bacon/i;
-  const rawBird = r => (r.batchItems || []).some(i => poultry.test(i.label || "") && !notRaw.test(i.label || ""));
-  const hasCue = r => (r.steps || []).some(s => /\b(7[45]|8[02])\s*°\s*C\b|\b16[5-9]\s*°\s*F\b/.test(s));
-  const noCue = ALL.filter(r => rawBird(r) && !hasCue(r)).map(r => r.id);
-  t("every recipe that cooks raw poultry states a doneness temperature", noCue.length === 0, list(noCue));
-  const staleCue = ALL.filter(r => rawBird(r) && (r.steps || []).some(s => /\b(74\s*°\s*C|165\s*°\s*F)\b/.test(s))).map(r => r.id);
-  t("poultry doneness is quoted as 75°C throughout", staleCue.length === 0, list(staleCue));
-  // The POULTRY cue specifically — minced beef carries its own 75°C wording and
-  // must not be caught by this.
-  const falseCue = ALL.filter(r => !rawBird(r) && (r.steps || []).some(s =>
-    /(?:thickest part|centre of the thickest piece) reads 7[45]°C/.test(s))).map(r => r.id);
-  t("no ready-cooked-chicken recipe tells you to cook it to temperature", falseCue.length === 0, list(falseCue));
-  const dupCue = ALL.filter(r => (r.steps || []).some(s => (s.match(/7[45]\s*°\s*C/g) || []).length > 1)).map(r => r.id);
-  t("no step states the doneness temperature twice", dupCue.length === 0, list(dupCue));
-
-  // 4b. Food safety beyond poultry (audit 2026-09-08).
-  //     Rice: uncooked grains carry Bacillus cereus spores that SURVIVE
-  //     cooking. Left to cool slowly they germinate and make a heat-stable
-  //     toxin that reheating does not destroy — the classic meal-prep food
-  //     poisoning, and the one this app is most exposed to.
-  const cooksOwnRice = r => (r.batchItems || []).some(i => /\brice\b/i.test(i.label || "")
-      && !/rice (?:cake|paper|vinegar|wine|milk|flour|noodle)|\bcooked\b/i.test(i.label || ""))
-    && /\brice\b/i.test((r.steps || []).join(" ")) && /\b(cook|boil|steam|simmer)\b/i.test((r.steps || []).join(" "));
-  const noRiceNote = ALL.filter(r => cooksOwnRice(r)
-    && !/cool[^.]{0,40}\b(quickly|fast|within an hour)\b|within an hour|spores/i.test((r.steps || []).join(" "))).map(r => r.id);
-  t("every recipe that cooks its own rice carries the rapid-cool note", noRiceNote.length === 0, list(noRiceNote));
-
-  //     Mince: whole muscle is sterile inside, so a steak can be rare. Mincing
-  //     spreads surface bacteria right through, so mince must be cooked through.
-  const noMinceCue = ALL.filter(r => {
-    const labels = (r.batchItems || []).map(i => i.label || "").join(" ");
-    if (!/\b(beef|lamb|pork)\b/i.test(labels) || !/\b(mince|minced|ground)\b/i.test(labels)) return false;
-    return !/(7[0-9]|8\d)\s*°C|no (?:longer )?pink|right through|cooked through|fully browned|until browned/i.test((r.steps || []).join(" "));
-  }).map(r => r.id);
-  t("every minced beef/lamb/pork recipe says to cook it through", noMinceCue.length === 0, list(noMinceCue));
-
-  //     Reheating: "reheat in the microwave" with no time and no doneness is
-  //     not an instruction, it is a guess.
-  const badReheat = ALL.filter(r => {
-    const T = (r.steps || []).join(" ");
-    if (!/\breheat/i.test(T)) return false;
-    const tail = T.slice(T.search(/\breheat/i));
-    return !/(steaming hot|piping hot|hot (?:all the way )?through|through(?:out)?|75\s*°C|until hot)/i.test(T)
-        && !/\d+\s*W\b|\d+\s*%\s*power|\d+\s*(?:min|sec)/i.test(tail);
-  }).map(r => r.id);
-  t("every reheat instruction gives a time or a doneness", badReheat.length === 0, list(badReheat));
-
-  const roomTempMarinade = ALL.filter(r => {
-    const T = (r.steps || []).join(" ");
-    return /\bmarinate\b/i.test(T) && /\b(overnight|\d+\s*h(?:ours?|rs?)?)\b/i.test(T) && !/fridge|refrigerat|chill|cold/i.test(T);
-  }).map(r => r.id);
-  t("no recipe marinates for hours at room temperature", roomTempMarinade.length === 0, list(roomTempMarinade));
-
-  // 5. The card shows the subtitle; without a duration the user cannot plan.
-  const noTime = ALL.filter(r => !/\d+\s*(?:min|hr|hour|h\b)|overnight/i.test(r.subtitle || "")).map(r => r.id);
-  t("every recipe subtitle carries a time (or says overnight)", noTime.length === 0, list(noTime));
-
-  // 5b. A recipe must not misstate itself (audit 2026-09-08).
-  const sentencesOf = x => x.split(/(?<=[.!?])\s+/).map(y => y.trim()).filter(Boolean);
-  const COOK_IMP = /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+|carefully\s+|gently\s+|lightly\s+)?(cook|fry|saut[ée]|sear|brown|grill|bake|roast|boil|simmer|steam|poach|toast|air[- ]?fry|blanch|braise|scramble|griddle)\b/i;
-  const TIMED_RE = /\d+\s*(?:min(?:ute)?s?|h(?:ou)?rs?|sec(?:ond)?s?)\b|overnight/i;
-  const DEFERS_RE = /per (?:the )?(?:packet|package)|according to (?:the )?(?:packet|package)|packet instructions|package directions|to your liking|to your preference/i;
-  const CUE_RE = /\buntil\b|\bto your\b|\d+\s*°C|no (?:longer )?pink|golden|tender|crisp|set\b|wilted|softened|fragrant|charred|opaque|shreds?/i;
-  // "Cook brown rice." is not an instruction — brown rice is 35-40 min and
-  // white is 12, and a first-time cook has no way to know which.
-  const untimed = ALL.filter(r => bodyOf(r).some(x =>
-    sentencesOf(x).some(y => COOK_IMP.test(y)) && !TIMED_RE.test(x) && !DEFERS_RE.test(x) && !CUE_RE.test(x))).map(r => r.id);
-  t("every cooking step gives a time, a doneness, or defers to the packet", untimed.length === 0, list(untimed));
-
-  // Bought but never used: the shopping list charges for it and the method
-  // never says what to do with it.
-  const unused = [];
-  for (const r of ALL) {
-    const lower = bodyOf(r).join(" ").toLowerCase();
-    if (/\ball (?:the )?ingredients\b|\beverything\b|\ball (?:the )?(?:fruit|veg|vegetables)\b/.test(lower)) continue;
-    const methodWords = lower.split(/[^a-z]+/).filter(w => w.length >= 4);
-    const stem = w => w.replace(/(ies)$/, "y").replace(/(es|s)$/, "");
-    const COLL = { Fruits: /\b(fruits?|berries|smoothie)\b/i, Vegetables: /\b(veg|vegetables|veggies|greens|salad)\b/i,
-                   Herbs: /\b(herbs?|seasoning|aromatics)\b/i, Spices: /\b(spices?|seasoning|spice (?:blend|mix)|rub)\b/i,
-                   Aromatics: /\b(aromatics|veg|vegetables)\b/i, Condiments: /\b(sauce|dressing|condiments?|marinade)\b/i,
-                   Sauces: /\b(sauce|dressing|marinade)\b/i };
-    for (const i of r.batchItems || []) {
-      const words = (i.label || "").toLowerCase().split(/[^a-z]+/).filter(w => w.length >= 3 && !["and","the","raw","dry","for","cut","low","fat","non","new"].includes(w));
-      if (words.some(w => lower.includes(stem(w)) || methodWords.some(m2 => w.includes(m2) && m2.length >= 4))) continue;
-      if (COLL[i.cat] && COLL[i.cat].test(bodyOf(r).join(" "))) continue;
-      unused.push(`${r.id}:${i.label}`);
-    }
+  // One assertion per rule, named by what it protects, so a failure in CI says
+  // which rule broke and on which recipes rather than "recipes are bad".
+  for (const id of RULE_IDS) {
+    const hits = byRule[id] || [];
+    t(`rule: ${id}`, hits.length === 0,
+       hits.slice(0, 8).join(", ") + (hits.length > 8 ? ` +${hits.length - 8} more` : ""));
   }
-  t("every ingredient on the shopping list is used by the method", unused.length === 0, list(unused));
+  t(`all ${ALL.length} recipes pass every content rule`, results.length === 0,
+     `${results.length} recipe(s) with findings`);
 
-  // An oven or air-fryer step with no temperature. "the beef roast" is a noun,
-  // and a Dutch oven is stovetop kit, so only imperatives count.
-  const noOvenTemp = ALL.filter(r => {
-    const B2 = bodyOf(r), bodyText = B2.join(" ");
-    const ovenVerb = B2.flatMap(x => x.split(/(?<=[.!?])\s+|,\s+(?=then\b)/))
-      .some(x => /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+)?(bake|roast)\b/i.test(x.trim()) && !/dutch oven|instant pot/i.test(x));
-    const airFry = /\bair[- ]?fry/i.test(bodyText);
-    return (ovenVerb || airFry) && !/\d+\s*°C/.test(bodyText);
-  }).map(r => r.id);
-  t("every oven and air-fryer step gives a temperature", noOvenTemp.length === 0, list(noOvenTemp));
-
-  const dupRow = [];
-  for (const r of ALL) {
-    const pairs = (r.batchItems || []).map(i => `${i.ingId}|${(i.label || "").toLowerCase().trim()}`);
-    const d = pairs.filter((k, i) => pairs.indexOf(k) !== i);
-    if (d.length) dupRow.push(`${r.id}:${[...new Set(d)].join(",")}`);
-  }
-  t("no recipe lists the same ingredient row twice", dupRow.length === 0, list(dupRow));
-
-  // 6. Steps that were cut at the PDF's column edge, and the nutrition panel
-  //    that leaked into one method.
-  const frag = [];
-  for (const r of ALL) { const b = bodyOf(r);
-    b.forEach((s, i) => { if (/^[a-z]/.test(s) || (i < b.length - 1 && !/[.!?:)”"]$/.test(s.trim()))) frag.push(`${r.id}[${i + 1}]`); }); }
-  t("no method step is a sentence fragment", frag.length === 0, list(frag));
-  const junk = ALL.filter(r => (r.steps || []).some(s => /N\s*u\s*t\s*r\s*i\s*t\s*i\s*o\s*n\s*a\s*l|^[\d.]+\s*m?g\s*$/.test(s.trim()))).map(r => r.id);
-  t("no PDF artefact survived into a method", junk.length === 0, list(junk));
-  t("every recipe has at least one method step", ALL.every(r => bodyOf(r).length > 0));
-
-  // 6b. Nutrition and presentation (audit 2026-09-08).
-  const NOTE = /^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u;
-  const guided = r => (r.steps || []).some(x => NOTE.test(x) && /plate it:|protein note:/i.test(x));
-  const gramsPerPortion = r => {
-    let g = 0;
-    for (const i of r.batchItems || []) {
-      const md = IM[i.key]; if (!md) continue;
-      const u = String(i.unit || "g").toLowerCase();
-      g += (u === "g" || u === "ml") ? i.qty : i.qty * (md.unitG || 0);
-    }
-    return g / (r.portions || 1);
-  };
-  // A light main is fine; a light main with nothing telling the user how to
-  // complete the plate is the app quietly serving them 200 kcal for dinner.
-  const unguided = ALL.filter(r => r.category === "main" && r.perPortion
-    && (r.perPortion.kcal < 300 || gramsPerPortion(r) < 200) && !guided(r)).map(r => r.id);
-  t("every light main carries serving guidance", unguided.length === 0, list(unguided));
-
-  // A main that is mostly fat and short on protein will not keep anyone full.
-  const fatty = ALL.filter(r => r.category === "main" && r.perPortion && r.perPortion.kcal
-    && r.perPortion.fat * 9 / r.perPortion.kcal > 0.6 && (r.perPortion.protein ?? 0) < 25).map(r => r.id);
-  t("no main is fat-dominant and short on protein", fatty.length === 0, list(fatty));
-
-  // A batch of 8 brownies that never says to cut it into 8.
-  const noPortioning = ALL.filter(r => (r.portions || 1) > 2
-    && !/\b(portion|divide|distribute|split|container|serve|box|jar|store|among them|each (?:bowl|plate|wrap|tortilla|jar))\b/i.test((r.steps || []).join(" "))).map(r => r.id);
-  t("every batch recipe says to divide the batch", noPortioning.length === 0, list(noPortioning));
-
-  const thin = ALL.filter(r => r.category !== "preworkout" && bodyOf(r).length < 3).map(r => r.id);
-  t("no method is under three steps", thin.length === 0, list(thin));
-  const longStep = ALL.filter(r => bodyOf(r).some(x => x.length > 320)).map(r => r.id);
-  t("no method step runs over 320 characters", longStep.length === 0, list(longStep));
-
-  // Notes are not steps. 76 note lines across 70 recipes were being numbered
-  // and counted in "N/N done" because only 💡 was recognised.
+  // The app has to agree with the module about what a note is, or notes get
+  // numbered as steps again (76 lines across 70 recipes did).
   const appNote = raw.match(/const isNote = s => (\/\^\[[^\]]+\]\/u)\.test\(String\(s\)\)/);
-  t("the app treats every note prefix as a note, not a step",
+  t("the app's note prefixes match lib/recipe-rules.mjs",
      !!appNote && ["1F4A1", "1F7E1", "1F52C", "26A1", "1F4AA", "1F37D", "23F1", "1F634"].every(c => appNote[1].includes(c)),
-     appNote ? appNote[1] : "isNote not found");
+     appNote ? appNote[1] : "isNote not found in index.html");
+  t("notes are not counted as method steps",
+     /const methodSteps = \(r\.steps \|\| \[\]\)\.filter\(s => !isNote\(s\)\);/.test(src) && /methodSteps\.map\(\(s, i\)/.test(src));
   t("detectAllergens ignores notes, so a suggestion is not read as an ingredient",
-     /filter\(x => !isNote\(x\)\)\.join\(" "\)/.test(stripJS(raw)),
-     "a 💪 note suggesting Greek yogurt made a dairy-free recipe declare Dairy");
-  t("every recipe carries an allergens field", ALL.every(r => Array.isArray(r.allergens)),
-     list(ALL.filter(r => !Array.isArray(r.allergens)).map(r => r.id)));
-
-  // 7. Allergen labels must come from the detectAllergens vocabulary, or the
-  //    filter silently misses them ("Milk" is not "Dairy").
-  const VOCAB = new Set(eval(slice("const ALLERGEN_MAP", "[", "\n];").replace(/\n];$/, "\n]")).map(a => a.name));
-  const badAll = [];
-  for (const r of ALL) for (const a of (r.allergens || [])) if (!VOCAB.has(a)) badAll.push(`${r.id}:${a}`);
-  t("every declared allergen is one the filter knows", badAll.length === 0, list(badAll));
-
-  // 8. Shares that do not sum to 1 are auto-derived at runtime, so the stored
-  //    numbers are dead weight that hides a real drift.
-  const badShare = [];
-  for (const r of ALL) for (const role of ["protein", "carbs", "fat"]) {
-    const items = (r.batchItems || []).filter(i => (i.role || "fixed") === role);
-    if (!items.length || !items.some(i => i.share != null)) continue;
-    const sum = items.reduce((a, i) => a + (i.share || 0), 0);
-    if (Math.abs(sum - 1) > 0.05) badShare.push(`${r.id} ${role}=${sum.toFixed(3)}`);
-  }
-  t("declared macro shares sum to 1.0", badShare.length === 0, list(badShare));
-
-  // 9. Every recipe card starts with an emoji — the grid looks broken without one.
-  const noEmoji = ALL.filter(r => !/^\p{Extended_Pictographic}/u.test(r.name || "")).map(r => r.id);
-  t("every recipe name starts with an emoji", noEmoji.length === 0, list(noEmoji));
+     /filter\(x => !isNote\(x\)\)\.join\(" "\)/.test(src),
+     "a 💪 note suggesting Greek yogurt would make a dairy-free recipe declare Dairy");
+  t("declared allergens come from the detectAllergens vocabulary",
+     (() => {
+       const VOCAB = new Set(eval(slice("const ALLERGEN_MAP", "[", "\n];").replace(/\n];$/, "\n]")).map(a => a.name));
+       return ALL.every(r => (r.allergens || []).every(a => VOCAB.has(a)));
+     })(),
+     "a label the filter does not know means a coeliac or dairy-allergic user's filter misses the recipe");
+  t("declared macro shares sum to 1.0", (() => {
+       for (const r of ALL) for (const role of ["protein", "carbs", "fat"]) {
+         const items = (r.batchItems || []).filter(i => (i.role || "fixed") === role);
+         if (!items.length || !items.some(i => i.share != null)) continue;
+         if (Math.abs(items.reduce((a, i) => a + (i.share || 0), 0) - 1) > 0.05) return false;
+       }
+       return true;
+     })());
 }
+
 
 section("Other pages — install.html and the service worker");
 {
