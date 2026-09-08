@@ -8,18 +8,10 @@ Nothing here has been changed.
 
 | Finding | Recipes |
 |---|---|
-| method with no timing at all | 60 |
-| ingredient never mentioned in the method | 21 |
-| same registry ingredient listed twice | 9 |
-| method names a cut the recipe does not use | 4 |
-| oven recipe with no temperature | 3 |
-| air-fryer recipe with no temperature | 1 |
-| implausible quantity | 1 |
 | main course under 300 kcal | 29 |
 | very high fat share | 19 |
 | main course that barely fills a plate | 14 |
 | three or more high-sodium ingredients | 1 |
-| very large plate | 1 |
 | batch recipe with no portioning step | 11 |
 | method under three steps | 5 |
 | a step over 320 characters | 2 |
@@ -28,129 +20,9 @@ Nothing here has been changed.
 | same food, different macros between recipes | 0 |
 | the two macro banks disagree on protein/carbs/fat | 0 foods |
 
-**Total findings: 358** across 270 recipes.
+**Total findings: 258** across 232 recipes.
 
 Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutrition**, **quality**, **cosmetic**.
-
-## method with no timing at all (60) — severity: wrong
-
-- `m13` 🥩 Beef Mince & Rice Bowl — no duration anywhere in the steps
-- `m28` 🥩 Cheeseburger Burritos — no duration anywhere in the steps
-- `m08` 🥩 Lean Beef Hamburger Helper — no duration anywhere in the steps
-- `m30` 🥩 Lean Taco Salad — no duration anywhere in the steps
-- `m23` 🍕 Pepperoni Pizza Pasta — no duration anywhere in the steps
-- `m29` 🥩 Ranch Beef Bowl — no duration anywhere in the steps
-- `bf1` 🥓 Bacon & Hashbrown Bowl — no duration anywhere in the steps
-- `bf2` 🥚 Breakfast Bagel Sandwich — no duration anywhere in the steps
-- `bf5` 🥚 Egg, Beef & Cheese Breakfast Bowl — no duration anywhere in the steps
-- `bf6` 🥚🥩 Egg, Beef & Cheese Breakfast Burritos — no duration anywhere in the steps
-- `bf7` 🥚 Eggs on Wholegrain Toast — no duration anywhere in the steps
-- `bf9` 🥚 High-Protein Breakfast — no duration anywhere in the steps
-- `sn5` 🍉 Watermelon Feta & Edamame Bowl — no duration anywhere in the steps
-- `sn6` 🍗 Minced Chicken Thai Herb Salad — no duration anywhere in the steps
-- `bf16` 🍌 Banana Egg Caramel Stack — no duration anywhere in the steps
-- `bf19` 🌞 Tropical Yellow Sunshine Bowl — no duration anywhere in the steps
-- `bf21` 📅 Dates & Banana Protein Toast — no duration anywhere in the steps
-- `bf26` 🐟 Omega-3 Smoked Salmon Plate — no duration anywhere in the steps
-- `bf27` 🍳 Full Power Breakfast Plate — no duration anywhere in the steps
-- `m65` 🍄 Umami Miso Mushroom Pasta — no duration anywhere in the steps
-- `m67` 🥑 Creamy Chicken Avocado Salad — no duration anywhere in the steps
-- `m71` 🧆 Smoky Eggplant Beef Rice Bowl — no duration anywhere in the steps
-- `m73` 🍗 Herb Green Rice Chicken Bowl — no duration anywhere in the steps
-- `m83` 🍗 Chicken Club Toastie — no duration anywhere in the steps
-- `m96`* 🫙 No-Cook Greek Chickpea & Chicken Jars — no duration anywhere in the steps
-- `m103`* 🍝 Creamy Pesto Pasta — no duration anywhere in the steps
-- `m106`* 🥟 Creamy Chicken & Gnocchi — no duration anywhere in the steps
-- `m115`* 🌶️ Creamy Cajun Chicken Pasta — no duration anywhere in the steps
-- `m116`* 🌮 Smash Burger Tacos — no duration anywhere in the steps
-- `m118`* 🍢 Greek Chicken Skewers with Whipped Feta — no duration anywhere in the steps
-- `m119`* 🍔 Big Mac Bowl — no duration anywhere in the steps
-- `m120`* 🐟 Creamy Tuscan Salmon with Rice — no duration anywhere in the steps
-- `m122`* 🥩 Cottage Cheese Alfredo Steak Rigatoni — no duration anywhere in the steps
-- `m123`* 🍗 Smothered Chicken with Mushroom Gravy & Mash — no duration anywhere in the steps
-- `bf39`* 🫐 Wild Blueberry Vanilla Kefir Bowl — no duration anywhere in the steps
-- `bf40`* 🧇 Birthday Cake Protein Waffles — no duration anywhere in the steps
-- `ds10`* 🍪 Strawberry Cheesecake Protein Jars — no duration anywhere in the steps
-- `bf44`* 🫙 Protein Berry Yoghurt Bowl — no duration anywhere in the steps
-- `m146`* 🍗 Pesto Chicken Pasta Salad — no duration anywhere in the steps
-- `sn12`* 🥚 Avocado Egg Salad Wrap — no duration anywhere in the steps
-- `bf54`* 🥚 Avocado Egg Toast with Microgreens — no duration anywhere in the steps
-- `sn17`* 🧀 Strawberry Cottage Cheese Bowl — no duration anywhere in the steps
-- `sn18`* 🧀 Cottage Cheese Berry Bowl — no duration anywhere in the steps
-- `ds13`* 🫙 Greek Yogurt Parfait with Berries & Flax — no duration anywhere in the steps
-- `ds14`* 🫙 Apple Cinnamon Yogurt Parfait — no duration anywhere in the steps
-- `sn20`* 🫙 Apple Cinnamon Greek Yogurt Dip — no duration anywhere in the steps
-- `m169`* 🥑 Creamy Avocado Pasta — no duration anywhere in the steps
-- `sn25`* 🧀 Roasted Beet & Goat Cheese Salad — no duration anywhere in the steps
-- `m172`* 🥚 Roasted Veggie Grain Bowl with Tahini Drizzle — no duration anywhere in the steps
-- `ds15`* 🫙 Peanut Butter Yogurt Dip with Fruit — no duration anywhere in the steps
-- `sm18`* 🥤 Peach Raspberry Protein Smoothie — no duration anywhere in the steps
-- `sn27`* 🫙 Carrot Sticks with Spicy Greek Yogurt Dip — no duration anywhere in the steps
-- `m177`* 🐟 Tuna & Avocado Open Sandwich — no duration anywhere in the steps
-- `m186`* 🍽️ Green Goddess Buddha Bowl — no duration anywhere in the steps
-- `sn37`* 🫘 Cucumber Hummus Roll-Ups — no duration anywhere in the steps
-- `bf75`* 🫙 Coconut Yogurt Parfait with Tropical Fruit — no duration anywhere in the steps
-- `ds20`* 🍪 Peanut Butter Banana Rice Cakes — no duration anywhere in the steps
-- `sn39`* 🥚 Veggie Sticks with Spicy Tahini Dip — no duration anywhere in the steps
-- `sn40`* 🫘 Cucumber Hummus Cups — no duration anywhere in the steps
-- `sm35`* 🥤 Kiwi Cucumber Hydration Smoothie — no duration anywhere in the steps
-
-## ingredient never mentioned in the method (21) — severity: wrong
-
-- `m26` 🥩 Creamy Steak Pasta — Parmigiano Reggiano (grated) (80 g) — the user is told to buy it but not what to do with it
-- `m30` 🥩 Lean Taco Salad — Fat-free cheddar (shredded) (70 g) — the user is told to buy it but not what to do with it
-- `m29` 🥩 Ranch Beef Bowl — Fat-free mozzarella (shredded) (56 g) — the user is told to buy it but not what to do with it
-- `bf25` 🥩 Classic Steak & Smashed Egg Skillet — Lean beef tenderloin (raw) (180 g) — the user is told to buy it but not what to do with it
-- `bf31` 🥚 Clean Egg White Omelette — Bread (whole wheat) (60 g) — the user is told to buy it but not what to do with it
-- `ds9`* 🥕 Protein Carrot Cake — Brown sugar substitute (5 g) — the user is told to buy it but not what to do with it
-- `bf44`* 🫙 Protein Berry Yoghurt Bowl — Greek yogurt (250 g) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Flour (9 g) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Cocoa powder (2.2 g) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Chocolate protein powder (7 g) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Sweetener (1.1 g) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Maple syrup (2.2 ml) — the user is told to buy it but not what to do with it
-- `ds11`* 🍪 Protein Brownies — Vanilla extract (0.6 ml) — the user is told to buy it but not what to do with it
-- `m133`* 🍗 Turmeric Chicken with Coconut Rice — Garlic clove (1.5 g) — the user is told to buy it but not what to do with it
-- `m139`* 🐟 Miso Ginger Salmon with Brown Rice — Sesame oil (2.3 ml) — the user is told to buy it but not what to do with it
-- `bf58`* 🌾 Peanut Butter Banana Overnight Oats — Cinnamon (0.7 g) — the user is told to buy it but not what to do with it
-- `m172`* 🥚 Roasted Veggie Grain Bowl with Tahini Drizzle — Cooked farro or brown rice (98 g) — the user is told to buy it but not what to do with it
-- `m181`* 🥚 Baked Eggplant Parmesan — Shredded mozzarella (28 g) — the user is told to buy it but not what to do with it
-- `bf70`* 🌾 Strawberry Almond Baked Oatmeal Cups — Honey (14 g) — the user is told to buy it but not what to do with it
-- `bf70`* 🌾 Strawberry Almond Baked Oatmeal Cups — Vanilla extract (0.7 ml) — the user is told to buy it but not what to do with it
-- `sm43`* 🍽️ Cucumber Melon Refresher — Honeydew or cantaloupe (80 g) — the user is told to buy it but not what to do with it
-
-## same registry ingredient listed twice (9) — severity: wrong
-
-- `m24` 🍯 Slow Cooker Honey Cashew Chicken — Soy Sauce (low sodium)
-- `v5` 🧀 Paneer Tikka Masala Bowl — Fat-Free Cottage Cheese
-- `ds9`* 🥕 Protein Carrot Cake — Greek Yogurt (0% fat), Whey Protein Powder
-- `m125`* 🥗 Crispy Chicken Caesar Salad — Parmesan
-- `sm27`* 🥤 Radiant Carrot-Orange Glow Smoothie — Ice / Water
-- `sm32`* 🧃 Citrus–Ginger Immunity Juice — Ice / Water
-- `sm36`* 🧃 Pineapple–Cucumber Skin-Refreshing Juice — Ice / Water
-- `sm41`* 🧃 Orange Carrot Immunity Booster Juice — Ice / Water
-- `sm43`* 🍽️ Cucumber Melon Refresher — Ice / Water
-
-## method names a cut the recipe does not use (4) — severity: wrong
-
-- `m40` 🍗 Baked Chicken Breast & Potato — steps say "thigh" but the ingredients are: Skinless boneless chicken breast (raw)
-- `bf25` 🥩 Classic Steak & Smashed Egg Skillet — steps say "steak" but the ingredients are: Lean beef tenderloin (raw)
-- `m70` 🥩 Seared Steak & Garlicky Greens — steps say "steak" but the ingredients are: Lean beef tenderloin (raw)
-- `m110`* 🌯 Chicken Shawarma Wrap — steps say "breast" but the ingredients are: Chicken thigh (boneless, skinless, raw)
-
-## oven recipe with no temperature (3) — severity: wrong
-
-- `m26` 🥩 Creamy Steak Pasta — says bake/roast but never gives a temperature
-- `m15` 🥩 Lean Beef & Potato Roast — says bake/roast but never gives a temperature
-- `m72` 🐟 Bali-Spiced Barramundi Plate — says bake/roast but never gives a temperature
-
-## air-fryer recipe with no temperature (1) — severity: wrong
-
-- `m155`* 🦐 Shrimp & Veggie Rice Bowl — no air-fryer temperature
-
-## implausible quantity (1) — severity: wrong
-
-- `bf68`* 🥤 Green Apple & Cinnamon Smoothie — Ice cubes: 960 g per portion
 
 ## main course under 300 kcal (29) — severity: nutrition
 
@@ -227,10 +99,6 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 
 - `m24` 🍯 Slow Cooker Honey Cashew Chicken — Dark soy sauce, Japanese-style soy sauce, Hoisin sauce
 
-## very large plate (1) — severity: nutrition
-
-- `bf68`* 🥤 Green Apple & Cinnamon Smoothie — 1477 g of food per portion
-
 ## batch recipe with no portioning step (11) — severity: quality
 
 - `m27` 🥚 Sweet Potato Veggie Egg Bake — 4 portions and no instruction to divide them
@@ -247,7 +115,7 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 
 ## method under three steps (5) — severity: quality
 
-- `bf44`* 🫙 Protein Berry Yoghurt Bowl — 1 step(s)
+- `bf44`* 🫙 Protein Berry Yoghurt Bowl — 2 step(s)
 - `m131`* 🍗 Garlic Chicken, Crispy Potatoes & Broccoli — 2 step(s)
 - `ds11`* 🍪 Protein Brownies — 2 step(s)
 - `sn27`* 🫙 Carrot Sticks with Spicy Greek Yogurt Dip — 2 step(s)
@@ -527,6 +395,6 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 - **Chicken Breast (cooked / rotisserie)** — "Rotisserie chicken breast (shredded)", "Chicken breast (cooked, finely chopped)", "Chicken breast (cooked, diced)", "Cooked chicken breast"
 - **Ice / Water** — "Water", "Ice", "Warm water", "Ice cubes", "Cold water"
 
-## No findings (131)
+## No findings (169)
 
-`m04` `m38` `m31` `m39` `m52` `m53` `m60` `m22` `m32` `m92` `m104` `m105` `m107` `m108` `m109` `m111` `m112` `m113` `m114` `m117` `m121` `bf36` `bf37` `bf38` `m124` `ds8` `d6` `bf41` `m126` `m127` `m128` `m129` `bf43` `m132` `m134` `m135` `m136` `m138` `m140` `m141` `m144` `sm10` `bf45` `ds12` `bf46` `m150` `m151` `m153` `sn11` `bf47` `sn13` `bf48` `sn14` `sm11` `bf50` `bf52` `m157` `sn15` `bf53` `m159` `m160` `bf56` `bf57` `sn19` `m162` `sn21` `bf59` `m165` `bf60` `bf61` `m166` `sn22` `m167` `sn23` `bf62` `m170` `bf63` `sm12` `bf65` `bf66` `sm13` `m173` `sm14` `sm15` `sm16` `sm17` `sm19` `sn26` `sm20` `m174` `m175` `sm21` `bf67` `m184` `m185` `sn29` `sm22` `bf69` `m187` `m188` `ds17` `bf71` `sm24` `bf72` `sn31` `sm25` `sn32` `sn33` `sn34` `bf73` `bf74` `ds19` `sn36` `sm28` `sn38` `sm29` `sm30` `ds21` `sm31` `bf76` `sn41` `sm33` `ds22` `sm34` `ds23` `sm37` `sm38` `sm39` `sm40` `sm42` `sm44`
+`m40` `m04` `m38` `m31` `m39` `m52` `m53` `m60` `m22` `m32` `m92` `m104` `m105` `m106` `m107` `m108` `m109` `m110` `m111` `m112` `m113` `m114` `m115` `m116` `m117` `m118` `m119` `m120` `m121` `m122` `m123` `bf36` `bf37` `bf38` `bf39` `m124` `ds8` `bf40` `d6` `bf41` `m125` `m126` `m127` `m128` `m129` `ds10` `bf43` `m132` `m133` `m134` `m135` `m136` `m138` `m139` `m140` `m141` `m144` `sm10` `bf45` `ds12` `bf46` `m150` `m151` `m153` `sn11` `sn12` `bf47` `sn13` `bf48` `sn14` `sm11` `bf50` `bf52` `m157` `sn15` `bf53` `m159` `bf54` `m160` `sn17` `sn18` `ds13` `bf56` `bf57` `ds14` `sn19` `bf58` `m162` `sn20` `sn21` `bf59` `m165` `bf60` `bf61` `m166` `sn22` `m167` `sn23` `bf62` `m170` `bf63` `sm12` `bf65` `m172` `bf66` `sm13` `m173` `ds15` `sm14` `sm15` `sm16` `sm17` `sm18` `sm19` `sn26` `sm20` `m174` `m175` `sm21` `bf67` `m184` `bf68` `m185` `sn29` `sm22` `bf69` `m187` `bf70` `m188` `ds17` `bf71` `sm24` `bf72` `sn31` `sm25` `sn32` `sn33` `sn34` `bf73` `bf74` `ds19` `sn36` `sn37` `sm27` `sm28` `sn38` `sm29` `sm30` `bf75` `sn40` `ds21` `sm31` `bf76` `sn41` `sm32` `sm33` `ds22` `sm34` `sm35` `ds23` `sm36` `sm37` `sm38` `sm39` `sm40` `sm41` `sm42` `sm43` `sm44`

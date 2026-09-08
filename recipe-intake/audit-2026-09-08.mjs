@@ -37,6 +37,7 @@ const macrosOf = r => {
 
 for (const r of ALL) {
   const B = body(r), T = text(r), M = macrosOf(r), pp = r.perPortion || {};
+  const bodyText = B.join(" ");   // method only — tips are commentary, not instructions
 
   // ── A. Food safety beyond poultry ──────────────────────────────────────────
   const has = re => (r.batchItems || []).some(i => re.test(i.label || ""));
@@ -94,7 +95,10 @@ for (const r of ALL) {
                        Spices: /\b(spices?|seasoning|spice (?:blend|mix)|rub)\b/i, Aromatics: /\b(aromatics|veg|vegetables)\b/i,
                        Condiments: /\b(sauce|dressing|condiments?|marinade)\b/i, Sauces: /\b(sauce|dressing|marinade)\b/i };
   for (const it of r.batchItems || []) {
-    const words = (it.label || "").toLowerCase().replace(/\(.*?\)/g, " ").split(/[^a-z]+/).filter(w => w.length >= 3 && !["and","the","raw","dry","for","cut","low","fat","non","new"].includes(w));
+    // Keep what is inside the brackets: "Fat-free cheddar (shredded)" is used
+    // by a step that says "shredded cheese", and stripping the parenthetical
+    // hid that.
+    const words = (it.label || "").toLowerCase().split(/[^a-z]+/).filter(w => w.length >= 3 && !["and","the","raw","dry","for","cut","low","fat","non","new"].includes(w));
     // Match both ways: "blueberries" is satisfied by a method that says
     // "berries", and "Lemons" by one that says "lemon juice".
     const methodWords = lower.split(/[^a-z]+/).filter(w => w.length >= 4);
@@ -105,7 +109,20 @@ for (const r of ALL) {
     flag("ingredient never mentioned in the method", r, `${it.label} (${it.qty} ${it.unit}) — the user is told to buy it but not what to do with it`);
   }
 
-  // The reverse: the method names a cut the recipe does not contain. m40 buys
+  // The reverse of "bought but never used": the method calls for a FOOD the
+  // recipe does not contain. bf58 was imported with page 48's method — its
+  // ingredients are oats, almond milk and peanut butter while its steps say
+  // toast, cottage cheese and strawberries. The source PDF itself is wrong.
+  const FOODS = /\b(bread|toast|cottage cheese|strawberr\w+|blueberr\w+|raspberr\w+|banana|honey|oats?|rice|pasta|noodles?|quinoa|tortilla|potato\w*|chicken|beef|turkey|salmon|tuna|shrimp|prawns?|cod|tofu|egg|eggs|yogurt|yoghurt|avocado|spinach|broccoli|mushrooms?|cheese|feta|parmesan|mozzarella|chickpeas?|lentils?|beans?)\b/gi;
+  const itemText = (r.batchItems || []).map(i => (i.label || "").toLowerCase()).join(" ");
+  const strayFoods = [...new Set((bodyText.match(FOODS) || []).map(w => w.toLowerCase()))]
+    .filter(w => !itemText.includes(w.replace(/(ies)$/, "y").replace(/(es|s)$/, ""))
+              && !itemText.includes(w)
+              && !new RegExp(`\\b${w.replace(/(ies)$/, "").replace(/s$/, "")}`).test(itemText));
+  if (strayFoods.length >= 3)
+    flag("the method calls for foods the recipe does not contain", r, `steps mention ${strayFoods.join(", ")} — none of which is an ingredient`);
+
+  // The method names a cut the recipe does not contain. m40 buys
   // breast and its last step says "Portion thighs".
   // Only compare cuts within the same animal — "minced garlic" is not a cut of
   // chicken, and a fish fillet has nothing to say about a chicken breast.
@@ -113,21 +130,47 @@ for (const r of ALL) {
                 ["drumstick", /\bdrumsticks?\b/i, /chicken|turkey/i], ["wing", /\bwings?\b/i, /chicken|turkey/i],
                 ["steak", /\bsteaks?\b/i, /beef|lamb/i]];
   const labels = (r.batchItems || []).map(i => i.label || "").join(" ").toLowerCase();
+  const STEAK_CUTS = /tenderloin|sirloin|ribeye|rib-eye|fillet|striploin|rump|flank|skirt/i;
   for (const [cut, re, family] of CUTS)
-    if (re.test(T) && family.test(labels) && !labels.includes(cut))
+    if (re.test(bodyText) && family.test(labels) && !labels.includes(cut)
+        && !(cut === "steak" && STEAK_CUTS.test(labels)))
       flag("method names a cut the recipe does not use", r, `steps say "${cut}" but the ingredients are: ${(r.batchItems || []).filter(i => family.test(i.label || "")).map(i => i.label).join(", ")}`);
   if (B.length < 3 && r.category !== "preworkout") flag("method under three steps", r, `${B.length} step(s)`);
   if (B.some(s => s.length > 320)) flag("a step over 320 characters", r, `longest ${Math.max(...B.map(s => s.length))} chars — hard to follow on a phone mid-cook`);
   if (!/\b(portion|divide|distribute|split|container|serve|box|jar|store|among them|each (?:bowl|plate|wrap|tortilla|jar))\b/i.test(T) && (r.portions || 1) > 2)
     flag("batch recipe with no portioning step", r, `${r.portions} portions and no instruction to divide them`);
-  const oven = /\b(bake|roast|oven)\b/i.test(T);
-  if (oven && !/\d+\s*°C/.test(T)) flag("oven recipe with no temperature", r, "says bake/roast but never gives a temperature");
-  if (/\bair[- ]?fry/i.test(T) && !/\d+\s*°C/.test(T)) flag("air-fryer recipe with no temperature", r, "no air-fryer temperature");
+  // Body only, and a real oven verb — "Dutch oven" and "Instant Pot" are
+  // stovetop kit, and a reheating tip that mentions an air fryer is not the
+  // recipe's cooking method.
+  // "the beef roast" is a noun; only an imperative counts as an oven step.
+  const ovenVerb = B.flatMap(x => x.split(/(?<=[.!?])\s+|,\s+(?=then\b)/))
+    .some(x => /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+)?(bake|roast)\b/i.test(x.trim())
+            && !/dutch oven|instant pot/i.test(x));
+  if (ovenVerb && !/\d+\s*°C/.test(bodyText)) flag("oven recipe with no temperature", r, "says bake/roast but never gives a temperature");
+  if (/\bair[- ]?fry/i.test(bodyText) && !/\d+\s*°C/.test(bodyText)) flag("air-fryer recipe with no temperature", r, "no air-fryer temperature");
   // "25–30 minutes" and "3 hours" must match too — \b after a bare "min"/"hour"
   // rejects the plural, which is how a first draft of this check reported 216
   // false positives.
   const TIMED = /\d+\s*(?:min(?:ute)?s?|h(?:ou)?rs?|sec(?:ond)?s?)\b|overnight/i;
-  if (!TIMED.test(T)) flag("method with no timing at all", r, "no duration anywhere in the steps");
+  // Only where timing changes the outcome. A parfait does not need "layer for
+  // 30 seconds"; a pan of mince does need to know it is 6-8 minutes, and the
+  // subtitle already carries the total time for every recipe.
+  // Sentence-level and imperative-only. "Serve on toast" and "Portion the
+  // stir-fry" are not cooking instructions, and matching the bare verb
+  // anywhere in the step flagged both.
+  const COOK_IMPERATIVE = /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+|carefully\s+|gently\s+|lightly\s+)?(cook|fry|saut[ée]|sear|brown|grill|bake|roast|boil|simmer|steam|poach|toast|air[- ]?fry|blanch|braise|scramble|griddle)\b/i;
+  const sentences = s => s.split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+  // Cooking-ness is judged per sentence, but the ANSWER may live anywhere in
+  // the step — "Brown beef mince. Cook it right through until 75°C." is
+  // answered, even though the first sentence alone is not.
+  const cookingSteps = B.filter(x => sentences(x).some(y => COOK_IMPERATIVE.test(y)));
+  // A step is answerable if it gives a time, defers to the packet, or names a
+  // doneness the cook can see. "Brown the mince." is none of those.
+  const DEFERS = /per (?:the )?(?:packet|package)|according to (?:the )?(?:packet|package)|packet instructions|package directions|to your liking|to your preference/i;
+  const CUE = /\buntil\b|\bto your\b|\d+\s*°C|no (?:longer )?pink|golden|tender|crisp|set\b|wilted|softened|fragrant|charred|opaque|shreds?/i;
+  const unanswerable = cookingSteps.filter(x => !TIMED.test(x) && !DEFERS.test(x) && !CUE.test(x));
+  if (unanswerable.length)
+    flag("a cooking step with no time and no doneness cue", r, unanswerable.map(s => `"${s.slice(0, 70)}"`).join("; "));
 
   // ── D. Data integrity ──────────────────────────────────────────────────────
   for (const it of r.batchItems || []) {
@@ -144,10 +187,12 @@ for (const r of ALL) {
   const keys = (r.batchItems || []).map(i => i.key);
   if (new Set(keys).size !== keys.length) flag("duplicate ingredient key", r, keys.filter((k, i) => keys.indexOf(k) !== i).join(", "));
   const ids = (r.batchItems || []).map(i => i.ingId).filter(Boolean);
-  if (new Set(ids).size !== ids.length) {
-    const dup = ids.filter((k, i) => ids.indexOf(k) !== i);
-    flag("same registry ingredient listed twice", r, dup.map(d => (ING.find(x => x.id === d) || {}).name || d).join(", "));
-  }
+  // Two rows CAN share a registry food on purpose — dark and Japanese soy
+  // sauce, cottage cheese blended into a sauce and more on top, ice and water.
+  // Only an identical label twice is a mistake.
+  const labelPairs = (r.batchItems || []).map(i => `${i.ingId}|${(i.label || "").toLowerCase().trim()}`);
+  const dupLabels = labelPairs.filter((k, i) => labelPairs.indexOf(k) !== i);
+  if (dupLabels.length) flag("the same ingredient row listed twice", r, [...new Set(dupLabels)].join(", "));
   if (!r.badge) flag("no cooking-method badge", r, "the badge filter cannot see it");
   if (!r.carb) flag("no carb tag", r, "the carb filter cannot see it");
   if (!(r.portions > 0)) flag("no portion count", r, String(r.portions));

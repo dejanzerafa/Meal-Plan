@@ -1372,6 +1372,58 @@ section("Recipe content — the 2026-09-07 audit fixes (all 401)");
   const noTime = ALL.filter(r => !/\d+\s*(?:min|hr|hour|h\b)|overnight/i.test(r.subtitle || "")).map(r => r.id);
   t("every recipe subtitle carries a time (or says overnight)", noTime.length === 0, list(noTime));
 
+  // 5b. A recipe must not misstate itself (audit 2026-09-08).
+  const sentencesOf = x => x.split(/(?<=[.!?])\s+/).map(y => y.trim()).filter(Boolean);
+  const COOK_IMP = /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+|carefully\s+|gently\s+|lightly\s+)?(cook|fry|saut[ée]|sear|brown|grill|bake|roast|boil|simmer|steam|poach|toast|air[- ]?fry|blanch|braise|scramble|griddle)\b/i;
+  const TIMED_RE = /\d+\s*(?:min(?:ute)?s?|h(?:ou)?rs?|sec(?:ond)?s?)\b|overnight/i;
+  const DEFERS_RE = /per (?:the )?(?:packet|package)|according to (?:the )?(?:packet|package)|packet instructions|package directions|to your liking|to your preference/i;
+  const CUE_RE = /\buntil\b|\bto your\b|\d+\s*°C|no (?:longer )?pink|golden|tender|crisp|set\b|wilted|softened|fragrant|charred|opaque|shreds?/i;
+  // "Cook brown rice." is not an instruction — brown rice is 35-40 min and
+  // white is 12, and a first-time cook has no way to know which.
+  const untimed = ALL.filter(r => bodyOf(r).some(x =>
+    sentencesOf(x).some(y => COOK_IMP.test(y)) && !TIMED_RE.test(x) && !DEFERS_RE.test(x) && !CUE_RE.test(x))).map(r => r.id);
+  t("every cooking step gives a time, a doneness, or defers to the packet", untimed.length === 0, list(untimed));
+
+  // Bought but never used: the shopping list charges for it and the method
+  // never says what to do with it.
+  const unused = [];
+  for (const r of ALL) {
+    const lower = bodyOf(r).join(" ").toLowerCase();
+    if (/\ball (?:the )?ingredients\b|\beverything\b|\ball (?:the )?(?:fruit|veg|vegetables)\b/.test(lower)) continue;
+    const methodWords = lower.split(/[^a-z]+/).filter(w => w.length >= 4);
+    const stem = w => w.replace(/(ies)$/, "y").replace(/(es|s)$/, "");
+    const COLL = { Fruits: /\b(fruits?|berries|smoothie)\b/i, Vegetables: /\b(veg|vegetables|veggies|greens|salad)\b/i,
+                   Herbs: /\b(herbs?|seasoning|aromatics)\b/i, Spices: /\b(spices?|seasoning|spice (?:blend|mix)|rub)\b/i,
+                   Aromatics: /\b(aromatics|veg|vegetables)\b/i, Condiments: /\b(sauce|dressing|condiments?|marinade)\b/i,
+                   Sauces: /\b(sauce|dressing|marinade)\b/i };
+    for (const i of r.batchItems || []) {
+      const words = (i.label || "").toLowerCase().split(/[^a-z]+/).filter(w => w.length >= 3 && !["and","the","raw","dry","for","cut","low","fat","non","new"].includes(w));
+      if (words.some(w => lower.includes(stem(w)) || methodWords.some(m2 => w.includes(m2) && m2.length >= 4))) continue;
+      if (COLL[i.cat] && COLL[i.cat].test(bodyOf(r).join(" "))) continue;
+      unused.push(`${r.id}:${i.label}`);
+    }
+  }
+  t("every ingredient on the shopping list is used by the method", unused.length === 0, list(unused));
+
+  // An oven or air-fryer step with no temperature. "the beef roast" is a noun,
+  // and a Dutch oven is stovetop kit, so only imperatives count.
+  const noOvenTemp = ALL.filter(r => {
+    const B2 = bodyOf(r), bodyText = B2.join(" ");
+    const ovenVerb = B2.flatMap(x => x.split(/(?<=[.!?])\s+|,\s+(?=then\b)/))
+      .some(x => /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+)?(bake|roast)\b/i.test(x.trim()) && !/dutch oven|instant pot/i.test(x));
+    const airFry = /\bair[- ]?fry/i.test(bodyText);
+    return (ovenVerb || airFry) && !/\d+\s*°C/.test(bodyText);
+  }).map(r => r.id);
+  t("every oven and air-fryer step gives a temperature", noOvenTemp.length === 0, list(noOvenTemp));
+
+  const dupRow = [];
+  for (const r of ALL) {
+    const pairs = (r.batchItems || []).map(i => `${i.ingId}|${(i.label || "").toLowerCase().trim()}`);
+    const d = pairs.filter((k, i) => pairs.indexOf(k) !== i);
+    if (d.length) dupRow.push(`${r.id}:${[...new Set(d)].join(",")}`);
+  }
+  t("no recipe lists the same ingredient row twice", dupRow.length === 0, list(dupRow));
+
   // 6. Steps that were cut at the PDF's column edge, and the nutrition panel
   //    that leaked into one method.
   const frag = [];
