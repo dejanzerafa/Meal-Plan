@@ -23,7 +23,8 @@ const _allergenHit = eval("(" + hitSrc.trim().replace(/;$/, "") + ")");
 const F = {};                                  // finding key → [{id, detail}]
 const flag = (key, r, detail) => { (F[key] = F[key] || []).push({ id: r.id, name: r.name, live: LIVE.has(r.id), detail }); };
 
-const isTip = s => /^[\u{1F4A1}\u{1F7E1}\u{23F1}]/u.test(s);
+// The full note set, matching the app: 💡 🟡 🔬 ⚡ 💪 🍽️ ⏱️
+const isTip = s => /^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u.test(s);
 const body = r => (r.steps || []).filter(s => !isTip(s));
 const text = r => (r.steps || []).join(" ");
 const gramsOf = it => { const md = IM[it.key] || {}; const u = String(it.unit || "g").toLowerCase(); return (u === "g" || u === "ml") ? it.qty : it.qty * (md.unitG || 0); };
@@ -69,18 +70,27 @@ for (const r of ALL) {
   }
   if (pp.fat != null && pp.kcal) {
     const fatPct = pp.fat * 9 / pp.kcal;
-    if (fatPct > 0.55) flag("very high fat share", r, `${Math.round(fatPct * 100)}% of calories from fat`);
+    // A high fat share is correct for avocado toast, egg muffins and a tahini
+    // dip — it is only a problem when a MAIN is fat-dominant and short on
+    // protein, which is a meal that will not keep anyone full.
+    if (fatPct > 0.6 && r.category === "main" && (pp.protein ?? 0) < 25)
+      flag("fat-dominant main with little protein", r, `${Math.round(fatPct * 100)}% of calories from fat at ${pp.protein} g protein`);
     if (fatPct < 0.05 && pp.kcal > 250) flag("almost no fat", r, `${Math.round(fatPct * 100)}% of calories from fat — poor satiety and fat-soluble vitamin uptake`);
   }
   if (pp.kcal > 900) flag("very large portion", r, `${pp.kcal} kcal per portion`);
-  if (r.category === "main" && pp.kcal && pp.kcal < 300) flag("main course under 300 kcal", r, `${pp.kcal} kcal`);
+  // A light main is fine as long as the card tells the user how to complete the
+  // plate — a serving suggestion or a protein note. Silence is the defect.
+  const guided = (r.steps || []).some(x => /^[\u{1F37D}\u{1F4AA}]/u.test(x) || /plate it:|protein note:/i.test(x));
+  if (r.category === "main" && pp.kcal && pp.kcal < 300 && !guided)
+    flag("light main with no serving guidance", r, `${pp.kcal} kcal and nothing telling the user how to complete the plate`);
   // "salad" doubles as the side/snack tab in this app, so only a main is
   // expected to fill a plate.
-  if (M.totalG && M.totalG < 200 && r.category === "main") flag("main course that barely fills a plate", r, `${Math.round(M.totalG)} g of food per portion`);
+  if (M.totalG && M.totalG < 200 && r.category === "main" && !guided)
+    flag("small main with no serving guidance", r, `${Math.round(M.totalG)} g of food per portion`);
   if (M.totalG > 1200) flag("very large plate", r, `${Math.round(M.totalG)} g of food per portion`);
   // sodium-heavy building blocks with no seasoning caution
   const salty = (r.batchItems || []).filter(i => /soy sauce|tamari|teriyaki|hoisin|fish sauce|stock cube|knorr|bouillon|miso|kimchi|olives|feta|bacon|chorizo|pepperoni|deli|salami|capers|anchov/i.test(i.label || ""));
-  if (salty.length >= 3) flag("three or more high-sodium ingredients", r, salty.map(i => i.label).join(", "));
+  if (salty.length >= 3 && !/sodium/i.test(T)) flag("high-sodium stack with no note", r, salty.map(i => i.label).join(", "));
   if (pp.carbs != null && pp.protein != null && r.category === "dessert" && pp.protein < 5 && pp.kcal > 200)
     flag("dessert with little protein", r, `${pp.protein} g protein at ${pp.kcal} kcal`);
 
@@ -198,7 +208,8 @@ for (const r of ALL) {
   if (!(r.portions > 0)) flag("no portion count", r, String(r.portions));
 
   // ── E. Allergens ───────────────────────────────────────────────────────────
-  const allergenText = [(r.batchItems || []).map(i => i.label || "").join(" "), T, r.subtitle || ""].join(" ");
+  // Same rule as the app: a suggestion is not an ingredient.
+  const allergenText = [(r.batchItems || []).map(i => i.label || "").join(" "), bodyText, r.subtitle || ""].join(" ");
   const detected = ALLERGEN_MAP.filter(a => _allergenHit(allergenText, a)).map(a => a.name);
   if (r.allergens) {
     const missing = detected.filter(a => !r.allergens.includes(a));

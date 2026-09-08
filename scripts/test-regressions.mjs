@@ -1197,7 +1197,10 @@ section("Go-live fixes 2026-09-05 — S3 dev override, D4, S1, S5, S4, D6, S2");
     t("releases re-read on focus / visibilitychange", /window\.addEventListener\("focus", refreshReleases\)/.test(src) && /visibilitychange/.test(src));
     t("new-drop banner counts only recipes this user can open", /const _newVisible = React\.useMemo\(\(\) => \[\.\.\.NEWLY_RELEASED_IDS\]\.filter\(id => canView\(id\)\)\.length/.test(src) && /_newVisible > 0 &&/.test(src));
     t("plan / prep modals receive only visible recipes", (src.match(/allRecipes: visibleRecipes/g) || []).length === 3);
-    t("💡 tips are not counted as method steps", /const methodSteps = \(r\.steps \|\| \[\]\)\.filter\(s => !String\(s\)\.startsWith\("💡"\)\);/.test(src) && /methodSteps\.map\(\(s, i\)/.test(src));
+    // Superseded by "the app treats every note prefix as a note" below — the
+    // filter is no longer 💡-only, because 🟡 🔬 ⚡ 💪 🍽️ ⏱️ 😴 lines were being
+    // numbered as steps too.
+    t("notes are not counted as method steps", /const methodSteps = \(r\.steps \|\| \[\]\)\.filter\(s => !isNote\(s\)\);/.test(src) && /methodSteps\.map\(\(s, i\)/.test(src));
     t("Blender / No-Cook badges are recognised as cooking-method badges", (src.match(/"🌀 Blender", "🥗 No-Cook"/g) || []).length === 2);
     t("first SW install does not reload the page (controllerchange only when it had a controller)", /const _hadController = !!navigator\.serviceWorker\.controller;/.test(src) && /if \(_reloading \|\| !_hadController\) return;/.test(src));
     t("create-checkout takes userId/email from the bearer when present and refuses a bare userId", /if \(userId && userId !== r\.user\.id\) return \{ statusCode: 403/.test(fn("create-checkout.js")) && /Sign in to purchase/.test(fn("create-checkout.js")));
@@ -1279,8 +1282,9 @@ section("Recipe content — the 2026-09-07 audit fixes (all 401)");
   // not over the source text.
   const RECIPES = eval(slice("const RECIPES =", "[", "\n];").replace(/\n];$/, "\n]"));
   const PEND = eval(slice("const PENDING_RECIPES", "[", "\n];").replace(/\n];$/, "\n]"));
+  const IM = eval("(" + slice("const INGREDIENT_MACROS = {", "{", "\n};").replace(/\n};$/, "\n}") + ")");
   const ALL = [...RECIPES, ...PEND];
-  const bodyOf = r => (r.steps || []).filter(s => !/^[\u{1F4A1}\u{1F7E1}\u{23F1}]/u.test(s));
+  const bodyOf = r => (r.steps || []).filter(s => !/^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u.test(s));
   const list = a => a.slice(0, 6).join(", ") + (a.length > 6 ? ` +${a.length - 6} more` : "");
 
   // 1. A method that says "1 cup" cannot be followed with a kitchen scale, which
@@ -1433,6 +1437,51 @@ section("Recipe content — the 2026-09-07 audit fixes (all 401)");
   const junk = ALL.filter(r => (r.steps || []).some(s => /N\s*u\s*t\s*r\s*i\s*t\s*i\s*o\s*n\s*a\s*l|^[\d.]+\s*m?g\s*$/.test(s.trim()))).map(r => r.id);
   t("no PDF artefact survived into a method", junk.length === 0, list(junk));
   t("every recipe has at least one method step", ALL.every(r => bodyOf(r).length > 0));
+
+  // 6b. Nutrition and presentation (audit 2026-09-08).
+  const NOTE = /^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u;
+  const guided = r => (r.steps || []).some(x => NOTE.test(x) && /plate it:|protein note:/i.test(x));
+  const gramsPerPortion = r => {
+    let g = 0;
+    for (const i of r.batchItems || []) {
+      const md = IM[i.key]; if (!md) continue;
+      const u = String(i.unit || "g").toLowerCase();
+      g += (u === "g" || u === "ml") ? i.qty : i.qty * (md.unitG || 0);
+    }
+    return g / (r.portions || 1);
+  };
+  // A light main is fine; a light main with nothing telling the user how to
+  // complete the plate is the app quietly serving them 200 kcal for dinner.
+  const unguided = ALL.filter(r => r.category === "main" && r.perPortion
+    && (r.perPortion.kcal < 300 || gramsPerPortion(r) < 200) && !guided(r)).map(r => r.id);
+  t("every light main carries serving guidance", unguided.length === 0, list(unguided));
+
+  // A main that is mostly fat and short on protein will not keep anyone full.
+  const fatty = ALL.filter(r => r.category === "main" && r.perPortion && r.perPortion.kcal
+    && r.perPortion.fat * 9 / r.perPortion.kcal > 0.6 && (r.perPortion.protein ?? 0) < 25).map(r => r.id);
+  t("no main is fat-dominant and short on protein", fatty.length === 0, list(fatty));
+
+  // A batch of 8 brownies that never says to cut it into 8.
+  const noPortioning = ALL.filter(r => (r.portions || 1) > 2
+    && !/\b(portion|divide|distribute|split|container|serve|box|jar|store|among them|each (?:bowl|plate|wrap|tortilla|jar))\b/i.test((r.steps || []).join(" "))).map(r => r.id);
+  t("every batch recipe says to divide the batch", noPortioning.length === 0, list(noPortioning));
+
+  const thin = ALL.filter(r => r.category !== "preworkout" && bodyOf(r).length < 3).map(r => r.id);
+  t("no method is under three steps", thin.length === 0, list(thin));
+  const longStep = ALL.filter(r => bodyOf(r).some(x => x.length > 320)).map(r => r.id);
+  t("no method step runs over 320 characters", longStep.length === 0, list(longStep));
+
+  // Notes are not steps. 76 note lines across 70 recipes were being numbered
+  // and counted in "N/N done" because only 💡 was recognised.
+  const appNote = raw.match(/const isNote = s => (\/\^\[[^\]]+\]\/u)\.test\(String\(s\)\)/);
+  t("the app treats every note prefix as a note, not a step",
+     !!appNote && ["1F4A1", "1F7E1", "1F52C", "26A1", "1F4AA", "1F37D", "23F1", "1F634"].every(c => appNote[1].includes(c)),
+     appNote ? appNote[1] : "isNote not found");
+  t("detectAllergens ignores notes, so a suggestion is not read as an ingredient",
+     /filter\(x => !isNote\(x\)\)\.join\(" "\)/.test(stripJS(raw)),
+     "a 💪 note suggesting Greek yogurt made a dairy-free recipe declare Dairy");
+  t("every recipe carries an allergens field", ALL.every(r => Array.isArray(r.allergens)),
+     list(ALL.filter(r => !Array.isArray(r.allergens)).map(r => r.id)));
 
   // 7. Allergen labels must come from the detectAllergens vocabulary, or the
   //    filter silently misses them ("Milk" is not "Dairy").

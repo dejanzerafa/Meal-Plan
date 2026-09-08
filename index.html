@@ -808,6 +808,7 @@ const RECIPES = [
         subtitle: "Oven casserole · ~55 min",
         carb: "🌾 Rice",
         perPortion: {kcal:702, protein:69.7, carbs:65.2, fat:17.6},
+        allergens: ["Dairy", "Celery"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -843,6 +844,7 @@ const RECIPES = [
         subtitle: "Skinless chicken breast · baby potatoes · green beans · garlic-herb · ~45 min",
         badge: "🌬️ Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:503, protein:62.3, carbs:43.1, fat:8.0},
+        allergens: [],
         locked: true,
         batchItems: [
             { key: "m40_thigh", label: "Skinless boneless chicken breast (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -869,6 +871,7 @@ const RECIPES = [
         subtitle: "Cod fillet · baby potatoes · zucchini · cherry tomatoes · herbs · ~45 min",
         badge: "🌬️ Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:369,protein:42,carbs:43,fat:3.2},
+        allergens: ["Fish"],
         locked: true,
         batchItems: [
             { key: "m37_cod", label: "Cod fillets (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 23 , role: "protein", share: 1},
@@ -897,6 +900,7 @@ const RECIPES = [
         subtitle: "Oven + stovetop · ~45 min",
         carb: "🌾 Rice",
         perPortion: {kcal:718, protein:73, carbs:81.2, fat:10.3},
+        allergens: ["Dairy"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -934,6 +938,7 @@ const RECIPES = [
         category: "main", id: "m13", name: "🥩 Beef Mince & Rice Bowl", subtitle: "Lean beef mince · jasmine rice · chipotle-lime sauce · bell peppers · ~35 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:772, protein:67.4, carbs:79.1, fat:20.4},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1625, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.829868},
             { key: "rice_white", label: "Wholegrain brown rice (dry)", qty: 630, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -962,6 +967,7 @@ const RECIPES = [
         category: "main", id: "m04", name: "🥩 Beef Mince Bake", subtitle: "Lean mince · white & sweet potato · roasted veg · ~60 min",
         badge: "🌬️ Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:714, protein:64.9, carbs:81.8, fat:15.3},
+        allergens: [],
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1.0},
             { key: "white_potato", label: "White potato (raw)", qty: 1250, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 0.459},
@@ -986,6 +992,7 @@ const RECIPES = [
         category: "main", id: "m02", name: "🥩 Big Mac Protein Pasta", subtitle: "Lean beef · pasta · high-protein Big Mac sauce · ~25 min",
         badge: "🍳 Stovetop", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:732, protein:61.2, carbs:91.0, fat:13.1},
+        allergens: ["Gluten / Wheat", "Dairy", "Mustard", "Sulphites"],
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1350, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.940043},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 750, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1016,6 +1023,7 @@ const RECIPES = [
         subtitle: "Stovetop · ~40 min",
         carb: "🎃 Pumpkin & Beans",
         perPortion: {kcal:424, protein:50.6, carbs:41.4, fat:6.9},
+        allergens: ["Dairy", "Celery"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -1052,6 +1060,7 @@ const RECIPES = [
         category: "main", id: "m09", name: "🍗 Buffalo Ranch Chicken Pasta", subtitle: "Slow-cooked buffalo chicken · pasta · beef bacon · ranch · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:720, protein:65.3, carbs:86.0, fat:10.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1250, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "bacon_bits", label: "Beef bacon (raw — cook and crumble)", qty: 86, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.023},
@@ -1080,6 +1089,7 @@ const RECIPES = [
         subtitle: "Stovetop · ~25 min",
         badge: "🍳 Stovetop", carb: "🌮 Tortilla", portions: 7,
         perPortion: {kcal:563, protein:48.7, carbs:42.6, fat:21.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard", "Sulphites"],
         batchItems: [
             { key: "m1-beef", label: "95/5 lean ground beef (raw)", qty: 1190, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m1-tortillas", label: "Large wholemeal tortilla wraps", qty: 7, unit: "whole", cat: "Carbs" , ingId: 88 , role: "carbs", share: 1},
@@ -1108,6 +1118,7 @@ const RECIPES = [
         subtitle: "Chicken breast · cauliflower rice · spinach · tomato · garlic · ~30 min",
         badge: "🍳 Stovetop", carb: "🥗 Low Carb", portions: 7,
         perPortion: {kcal:331, protein:51.0, carbs:16.6, fat:7.1},
+        allergens: [],
         locked: true,
         batchItems: [
             { key: "m38_chk", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1136,6 +1147,7 @@ const RECIPES = [
         subtitle: "Chicken breast · red lentils · carrots · celery · turmeric-cumin broth · ~30 min + overnight",
         badge: "⚡ Instant Pot", carb: "🌿 Lentils", portions: 7,
         perPortion: {kcal:567, protein:59.2, carbs:70.7, fat:4.5},
+        allergens: ["Celery"],
         locked: true,
         batchItems: [
             { key: "m45_chk", label: "Chicken breast (raw)", qty: 840, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1162,6 +1174,7 @@ const RECIPES = [
         category: "main", id: "m14", name: "🍗 Chicken Alfredo Red Sauce", subtitle: "Slow-cooked chicken · Alfredo · Italian tomato sauce · cottage cheese · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:809, protein:68.3, carbs:97.2, fat:18.1},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1119, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (farfalle or any)", qty: 600, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1189,6 +1202,7 @@ const RECIPES = [
         category: "main", id: "m12", name: "🍗 Chicken Bacon Mac", subtitle: "Chicken · beef bacon · pasta · blended cottage cheese sauce · ~2 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:720, protein:63.9, carbs:80.4, fat:13.7},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1035, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.278878},
             { key: "bacon_beef", label: "Beef bacon", qty: 220, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.020132},
@@ -1220,6 +1234,7 @@ const RECIPES = [
         portions: 4,
         badge: "🍳 Stovetop", carb: "🥗 Low Carb",
         perPortion: { kcal:228, protein:37.9, carbs:6.3, fat:4.7 },
+        allergens: ["Dairy", "Mustard"],
         batchItems: [
             { key: "m18_chk", label: "Chicken breast (raw)", qty: 600, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.945},
             { key: "m18_mush", label: "Sliced mushrooms", qty: 100, unit: "g", cat: "Vegetables" , ingId: 113 , role: "veg", baseQty: 25},
@@ -1237,7 +1252,8 @@ const RECIPES = [
             "Turn off heat. Return mushroom mix to pan. Pour sauce over everything and stir — residual heat thickens the sauce.",
             "Finish with fresh parsley. Serve with rice or roasted veg.",
             "🌅 Morning-only meal: this recipe contains a double espresso. Consuming it in the afternoon or evening may disrupt sleep. Swap espresso for decaf if making this as a later meal.",
-            "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
+            "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -1245,6 +1261,7 @@ const RECIPES = [
         name: "🌿 Chickpea & Roasted Veggie Couscous", subtitle: "Chickpeas · roasted capsicum · zucchini · couscous · harissa · ~50 min",
         badge: "🌬️ Oven", carb: "🌾 Couscous", portions: 6,
         perPortion: {kcal:456, protein:30.1, carbs:73, fat:5.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "v3_chick",  label: "Chickpeas in water (canned, drained)", qty: 720, unit: "g", cat: "Carbs"      , ingId: 91 , role: "carbs", share: 0.5},
             { key: "v3_cous",   label: "Couscous (dry)",               qty: 180, unit: "g",    cat: "Carbs"      , ingId: 76 , role: "carbs", share: 0.5},
@@ -1278,6 +1295,7 @@ const RECIPES = [
         category: "main", id: "m07", name: "🍗 Chipotle Chicken Bowl", subtitle: "Blended chipotle · rice · corn · pico · Daisy sour cream · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:815, protein:87.4, carbs:79.7, fat:15},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 2045, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "Wholegrain brown rice (dry)", qty: 350, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -1311,6 +1329,7 @@ const RECIPES = [
         subtitle: "Chicken breast · jasmine rice · broccoli · garlic-lemon · ~45 min",
         badge: "🌬️ Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:661, protein:63.0, carbs:79.5, fat:10.2},
+        allergens: [],
         locked: true,
         batchItems: [
             { key: "m31_chk", label: "Chicken breast (raw)", qty: 1575, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1343,6 +1362,7 @@ const RECIPES = [
         portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         perPortion: {kcal:738, protein:58.7, carbs:84.0, fat:19.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "m26_steak", label: "Flank steak (raw, trimmed)", qty: 900, unit: "g", cat: "Protein" , ingId: 292 , role: "protein", share: 0.348},
             { key: "m26_pasta", label: "Penne pasta", qty: 800, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1380,6 +1400,7 @@ const RECIPES = [
         portions: 7,
         badge: "💨 Air Fryer", carb: "🌽 Cornflakes",
         perPortion: {kcal:327, protein:30, carbs:16, fat:15.5},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard"],
         batchItems: [
             { key: "m21_chk", label: "Ground chicken (formed into balls)", qty: 895, unit: "g", cat: "Protein" , ingId: 3 , role: "protein", share: 0.774429},
             { key: "m21_egg", label: "Large eggs", qty: 6, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.225571},
@@ -1394,7 +1415,8 @@ const RECIPES = [
             "Spray the air fryer basket with the cooking oil spray and mist the coated nuggets lightly on top. Air fry at 180°C for 25–30 minutes until golden and crispy and internal temp reaches 75°C.",
             "Serve with a dipping sauce — Greek yogurt mixed with Dijon mustard and garlic powder works perfectly. (optional — not counted in the macros)",
             "💡 Store nuggets 4 days chilled or freeze on a tray before bagging; reheat in the air fryer at 190°C for 5–6 minutes, never the microwave, or the cornflake crust goes soft.",
-            "💡 Press the crushed cornflakes firmly onto each ball and leave space between them in the basket so the coating dries out and crisps rather than steaming."
+            "💡 Press the crushed cornflakes firmly onto each ball and leave space between them in the basket so the coating dries out and crisps rather than steaming.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -1403,6 +1425,7 @@ const RECIPES = [
         subtitle: "Liquid egg whites · whole eggs · baby potatoes · spinach · pepper · ~50 min",
         badge: "🌬️ Oven", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:318, protein:33.5, carbs:25.4, fat:8.6},
+        allergens: ["Dairy", "Eggs"],
         locked: true,
         batchItems: [
             { key: "m43_ew", label: "Liquid egg whites", qty: 1400, unit: "g", cat: "Protein" , ingId: 41 , role: "protein", share: 0.5},
@@ -1429,6 +1452,7 @@ const RECIPES = [
         category: "main", id: "m05", name: "🍗 French Onion Pasta", subtitle: "Chicken · caramelized onions · cottage cheese & parmesan sauce · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:761, protein:69.6, carbs:88.7, fat:13.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Fish", "Mustard"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1130, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.429152},
             { key: "pasta_regular", label: "Pasta (penne or short)", qty: 650, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1461,6 +1485,7 @@ const RECIPES = [
         category: "main", id: "m10", name: "🍗 Garlic Parmesan Chicken Pasta", subtitle: "Chicken · broccoli · garlic parmesan & cream cheese sauce · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:764, protein:66.1, carbs:83.5, fat:17.5},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1150, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.429152},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 640, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1489,6 +1514,7 @@ const RECIPES = [
         subtitle: "Shrimp · brown rice · snap peas · bell pepper · sesame-ginger · ~55 min",
         badge: "🍳 Stovetop", carb: "🍚 Brown Rice", portions: 7,
         perPortion: {kcal:531, protein:49.9, carbs:74.1, fat:4.9},
+        allergens: ["Gluten / Wheat", "Soy", "Sesame", "Crustaceans"],
         locked: true,
         batchItems: [
             { key: "m35_shrimp", label: "Raw shrimp (peeled & deveined)", qty: 1400, unit: "g", cat: "Protein" , ingId: 25 , role: "protein", share: 1},
@@ -1521,6 +1547,7 @@ const RECIPES = [
         subtitle: "Chicken breast · orzo · cucumber · tomato · olives · lemon-herb · ~45 min",
         badge: "🌬️ Oven", carb: "🍝 Orzo", portions: 7,
         perPortion: {kcal:597, protein:53.3, carbs:59.2, fat:14.8},
+        allergens: ["Gluten / Wheat", "Dairy"],
         locked: true,
         batchItems: [
             { key: "m46_chk", label: "Chicken breast (raw)", qty: 1260, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -1549,6 +1576,7 @@ const RECIPES = [
         name: "🥗 Greek Yogurt Egg & Veggie Protein Bowl", subtitle: "Scrambled eggs · cottage cheese · roasted veggies · quinoa · ~45 min",
         badge: "🌬️ Oven", carb: "🌾 Quinoa",
         perPortion: {kcal:640, protein:43.7, carbs:62, fat:24.2},
+        allergens: ["Dairy", "Eggs"],
         batchItems: [
             { key: "v4_eggs",   label: "Large eggs",                   qty: 10,  unit: "whole", cat: "Protein"    , ingId: 40 , role: "protein", share: 0.5},
             { key: "v4_cot",    label: "Cottage cheese (low fat)",     qty: 400, unit: "g",    cat: "Dairy"       , ingId: 43 , role: "protein", share: 0.339},
@@ -1577,6 +1605,7 @@ const RECIPES = [
         category: "main", id: "m11", name: "🍗 Green Pepper & Onion Pasta", subtitle: "Chicken · sautéed green peppers · creamy + tomato sauce · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:736, protein:62.3, carbs:77.6, fat:17.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1300, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.895127},
             { key: "pasta_regular", label: "Pasta (spaghetti or any)", qty: 615, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -1608,6 +1637,7 @@ const RECIPES = [
         subtitle: "Stovetop + oven · ~55 min",
         carb: "🍠 Sweet Potato",
         perPortion: {kcal:595, protein:54.7, carbs:38.8, fat:24.1},
+        allergens: ["Gluten / Wheat", "Dairy", "Fish", "Celery", "Mustard"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -1643,6 +1673,7 @@ const RECIPES = [
         subtitle: "Turkey mince · jasmine rice · black beans · salsa · cumin · ~30 min + chill",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:809, protein:64.1, carbs:78.5, fat:25.9},
+        allergens: [],
         locked: true,
         batchItems: [
             { key: "m39_turk", label: "93/7 turkey mince (raw)", qty: 1925, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 1},
@@ -1677,6 +1708,7 @@ const RECIPES = [
         subtitle: "Batch roasted · ~55 min",
         carb: "🌾 Quinoa",
         perPortion: {kcal:721, protein:50.1, carbs:51.8, fat:34.8},
+        allergens: ["Dairy"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -1711,6 +1743,7 @@ const RECIPES = [
         subtitle: "Stovetop · ~30 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:719, protein:55.8, carbs:62.2, fat:27.3},
+        allergens: ["Gluten / Wheat", "Eggs", "Soy", "Sesame", "Mustard"],
         batchItems: [
             { key: "m51-steak", label: "Top sirloin steak (raw, trimmed)", qty: 1240, unit: "g", cat: "Protein" , ingId: 9 , role: "protein", share: 0.5},
             { key: "m51-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.5},
@@ -1744,6 +1777,7 @@ const RECIPES = [
         name: "🍗 Italian Herb Chicken, Rice & Broccoli", subtitle: "Air Fryer · batch cook · ~40 min",
         badge: "💨 Air Fryer", carb: "🌾 Rice", portions: 7,
         perPortion: {kcal:643, protein:63.4, carbs:77.5, fat:9.1},
+        allergens: [],
         batchItems: [
             { key: "m52_chick", label: "Chicken breast (skinless, raw)", qty: 1575, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
             { key: "m52_rice",  label: "Wholegrain brown rice (dry)",               qty: 490,  unit: "g",  cat: "Carbs",      ingId: 62,  role: "carbs",   share: 1     },
@@ -1772,6 +1806,7 @@ const RECIPES = [
         name: "🍗 Italian Herb Chicken, Sweet Potato & Broccoli", subtitle: "Air Fryer · batch cook · ~45 min",
         badge: "💨 Air Fryer", carb: "🍠 Sweet Potato", portions: 7,
         perPortion: {kcal:498, protein:50.6, carbs:63.0, fat:6.0},
+        allergens: [],
         batchItems: [
             { key: "m53_chick", label: "Chicken breast (skinless, raw)", qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1     },
             { key: "m53_swpot", label: "Sweet potato (cubed, raw)",      qty: 1400, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1     },
@@ -1798,6 +1833,7 @@ const RECIPES = [
         name: "🥩 Lean Beef Bowl with Rice & Vegetables", subtitle: "Stovetop · batch cook · ~25 min",
         badge: "🍳 Stovetop", carb: "🌾 Rice", portions: 7,
         perPortion: {kcal:697, protein:63.7, carbs:81.3, fat:14.5},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m54_beef",  label: "Beef mince (5% fat)",              qty: 1310, unit: "g",  cat: "Protein",    ingId: 6,   role: "protein", share: 1      },
             { key: "m54_rice",  label: "Wholegrain brown rice (dry)",                  qty: 490,  unit: "g",  cat: "Carbs",      ingId: 62,  role: "carbs",   share: 1      },
@@ -1828,6 +1864,7 @@ const RECIPES = [
         name: "🥩 Lean Beef Bowl with Sweet Potato & Vegetables", subtitle: "Stovetop · batch cook · ~45 min",
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato", portions: 7,
         perPortion: {kcal:541, protein:53.0, carbs:63.3, fat:10.5},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m55_beef",  label: "Beef mince (5% fat)",              qty: 1050, unit: "g",  cat: "Protein",    ingId: 6,   role: "protein", share: 1      },
             { key: "m55_swpot", label: "Sweet potato (cubed, raw)",         qty: 1260, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1      },
@@ -1856,6 +1893,7 @@ const RECIPES = [
         name: "🍗 Herb Chicken Bowl with Rice & Vegetables", subtitle: "Air Fryer · batch cook · ~40 min",
         badge: "💨 Air Fryer", carb: "🌾 Rice", portions: 7,
         perPortion: {kcal:705, protein:74.0, carbs:80.1, fat:9.7},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m56_chick", label: "Chicken breast (skinless, raw)",   qty: 1575, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1      },
             { key: "m56_rice",  label: "Wholegrain brown rice (dry)",                  qty: 490,  unit: "g",  cat: "Carbs",      ingId: 62,  role: "carbs",   share: 1      },
@@ -1886,6 +1924,7 @@ const RECIPES = [
         name: "🍗 Herb Chicken Bowl with Sweet Potato & Vegetables", subtitle: "Air Fryer · batch cook · ~45 min",
         badge: "💨 Air Fryer", carb: "🍠 Sweet Potato", portions: 7,
         perPortion: {kcal:547, protein:61.2, carbs:62.2, fat:6.7},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m57_chick", label: "Chicken breast (skinless, raw)",   qty: 1260, unit: "g",  cat: "Protein",    ingId: 1,   role: "protein", share: 1      },
             { key: "m57_swpot", label: "Sweet potato (cubed, raw)",         qty: 1260, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1      },
@@ -1914,6 +1953,7 @@ const RECIPES = [
         name: "🌶️ Lean Beef Chili with Sweet Potato, Spinach & Corn", subtitle: "Stovetop · batch cook · ~45 min",
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato", portions: 7,
         perPortion: {kcal:488, protein:46.8, carbs:54.3, fat:11.5},
+        allergens: ["Celery"],
         batchItems: [
             { key: "m58_beef",  label: "Beef mince (5% fat)",              qty: 1260, unit: "g",  cat: "Protein",    ingId: 6,   role: "protein", share: 1      },
             { key: "m58_swpot", label: "Sweet potato (cubed, raw)",         qty: 1050, unit: "g",  cat: "Carbs",      ingId: 68,  role: "carbs",   share: 1      },
@@ -1938,6 +1978,7 @@ const RECIPES = [
         category: "main", id: "m59", name: "🥩 Beef, Cottage Cheese & Sweet Potato Bowl", subtitle: "Lean ground beef · fat-free cottage cheese · roasted sweet potato · ~50 min",
         badge: "🌬️ Oven", carb: "🍠 Sweet Potato", portions: 5,
         perPortion: {kcal:592, protein:60.5, carbs:61.2, fat:12.0},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m59_beef",   label: "95/5 lean ground beef (raw)",   qty: 1000, unit: "g",     cat: "Protein",   ingId: 6,   role: "protein", share: 0.776 },
             { key: "m59_cc",     label: "Fat-free cottage cheese",        qty: 500,  unit: "g",     cat: "Dairy",     ingId: 42,  role: "protein", share: 0.224 },
@@ -1964,6 +2005,7 @@ const RECIPES = [
         category: "main", id: "m60", name: "🍗 Chicken, Quinoa & Zucchini Bowl", subtitle: "Herb chicken breast · quinoa · sautéed zucchini · lemon · ~35 min",
         badge: "🍳 Stovetop", carb: "🌾 Quinoa", portions: 5,
         perPortion: {kcal:566, protein:58.8, carbs:58.4, fat:10.5},
+        allergens: [],
         batchItems: [
             { key: "m60_chick",  label: "Chicken breast (skinless, raw)", qty: 1000, unit: "g",     cat: "Protein",   ingId: 1,   role: "protein", share: 1.0   },
             { key: "m60_quin",   label: "Quinoa (dry)",                   qty: 350,  unit: "g",     cat: "Carbs",     ingId: 74,  role: "carbs",   share: 1.0   },
@@ -1987,6 +2029,7 @@ const RECIPES = [
         category: "main", id: "m61", name: "🥩 Ground Beef, Eggs & Brown Rice Bowl", subtitle: "93/7 lean ground beef · scrambled eggs · brown rice · ~60 min",
         badge: "🍳 Stovetop", carb: "🍚 Brown Rice", portions: 5,
         perPortion: {kcal:554, protein:43.8, carbs:53.6, fat:18.9},
+        allergens: ["Gluten / Wheat", "Eggs", "Soy"],
         batchItems: [
             { key: "m61_beef",   label: "93/7 lean ground beef (raw)",   qty: 700,  unit: "g",     cat: "Protein",   ingId: 289, role: "protein", share: 0.776 },
             { key: "m61_eggs",   label: "Eggs (whole, large)",            qty: 5,    unit: "whole", cat: "Protein",   ingId: 40,  role: "protein", share: 0.224 },
@@ -2012,6 +2055,7 @@ const RECIPES = [
         category: "main", id: "m62", name: "🐟 Salmon, Avocado & Spinach Bowl", subtitle: "Baked Atlantic salmon · fresh avocado · wilted spinach · lemon · ~35 min",
         badge: "🌬️ Oven", carb: "—", portions: 5,
         perPortion: {kcal:538, protein:46.6, carbs:10.8, fat:33.5},
+        allergens: ["Fish"],
         batchItems: [
             { key: "m62_salmon", label: "Salmon (Atlantic, raw)",         qty: 1050, unit: "g",     cat: "Protein",   ingId: 20,  role: "protein", share: 1.0   },
             { key: "m62_avo",    label: "Avocado",                        qty: 188,  unit: "g",     cat: "Fats",      ingId: 149, role: "fat",     share: 1 },
@@ -2037,6 +2081,7 @@ const RECIPES = [
         name: "🍗 High-Protein KFC Mac & Cheese", subtitle: "Air fryer · 45 min",
         badge: "💨 Air Fryer", carb: "🧀 Mac & Cheese", portions: 4,
         perPortion: {kcal:898, protein:75.9, carbs:105.2, fat:18.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Celery", "Mustard"],
         batchItems: [
             { key: "m25_chk", label: "Diced chicken breast", qty: 700, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.333333},
             { key: "m25_flour", label: "Plain flour", qty: 100, unit: "g", cat: "Carbs" , ingId: 277 , role: "carbs", share: 0.5},
@@ -2071,6 +2116,7 @@ const RECIPES = [
         category: "main", id: "m06", name: "🍗 Honey Chipotle Chicken Bowl", subtitle: "Slow-cooked chicken · honey chipotle · jasmine rice · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:798, protein:87.9, carbs:79.4, fat:12.9},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1955, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.429152},
             { key: "rice_white", label: "Wholegrain brown rice (dry)", qty: 400, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -2103,6 +2149,7 @@ const RECIPES = [
     category: "main",        name: "🍗 Honey Chipotle Chicken Burritos", subtitle: "Wrap + Rice · Crockpot · ~3 h 20 min",
         badge: "🥘 Crockpot", carb: "🌯 Wrap", portions: 7,
         perPortion: {kcal:685, protein:73.2, carbs:71.2, fat:11.0},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m16_chk", label: "Chicken breast (raw)", qty: 1200, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.788},
             { key: "m16_cheese", label: "Fat-free mozzarella (shredded)", qty: 400, unit: "g", cat: "Dairy" , ingId: 281 , role: "protein", share: 0.17},
@@ -2140,6 +2187,7 @@ const RECIPES = [
         subtitle: "Oven + no-cook assembly · ~40 min",
         carb: "🌾 Quinoa",
         perPortion: {kcal:571, protein:57.7, carbs:53.4, fat:13.8},
+        allergens: ["Dairy", "Tree Nuts"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -2174,6 +2222,7 @@ const RECIPES = [
         portions: 4,
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato",
         perPortion: {kcal:559, protein:55.6, carbs:58.2, fat:13.2},
+        allergens: [],
         batchItems: [
             { key: "m22_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m22_sp", label: "Sweet potatoes (cubed)", qty: 800, unit: "g", cat: "Carbs" , ingId: 68 , role: "carbs", share: 1},
@@ -2200,6 +2249,7 @@ const RECIPES = [
         portions: 3,
         badge: "💨 Air Fryer", carb: "🥗 Low Carb",
         perPortion: {kcal:308, protein:52.5, carbs:5.6, fat:6.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Soy"],
         batchItems: [
             { key: "m20_chk", label: "Chicken breasts (raw)", qty: 600, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.896},
             { key: "m20_yog", label: "Low-fat Greek yogurt", qty: 240, unit: "g", cat: "Dairy" , ingId: 48 , role: "protein", share: 0.104},
@@ -2224,6 +2274,7 @@ const RECIPES = [
         subtitle: "95/5 lean ground beef · broccoli · jasmine rice · soy-ginger sauce · ~30 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:724, protein:69.7, carbs:75.1, fat:18.3},
+        allergens: ["Gluten / Wheat", "Soy", "Sesame", "Molluscs"],
         locked: true,
         batchItems: [
             { key: "m44_beef", label: "95/5 lean ground beef (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
@@ -2257,6 +2308,7 @@ const RECIPES = [
     category: "main",        name: "🥩 Lean Beef & Potato Roast", subtitle: "Potato · Instant Pot · ~60 min",
         badge: "⚡ Instant Pot", carb: "🥔 Potato", portions: 7,
         perPortion: {kcal:545, protein:67.9, carbs:31.2, fat:16.3},
+        allergens: ["Celery"],
         batchItems: [
             { key: "m15_beef", label: "Lean ground beef (5% fat)", qty: 2000, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 1},
             { key: "m15_pot", label: "Red potatoes (quartered)", qty: 950, unit: "g", cat: "Carbs" , ingId: 69 , role: "carbs", share: 1},
@@ -2279,6 +2331,7 @@ const RECIPES = [
         category: "main", id: "m08", name: "🥩 Lean Beef Hamburger Helper", subtitle: "Lean beef · pasta in beef broth · cottage cheese & parmesan sauce · ~35 min",
         badge: "🍳 Stovetop", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:800, protein:72.7, carbs:96.8, fat:14.5},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "beef_mince_lean", label: "95/5 lean ground beef (raw)", qty: 1315, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.878},
             { key: "pasta_regular", label: "Pasta (elbow or short)", qty: 730, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -2312,6 +2365,7 @@ const RECIPES = [
         tags: ["snack"],
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         perPortion: {kcal:622, protein:65.4, carbs:61.1, fat:13.2},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "m3-beef", label: "95/5 lean ground beef (raw)", qty: 570, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.419},
             { key: "m30_rice", label: "Wholegrain brown rice (dry)", qty: 150, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 0.712},
@@ -2340,6 +2394,7 @@ const RECIPES = [
         subtitle: "99/1 turkey · jasmine rice · bell peppers · tomato base · ~30 min + chill",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:690, protein:78.6, carbs:74.9, fat:6.1},
+        allergens: ["Celery"],
         locked: true,
         batchItems: [
             { key: "m33_turk", label: "99/1 turkey mince (raw)", qty: 1925, unit: "g", cat: "Protein" , ingId: 287 , role: "protein", share: 1},
@@ -2371,6 +2426,7 @@ const RECIPES = [
         name: "🍛 Lentil & Spinach Dahl", subtitle: "Red lentils · coconut milk · spinach · ginger-turmeric · ~50 min",
         badge: "⚡ Instant Pot", carb: "🌿 Lentils", portions: 7,
         perPortion: {kcal:541, protein:42.8, carbs:82.5, fat:5.2},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "v1_lent",   label: "Red lentils (dry)",            qty: 700, unit: "g",    cat: "Carbs"      , ingId: 92 , role: "carbs", share: 1},
             { key: "v1_spin",   label: "Frozen spinach",               qty: 400, unit: "g",    cat: "Vegetables"  , ingId: 101 , role: "veg", baseQty: 57.14},
@@ -2404,6 +2460,7 @@ const RECIPES = [
         category: "main", id: "m01", name: "🍗 Marry Me Chicken", subtitle: "Jasmine rice · mushrooms · peas & carrots · ~4 h 20 min",
         badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:800, protein:85.1, carbs:84.4, fat:12.9},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "rice_white", label: "Wholegrain brown rice (dry)", qty: 490, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -2435,6 +2492,7 @@ const RECIPES = [
         category: "main", id: "m03", name: "🍗 Marry Me Chicken — Pasta", subtitle: "Pasta · mushrooms · peas & carrots · highest protein · ~4 h 20 min",
         badge: "🥘 Crockpot", carb: "🍝 Pasta", portions: 7,
         perPortion: {kcal:753, protein:75.7, carbs:87.9, fat:10.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "chicken_breast", label: "Chicken breast (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.845},
             { key: "pasta_regular", label: "Pasta (any shape)", qty: 550, unit: "g", cat: "Carbs" , ingId: 65 , role: "carbs", share: 1},
@@ -2467,6 +2525,7 @@ const RECIPES = [
         portions: 10,
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         perPortion: {kcal:633.6, protein:54.9, carbs:52.0, fat:25.5},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m23_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.613},
             { key: "m23_tsaus", label: "Lean turkey sausage", qty: 450, unit: "g", cat: "Protein" , ingId: 17 , role: "protein", share: 0.277},
@@ -2498,6 +2557,7 @@ const RECIPES = [
         subtitle: "Pork tenderloin · jasmine rice · green beans · Dijon-herb crust · ~40 min",
         badge: "🌬️ Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:649, protein:65.4, carbs:78.4, fat:8.6},
+        allergens: ["Mustard"],
         locked: true,
         batchItems: [
             { key: "m41_pork", label: "Pork tenderloin (whole)", qty: 1750, unit: "g", cat: "Protein" , ingId: 12 , role: "protein", share: 1},
@@ -2529,6 +2589,7 @@ const RECIPES = [
         subtitle: "King prawns · jasmine rice · avocado · mango · lime-chilli dressing · ~20 min + chill",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:635, protein:58.0, carbs:76.4, fat:13.3},
+        allergens: ["Crustaceans"],
         locked: true,
         batchItems: [
             { key: "m49_prawn", label: "Raw king prawns (peeled)", qty: 1750, unit: "g", cat: "Protein" , ingId: 25 , role: "protein", share: 1},
@@ -2559,6 +2620,7 @@ const RECIPES = [
         portions: 3,
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         perPortion: {kcal:561, protein:56.6, carbs:55.3, fat:12.1},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m2-beef", label: "95/5 lean ground beef (raw)", qty: 510, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.796},
             { key: "m2-rice", label: "Wholegrain brown rice (dry)", qty: 125, unit: "g", cat: "Carbs" , ingId: 62 , role: "carbs", share: 1},
@@ -2588,6 +2650,7 @@ const RECIPES = [
         subtitle: "Batch roasted · ~50 min",
         carb: "🍠 Sweet Potato",
         perPortion: {kcal:458, protein:69.1, carbs:30.5, fat:7.6},
+        allergens: ["Dairy"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -2621,6 +2684,7 @@ const RECIPES = [
         subtitle: "Batch roasted · ~40 min",
         carb: "🌾 Quinoa",
         perPortion: {kcal:601, protein:47.2, carbs:42.6, fat:25.5},
+        allergens: ["Dairy", "Fish"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -2653,6 +2717,7 @@ const RECIPES = [
         name: "🥑 Salmon & Avocado Burrito", subtitle: "Crispy wrap · Air fryer · ~40 min",
         badge: "💨 Air Fryer", carb: "🌯 Wrap",
         perPortion: {kcal:756, protein:51.2, carbs:51.5, fat:36.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Fish"],
         batchItems: [
             { key: "m19_salm", label: "Salmon loin (cubed, raw)", qty: 150, unit: "g", cat: "Protein" , ingId: 20 , role: "protein", share: 0.69},
             { key: "m19_avo", label: "Ripe avocado (quarter)", qty: 0.25, unit: "whole", cat: "Vegetables" , ingId: 149 , role: "veg", baseQty: 0.5},
@@ -2679,6 +2744,7 @@ const RECIPES = [
         subtitle: "Salmon fillet · quinoa · asparagus · lemon-garlic · ~35 min",
         badge: "🌬️ Oven", carb: "🌾 Quinoa", portions: 7,
         perPortion: {kcal:686,protein:47,carbs:61,fat:27.1},
+        allergens: ["Fish"],
         locked: true,
         batchItems: [
             { key: "m34_salm", label: "Salmon fillets (skin-on)", qty: 1120, unit: "g", cat: "Protein" , ingId: 20 , role: "protein", share: 1},
@@ -2706,6 +2772,7 @@ const RECIPES = [
         subtitle: "Yellowfin tuna steak · quinoa · parsley · cucumber · lemon · ~35 min",
         badge: "🍳 Stovetop", carb: "🌾 Quinoa", portions: 7,
         perPortion: {kcal:523, protein:59.8, carbs:53.8, fat:6.6},
+        allergens: ["Fish"],
         locked: true,
         batchItems: [
             { key: "m48_tuna", label: "Yellowfin tuna steaks (raw)", qty: 1400, unit: "g", cat: "Protein" , ingId: 22 , role: "protein", share: 1},
@@ -2734,6 +2801,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍠 Sweet Potato", portions: 7,
         tags: ["snack"],
         perPortion: {kcal:543, protein:48.1, carbs:58, fat:12.7},
+        allergens: [],
         locked: true,
         batchItems: [
             { key: "m32_stk", label: "Sirloin steak (raw, trimmed)", qty: 1400, unit: "g", cat: "Protein" , ingId:342 , role: "protein", share: 1},
@@ -2760,6 +2828,7 @@ const RECIPES = [
         portions: 5,
         badge: "🥘 Crockpot", carb: "🥜 Cashew",
         perPortion: {kcal:343, protein:45.3, carbs:18.1, fat:9.6},
+        allergens: ["Gluten / Wheat", "Soy", "Tree Nuts", "Celery", "Sulphites"],
         batchItems: [
             { key: "m24_chk", label: "Chicken breast (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 0.969},
             { key: "m24_honey", label: "Honey", qty: 30, unit: "g", cat: "Sauces" , ingId: 195 , role: "fixed", baseQty: 6},
@@ -2785,7 +2854,8 @@ const RECIPES = [
             "Serve over jasmine rice — macros shown are without rice, add ~130 kcal / 27C per cooked rice.",
             "🟡 Add 0.5 g turmeric and a pinch of black pepper while cooking — activates curcumin absorption (piperine effect) for anti-inflammatory benefit.",
             "💡 Keep the cashews in a small bag and scatter them on after reheating; stored in the sauce they go soft and chalky within a day.",
-            "💡 The chicken and sauce keep 4 days in the fridge and freeze well for 3 months without the snow peas, which go grey and limp once frozen. Reheat covered at 700 W for 2 to 3 minutes."
+            "💡 The chicken and sauce keep 4 days in the fridge and freeze well for 3 months without the snow peas, which go grey and limp once frozen. Reheat covered at 700 W for 2 to 3 minutes.",
+            "🟡 Sodium note: dark soy, Japanese soy and hoisin stack up fast. Use low-sodium soy for both, and add no extra salt — the sauces carry more than enough."
         ],
     },
     {
@@ -2794,6 +2864,7 @@ const RECIPES = [
         subtitle: "Chicken breast · jasmine rice · sweet potato · BBQ spice rub · broth · ~3 h 20 min + chill",
         badge: "🥘 Crockpot", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:687, protein:70.1, carbs:83.2, fat:9.3},
+        allergens: ["Celery"],
         locked: true,
         batchItems: [
             { key: "m50_chk", label: "Chicken breast (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -2830,6 +2901,7 @@ const RECIPES = [
         subtitle: "Crockpot · ~4 hr low",
         carb: "🥣 Butternut Squash",
         perPortion: { kcal:362, protein:57.3, carbs:22.4, fat:6.0 },
+        allergens: ["Dairy", "Celery"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -2864,6 +2936,7 @@ const RECIPES = [
         subtitle: "Stovetop · ~50 min",
         carb: "🌾 Rice & Lentils",
         perPortion: {kcal:697, protein:36.1, carbs:82.5, fat:25.1},
+        allergens: ["Dairy"],
         locked: true,
         seasonal: true,
         portions: 7,
@@ -2902,6 +2975,7 @@ const RECIPES = [
         portions: 4,
         badge: "🌬️ Oven", carb: "🍠 Sweet Potato",
         perPortion: {kcal:372, protein:31.1, carbs:28.8, fat:14.5},
+        allergens: ["Dairy", "Eggs"],
         batchItems: [
             { key: "m27_sp", label: "Large sweet potato", qty: 400, unit: "g", cat: "Carbs" , ingId: 68 , role: "carbs", share: 1},
             { key: "m27_zucc", label: "Zucchini (sliced)", qty: 1, unit: "whole", cat: "Vegetables" , ingId: 103 , role: "veg", baseQty: 0.25},
@@ -2918,6 +2992,7 @@ const RECIPES = [
             "Layer sliced zucchini, chopped asparagus, and halved cherry tomatoes over the sweet potato base.",
             "Crack the eggs over the vegetables. Dollop cottage cheese around the dish. Sprinkle with Parmesan and season with salt and pepper.",
             "Bake 30 min until eggs are set and the top is golden. Slice into portions.",
+            "Divide equally into 4 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Keeps 4 days chilled; freeze individual slices wrapped tightly for a month and reheat at 50% power for 2–3 minutes so the eggs warm through without splitting.",
             "💡 Salt the zucchini slices and blot them for 10 minutes before layering, otherwise their water floods the smashed sweet potato base and the eggs set in a puddle."
         ],
@@ -2928,6 +3003,7 @@ const RECIPES = [
         subtitle: "Chicken breast · jasmine rice · edamame · broccoli · teriyaki glaze · ~30 min",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:713, protein:71.5, carbs:81.8, fat:12.0},
+        allergens: ["Gluten / Wheat", "Soy"],
         locked: true,
         batchItems: [
             { key: "m47_chk", label: "Chicken breast (raw)", qty: 1575, unit: "g", cat: "Protein" , ingId: 1 , role: "protein", share: 1},
@@ -2962,6 +3038,7 @@ const RECIPES = [
         name: "🥢 Tofu & Edamame Teriyaki Bowl", subtitle: "Firm tofu · edamame · broccoli · teriyaki sauce · jasmine rice · ~25 min + overnight",
         badge: "🍳 Stovetop", carb: "🍚 Rice", portions: 5,
         perPortion: {kcal:786, protein:67.1, carbs:79.7, fat:26.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Soy", "Sesame"],
         batchItems: [
             { key: "v2_tofu",   label: "Extra-firm tofu (pressed)",    qty: 1000, unit: "g",    cat: "Protein"     , ingId:341 , role: "protein", share: 0.3315},
             { key: "v2_edam",   label: "Edamame (frozen, shelled)",    qty: 500, unit: "g",    cat: "Protein"     , ingId: 96 , role: "protein", share: 0.1685},
@@ -2992,7 +3069,8 @@ const RECIPES = [
         name: "🐟 Tuna & Chickpea Power Bowl",
         subtitle: "Canned tuna · chickpeas · cucumber · tomato · lemon-olive oil · ~10 min",
         badge: "🥗 No-Cook", carb: "🫘 Chickpea", portions: 7,
-        perPortion: {kcal:220, protein:24, carbs:25.7, fat:3.6}, /* A1: corrected from computed batch quantities */
+        perPortion: {kcal:220, protein:24, carbs:25.7, fat:3.6},
+        allergens: ["Fish"], /* A1: corrected from computed batch quantities */
         locked: true,
         batchItems: [
             { key: "m36_tuna", label: "Tuna in spring water (480g)", qty: 480, unit: "g", cat: "Protein" , ingId: 21 , role: "protein", share: 1},
@@ -3012,7 +3090,8 @@ const RECIPES = [
             "Pour dressing over and toss to coat.",
             "Portion into containers. Keep dressing separate if prepping more than 3 days ahead.",
             "💡 Keeps 3 days refrigerated with the dressing on, or 4 if dressed on the day; never freeze, as the cucumber turns to water and the chickpeas go mealy.",
-            "💡 Slice the red onion paper-thin and soak it in the lemon juice for 10 minutes before mixing, which softens the raw bite that otherwise dominates by day two."
+            "💡 Slice the red onion paper-thin and soak it in the lemon juice for 10 minutes before mixing, which softens the raw bite that otherwise dominates by day two.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -3021,6 +3100,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🥑 Low Carb",
         portions: 5, locked: true,
         perPortion: {kcal:354,protein:30,carbs:14,fat:19.8},
+        allergens: ["Dairy", "Eggs"],
         batchItems: [
             { key: "v9_eggs",  label: "Large eggs",                  qty: 10,  unit: "whole", cat: "Protein"    , ingId: 40 , role: "protein", share: 0.5},
             { key: "v9_cot",   label: "Cottage cheese (low fat)",    qty: 300, unit: "g",    cat: "Dairy"      , ingId: 43 , role: "protein", share: 0.5},
@@ -3050,6 +3130,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🫘 Chickpea",
         portions: 5, locked: true,
         perPortion: {kcal:559, protein:44.2, carbs:53.5, fat:19.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "v6_eggs",  label: "Large eggs",                   qty: 10,  unit: "whole", cat: "Protein"    , ingId: 40 , role: "protein", share: 0.5},
             { key: "v6_chick", label: "Chickpeas in water (canned, drained)", qty: 480,  unit: "g", cat: "Carbs"      , ingId: 91 , role: "carbs", share: 1},
@@ -3083,6 +3164,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 5, locked: true,
         perPortion: {kcal:544, protein:40.6, carbs:74.9, fat:10},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "v8_bean",  label: "White beans / cannellini (canned, drained)", qty: 480, unit: "g", cat: "Carbs" , ingId: 297 , role: "carbs", share: 0.5},
             { key: "v8_pasta", label: "Wholegrain pasta (dry)", qty: 300, unit: "g", cat: "Carbs" , ingId: 67 , role: "carbs", share: 0.5},
@@ -3096,7 +3178,8 @@ const RECIPES = [
         ],
         steps: [
             "Cook pasta al dente according to package. Reserve pasta water before draining.",
-            "Blend cottage cheese, grated parmesan, skimmed milk, lemon juice and zest, salt, and pepper until completely smooth. This is your cream sauce. (optional — not counted in the macros) heat a non-stick pan with a light mist of cooking spray in a large pan over medium. Add minced garlic and chili flakes — cook 1–2 min until fragrant.",
+            "Blend cottage cheese, grated parmesan, skimmed milk, lemon juice and zest, salt, and pepper until completely smooth. This is your cream sauce.",
+            "(optional — not counted in the macros) heat a non-stick pan with a light mist of cooking spray in a large pan over medium. Add minced garlic and chili flakes — cook 1–2 min until fragrant.",
             "Add drained white beans. Stir and cook 2–3 min until lightly golden.",
             "Add baby spinach in handfuls, stirring until wilted (~2 min).",
             "Add cooked pasta and cream sauce. Toss everything together. Use reserved pasta water to loosen if needed. (optional — not counted in the macros)",
@@ -3113,6 +3196,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 7, locked: true,
         perPortion: {kcal:466, protein:33.1, carbs:53.1, fat:14.2},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "v5_pan",   label: "Paneer (cubed)",               qty: 300, unit: "g",    cat: "Protein"    , ingId: 276 , role: "protein", share: 0.307775},
             { key: "v5_rice",  label: "Wholegrain brown rice (dry)",           qty: 280, unit: "g",    cat: "Carbs"      , ingId: 62 , role: "carbs", share: 1},
@@ -3148,6 +3232,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🍚 Rice",
         portions: 7, locked: true,
         perPortion: {kcal:486, protein:36.1, carbs:69.8, fat:8},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "v7_bean",  label: "Black beans (canned, drained)",       qty: 720,   unit: "g", cat: "Carbs"      , ingId: 94 , role: "carbs", share: 0.5},
             { key: "v7_swpot", label: "Sweet potato (cubed, raw)",    qty: 600,unit: "g",    cat: "Carbs"      , ingId: 68 , role: "carbs", share: 0.169},
@@ -3185,6 +3270,7 @@ const RECIPES = [
         subtitle: "Tilapia · jasmine rice · mango salsa · cucumber · lime · ~35 min",
         badge: "🌬️ Oven", carb: "🍚 Rice", portions: 7,
         perPortion: {kcal:578, protein:57.5, carbs:72.8, fat:6.8},
+        allergens: ["Fish"],
         locked: true,
         batchItems: [
             { key: "m42_fish", label: "Tilapia fillets (raw)", qty: 1750, unit: "g", cat: "Protein" , ingId: 24 , role: "protein", share: 1},
@@ -3215,6 +3301,7 @@ const RECIPES = [
         subtitle: "Stovetop · ~20 min",
         badge: "🍳 Stovetop", carb: "🥔 Potato", portions: 5,
         perPortion: {kcal:565, protein:54.4, carbs:25.9, fat:26.0},
+        allergens: ["Dairy", "Eggs"],
         batchItems: [
             { key: "bf1-eggs", label: "Large eggs", qty: 13, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333333},
             { key: "bf1-bacon", label: "Center-cut beef bacon (raw)", qty: 283, unit: "g", cat: "Protein" , ingId: 283 , role: "protein", share: 0.333333},
@@ -3243,6 +3330,7 @@ const RECIPES = [
         subtitle: "Fresh each morning · ~15 min",
         badge: "🍳 Stovetop", carb: "🥯 Bagel", portions: 3,
         perPortion: {kcal:642, protein:49.9, carbs:55.9, fat:23.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Sesame"],
         batchItems: [
             { key: "bf2-turkey", label: "Ground turkey sausage (raw)", qty: 340, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 0.333333},
             { key: "bf2-eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333333},
@@ -3267,6 +3355,7 @@ const RECIPES = [
         name: "🥕 Carrot Protein Pancakes", subtitle: "Stovetop · 10 min",
         badge: "🍳 Stovetop", carb: "🥕 Carrot", portions: 1,
         perPortion: {kcal:456, protein:52.0, carbs:37.6, fat:10.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf3_carrot", label: "Grated carrot", qty: 100, unit: "g", cat: "Vegetables" , ingId: 117 , role: "veg", baseQty: 100},
             { key: "bf3_yog", label: "0% Greek yogurt", qty: 150, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.1925},
@@ -3291,6 +3380,7 @@ const RECIPES = [
         subtitle: "No cook · 3 min",
         badge: "🥗 No-Cook", carb: "🌾 Wholegrain",
         perPortion: {kcal:403, protein:35.2, carbs:46.6, fat:8.0},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "bf4-cc", label: "Low-fat cottage cheese", qty: 200, unit: "g", cat: "Dairy" , ingId: 43 , role: "protein", share: 1},
             { key: "bf4-toast", label: "Wholegrain bread slice", qty: 2, unit: "whole", cat: "Carbs" , ingId: 71 , role: "carbs", share: 1},
@@ -3315,6 +3405,7 @@ const RECIPES = [
         portions: 7,
         badge: "🍳 Stovetop", carb: "🌾 Rice",
         perPortion: {kcal:634, protein:59.9, carbs:52.6, fat:19.7},
+        allergens: ["Dairy", "Eggs"],
         batchItems: [
             { key: "bf5_beef", label: "95/5 lean ground beef (raw)", qty: 900, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.3},
             { key: "bf5_eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333333},
@@ -3345,6 +3436,7 @@ const RECIPES = [
         portions: 7,
         badge: "🍳 Stovetop", carb: "🌯 Wrap",
         perPortion: {kcal:571, protein:48.3, carbs:37.8, fat:25.0},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard", "Sulphites"],
         batchItems: [
             { key: "bf6_beef", label: "95/5 lean ground beef (raw)", qty: 788, unit: "g", cat: "Protein" , ingId: 6 , role: "protein", share: 0.267},
             { key: "bf6_eggs", label: "Large eggs", qty: 7, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333333},
@@ -3374,6 +3466,7 @@ const RECIPES = [
         subtitle: "Fresh each morning · ~10 min",
         badge: "🍳 Stovetop", carb: "🌾 Wholegrain", portions: 7,
         perPortion: { kcal:448, protein:38.1, carbs:40.3, fat:14.7 },
+        allergens: ["Gluten / Wheat", "Eggs", "Fish"],
         batchItems: [
             { key: "bf7-eggs", label: "Large eggs", qty: 14, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.5},
             { key: "bf7-whites", label: "Egg whites", qty: 21, unit: "whole", cat: "Protein" , ingId: 41 , role: "protein", share: 0.5},
@@ -3396,6 +3489,7 @@ const RECIPES = [
         subtitle: "No cook · 2 min",
         badge: "🥗 No-Cook", carb: "🫐 Berries", portions: 1,
         perPortion: {kcal:245, protein:23.7, carbs:19.8, fat:8.8},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "bf8-yogurt", label: "0% Greek yogurt", qty: 200, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 1},
             { key: "bf8-seeds", label: "Mixed seeds", qty: 15, unit: "g", cat: "Fats" , ingId: 170 , role: "fat", share: 1},
@@ -3416,6 +3510,7 @@ const RECIPES = [
         portions: 1,
         badge: "🍳 Stovetop", carb: "🥛 Cottage Cheese",
         perPortion: {kcal:852,protein:98,carbs:72,fat:17.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf9_cott", label: "Fat-free cottage cheese", qty: 200, unit: "g", cat: "Dairy" , ingId: 42 , role: "protein", share: 0.125667},
             { key: "bf9_turk", label: "Smoked turkey (sliced)", qty: 100, unit: "g", cat: "Protein" , ingId: 18 , role: "protein", share: 0.086},
@@ -3443,6 +3538,7 @@ const RECIPES = [
         name: "🌾 High-Protein Breakfast Oats", subtitle: "No cook · 4 min",
         badge: "🥗 No-Cook", carb: "🌾 Oats", portions: 1,
         perPortion: {kcal:675, protein:53.5, carbs:73.9, fat:19.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Peanuts"],
         batchItems: [
             { key: "bf10_oats", label: "Rolled oats", qty: 60, unit: "g", cat: "Carbs" , ingId: 64 , role: "carbs", share: 0.682},
             { key: "bf10_milk", label: "Milk", qty: 120, unit: "mL", cat: "Dairy" , ingId: 49 , role: "fat", share: 1},
@@ -3466,6 +3562,7 @@ const RECIPES = [
         name: "🫐 Protein Smoothie Bowl", subtitle: "No cook · 5 min",
         badge: "🌀 Blender", carb: "🫐 Berries", portions: 1,
         perPortion: {kcal:295, protein:45.0, carbs:22.4, fat:2.8},
+        allergens: ["Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf11_prot", label: "Chocolate protein powder", qty: 30, unit: "g", cat: "Protein" , ingId: 210 , role: "protein", share: 0.545},
             { key: "bf11_yog", label: "0% Greek yogurt", qty: 200, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.455},
@@ -3487,6 +3584,7 @@ const RECIPES = [
         portions: 4,
         badge: "🍳 Stovetop", carb: "🥯 Bagel",
         perPortion: {kcal:624, protein:48.7, carbs:55.8, fat:22.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Sesame"],
         batchItems: [
             { key: "bf12_turk", label: "Lean ground turkey (raw)", qty: 450, unit: "g", cat: "Protein" , ingId: 5 , role: "protein", share: 0.333333},
             { key: "bf12_eggs", label: "Large eggs", qty: 4, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.333333},
@@ -3511,6 +3609,7 @@ const RECIPES = [
         name: "🫐 Blueberry Cinnamon Protein Oats", subtitle: "No cook · 4 min",
         badge: "🥗 No-Cook", carb: "🌾 Oats", portions: 1,
         perPortion: {kcal:392, protein:39.9, carbs:47.4, fat:5.2},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "bf13_oats",  label: "Rolled oats",                   qty: 50,  unit: "g",   cat: "Carbs"   , ingId: 64  , role: "carbs",   share: 0.857 },
             { key: "bf13_whey",  label: "ON Rich Chocolate whey (1 scoop)", qty: 30, unit: "g",  cat: "Protein" , ingId: 210 , role: "protein", share: 0.818 },
@@ -3532,6 +3631,7 @@ const RECIPES = [
         name: "🍌 Banana Blueberry Protein Oats", subtitle: "No cook · 4 min",
         badge: "🥗 No-Cook", carb: "🌾 Oats", portions: 1,
         perPortion: {kcal:456, protein:40.7, carbs:63.6, fat:5.4},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "bf14_oats",  label: "Rolled oats",                   qty: 50,  unit: "g",   cat: "Carbs"   , ingId: 64  , role: "carbs",   share: 0.605 },
             { key: "bf14_whey",  label: "ON Rich Chocolate whey (1 scoop)", qty: 30, unit: "g",  cat: "Protein" , ingId: 210 , role: "protein", share: 0.818 },
@@ -3554,6 +3654,7 @@ const RECIPES = [
         name: "🍫 Banana Dark Chocolate Almond Oats", subtitle: "No cook · 5 min",
         badge: "🥗 No-Cook", carb: "🌾 Oats", portions: 1,
         perPortion: {kcal:504, protein:41.3, carbs:60.1, fat:11.6},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "bf15_oats",  label: "Rolled oats",                      qty: 50,  unit: "g",  cat: "Carbs"   , ingId: 64  , role: "carbs",   share: 0.74442 },
             { key: "bf15_whey",  label: "ON Rich Chocolate whey (1 scoop)",  qty: 30,  unit: "g",  cat: "Protein" , ingId: 210 , role: "protein", share: 0.818 },
@@ -3578,6 +3679,7 @@ const RECIPES = [
         portions: 9,
         badge: "🌬️ Oven", carb: "🍫 Chocolate",
         perPortion: {kcal:160, protein:12.4, carbs:16.9, fat:5.9},
+        allergens: ["Dairy", "Eggs", "Tree Nuts"],
         batchItems: [
             { key: "d5_ban",   label: "Ripe bananas, mashed",    qty: 360, unit: "g",     cat: "Carbs"   , ingId: 140, role: "carbs",   share: 0.857},
             { key: "d5_egg",   label: "Large eggs",              qty: 2,   unit: "whole", cat: "Protein" , ingId: 40,  role: "protein", share: 0.125},
@@ -3611,6 +3713,7 @@ const RECIPES = [
         subtitle: "2 rice cakes · ~5 min + freeze",
         badge: "🥗 No-Cook", carb: "🍚 Rice Cake",
         perPortion: {kcal:318, protein:26.8, carbs:30.4, fat:9.9},
+        allergens: ["Dairy", "Peanuts"],
         batchItems: [
             { key: "ds2-cakes", label: "Lightly salted rice cakes", qty: 2, unit: "whole", cat: "Carbs" , ingId: 84 , role: "carbs", share: 0.5},
             { key: "ds2-yogurt", label: "Plain nonfat Greek yogurt", qty: 110, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.233},
@@ -3637,6 +3740,7 @@ const RECIPES = [
         portions: 10,
         badge: "🌬️ Oven", carb: "🍌 Banana",
         perPortion: { kcal: 152, protein: 14, carbs: 18, fat: 3 },
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "d4_ban", label: "Ripe bananas", qty: 2, unit: "whole", cat: "Carbs" , ingId: 140 , role: "carbs", share: 0.5},
             { key: "d4_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein" , ingId: 40 , role: "protein", share: 0.5},
@@ -3665,6 +3769,7 @@ const RECIPES = [
         portions: 7,
         badge: "🌬️ Oven", carb: "🍫 Chocolate",
         perPortion: { kcal:163, protein:13.7, carbs:18.2, fat:3.9 },
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Tree Nuts"],
         batchItems: [
             { key: "d1_yog", label: "Plain nonfat Greek yogurt", qty: 340, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 0.333333},
             { key: "d1_pump", label: "Pure pumpkin purée", qty: 122, unit: "g", cat: "Vegetables" , ingId: 137 , role: "veg", baseQty: 30.5},
@@ -3686,6 +3791,7 @@ const RECIPES = [
             "Bake at 180°C for 20 minutes until set. Remove and allow to cool completely.",
             "Make the frosting: mix a small amount of Greek yogurt with a pinch of vanilla extract until smooth.",
             "Frost cooled cookies. Top with crushed chocolate sandwich cookies if desired.",
+            "Divide equally into 7 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Unfrosted cookies keep 5 days in the fridge and freeze for 2 months; frost only the ones you plan to eat that day, as the yogurt frosting softens the cookie beneath.",
             "💡 Add the almond milk 15 ml at a time and wait a minute between additions; coconut flour keeps absorbing liquid, so a dough that looks dry often needs less than you think."
         ],
@@ -3698,6 +3804,7 @@ const RECIPES = [
         subtitle: "Banana · oats · protein powder · almond milk · ~5 min",
         badge: "🌀 Blender", carb: "🍌 Banana",
         perPortion: {kcal:334,protein:30,carbs:46,fat:4.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "pw_banana2", label: "Bananas (ripe, frozen)", qty: 7, unit: "whole", cat: "Fruits" , ingId: 140 , role: "carbs", share: 0.5},
             { key: "pw_oats", label: "Rolled oats", qty: 125, unit: "g", cat: "Carbs" , ingId: 64 , role: "carbs", share: 0.5},
@@ -3709,6 +3816,7 @@ const RECIPES = [
             "Each serving: blend the frozen banana, oats, protein powder, and almond milk.",
             "Blend 45 seconds until smooth. Drink immediately.",
             "Can batch-prep oat+powder portions in zip bags for fast morning assembly.",
+            "Divide equally into 7 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "⏱️ Timing: drink 60–75 min before training for optimal fuel. If training within 30 min, skip the oats and use just banana + protein powder + milk — faster to digest.",
             "💡 Peel and freeze the bananas in halves rather than whole; halves blend without straining the motor, and bagging oats and powder per serving gets you a one-minute morning.",
             "💡 Blend the almond milk with the oats first for 20 seconds, then add banana and powder; this softens the oats so the smoothie is smooth rather than gritty and stays drinkable."
@@ -3722,6 +3830,7 @@ const RECIPES = [
         subtitle: "Rice cakes · jam · ~10 min",
         badge: "🥗 No-Cook", carb: "🍚 Rice Cake",
         perPortion: {kcal:139,protein:1,carbs:33,fat:0.3},
+        allergens: [],
         batchItems: [
             { key: "cb_ricecake", label: "Kallo rice cakes", qty: 14, unit: "whole", cat: "Carbs" , ingId: 84 , role: "carbs", share: 1},
             { key: "cb_jam", label: "Jam (any flavour)", qty: 196, unit: "g", cat: "Sauces" , ingId: 272 , role: "fixed", baseQty: 28},
@@ -3730,7 +3839,8 @@ const RECIPES = [
             "No cooking needed — assemble fresh before each session.",
             "Spread jam generously across the rice cakes.",
             "Consume 45–60 min before training. Skip on rest days.",
-            "💡 For extra anti-inflammatory benefit, add a small pinch of turmeric and black pepper to your next whole-food meal of the day.",
+            "Divide equally into 7 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
+            "💡 For extra anti-inflammatory benefit, add a small pinch of turmeric and black pepper to your next whole-food meal of the day."
         ],
     },
     {
@@ -3741,6 +3851,7 @@ const RECIPES = [
         subtitle: "Low-fat chocolate milk · banana · rice cakes · ~10 min",
         badge: "🥗 No-Cook", carb: "🍌 Banana",
         perPortion: {kcal:351,protein:11,carbs:68,fat:4.4},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "pw_chocmilk", label: "Low-fat chocolate milk", qty: 1750, unit: "mL", cat: "Dairy" , ingId: 288 , role: "fat", share: 1},
             { key: "pw_banana4", label: "Bananas", qty: 7, unit: "whole", cat: "Fruits" , ingId: 140 , role: "carbs", share: 0.5},
@@ -3763,6 +3874,7 @@ const RECIPES = [
         subtitle: "Liquid egg whites · wholegrain toast · strawberry jam · ~25 min",
         badge: "🍳 Stovetop", carb: "🍞 Toast",
         perPortion: {kcal:274,protein:22,carbs:39,fat:2.9},
+        allergens: ["Gluten / Wheat", "Eggs"],
         batchItems: [
             { key: "pw_ew2", label: "Liquid egg whites", qty: 700, unit: "g", cat: "Protein" , ingId: 41 , role: "protein", share: 1},
             { key: "pw_bread", label: "Wholegrain bread (loaf)", qty: 14, unit: "whole", cat: "Carbs" , ingId: 71 , role: "carbs", share: 1},
@@ -3785,6 +3897,7 @@ const RECIPES = [
         tags: ["snack"],
         badge: "🥗 No-Cook", carb: "🫐 Berries",
         perPortion: {kcal:318,protein:24,carbs:47,fat:4.3},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "pw_yogurt", label: "Fat-free Greek yogurt", qty: 1400, unit: "g", cat: "Dairy" , ingId: 47 , role: "protein", share: 1},
             { key: "pw_berries", label: "Mixed frozen berries", qty: 700, unit: "g", cat: "Fruits" , ingId: 153 , role: "carbs", share: 0.5},
@@ -3809,6 +3922,7 @@ const RECIPES = [
         subtitle: "Rolled oats · protein powder · almond milk · chia seeds · fruit · ~10 min + overnight",
         badge: "🥗 No-Cook", carb: "🌾 Oats",
         perPortion: {kcal:500,protein:37,carbs:70,fat:9.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "pw_oats2", label: "Rolled oats", qty: 350, unit: "g", cat: "Carbs" , ingId: 64 , role: "carbs", share: 0.5},
             { key: "pw_protein2", label: "Whey or plant protein powder (vanilla)", qty: 7, unit: "whole", cat: "Protein" , ingId: 210 , role: "protein", share: 1},
@@ -3834,6 +3948,7 @@ const RECIPES = [
         subtitle: "Rice cakes · peanut butter · banana · honey · ~10 min",
         badge: "🥗 No-Cook", carb: "🍌 Banana",
         perPortion: {kcal:288, protein:6.6, carbs:50.7, fat:8.7},
+        allergens: ["Peanuts"],
         batchItems: [
             { key: "pw_ricecake", label: "Plain rice cakes", qty: 14, unit: "whole", cat: "Carbs" , ingId: 84 , role: "carbs", share: 0.5},
             { key: "pw_pb", label: "Natural peanut butter", qty: 112, unit: "g", cat: "Fats" , ingId: 166 , role: "fat", share: 1},
@@ -3857,6 +3972,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🌾 Oats",
         portions: 1,
         perPortion: {kcal:739, protein:69.5, carbs:73.3, fat:21.7},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "sm1_milk", label: "Skimmed milk", qty: 300, unit: "ml", cat: "Dairy", ingId: 50, role: "carbs", share: 0.333333},
             { key: "sm1_oats", label: "Rolled oats (dry)", qty: 25, unit: "g", cat: "Carbs", ingId: 64, role: "carbs", share: 0.333333},
@@ -3882,6 +3998,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🍌 Banana",
         portions: 1,
         perPortion: {kcal:601, protein:43.6, carbs:70.5, fat:16.1},
+        allergens: ["Dairy", "Peanuts", "Tree Nuts"],
         batchItems: [
             { key: "sm2_milk", label: "Almond milk (unsweetened)", qty: 300, unit: "ml", cat: "Dairy", ingId: 58, role: "carbs", share: 0.333333},
             { key: "sm2_banana", label: "Banana (medium)", qty: 120, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.333333},
@@ -3906,6 +4023,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🍌 Banana",
         portions: 1,
         perPortion: {kcal:583, protein:42.2, carbs:62.5, fat:18.2},
+        allergens: ["Dairy", "Peanuts"],
         batchItems: [
             { key: "sm3_banana", label: "Banana (medium)", qty: 120, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.333333},
             { key: "sm3_pine", label: "Pineapple (chunks)", qty: 100, unit: "g", cat: "Carbs", ingId: 147, role: "carbs", share: 0.333333},
@@ -3932,6 +4050,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🫐 Berries",
         portions: 1,
         perPortion: {kcal:319, protein:30.4, carbs:42.8, fat:3.7},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "sm4_coconut", label: "Coconut water", qty: 250, unit: "ml", cat: "Carbs", ingId: 329, role: "carbs", share: 0.333333},
             { key: "sm4_berries", label: "Mixed berries (frozen)", qty: 150, unit: "g", cat: "Carbs", ingId: 153, role: "carbs", share: 0.333333},
@@ -3955,6 +4074,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🫐 Berries",
         portions: 1,
         perPortion: {kcal:351, protein:34.2, carbs:32.2, fat:10.0},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "sm5_milk", label: "Whole milk (fresh)", qty: 250, unit: "ml", cat: "Dairy", ingId: 333, role: "carbs", share: 0.5},
             { key: "sm5_strawberry", label: "Strawberries (fresh)", qty: 100, unit: "g", cat: "Carbs", ingId: 324, role: "carbs", share: 0.5},
@@ -3978,6 +4098,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🍌 Banana",
         portions: 1,
         perPortion: {kcal:353, protein:37.4, carbs:38.6, fat:8.2},
+        allergens: ["Dairy", "Peanuts", "Tree Nuts"],
         batchItems: [
             { key: "sm6_milk", label: "Almond Milk (unsweetened)", qty: 300, unit: "ml", cat: "Dairy", ingId: 58, role: "carbs", share: 0.5},
             { key: "sm6_banana", label: "Banana (medium)", qty: 80, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.5},
@@ -4001,6 +4122,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🥭 Mango",
         portions: 1,
         perPortion: {kcal:509.4, protein:50.9, carbs:58.1, fat:10.1},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "sm7_coconut", label: "Light coconut milk", qty: 100, unit: "ml", cat: "Fats", ingId:336, role: "fats", share: 1},
             { key: "sm7_mango", label: "Mango", qty: 80, unit: "g", cat: "Carbs", ingId: 146, role: "carbs", share: 0.333333},
@@ -4024,6 +4146,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🍌 Banana",
         portions: 1,
         perPortion: {kcal:474, protein:37.6, carbs:59.6, fat:9.5},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "sm8_milk", label: "Whole milk (fresh)", qty: 200, unit: "ml", cat: "Dairy", ingId: 333, role: "carbs", share: 0.333333},
             { key: "sm8_banana", label: "Banana (medium)", qty: 120, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.333333},
@@ -4046,6 +4169,7 @@ const RECIPES = [
         badge: "🌀 Blender", carb: "🫐 Berries",
         portions: 1,
         perPortion: {kcal:544, protein:42.8, carbs:66.1, fat:14.7},
+        allergens: ["Dairy", "Tree Nuts"],
         batchItems: [
             { key: "sm9_milk", label: "Whole milk (fresh)", qty: 200, unit: "ml", cat: "Dairy", ingId: 333, role: "carbs", share: 0.25},
             { key: "sm9_berries", label: "Mixed berries (frozen)", qty: 150, unit: "g", cat: "Carbs", ingId: 153, role: "carbs", share: 0.25},
@@ -4070,6 +4194,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🥟 Bao Buns",
         portions: 1,
         perPortion: {kcal:804, protein:65.3, carbs:79.8, fat:26.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Soy"],
         batchItems: [
             { key: "sn2_bao", label: "Steamed bao buns", qty: 150, unit: "g", cat: "Carbs", ingId: 326, role: "carbs", share: 1},
             { key: "sn2_chicken", label: "Chicken thigh (boneless, skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 2, role: "protein", share: 0.5},
@@ -4094,6 +4219,7 @@ const RECIPES = [
         badge: "🥗 No-Cook", carb: "🍓 Fruit",
         portions: 1,
         perPortion: {kcal:171, protein:2.4, carbs:43.6, fat:1.1},
+        allergens: [],
         batchItems: [
             { key: "sn3_mango", label: "Mango", qty: 100, unit: "g", cat: "Fruits", ingId: 146, role: "carbs", share: 0.25},
             { key: "sn3_papaya", label: "Papaya", qty: 80, unit: "g", cat: "Fruits", ingId: 334, role: "carbs", share: 0.25},
@@ -4120,6 +4246,7 @@ const RECIPES = [
         badge: "🥗 No-Cook", carb: "🥗 Veg",
         portions: 1,
         perPortion: {kcal:222, protein:23.1, carbs:31.4, fat:1.1},
+        allergens: ["Dairy", "Sulphites"],
         batchItems: [
             { key: "sn4_cucumber", label: "Cucumber", qty: 100, unit: "g", cat: "Vegetables", ingId: 111, role: "veg", share: 1},
             { key: "sn4_carrot", label: "Carrot", qty: 80, unit: "g", cat: "Vegetables", ingId: 117, role: "veg", share: 1},
@@ -4136,7 +4263,8 @@ const RECIPES = [
             "Arrange all veg on a board with your choice of dip.",
             "Serve with 150g fat-free cottage cheese as a high-protein dip — adds 16g protein per serving.",
             "💡 Keep the beetroot in its own tub or it stains every other vegetable pink within an hour; the julienned veg keeps 3 days chilled in cold water, drained and patted dry before serving.",
-            "💡 Let the quick-pickled carrot and onion sit at least 10 minutes in the vinegar and a good pinch of salt; unpickled raw onion is harsh against the mild cottage cheese."
+            "💡 Let the quick-pickled carrot and onion sit at least 10 minutes in the vinegar and a good pinch of salt; unpickled raw onion is harsh against the mild cottage cheese.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -4146,6 +4274,7 @@ const RECIPES = [
         badge: "🥗 No-Cook", carb: "🍓 Fruit",
         portions: 1,
         perPortion: {kcal:401, protein:35, carbs:41.5, fat:12},
+        allergens: ["Dairy", "Soy", "Sulphites"],
         batchItems: [
             { key: "sn5_watermelon", label: "Watermelon", qty: 200, unit: "g", cat: "Fruits", ingId: 148, role: "carbs", share: 1},
             { key: "sn5_edamame", label: "Edamame (shelled)", qty: 80, unit: "g", cat: "Protein", ingId: 96, role: "protein", share: 0.333333},
@@ -4171,6 +4300,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "—",
         portions: 1,
         perPortion: {kcal:296, protein:48.1, carbs:12, fat:5.6},
+        allergens: ["Gluten / Wheat", "Soy"],
         batchItems: [
             { key: "sn6_chicken", label: "Chicken breast (skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1},
             { key: "sn6_lettuce", label: "Lettuce (romaine)", qty: 80, unit: "g", cat: "Vegetables", ingId: 112, role: "veg", share: 1},
@@ -4195,6 +4325,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🫓 Pita",
         portions: 1,
         perPortion: {kcal: 628, protein: 60.1, carbs: 85.4, fat: 5.7},
+        allergens: ["Gluten / Wheat", "Dairy", "Sesame", "Sulphites"],
         batchItems: [
             { key: "sn7_pita", label: "Pita bread", qty: 60, unit: "g", cat: "Carbs", ingId: 322, role: "carbs", share: 1},
             { key: "sn7_eggplant", label: "Eggplant / Aubergine", qty: 200, unit: "g", cat: "Vegetables", ingId: 331, role: "veg", share: 1},
@@ -4224,6 +4355,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌮 Tortilla",
         portions: 1,
         perPortion: {kcal:571, protein:52.3, carbs:37.6, fat:22.1},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "sn8_tortilla", label: "Tortilla (flour, 25cm)", qty: 60, unit: "g", cat: "Carbs", ingId: 72, role: "carbs", share: 1},
             { key: "sn8_chicken", label: "Chicken breast (skinless, raw)", qty: 150, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333},
@@ -4247,6 +4379,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Brioche",
         portions: 1,
         perPortion: {kcal:787, protein:64.9, carbs:81.6, fat:22.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf16_eggs", label: "Large eggs", qty: 3, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.333333},
             { key: "bf16_banana", label: "Banana (medium)", qty: 120, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.333333},
@@ -4274,6 +4407,7 @@ const RECIPES = [
         portions: 1,
         tags: ["smoothie"],
         perPortion: {kcal:450.2, protein:45.0, carbs:50.7, fat:7.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf17_yogurt", label: "Greek yogurt (0% fat)", qty: 200, unit: "g", cat: "Protein", ingId: 47, role: "protein", share: 0.5},
             { key: "bf17_granola", label: "Granola (low-sugar)", qty: 30, unit: "g", cat: "Carbs", ingId: 270, role: "carbs", share: 0.5},
@@ -4299,6 +4433,7 @@ const RECIPES = [
         portions: 1,
         tags: ["smoothie"],
         perPortion: {kcal:554, protein:50.8, carbs:71.3, fat:8.7},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf18_berries", label: "Mixed berries (frozen)", qty: 100, unit: "g", cat: "Carbs", ingId: 153, role: "carbs", share: 0.25},
             { key: "bf18_banana", label: "Banana (medium)", qty: 100, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.25},
@@ -4325,6 +4460,7 @@ const RECIPES = [
         portions: 1,
         tags: ["smoothie"],
         perPortion: {kcal:504, protein:49, carbs:67.1, fat:5.5},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf19_yog", label: "Greek Yogurt (0% fat)", qty: 200, unit: "g", cat: "Protein", ingId: 47, role: "protein", share: 0.5},
             { key: "bf19_protein", label: "Whey protein powder (vanilla)", qty: 30, unit: "g", cat: "Supplements", ingId: 210, role: "protein", share: 0.5},
@@ -4348,6 +4484,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌾 Oats",
         portions: 1,
         perPortion: {kcal:530, protein:46.0, carbs:72.5, fat:7.5},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf20_oats", label: "Oats (rolled, dry)", qty: 80, unit: "g", cat: "Carbs", ingId: 64, role: "carbs", share: 0.5},
             { key: "bf20_protein", label: "Whey protein powder", qty: 40, unit: "g", cat: "Supplements", ingId: 210, role: "protein", share: 1},
@@ -4369,6 +4506,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Toast",
         portions: 1,
         perPortion: {kcal:588, protein:50.6, carbs:71.1, fat:13},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf21_bread", label: "Bread (whole wheat)", qty: 80, unit: "g", cat: "Carbs", ingId: 71, role: "carbs", share: 0.333333},
             { key: "bf21_yogurt", label: "Greek yogurt (0% fat)", qty: 200, unit: "g", cat: "Protein", ingId: 47, role: "protein", share: 0.5},
@@ -4394,6 +4532,7 @@ const RECIPES = [
         badge: "🥗 No-Cook", carb: "🌾 Oats",
         portions: 1,
         perPortion: {kcal:680, protein:54.7, carbs:77.5, fat:18},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf22_oats", label: "Oats (rolled, dry)", qty: 40, unit: "g", cat: "Carbs", ingId: 64, role: "carbs", share: 0.25},
             { key: "bf22_coconutw", label: "Coconut water", qty: 200, unit: "ml", cat: "Carbs", ingId: 329, role: "carbs", share: 0.25},
@@ -4419,6 +4558,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🥞 Pancake",
         portions: 1,
         perPortion: {kcal:703, protein:52.6, carbs:70.9, fat:22.3},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Tree Nuts"],
         batchItems: [
             { key: "bf23_mix", label: "Protein pancake mix", qty: 120, unit: "g", cat: "Baking", ingId: 257, role: "carbs", share: 0.333333},
             { key: "bf23_egg", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 1},
@@ -4443,6 +4583,7 @@ const RECIPES = [
         portions: 1,
         tags: ["snack"],
         perPortion: {kcal:616, protein:46.6, carbs:71.9, fat:17.3},
+        allergens: ["Gluten / Wheat", "Dairy", "Peanuts", "Tree Nuts"],
         batchItems: [
             { key: "bf24_tortilla", label: "Tortilla (flour, 25cm)", qty: 70, unit: "g", cat: "Carbs", ingId: 72, role: "carbs", share: 0.5},
             { key: "bf24_banana", label: "Banana (medium)", qty: 80, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.5},
@@ -4470,6 +4611,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🥔 Potato",
         portions: 1,
         perPortion: {kcal:590, protein:56.9, carbs:37.7, fat:22.9},
+        allergens: ["Eggs"],
         batchItems: [
             { key: "bf25_steak", label: "Lean beef tenderloin (raw)", qty: 180, unit: "g", cat: "Protein", ingId: 11, role: "protein", share: 0.5},
             { key: "bf25_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.5},
@@ -4494,6 +4636,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
         perPortion: {kcal:706, protein:60.4, carbs:47.3, fat:29.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Fish"],
         batchItems: [
             { key: "bf26_salmon", label: "Salmon (Atlantic, raw)", qty: 80, unit: "g", cat: "Protein", ingId: 20, role: "protein", share: 0.25},
             { key: "bf26_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.25},
@@ -4519,6 +4662,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
         perPortion: {kcal: 718, protein: 55.8, carbs: 75.7, fat: 21.7},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf27_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.333333},
             { key: "bf27_bread", label: "Sourdough bread", qty: 70, unit: "g", cat: "Carbs", ingId: 327, role: "carbs", share: 0.5},
@@ -4548,6 +4692,7 @@ const RECIPES = [
         portions: 1,
         tags: ["snack"],
         perPortion: {kcal: 623, protein: 52.2, carbs: 53.1, fat: 22.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf28_wrap", label: "Whole wheat wrap (medium)", qty: 80, unit: "g", cat: "Carbs", ingId: 88, role: "carbs", share: 1},
             { key: "bf28_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.333333},
@@ -4574,6 +4719,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
         perPortion: {kcal: 674, protein: 54.5, carbs: 49.1, fat: 28.1},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Sulphites"],
         batchItems: [
             { key: "bf29_bread", label: "Sourdough bread", qty: 70, unit: "g", cat: "Carbs", ingId: 327, role: "carbs", share: 1},
             { key: "bf29_avocado", label: "Avocado (½)", qty: 60, unit: "g", cat: "Fats", ingId: 149, role: "fats", share: 1},
@@ -4600,6 +4746,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
         perPortion: {kcal:448, protein:38.0, carbs:34.6, fat:18.0},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf30_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.333333},
             { key: "bf30_spinach", label: "Spinach (fresh)", qty: 60, unit: "g", cat: "Vegetables", ingId: 101, role: "veg", share: 1},
@@ -4623,6 +4770,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 GF Toast",
         portions: 1,
         perPortion: {kcal:389, protein:39.2, carbs:38.5, fat:9.3},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf31_whites", label: "Egg whites (raw)", qty: 200, unit: "g", cat: "Protein", ingId: 41, role: "protein", share: 0.5},
             { key: "bf31_spinach", label: "Baby spinach", qty: 60, unit: "g", cat: "Vegetables", ingId: 121, role: "veg", share: 1},
@@ -4648,6 +4796,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 1,
         perPortion: {kcal:561, protein:72.3, carbs:38.7, fat:11.4},
+        allergens: ["Eggs", "Celery"],
         batchItems: [
             { key: "bf32_chicken", label: "Chicken breast (skinless, raw)", qty: 150, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333},
             { key: "bf32_rice", label: "Brown rice (dry)", qty: 40, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1}, { key: "bf32_broth", label: "Chicken or mushroom broth (low-sodium)", qty: 600, unit: "ml", cat: "Liquids", ingId: 207, role: "liquid" },
@@ -4676,6 +4825,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 4,
         perPortion: {kcal:590, protein:48.2, carbs:69.8, fat:12.7},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m63_beef", label: "95/5 lean ground beef (raw)", qty: 600, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.468085},
             { key: "m63_pasta", label: "Pasta (any shape)", qty: 320, unit: "g", cat: "Carbs", ingId: 65, role: "carbs", share: 1},
@@ -4701,6 +4851,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 4,
         perPortion: {kcal:559, protein:42.5, carbs:74.2, fat:10.5},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts", "Sulphites"],
         batchItems: [
             { key: "m64_pasta", label: "Pasta (any shape)", qty: 320, unit: "g", cat: "Carbs", ingId: 65, role: "carbs", share: 1},
             { key: "m64_kale", label: "Kale (raw)", qty: 120, unit: "g", cat: "Vegetables", ingId: 102, role: "veg", share: 1},
@@ -4730,6 +4881,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍝 Pasta",
         portions: 4,
         perPortion: {kcal:414, protein:32.3, carbs:61.0, fat:4.8},
+        allergens: ["Gluten / Wheat", "Dairy", "Soy", "Sesame"],
         batchItems: [
             { key: "m65_pasta", label: "Pasta (any shape)", qty: 240, unit: "g", cat: "Carbs", ingId: 65, role: "carbs", share: 1},
             { key: "m65_mushroom", label: "Mushrooms (white button)", qty: 400, unit: "g", cat: "Vegetables", ingId: 113, role: "veg", share: 1},
@@ -4760,6 +4912,7 @@ const RECIPES = [
         portions: 2,
         tags: ["snack"],
         perPortion: {kcal:473, protein:41.5, carbs:49.5, fat:12.4},
+        allergens: ["Gluten / Wheat", "Soy", "Fish"],
         batchItems: [
             { key: "m66_steak", label: "Flank steak (raw)", qty: 300, unit: "g", cat: "Protein", ingId: 292, role: "protein", share: 1.0},
             { key: "m66_soba", label: "Soba noodles (dry)", qty: 120, unit: "g", cat: "Carbs", ingId: 328, role: "carbs", share: 1},
@@ -4787,6 +4940,7 @@ const RECIPES = [
         portions: 2,
         tags: ["snack"],
         perPortion: {kcal:395, protein:51.8, carbs:14.8, fat:14.7},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "m67_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.473684},
             { key: "m67_avocado", label: "Avocado", qty: 120, unit: "g", cat: "Fats", ingId: 149, role: "fats", share: 1},
@@ -4814,6 +4968,7 @@ const RECIPES = [
         portions: 2,
         tags: ["snack"],
         perPortion: {kcal:455, protein:52.3, carbs:15.6, fat:20.5},
+        allergens: ["Gluten / Wheat", "Soy", "Tree Nuts", "Sesame"],
         batchItems: [
             { key: "m68_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m68_cabbage", label: "Cabbage (white)", qty: 150, unit: "g", cat: "Vegetables", ingId: 125, role: "veg", share: 1},
@@ -4841,6 +4996,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🎃 Pumpkin",
         portions: 2,
         perPortion: {kcal:724, protein:43.3, carbs:91.4, fat:24},
+        allergens: ["Gluten / Wheat", "Dairy", "Sesame"],
         batchItems: [
             { key: "m69_pumpkin", label: "Pumpkin", qty: 400, unit: "g", cat: "Carbs", ingId: 129, role: "carbs", share: 0.5},
             { key: "m69_kale", label: "Kale (raw)", qty: 80, unit: "g", cat: "Vegetables", ingId: 102, role: "veg", share: 1},
@@ -4872,6 +5028,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🥔 Potato",
         portions: 1,
         perPortion: {kcal:553, protein:49.2, carbs:37.6, fat:24.1},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m70_steak", label: "Lean beef tenderloin (raw)", qty: 200, unit: "g", cat: "Protein", ingId: 11, role: "protein", share: 1},
             { key: "m70_beans", label: "Asparagus", qty: 120, unit: "g", cat: "Vegetables", ingId: 114, role: "veg", share: 1},
@@ -4897,6 +5054,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:586, protein:44.1, carbs:75.2, fat:12.1},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m71_beef", label: "Lean beef tenderloin (raw)", qty: 300, unit: "g", cat: "Protein", ingId: 11, role: "protein", share: 0.468085},
             { key: "m71_rice", label: "Brown rice (dry)", qty: 160, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -4927,6 +5085,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🥔 Potato",
         portions: 1,
         perPortion: {kcal:404, protein:45.2, carbs:40.2, fat:6.6},
+        allergens: ["Fish", "Mustard", "Sulphites"],
         batchItems: [
             { key: "m72_fish", label: "Barramundi (raw)", qty: 180, unit: "g", cat: "Protein", ingId: 317, role: "protein", share: 1},
             { key: "m72_potato", label: "Sweet potato (raw)", qty: 150, unit: "g", cat: "Carbs", ingId: 68, role: "carbs", share: 1},
@@ -4952,6 +5111,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:649, protein:56.3, carbs:84.1, fat:8.7},
+        allergens: ["Tree Nuts"],
         batchItems: [
             { key: "m73_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m73_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -4977,6 +5137,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:816, protein:59.3, carbs:99.9, fat:19.6},
+        allergens: ["Gluten / Wheat", "Soy", "Tree Nuts", "Sesame"],
         batchItems: [
             { key: "m74_chicken", label: "Chicken breast (skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1.0},
             { key: "m74_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -5007,6 +5168,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:805.6, protein:67.1, carbs:84.9, fat:21.5},
+        allergens: ["Gluten / Wheat", "Eggs", "Soy", "Molluscs"],
         batchItems: [
             { key: "m75_beef", label: "95/5 lean ground beef (raw)", qty: 450, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.468085},
             { key: "m75_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -5036,6 +5198,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:629, protein:50.3, carbs:71.4, fat:14.3},
+        allergens: ["Gluten / Wheat", "Eggs", "Soy", "Sesame", "Sulphites"],
         batchItems: [
             { key: "m76_chicken", label: "Chicken breast (skinless, raw)", qty: 300, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.473684},
             { key: "m76_rice", label: "Brown rice (dry)", qty: 180, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -5063,6 +5226,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:675, protein:51.1, carbs:58.3, fat:27.3},
+        allergens: ["Celery", "Sulphites"],
         batchItems: [
             { key: "m78_chicken", label: "Chicken thigh (boneless, skinless, raw)", qty: 450, unit: "g", cat: "Protein", ingId: 2, role: "protein", share: 1.0},
             { key: "m78_rice", label: "Brown rice (dry)", qty: 100, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -5091,6 +5255,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Rice",
         portions: 2,
         perPortion: {kcal:650, protein:46.7, carbs:57.2, fat:26.7},
+        allergens: ["Gluten / Wheat", "Soy"],
         batchItems: [
             { key: "m79_chicken", label: "Chicken thigh (boneless, skinless, raw)", qty: 400, unit: "g", cat: "Protein", ingId: 2, role: "protein", share: 1.0},
             { key: "m79_rice", label: "Brown rice (dry)", qty: 120, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1},
@@ -5122,6 +5287,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Brioche Bun",
         portions: 1,
         perPortion: {kcal:649.0, protein:61.2, carbs:49.6, fat:22.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "m80_beef", label: "95/5 lean ground beef (raw)", qty: 200, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.333333},
             { key: "m80_bun", label: "Brioche bun", qty: 90, unit: "g", cat: "Carbs", ingId: 321, role: "carbs", share: 1},
@@ -5148,6 +5314,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Brioche Bun",
         portions: 1,
         perPortion: {kcal:652, protein:63.7, carbs:51.6, fat:20.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard", "Sulphites"],
         batchItems: [
             { key: "m81_chicken", label: "Chicken breast (skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333},
             { key: "m81_bun", label: "Brioche bun", qty: 90, unit: "g", cat: "Carbs", ingId: 321, role: "carbs", share: 1},
@@ -5175,6 +5342,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Sourdough",
         portions: 1,
         perPortion: {kcal:617, protein:55.4, carbs:46.9, fat:22.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard"],
         batchItems: [
             { key: "m82_chicken", label: "Chicken breast (skinless, raw)", qty: 150, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.5},
             { key: "m82_eggs", label: "Large eggs", qty: 2, unit: "whole", cat: "Protein", ingId: 40, role: "protein", share: 0.5},
@@ -5199,6 +5367,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🍞 Brioche",
         portions: 1,
         perPortion: {kcal:570, protein:47.0, carbs:53.7, fat:18.0},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Mustard", "Sulphites"],
         batchItems: [
             { key: "m83_chicken", label: "Chicken breast (skinless, raw)", qty: 150, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.5},
             { key: "m83_bun", label: "Brioche bun", qty: 100, unit: "g", cat: "Carbs", ingId: 321, role: "carbs", share: 1},
@@ -5225,6 +5394,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌯 Wrap",
         portions: 1,
         perPortion: {kcal:632, protein:62.7, carbs:71.7, fat:10.1},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m84_wrap", label: "Whole wheat wrap (medium)", qty: 80, unit: "g", cat: "Carbs", ingId: 88, role: "carbs", share: 0.5},
             { key: "m84_chicken", label: "Chicken breast (skinless, raw)", qty: 200, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.5},
@@ -5251,6 +5421,7 @@ const RECIPES = [
         portions: 4,
         tags: ["snack"],
         perPortion: {kcal:235, protein:17.6, carbs:31.0, fat:5.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "ds3_mango", label: "Mango", qty: 250, unit: "g", cat: "Fruits", ingId: 146, role: "carbs", share: 0.5},
             { key: "ds3_oats", label: "Oats (rolled, dry)", qty: 100, unit: "g", cat: "Carbs", ingId: 64, role: "carbs", share: 0.5},
@@ -5265,6 +5436,7 @@ const RECIPES = [
             "Mix Greek yogurt with mango puree, whey protein powder, and a touch of honey. Whisk cold until no powder remains.",
             "Fill tart shells. Top with fresh mango slices and coconut.",
             "Refrigerate 1 hour until set.",
+            "Divide equally into 4 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 The filled tarts keep 3 days in the fridge and freeze for a month; eat them straight from frozen after 20 minutes on the bench, as full defrosting makes the oat crust soften.",
             "💡 Press the crust firmly up the sides of the mould with the back of a spoon and chill the full 30 minutes; a loosely packed base crumbles the moment you lift the tart out."
         ],
@@ -5277,6 +5449,7 @@ const RECIPES = [
         portions: 8,
         tags: ["snack"],
         perPortion: {kcal: 198, protein: 16.5, carbs: 18.4, fat: 8.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Tree Nuts"],
         batchItems: [
             { key: "ds4_cocoa", label: "Cocoa powder (unsweetened)", qty: 60, unit: "g", cat: "Baking", ingId: 254, role: "flavour", share: 1},
             { key: "ds4_oat", label: "Oat flour", qty: 100, unit: "g", cat: "Carbs", ingId: 80, role: "carbs", share: 1},
@@ -5292,6 +5465,7 @@ const RECIPES = [
             "Combine wet into dry. Fold in chocolate chips if desired. (optional — not counted in the macros)",
             "Pour into tin. Bake 20–22 min until edges set but centre still fudgy.",
             "Cool completely before cutting — they firm up as they cool.",
+            "Divide equally into 8 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Pull the tin at 20 minutes when the centre still wobbles slightly; whey-based batters dry out fast, and 3 extra minutes takes them from fudgy to rubbery.",
             "💡 Cut into 8 squares once fully cold, then wrap and freeze for up to 2 months; a 15-second microwave burst on medium brings a frozen square back to fudgy."
         ],
@@ -5305,6 +5479,7 @@ const RECIPES = [
         portions: 10,
         locked: true,
         perPortion: {kcal:579, protein:62.1, carbs:45.8, fat:16.1},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m85_beef",    label: "Lean ground beef (96/4)", qty: 1360, unit: "g",      cat: "Protein", ingId: 6,   role: "protein", share: 0.5},
             { key: "m85_bacon",   label: "Beef bacon",               qty: 240,   unit: "g", cat: "Protein", ingId: 283, role: "protein", share: 0.136364},
@@ -5340,6 +5515,7 @@ const RECIPES = [
         portions: 5,
         locked: true,
         perPortion: {kcal:584, protein:60.8, carbs:55.1, fat:13.4},
+        allergens: ["Gluten / Wheat", "Dairy", "Celery"],
         batchItems: [
             { key: "m86_beef",   label: "Extra lean beef mince (96/4)", qty: 1000, unit: "g", cat: "Protein", ingId: 6,   role: "protein", share: 0.486381},
             { key: "m86_pasta",  label: "Chickpea / high-protein pasta", qty: 350,  unit: "g", cat: "Carbs",   ingId: 67,  role: "carbs", share: 1},
@@ -5371,6 +5547,7 @@ const RECIPES = [
         portions: 1,
         locked: false,
         perPortion: {kcal:493, protein:88.6, carbs:32.9, fat:3.8},
+        allergens: ["Fish"],
         batchItems: [
             { key: "sn9_tuna",    label: "Tuna (canned in water, drained)",  qty: 320,   unit: "g",  cat: "Protein",    ingId: 21,  role: "protein", share: 1},
             { key: "sn9_tomato",  label: "Tomatoes (medium)",       qty: 400, unit: "g",     cat: "Vegetables", ingId: 109, role: "veg", baseQty: 400},
@@ -5394,6 +5571,7 @@ const RECIPES = [
         portions: 10,
         locked: true,
         perPortion: {kcal:486, protein:37.7, carbs:36.3, fat:20},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs"],
         batchItems: [
             { key: "bf33_eggs",    label: "Large eggs",                    qty: 12,  unit: "whole",  cat: "Protein",    ingId: 40,  role: "protein", share: 0.31},
             { key: "bf33_cc",      label: "Fat-free cottage cheese",       qty: 227, unit: "g",      cat: "Dairy",      ingId: 42,  role: "protein", share: 0.07},
@@ -5412,6 +5590,7 @@ const RECIPES = [
             "Form into 10 patties. Cook in a non-stick pan over medium heat 4–5 min per side until cooked through (internal 75°C).",
             "ASSEMBLY — Toast English muffins. Layer: bottom muffin → egg square → sausage patty → cheese slice → top muffin.",
             "Wrap each sandwich in foil or parchment paper. Refrigerate up to 5 days. Reheat in microwave 90 sec or oven 10 min at 175°C.",
+            "Divide equally into 10 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
         ],
     },
@@ -5423,6 +5602,7 @@ const RECIPES = [
         tags: ["snack"],
         badge: "🥗 No-Cook", carb: "🥯 Bagel",
         perPortion: {kcal:429, protein:11.7, carbs:91.4, fat:3.5},
+        allergens: ["Gluten / Wheat"],
         batchItems: [
             { key: "pw7_bagel",  label: "Whole grain bagel", qty: 7,   unit: "whole", cat: "Carbs",  ingId: 293, role: "carbs", share: 0.5},
             { key: "pw7_banana", label: "Ripe banana",       qty: 7,   unit: "whole", cat: "Fruits", ingId: 140, role: "carbs", share: 0.5},
@@ -5433,6 +5613,7 @@ const RECIPES = [
             "Spread honey over the inside of the bagel.",
             "Eat with a whole banana alongside.",
             "Consume 30–45 min before your run or training session. Skip on rest days.",
+            "Divide equally into 7 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Slice and freeze the bagels the day you buy them, then toast straight from frozen; a week-old bagel from the bread bin is stale by day three.",
             "💡 Eat 30 to 45 minutes before running with the honey and banana as written; skip adding peanut butter or cheese, since the fat slows the carbs you want available for the session."
         ],
@@ -5445,6 +5626,7 @@ const RECIPES = [
         portions: 8,
         tags: ["snack"],
         perPortion: {kcal:182, protein:14.2, carbs:22.1, fat:4.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Peanuts"],
         batchItems: [
             { key: "ds5_banana", label: "Banana (medium)", qty: 300, unit: "g", cat: "Carbs", ingId: 140, role: "carbs", share: 0.5},
             { key: "ds5_oat", label: "Oat flour", qty: 120, unit: "g", cat: "Carbs", ingId: 80, role: "carbs", share: 0.5},
@@ -5463,6 +5645,7 @@ const RECIPES = [
             "Fold in oat flour, protein powder, cinnamon, and baking powder.",
             "Pour into tin. Bake 45–50 min until a skewer comes out clean.",
             "Cool 15 min before slicing. Top with peanut butter swirl.",
+            "Divide equally into 8 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Check with a skewer at 45 minutes and tent with foil if the top browns before the centre sets; the whey and honey brown quickly and a dark crust does not mean it is cooked.",
             "💡 Slice the cooled loaf and freeze the slices between squares of baking paper for up to 3 months; 20 seconds in the microwave at 600 W softens one from frozen."
         ],
@@ -5474,6 +5657,7 @@ const RECIPES = [
         badge: "🥗 No-Cook", carb: "🍫 Chocolate",
         portions: 2,
         perPortion: {kcal: 260, protein: 15, carbs: 31, fat: 10},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "ds6_cc",    label: "Fat-free cottage cheese",    qty: 200, unit: "g",  cat: "Dairy",  ingId: 42,  role: "protein", share: 1 },
             { key: "ds6_cocoa", label: "Cocoa powder (unsweetened)", qty: 15,  unit: "g",  cat: "Baking", ingId: 254, role: "fixed",   baseQty: 7.5 },
@@ -5500,6 +5684,7 @@ const RECIPES = [
         badge: "🌬️ Oven", carb: "🌾 Oats",
         portions: 1,
         perPortion: {kcal:278, protein:23, carbs:39.7, fat:3.9},
+        allergens: ["Gluten / Wheat", "Dairy", "Tree Nuts"],
         batchItems: [
             { key: "bf34_banana", label: "Ripe banana",               qty: 50,  unit: "g",  cat: "Carbs",       ingId: 140, role: "carbs",   share: 0.5 },
             { key: "bf34_oats",   label: "Rolled oats (dry)",         qty: 35,  unit: "g",  cat: "Carbs",       ingId: 64,  role: "carbs",   share: 0.5 },
@@ -5527,6 +5712,7 @@ const RECIPES = [
         badge: "🍳 Stovetop", carb: "🌾 Oat Flour",
         portions: 4,
         perPortion: {kcal:299, protein:28.2, carbs:30.3, fat:7.2},
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Tree Nuts"],
         batchItems: [
             { key: "bf35_oatfl",  label: "Oat flour (blended from oats)", qty: 100, unit: "g",  cat: "Carbs",       ingId: 80,  role: "carbs",   share: 0.333333 },
             { key: "bf35_prot",   label: "Vanilla whey protein (3 scoops)", qty: 90, unit: "g", cat: "Supplements", ingId: 210, role: "protein", share: 0.333333 },
@@ -5546,6 +5732,7 @@ const RECIPES = [
             "Heat a non-stick pan over medium heat with a small amount of cooking spray or cooking spray.",
             "Pour ~60 ml batter per pancake. Add chocolate chips in the centre and cover with a little batter. Cook 3–4 min until bubbles form and edges set. Flip and cook 1–2 min more. (optional — not counted in the macros)",
             "Stack with your favourite toppings: banana slices, honey or maple syrup, chocolate, or walnuts. (optional — not counted in the macros)",
+            "Divide equally into 4 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
         ],
         note: "Batter thickens as it sits — if it gets too thick after the first batch, add a splash of almond milk.",
@@ -5598,6 +5785,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Jasmine Rice",
         portions: 4,
         perPortion: {kcal:416, protein:34.6, carbs:60.3, fat:3.6},
+        allergens: ["Gluten / Wheat", "Dairy", "Soy"],
         batchItems: [
             { key: "m88_chicken", label: "Chicken breast (raw)", qty: 440, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.889968 },
             { key: "m88_rice", label: "Jasmine rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId:339, role: "carbs", share: 0.763942 },
@@ -5625,6 +5813,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Jasmine Rice",
         portions: 4,
         perPortion: {kcal:490, protein:36.7, carbs:67.4, fat:7.6},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "m89_steak", label: "Sirloin steak lean (raw)", qty: 450, unit: "g", cat: "Protein", ingId:342, role: "protein", share: 0.921884 },
             { key: "m89_rice", label: "Jasmine rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId:339, role: "carbs", share: 0.742666 },
@@ -5654,6 +5843,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Brown Rice",
         portions: 4,
         perPortion: {kcal:537, protein:35.5, carbs:49.1, fat:20.6},
+        allergens: ["Gluten / Wheat", "Soy", "Fish"],
         batchItems: [
             { key: "m90_salmon", label: "Salmon fillets (raw)", qty: 580, unit: "g", cat: "Protein", ingId: 20, role: "protein", share: 1 },
             { key: "m90_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1 },
@@ -5680,6 +5870,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🌾 Quinoa",
         portions: 4,
         perPortion: {kcal:460, protein:47.2, carbs:46.8, fat:10.1},
+        allergens: ["Dairy", "Crustaceans"],
         batchItems: [
             { key: "m91_shrimp", label: "Shrimp / prawns (raw, peeled)", qty: 680, unit: "g", cat: "Protein", ingId: 25, role: "protein", share: 0.957143 },
             { key: "m91_quinoa", label: "Quinoa (dry)", qty: 240, unit: "g", cat: "Carbs", ingId: 74, role: "carbs", share: 1 },
@@ -5708,6 +5899,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Jasmine Rice",
         portions: 4,
         perPortion: {kcal:379, protein:35.2, carbs:48.5, fat:4.3},
+        allergens: [],
         batchItems: [
             { key: "m92_chicken", label: "Chicken breast (raw)", qty: 520, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1 },
             { key: "m92_rice", label: "Jasmine rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId:339, role: "carbs", share: 1 },
@@ -5735,6 +5927,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🥔 Baby Potatoes",
         portions: 4,
         perPortion: {kcal:517, protein:56.4, carbs:49.8, fat:11},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "m93_beef", label: "95/5 lean ground beef (raw)", qty: 700, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.333333 },
             { key: "m93_potato", label: "Baby potatoes (halved)", qty: 800, unit: "g", cat: "Carbs", ingId: 69, role: "carbs", share: 1 },
@@ -5762,6 +5955,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Jasmine Rice",
         portions: 4,
         perPortion: {kcal:506, protein:40.8, carbs:56.2, fat:11.3},
+        allergens: ["Gluten / Wheat", "Eggs", "Soy", "Sesame"],
         batchItems: [
             { key: "m94_chicken", label: "Chicken breast (raw)", qty: 480, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.78125 },
             { key: "m94_rice", label: "Jasmine rice (dry — cook & cool ahead)", qty: 260, unit: "g", cat: "Carbs", ingId:339, role: "carbs", share: 1 },
@@ -5789,6 +5983,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Batch Prep", carb: "🍚 Brown Rice",
         portions: 4,
         perPortion: {kcal:436, protein:37.6, carbs:59.8, fat:5.3},
+        allergens: ["Gluten / Wheat", "Soy"],
         batchItems: [
             { key: "m95_chicken", label: "Chicken breast (raw)", qty: 520, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 1 },
             { key: "m95_rice", label: "Brown rice (dry)", qty: 200, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 0.757457 },
@@ -5815,6 +6010,7 @@ const PENDING_RECIPES = [
         badge: "❄️ No Cook", carb: "🫘 Chickpeas",
         portions: 4,
         perPortion: {kcal:386, protein:40.3, carbs:34.8, fat:9.6},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m96_chicken", label: "Rotisserie chicken breast (shredded)", qty: 340, unit: "g", cat: "Protein", ingId:345, role: "protein", share: 0.895954 },
             { key: "m96_chickpeas", label: "Chickpeas (canned, drained)", qty: 480, unit: "g", cat: "Carbs", ingId:91, role: "carbs", share: 1 },
@@ -5843,6 +6039,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Big Batch", carb: "🍝 High-Protein Pasta",
         portions: 8,
         perPortion: {kcal:554, protein:60.8, carbs:54.3, fat:10},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m97_beef", label: "95/5 lean ground beef (raw)", qty: 1200, unit: "g", cat: "Protein", ingId: 6, role: "protein", share: 0.333333 },
             { key: "m97_pasta", label: "High-protein pasta (dry)", qty: 560, unit: "g", cat: "Carbs", ingId: 412, role: "carbs", share: 1 },
@@ -5873,6 +6070,7 @@ const PENDING_RECIPES = [
         badge: "🍳 Stovetop", carb: "🥔 Baby Potatoes",
         portions: 1,
         perPortion: {kcal:424, protein:41.7, carbs:43, fat:9.1},
+        allergens: ["Dairy"],
         batchItems: [
             { key: "m98_steak", label: "Sirloin steak lean (raw)", qty: 150, unit: "g", cat: "Protein", ingId:342, role: "protein", share: 0.912969 },
             { key: "m98_potato", label: "Baby potatoes (halved)", qty: 200, unit: "g", cat: "Carbs", ingId: 69, role: "carbs", share: 1 },
@@ -5898,6 +6096,7 @@ const PENDING_RECIPES = [
         badge: "🍳 Oven", carb: "🍚 Brown Rice",
         portions: 1,
         perPortion: {kcal:536, protein:36.6, carbs:46.8, fat:21.3},
+        allergens: ["Fish"],
         batchItems: [
             { key: "m99_salmon", label: "Salmon fillet (raw)", qty: 150, unit: "g", cat: "Protein", ingId: 20, role: "protein", share: 1 },
             { key: "m99_rice", label: "Brown rice (dry)", qty: 50, unit: "g", cat: "Carbs", ingId: 62, role: "carbs", share: 1 },
@@ -5922,6 +6121,7 @@ const PENDING_RECIPES = [
         badge: "🍳 Stovetop", carb: "🍚 Jasmine Rice",
         portions: 1,
         perPortion: {kcal:423, protein:40.4, carbs:53.7, fat:4.7},
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "m100_chicken", label: "Chicken breast (raw)", qty: 130, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.905292 },
             { key: "m100_rice", label: "Jasmine rice (dry)", qty: 40, unit: "g", cat: "Carbs", ingId:339, role: "carbs", share: 0.763723 },
@@ -5948,6 +6148,7 @@ const PENDING_RECIPES = [
         badge: "⚡ Quick", carb: "🍝 High-Protein Pasta",
         portions: 1,
         perPortion: {kcal:404, protein:44.3, carbs:51.2, fat:2.3},
+        allergens: ["Gluten / Wheat", "Dairy", "Fish"],
         batchItems: [
             { key: "m101_tuna", label: "Tuna in spring water (drained)", qty: 100, unit: "g", cat: "Protein", ingId: 21, role: "protein", share: 0.87269 },
             { key: "m101_pasta", label: "High-protein pasta (dry)", qty: 70, unit: "g", cat: "Carbs", ingId: 412, role: "carbs", share: 1 },
@@ -5972,6 +6173,7 @@ const PENDING_RECIPES = [
         badge: "⚡ Quick", carb: "🍝 Macaroni",
         portions: 1,
         perPortion: {kcal:514, protein:55, carbs:58.2, fat:4.9},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m102_chicken", label: "Chicken breast (raw)", qty: 120, unit: "g", cat: "Protein", ingId: 1, role: "protein", share: 0.333333 },
             { key: "m102_pasta", label: "Macaroni (dry)", qty: 70, unit: "g", cat: "Carbs", ingId: 65, role: "carbs", share: 1 },
@@ -5997,6 +6199,7 @@ const PENDING_RECIPES = [
         badge: "🌿 Vegetarian Batch", carb: "🍝 High-Protein Pasta",
         portions: 4,
         perPortion: {kcal:393, protein:29.9, carbs:53, fat:6.5},
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m103_pasta", label: "High-protein pasta (dry)", qty: 280, unit: "g", cat: "Carbs", ingId: 412, role: "carbs", share: 1 },
             { key: "m103_cc", label: "Fat-free cottage cheese", qty: 295, unit: "g", cat: "Dairy", ingId: 42, role: "protein", share: 0.608247 },
@@ -6011,7 +6214,8 @@ const PENDING_RECIPES = [
             "Add drained pasta to a large bowl. Pour over the pesto-cottage cheese sauce and toss, adding pasta water a splash at a time to reach a silky consistency. No oil needed.",
             "Fold in drained sun-dried tomatoes. Taste and adjust salt, lemon, and herbs.",
             "Divide into 4 meal prep containers. Refrigerates 4 days — sauce thickens when cold, add a splash of water when reheating, until steaming hot all the way through.",
-            "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion."
+            "💡 Add 2.5 g fresh grated ginger (or 1.5 g ground) — reduces post-workout muscle soreness (DOMS) and supports digestion.",
+            "🍽️ Plate it: this is a light portion at 393 kcal and about 193 g of food. Scale the whole recipe by 1.5 for a full dinner, or keep it as written for a lunch and add a piece of fruit."
         ],
     },
 
@@ -6024,6 +6228,7 @@ const PENDING_RECIPES = [
         badge: "🌱 Vegan Batch", carb: "🌾 Quinoa",
         portions: 4,
         perPortion: {kcal:572, protein:46, carbs:57.1, fat:21.1},
+        allergens: ["Gluten / Wheat", "Soy"],
         batchItems: [
             { key: "v10_tofu", label: "Extra-firm tofu (pressed, cubed)", qty: 700, unit: "g", cat: "Protein", ingId:341, role: "protein", share: 0.871537 },
             { key: "v10_quinoa", label: "Quinoa (dry)", qty: 240, unit: "g", cat: "Carbs", ingId: 74, role: "carbs", share: 1 },
@@ -6051,6 +6256,7 @@ const PENDING_RECIPES = [
         badge: "🌱 Vegan Batch", carb: "🍜 Soba Noodles",
         portions: 4,
         perPortion: {kcal:443, protein:28, carbs:59.5, fat:13.4},
+        allergens: ["Gluten / Wheat", "Soy", "Peanuts", "Sesame"],
         batchItems: [
             { key: "v11_soba", label: "Soba noodles (dry)", qty: 160, unit: "g", cat: "Carbs", ingId: 328, role: "carbs", share: 0.855873 },
             { key: "v11_edamame", label: "Edamame (shelled, thawed)", qty: 620, unit: "g", cat: "Protein", ingId: 96, role: "protein", share: 1 },
@@ -6385,7 +6591,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Quick", carb: "🥬 Low Carb",
         portions: 1,
         perPortion: { kcal: 387, protein: 41.5, carbs: 19.8, fat: 16.9 },
-        allergens: ["Gluten / Wheat", "Eggs", "Soy", "Sesame"],
+        allergens: ["Gluten / Wheat", "Soy", "Sesame"],
         batchItems: [
             { key: "m114_lean", label: "95/5 lean beef mince (raw)", qty: 170, unit: "g", cat: "Protein", ingId: 6 },
             { key: "m114_white", label: "White cabbage (shredded)", qty: 150, unit: "g", cat: "Vegetables", ingId: 125 },
@@ -6528,7 +6734,7 @@ const PENDING_RECIPES = [
         badge: "🔥 Quick", carb: "🥔 Potato",
         portions: 1,
         perPortion: { kcal: 484, protein: 46.3, carbs: 40.1, fat: 15.9 },
-        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Sesame", "Mustard", "Sulphites"],
+        allergens: ["Dairy", "Sesame", "Mustard", "Sulphites"],
         batchItems: [
             { key: "m119_lean", label: "95/5 lean beef mince (raw)", qty: 160, unit: "g", cat: "Protein", ingId: 6 },
             { key: "m119_white", label: "White potato (raw, cubed)", qty: 180, unit: "g", cat: "Carbs", ingId: 69 },
@@ -7031,6 +7237,7 @@ const PENDING_RECIPES = [
             "Whisk the frosting yogurt, cream cheese, protein powder and sweetener until smooth, then spread over the cooled cake.",
             "Cut into nine squares and finish with a few extra walnuts.",
             "Stir the brown sugar substitute into the batter with the other dry ingredients.",
+            "Divide equally into 9 portions — weigh the batch and split by weight rather than by eye, or the macros drift from portion to portion.",
             "💡 Grate the carrot finely. Coarse shreds stay firm and make the crumb stringy.",
             "💡 Keeps 4 days refrigerated. The frosting is yogurt-based, so this does not sit out at room temperature."
         ],
@@ -7292,8 +7499,9 @@ const PENDING_RECIPES = [
             { key: "bf44_cinnam", label: "Cinnamon", qty: 1.3, unit: "g", cat: "Spices", ingId: 220 },
         ],
         steps: [
-            "Mix the yoghurt and protein powder until smooth, then top with berries, honey and cinnamon.",
-            "Spoon the Greek yogurt into the bowl first, then add the toppings.",
+            "Whisk the vanilla protein powder into a spoonful of the Greek yogurt to make a smooth paste, then stir in the rest of the yogurt.",
+            "Scatter the mixed berries over the top.",
+            "Drizzle over the honey and finish with the cinnamon. Eat straight away, or keep the berries separate if you are boxing it for later.",
             "💡 The yoghurt and protein base keeps 4 days chilled; pack the berries, honey and cinnamon in a separate pot so the fruit does not bleed. Not suitable for freezing.",
             "💡 Whisk the protein powder into a spoonful of yoghurt first to form a paste, then loosen with the rest; dumping 20 g in at once leaves chalky lumps."
         ],
@@ -7318,8 +7526,10 @@ const PENDING_RECIPES = [
             { key: "m131_lemonj", label: "Lemon juice", qty: 15, unit: "ml", cat: "Fruits", ingId: 150 },
         ],
         steps: [
-            "Chop the potatoes, toss with half the oil and seasoning, air-fry or roast at 200°C ~25 min.",
-            "Season and cook the chicken with the remaining oil, steam the broccoli, finish with lemon. Cook until the thickest part reads 75°C.",
+            "Heat the oven to 200°C. Toss the potato cubes with the oil, salt and pepper and spread them on a tray in a single layer.",
+            "Roast the potatoes 25 min, turning once, while you season the chicken with the garlic and herbs.",
+            "Add the chicken to the tray and roast a further 20–25 min, until the thickest part reads 75°C.",
+            "Steam or roast the broccoli for the last 10 min, then divide everything between the containers.",
             "💡 Keeps 4 days chilled; the potatoes freeze poorly, so freeze only the chicken. Reheat potatoes in the air fryer at 200°C for 5 minutes to re-crisp, and microwave the chicken and broccoli separately.",
             "💡 Rinse the chopped potatoes and dry them thoroughly before oiling; surface starch and moisture steam rather than crisp. Cook the chicken to 75°C at the thickest point and rest it 5 minutes."
         ],
@@ -7347,8 +7557,12 @@ const PENDING_RECIPES = [
             { key: "ds11_vanill", label: "Vanilla extract", qty: 0.6, unit: "ml", cat: "Baking", ingId: 252 },
         ],
         steps: [
-            "Preheat the oven to 180°C. Mix the flour, cocoa powder, chocolate protein powder and sweetener in one bowl; blend the egg whites, eggs, cottage cheese, applesauce, maple syrup and vanilla extract for 10 s in another; fold the two together.",
-            "Pour into a lined tray; bake 12–15 min; cool completely; slice into 9.",
+            "Preheat the oven to 180°C and line a small tray with baking paper.",
+            "Mix the flour, cocoa powder, chocolate protein powder and sweetener in one bowl.",
+            "Blend the egg whites, eggs, cottage cheese, applesauce, maple syrup and vanilla extract for 10 s, until no curds remain.",
+            "Fold the wet into the dry by hand, just until combined — overmixing makes protein bakes rubbery.",
+            "Pour into the tray and bake 12–15 min, pulling it while the centre still wobbles slightly.",
+            "Cool completely before slicing into 9 squares — warm protein brownies crumble.",
             "💡 Once fully cooled, store the 9 squares in an airtight tin for 5 days chilled, or freeze between sheets of baking paper for 3 months and thaw one at a time on the counter.",
             "💡 Blend the egg whites, egg, cottage cheese and applesauce until no curds remain, then fold into the dry mix by hand; pull the tray at 12 minutes while the centre still wobbles slightly."
         ],
@@ -7523,7 +7737,8 @@ const PENDING_RECIPES = [
             "Spread on a baking tray and roast for 25–30 minutes until the chicken is crisp and sprouts are golden. Cook until the thickest part reads 75°C.",
             "Serve hot with a drizzle of lemon juice.",
             "💡 Keeps 4 days in the fridge and freezes for up to 3 months. Reheat in an air fryer at 190°C for 5 minutes to keep the thigh skin crisp; microwaving softens both chicken and sprouts.",
-            "💡 Halve the sprouts and place them cut side down on the tray with room to spare; crowding steams them and leaves them sulphurous. Thighs are forgiving, so take them to 80°C."
+            "💡 Halve the sprouts and place them cut side down on the tray with room to spare; crowding steams them and leaves them sulphurous. Thighs are forgiving, so take them to 80°C.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7664,7 +7879,8 @@ const PENDING_RECIPES = [
             "Layer lemon slices on top and bake for 15–18 minutes.",
             "Toss green beans with a touch of olive oil and garlic, then roast beside the fish for the last 10 minutes.",
             "💡 Refrigerate for 2 days only; cod flakes fall apart in the freezer once cooked. Reheat covered at 500 W for 90 seconds and add the green beans afterwards so they keep some bite.",
-            "💡 Pat the cod dry and season it 10 minutes before baking to firm the flesh; a wet fillet steams in its own liquid and disintegrates. Remove the lemon slices before storing, or the flesh turns bitter."
+            "💡 Pat the cod dry and season it 10 minutes before baking to firm the flesh; a wet fillet steams in its own liquid and disintegrates. Remove the lemon slices before storing, or the flesh turns bitter.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7692,7 +7908,8 @@ const PENDING_RECIPES = [
             "Roast for 12–15 minutes until the fish flakes easily and the asparagus is tender-crisp.",
             "Serve warm with a side of lemon slices.",
             "💡 Keeps 2 days chilled; tilapia does not freeze well once cooked. Reheat at 500 W for 60–90 seconds under a damp paper towel and keep the asparagus in a separate pot.",
-            "💡 Snap the woody ends off the asparagus and lay spears in a single layer; thin tilapia fillets overcook in a heartbeat, so check at 12 minutes and stop when the flesh just turns opaque."
+            "💡 Snap the woody ends off the asparagus and lay spears in a single layer; thin tilapia fillets overcook in a heartbeat, so check at 12 minutes and stop when the flesh just turns opaque.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7746,7 +7963,8 @@ const PENDING_RECIPES = [
             "Add spinach and lemon juice; cover until wilted.",
             "Serve warm.",
             "💡 Eat within 2 days of cooking and skip the freezer. Reheat gently on the hob in a covered pan over low heat for 3 minutes rather than the microwave, which turns cod rubbery.",
-            "💡 Keep the garlic in the butter over medium heat and add the cod once it is fragrant, not browned; burnt garlic turns the whole pan bitter. Flip the cod only once or it breaks apart."
+            "💡 Keep the garlic in the butter over medium heat and add the cod once it is fragrant, not browned; burnt garlic turns the whole pan bitter. Flip the cod only once or it breaks apart.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7772,7 +7990,8 @@ const PENDING_RECIPES = [
             "In a large bowl, combine pasta, chicken, tomatoes, olive oil, lemon juice, and pesto.",
             "Toss gently to coat evenly and chill before serving.",
             "💡 Keeps 4 days chilled and is meant to be eaten cold; do not freeze, as the pesto separates and pasta goes chalky. Stir in a squeeze of lemon and 5 ml of oil before serving.",
-            "💡 Cook the pasta to firm al dente, drain and toss with the olive oil while still warm so it does not clump; add the pesto and tomatoes only once cooled so the basil keeps its colour."
+            "💡 Cook the pasta to firm al dente, drain and toss with the olive oil while still warm so it does not clump; add the pesto and tomatoes only once cooled so the basil keeps its colour.",
+            "🍽️ Plate it: this is a light portion at 447 kcal and about 194 g of food. Scale the whole recipe by 1.5 for a full dinner, or keep it as written for a lunch and add a piece of fruit."
         ],
     },
     {
@@ -7798,7 +8017,8 @@ const PENDING_RECIPES = [
             "Brush over cod and bake 12–15 minutes.",
             "Serve with steamed greens.",
             "💡 Refrigerate for 2 days; freezing cooked cod ruins its texture. Reheat at 500 W for 90 seconds under a lid, or eat it cold flaked over greens as a dressed salad.",
-            "💡 Brush the lemon oil on just before the cod goes in the oven; acid left to sit turns the surface opaque and mealy. Bake until an inserted knife feels warm and the flakes separate easily."
+            "💡 Brush the lemon oil on just before the cod goes in the oven; acid left to sit turns the surface opaque and mealy. Bake until an inserted knife feels warm and the flakes separate easily.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7810,7 +8030,7 @@ const PENDING_RECIPES = [
         carb: "🍌 Banana",
         portions: 1,
         perPortion: { kcal: 210, protein: 26.1, carbs: 19.8, fat: 3.1 },
-        allergens: ["Dairy", "Tree Nuts"],
+        allergens: ["Tree Nuts"],
         batchItems: [
             { key: "sm10_chocol", label: "Chocolate protein powder", qty: 30, unit: "g", cat: "Supplements", ingId: 210 },
             { key: "sm10_almond", label: "Almond milk", qty: 240, unit: "ml", cat: "Dairy", ingId: 58 },
@@ -7852,7 +8072,8 @@ const PENDING_RECIPES = [
             "Arrange on a parchment-lined tray.",
             "Bake 20–25 minutes or until golden. Cook through until the centre of the thickest piece reads 75°C.",
             "💡 Keeps 4 days chilled and freezes for 3 months in a single layer before bagging. Reheat from frozen at 180°C in the air fryer for 8 minutes, or microwave at 700 W with a spoonful of water.",
-            "💡 Grate the zucchini, salt it and squeeze it in a tea towel until nearly dry; unsqueezed zucchini releases water in the oven and the meatballs collapse and steam rather than brown."
+            "💡 Grate the zucchini, salt it and squeeze it in a tea towel until nearly dry; unsqueezed zucchini releases water in the oven and the meatballs collapse and steam rather than brown.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -7889,7 +8110,7 @@ const PENDING_RECIPES = [
         carb: "🌾 Oats",
         portions: 1,
         perPortion: { kcal: 202, protein: 25.7, carbs: 20.6, fat: 2.2 },
-        allergens: ["Dairy", "Gluten / Wheat", "Tree Nuts"],
+        allergens: ["Gluten / Wheat", "Tree Nuts"],
         batchItems: [
             { key: "ds12_chocol", label: "Chocolate protein powder", qty: 30, unit: "g", cat: "Supplements", ingId: 210 },
             { key: "ds12_oatflo", label: "Oat flour", qty: 5.5, unit: "g", cat: "Carbs", ingId: 80 },
@@ -7930,7 +8151,8 @@ const PENDING_RECIPES = [
             "Add shrimp and cook until pink, 2–3 minutes per side.",
             "Toss in pasta, lemon juice, and parsley. Mix well and serve.",
             "💡 Lasts 3 days refrigerated; do not freeze once combined, as shrimp turn rubbery. Reheat on the hob with a splash of water and the lid on for 2 minutes, adding the parsley fresh.",
-            "💡 Save a ladle of pasta water and add it when tossing so the oil and lemon cling instead of pooling; take the shrimp off the heat the moment they curl into a C shape."
+            "💡 Save a ladle of pasta water and add it when tossing so the oil and lemon cling instead of pooling; take the shrimp off the heat the moment they curl into a C shape.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8069,7 +8291,8 @@ const PENDING_RECIPES = [
             "Add zucchini noodles and toss with lemon juice for 1 minute—just until slightly softened.",
             "Serve immediately for a bright, clean flavor.",
             "💡 Store the shrimp and raw zoodles in separate pots for up to 2 days; cooked zucchini noodles turn to water overnight. Warm the shrimp for 1 minute in a pan and toss the zoodles through for 30 seconds.",
-            "💡 Salt the spiralised zucchini and drain it on a towel for 15 minutes before cooking, then toss it through for one minute only; any longer and the noodles weep and the shrimp overcook."
+            "💡 Salt the spiralised zucchini and drain it on a towel for 15 minutes before cooking, then toss it through for one minute only; any longer and the noodles weep and the shrimp overcook.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8151,7 +8374,8 @@ const PENDING_RECIPES = [
             "Add broccoli and bell peppers; stir-fry for 5 minutes.",
             "Pour in soy sauce and cook 2 minutes longer before serving.",
             "💡 Keeps 4 days chilled and freezes for 3 months, though the broccoli softens on thawing. Reheat in a hot wok for 3 minutes with a splash of water rather than the microwave to keep the peppers crisp.",
-            "💡 Have everything cut and the sauce measured before the sesame oil goes in; it burns quickly at high heat, so use it for the garlic and ginger and add a neutral oil for the turkey if the pan smokes."
+            "💡 Have everything cut and the sauce measured before the sesame oil goes in; it burns quickly at high heat, so use it for the garlic and ginger and add a neutral oil for the turkey if the pan smokes.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8343,7 +8567,8 @@ const PENDING_RECIPES = [
             "Add soy sauce and lemon juice; serve over rice.",
             "💡 Portion the rice and the shrimp stir-fry in the same box and keep for 2 days only, as cooked shrimp deteriorates quickly; microwave at 600 W with a splash of water, not the air fryer.",
             "💡 Pat the shrimp completely dry and add them to a hot pan in one layer; 2 minutes per side is enough, and they should curl into a loose C rather than a tight O, which signals overcooking.",
-            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through."
+            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through.",
+            "🍽️ Plate it: this is a light portion at 257 kcal and about 293 g of food. Scale the whole recipe by 1.5 for a full dinner, or keep it as written for a lunch and add a piece of fruit."
         ],
     },
     {
@@ -8451,7 +8676,8 @@ const PENDING_RECIPES = [
             "Add zucchini noodles, tossing gently for 1–2 minutes until lightly softened.",
             "Serve warm with extra lemon juice if desired.",
             "💡 Keep the shrimp and the raw spiralised courgette in separate containers for up to 2 days, then combine in a hot pan for 90 seconds; reheated courgette noodles collapse into water.",
-            "💡 Salt the courgette noodles and let them drain in a colander for 10 minutes, then pat dry; skipping this leaves a watery garlic butter that slides off rather than clinging."
+            "💡 Salt the courgette noodles and let them drain in a colander for 10 minutes, then pat dry; skipping this leaves a watery garlic butter that slides off rather than clinging.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8463,7 +8689,7 @@ const PENDING_RECIPES = [
         carb: "🌾 Oats",
         portions: 1,
         perPortion: {kcal:311, protein:20.3, carbs:30, fat:11.8},
-        allergens: ["Celery", "Dairy", "Eggs", "Gluten / Wheat", "Sulphites"],
+        allergens: ["Gluten / Wheat", "Dairy", "Eggs", "Celery"],
         batchItems: [
             { key: "bf52_rolled", label: "Rolled oats", qty: 40, unit: "g", cat: "Carbs", ingId: 64 },
             { key: "bf52_lowsod", label: "Low-sodium vegetable broth", qty: 240, unit: "ml", cat: "Condiments", ingId: 279 },
@@ -8505,7 +8731,8 @@ const PENDING_RECIPES = [
             "Add almond milk and simmer 3 minutes. Stir in spinach until wilted.",
             "Toss in pasta and sprinkle with Parmesan if desired.",
             "💡 Store for up to 3 days with a spoonful of the almond milk sauce reserved for reheating; warm at 600 W with a splash of water and stir halfway. Freezing turns the pasta mushy.",
-            "💡 Almond milk is thin, so simmer it with the mushrooms until reduced by a third before adding the pasta; cook the pasta a minute short and finish it in the sauce so it absorbs the flavour."
+            "💡 Almond milk is thin, so simmer it with the mushrooms until reduced by a third before adding the pasta; cook the pasta a minute short and finish it in the sauce so it absorbs the flavour.",
+            "💪 Protein note: at 16.2 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -8588,7 +8815,8 @@ const PENDING_RECIPES = [
             "Stir in the shredded chicken and simmer for 15 minutes until flavors meld.",
             "Serve warm, garnished with fresh herbs if desired.",
             "💡 Cool fast, chill for 4 days or freeze in 400 ml portions for 3 months; reheat on the hob to a full simmer. Freeze the broth and vegetables without the chicken and stir it in when reheating.",
-            "💡 Keep the soup at a gentle simmer once the chicken goes in; boiling shredded breast for 15 minutes wrings it dry and stringy. Cut carrots and celery the same size so they finish together."
+            "💡 Keep the soup at a gentle simmer once the chicken goes in; boiling shredded breast for 15 minutes wrings it dry and stringy. Cut carrots and celery the same size so they finish together.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8879,7 +9107,8 @@ const PENDING_RECIPES = [
             "Pour in coconut milk; simmer until slightly thickened.",
             "Serve over jasmine rice or quinoa.",
             "💡 Chill for 2 days and reheat gently on the hob until just steaming; a microwave overcooks shrimp before the coconut sauce warms. Store the rice or quinoa in its own container and freeze that instead.",
-            "💡 Toast the curry powder in oil for 30 seconds at most, then reduce the coconut milk after the shrimp are cooked; light coconut milk splits if it boils hard, so keep it at a simmer."
+            "💡 Toast the curry powder in oil for 30 seconds at most, then reduce the coconut milk after the shrimp are cooked; light coconut milk splits if it boils hard, so keep it at a simmer.",
+            "🍽️ Plate it: this is protein and vegetables, so add 150 g of cooked rice, 200 g of potatoes or 60 g (dry) of pasta to make it a full meal — about 195 kcal and 42 g of carbs, not counted in the numbers above."
         ],
     },
     {
@@ -8940,7 +9169,7 @@ const PENDING_RECIPES = [
         carb: "🌾 Oats",
         portions: 1,
         perPortion: { kcal: 358, protein: 13.5, carbs: 48.7, fat: 14 },
-        allergens: ["Dairy", "Gluten / Wheat", "Peanuts", "Tree Nuts"],
+        allergens: ["Gluten / Wheat", "Peanuts", "Tree Nuts"],
         batchItems: [
             { key: "bf58_rolled", label: "Rolled oats", qty: 40, unit: "g", cat: "Carbs", ingId: 64 },
             { key: "bf58_almond", label: "Almond milk", qty: 180, unit: "ml", cat: "Dairy", ingId: 58 },
@@ -9010,7 +9239,8 @@ const PENDING_RECIPES = [
             "Add spinach and cooked pasta; toss together.",
             "Sprinkle Parmesan before serving.",
             "💡 Chickpea pasta firms up and turns crumbly when cold, so keep 2 days at most and reheat at 600 W with 30 ml of water and a lid; never freeze this one.",
-            "💡 Boil chickpea pasta 1 minute less than the packet says and rinse briefly; it goes from firm to mushy quickly and keeps cooking in the hot pan with the tomatoes."
+            "💡 Boil chickpea pasta 1 minute less than the packet says and rinse briefly; it goes from firm to mushy quickly and keeps cooking in the hot pan with the tomatoes.",
+            "💪 Protein note: at 13.1 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9114,7 +9344,8 @@ const PENDING_RECIPES = [
             "Spoon mixture into bell pepper halves and bake for 20 minutes.",
             "💡 Baked peppers keep 4 days chilled and freeze well individually wrapped for 3 months; reheat from chilled at 180°C in the oven or air fryer for 12 minutes, or 800 W for 3 minutes covered.",
             "💡 Roast the empty pepper halves for 10 minutes first so they soften in the bake, and take the turkey off the heat while still moist; it cooks a further 20 minutes and lean mince dries fast.",
-            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through."
+            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through.",
+            "🍽️ Plate it: this is a light portion at 237 kcal and about 234 g of food. Scale the whole recipe by 1.5 for a full dinner, or keep it as written for a lunch and add a piece of fruit."
         ],
     },
     {
@@ -9227,7 +9458,8 @@ const PENDING_RECIPES = [
             "Stir in cooked orzo, almond milk, and Parmesan until creamy.",
             "Serve immediately.",
             "💡 Keeps 3 days chilled but the orzo drinks the almond milk as it sits, so reheat on the hob with an extra 30 ml of milk or water rather than in the microwave, until steaming hot all the way through.",
-            "💡 Take the pan off the heat before stirring in the Parmesan and almond milk; boiling almond milk with cheese turns grainy, whereas residual heat melts it into a smooth coating."
+            "💡 Take the pan off the heat before stirring in the Parmesan and almond milk; boiling almond milk with cheese turns grainy, whereas residual heat melts it into a smooth coating.",
+            "💪 Protein note: at 14.5 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9309,7 +9541,8 @@ const PENDING_RECIPES = [
             "Add garlic, ginger, and vegetables; stir-fry for 4–5 minutes.",
             "Pour in soy sauce, toss to coat, and cook for 2 more minutes. Serve warm.",
             "💡 Chill for 3 days; the tofu reheats best in an air fryer at 190°C for 4 minutes to crisp back up, while the broccoli goes softer with every microwave blast.",
-            "💡 Blotting with kitchen paper is not enough for 200 g of firm tofu; weight it under a plate for 15 minutes, then leave the cubes untouched in the pan until they release themselves."
+            "💡 Blotting with kitchen paper is not enough for 200 g of firm tofu; weight it under a plate for 15 minutes, then leave the cubes untouched in the pan until they release themselves.",
+            "💪 Protein note: at 18.5 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9336,7 +9569,8 @@ const PENDING_RECIPES = [
             "Toss pasta with avocado sauce, adding reserved water to loosen if needed.",
             "Sprinkle with Parmesan (if using) before serving.",
             "💡 This sauce browns within hours, so keep it to 2 days chilled with cling film pressed onto the surface and eat cold or microwave gently at 600 W; never freeze it.",
-            "💡 Blend the avocado with the lemon juice first, before the oil, so the acid coats the flesh immediately; add the reserved pasta water in splashes only until the sauce clings rather than pools."
+            "💡 Blend the avocado with the lemon juice first, before the oil, so the acid coats the flesh immediately; add the reserved pasta water in splashes only until the sauce clings rather than pools.",
+            "💪 Protein note: at 10.8 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9416,7 +9650,8 @@ const PENDING_RECIPES = [
             "Top with roasted chickpeas and drizzle with olive oil.",
             "Sprinkle smoked paprika and enjoy warm or chilled.",
             "💡 Roasted chickpeas lose their crunch in the fridge, so store them at room temperature in a loosely covered jar for 3 days and only mash the avocado just before serving.",
-            "💡 Mash the avocado coarsely with a fork rather than blending so it stays thick enough to hold the chickpeas; a squeeze of lemon keeps it green if you prep 30 minutes ahead."
+            "💡 Mash the avocado coarsely with a fork rather than blending so it stays thick enough to hold the chickpeas; a squeeze of lemon keeps it green if you prep 30 minutes ahead.",
+            "💪 Protein note: at 12.5 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9601,7 +9836,8 @@ const PENDING_RECIPES = [
             "Add broccoli and cheddar, mixing until the cheese melts evenly.",
             "Season with salt and pepper, then serve warm.",
             "💡 Portion while warm and chill for 4 days; freezes for 2 months. Reheat at 700 W with a spoon of water and stir halfway to melt the cheddar evenly.",
-            "💡 Use quinoa that has cooled and dried out slightly; freshly cooked quinoa straight from the pan is too wet and turns the cheddar into a stringy clump rather than a light coating."
+            "💡 Use quinoa that has cooled and dried out slightly; freshly cooked quinoa straight from the pan is too wet and turns the cheddar into a stringy clump rather than a light coating.",
+            "💪 Protein note: at 9.2 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9629,7 +9865,8 @@ const PENDING_RECIPES = [
             "Drizzle over bowl and serve warm or cold.",
             "Warm the cooked farro or brown rice through, or use it straight from the fridge.",
             "💡 Grains and roasted vegetables keep 4 days chilled; keep the tahini dressing in a separate pot as it thickens when cold, then whisk with 5 ml of warm water before serving.",
-            "💡 Do not panic when the tahini clumps as the lemon goes in; keep whisking and add the warm water 5 ml at a time and it will loosen into a smooth pourable dressing."
+            "💡 Do not panic when the tahini clumps as the lemon goes in; keep whisking and add the warm water 5 ml at a time and it will loosen into a smooth pourable dressing.",
+            "💪 Protein note: at 11.5 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9717,7 +9954,8 @@ const PENDING_RECIPES = [
             "Simmer for 15–20 minutes, stirring occasionally until thickened.",
             "Garnish with fresh parsley and serve with couscous or rice.",
             "💡 Chill in tubs for 5 days or freeze for 3 months; it thickens overnight, so reheat on the hob with a splash of broth and cook couscous separately on the day.",
-            "💡 Add the cinnamon and cumin to the oil with the onion for 30 seconds before the liquid goes in; blooming them removes the raw, dusty taste stirring them into broth leaves."
+            "💡 Add the cinnamon and cumin to the oil with the onion for 30 seconds before the liquid goes in; blooming them removes the raw, dusty taste stirring them into broth leaves.",
+            "💪 Protein note: at 14 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -9992,7 +10230,8 @@ const PENDING_RECIPES = [
             "Stir in coconut milk and spinach; cook until wilted.",
             "Serve warm with brown rice or flatbread.",
             "💡 Keeps 4 days chilled and freezes for 3 months; add the spinach fresh when reheating rather than freezing it, and warm at 700 W with the lid ajar to stop coconut milk spitting.",
-            "💡 Stir the coconut milk in over low heat and never let it boil hard afterwards; light coconut milk splits into oily flecks when boiled, and a gentle simmer is enough to wilt spinach."
+            "💡 Stir the coconut milk in over low heat and never let it boil hard afterwards; light coconut milk splits into oily flecks when boiled, and a gentle simmer is enough to wilt spinach.",
+            "💪 Protein note: at 13.3 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10078,7 +10317,8 @@ const PENDING_RECIPES = [
             "Stir in soy sauce and garnish with green onions.",
             "💡 Good for 3 days in the fridge; reheat in a hot dry pan or air fryer at 200°C for 4 minutes to drive off moisture, because microwaving makes cauliflower rice steam and turn soggy.",
             "💡 Cook the cauliflower rice in a wide pan without crowding so it fries rather than steams, and scramble the egg in a cleared space until just set before folding through.",
-            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through."
+            "💡 Rice safety: cool the cooked rice quickly — spread it out rather than leaving it in the pan or cooker, and get it into the fridge within an hour. Uncooked rice carries spores that survive cooking, and slow cooling is what lets them produce a toxin reheating cannot destroy. Reheat once, until steaming hot all the way through.",
+            "💪 Protein note: at 11.2 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10098,8 +10338,9 @@ const PENDING_RECIPES = [
             { key: "sn27_lemonj", label: "Lemon juice", qty: 2.5, unit: "ml", cat: "Fruits", ingId: 150 },
         ],
         steps: [
-            "In a small bowl, mix the yogurt with the lemon juice, chili flakes, and a pinch of salt, stirring until the flavors blend into a smooth, tangy dip.",
-            "Serve the mixture with crisp carrot sticks, letting each dip pick up a little heat and brightness for a refreshing, satisfying snack.",
+            "Whisk the Greek yogurt with the spices, lemon juice and a pinch of salt until smooth.",
+            "Cut the carrots into sticks of roughly even thickness so they stay crisp in the box.",
+            "Pack the dip separately from the carrots — dip poured over them goes watery within a day.",
             "💡 Mixed dip keeps 4 days chilled; store carrot sticks in a tub of cold water, changed daily, so they stay snappy for 5 days and are not stored touching the dip.",
             "💡 Stir the lemon juice in a few drops at a time; 2.5 ml is plenty, and more thins the Greek yogurt into a runny sauce that slides off the carrot."
         ],
@@ -10127,7 +10368,8 @@ const PENDING_RECIPES = [
             "Toast the bread slices and spread the mixture evenly on top — 2–3 min.",
             "Serve immediately with a sprinkle of chili flakes (optional).",
             "💡 The tuna mix keeps 2 days chilled in a sealed pot with cling film on the surface; toast the bread fresh each time and never freeze, as the avocado turns grey.",
-            "💡 Drain the tuna hard by pressing it against the tin lid, and mash the avocado separately before folding through; wet tuna turns the yogurt binder into a puddle."
+            "💡 Drain the tuna hard by pressing it against the tin lid, and mash the avocado separately before folding through; wet tuna turns the yogurt binder into a puddle.",
+            "🍽️ Plate it: this is a light portion at 296 kcal and about 208 g of food. Scale the whole recipe by 1.5 for a full dinner, or keep it as written for a lunch and add a piece of fruit."
         ],
     },
     {
@@ -10188,7 +10430,7 @@ const PENDING_RECIPES = [
         carb: "🫘 Chickpeas",
         portions: 1,
         perPortion: { kcal: 307, protein: 12.1, carbs: 41.4, fat: 11.3 },
-        allergens: ["Dairy", "Gluten / Wheat", "Sesame"],
+        allergens: ["Gluten / Wheat", "Dairy"],
         batchItems: [
             { key: "m178_canned", label: "Canned chickpeas", qty: 164, unit: "g", cat: "Legumes", ingId: 91 },
             { key: "m178_garlic", label: "Garlic clove", qty: 1.5, unit: "g", cat: "Vegetables", ingId: 108 },
@@ -10204,7 +10446,8 @@ const PENDING_RECIPES = [
             "Bake for 20–25 minutes, flipping halfway through.",
             "Serve with a side of mixed greens or yogurt dip.",
             "💡 Baked falafel keeps 4 days chilled and freezes for 3 months once cooled; reheat from frozen in an air fryer at 180°C for 8 minutes, storing greens and yogurt dip separately.",
-            "💡 Drain and blot the chickpeas thoroughly and pulse rather than purée; a coarse, crumbly mix holds its shape, whereas a smooth paste spreads flat and stays pasty inside."
+            "💡 Drain and blot the chickpeas thoroughly and pulse rather than purée; a coarse, crumbly mix holds its shape, whereas a smooth paste spreads flat and stays pasty inside.",
+            "💪 Protein note: at 12.1 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10232,7 +10475,8 @@ const PENDING_RECIPES = [
             "Spoon mixture into bell peppers and bake for 20 minutes.",
             "Serve warm with a squeeze of lemon.",
             "💡 Assembled peppers keep 4 days chilled and freeze well for 2 months; reheat covered in the microwave at 700 W for 3 minutes, adding the lemon squeeze only at the table.",
-            "💡 Cook the tomatoes down until almost dry before folding in the quinoa; excess liquid pools in the pepper base and leaves the filling waterlogged."
+            "💡 Cook the tomatoes down until almost dry before folding in the quinoa; excess liquid pools in the pepper base and leaves the filling waterlogged.",
+            "💪 Protein note: at 8.8 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10260,7 +10504,8 @@ const PENDING_RECIPES = [
             "Mix with quinoa, tomatoes, spinach, oregano, salt, and pepper.",
             "Spoon filling into eggplant shells and bake for 20 minutes.",
             "💡 Chill the filled boats for up to 3 days; reheat uncovered in the oven at 180°C for 12 minutes so the shells firm up rather than turning mushy. Freezing softens the eggplant too far.",
-            "💡 Salt the scooped shells and leave them cut-side down for 10 minutes, then pat dry; this draws out bitter moisture and stops the boats collapsing in the oven."
+            "💡 Salt the scooped shells and leave them cut-side down for 10 minutes, then pat dry; this draws out bitter moisture and stops the boats collapsing in the oven.",
+            "💪 Protein note: at 7.3 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10287,7 +10532,8 @@ const PENDING_RECIPES = [
             "Serve warm with a side salad.",
             "Scatter the shredded mozzarella over the top before it goes in the oven.",
             "💡 Layered portions keep 3 days chilled; reheat in the air fryer at 180°C for 6 minutes to revive the breadcrumb crust, since a microwave will soften it. It freezes for 2 months.",
-            "💡 Give the oiled slices the full 15 minutes alone before adding marinara; undercooked eggplant releases water beneath the sauce and the whole tray goes soggy."
+            "💡 Give the oiled slices the full 15 minutes alone before adding marinara; undercooked eggplant releases water beneath the sauce and the whole tray goes soggy.",
+            "💪 Protein note: at 9 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10345,7 +10591,8 @@ const PENDING_RECIPES = [
             "Add cooked quinoa and soy sauce, stirring well.",
             "Sprinkle sesame seeds and serve warm.",
             "💡 Portion into tubs and chill for up to 4 days; reheat in a hot wok or pan with a splash of water for 3 minutes rather than microwaving, which makes the vegetables limp.",
-            "💡 Use quinoa that has been cooked and cooled beforehand, ideally from the fridge; freshly cooked grains steam and clump, while chilled ones fry loose and separate."
+            "💡 Use quinoa that has been cooked and cooled beforehand, ideally from the fridge; freshly cooked grains steam and clump, while chilled ones fry loose and separate.",
+            "💪 Protein note: at 7 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10371,7 +10618,8 @@ const PENDING_RECIPES = [
             "Pour into a bowl and top with granola.",
             "Enjoy immediately for an energizing, antioxidant-rich start to your day.",
             "💡 Freeze the blended base in silicone muffin moulds, then thaw two pucks in the fridge overnight and stir; keep the granola in a dry jar until serving. The blend keeps only 24 hours chilled.",
-            "💡 Whisk the matcha into the almond milk first and use frozen banana slices; whole matcha powder clumps in a thick blend and warm banana gives a runny bowl."
+            "💡 Whisk the matcha into the almond milk first and use frozen banana slices; whole matcha powder clumps in a thick blend and warm banana gives a runny bowl.",
+            "💪 Protein note: at 6.7 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10479,7 +10727,8 @@ const PENDING_RECIPES = [
             "In a small bowl, whisk tahini, lemon juice, olive oil, salt, and pepper.",
             "Drizzle over the bowl and serve immediately.",
             "💡 Pack rice, edamame and kale together for up to 3 days, but keep the tahini dressing in a small jar and slice the avocado fresh; it browns within hours.",
-            "💡 Whisk the lemon juice into the tahini before the oil; the paste seizes and looks split at first, so keep whisking and add 5 ml of water until it loosens."
+            "💡 Whisk the lemon juice into the tahini before the oil; the paste seizes and looks split at first, so keep whisking and add 5 ml of water until it loosens.",
+            "💪 Protein note: at 10.3 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10731,7 +10980,8 @@ const PENDING_RECIPES = [
             "In a separate bowl, whisk together olive oil, vinegar, honey, salt, and pepper.",
             "Pour the dressing over the salad, toss well, and refrigerate for 10 minutes before serving.",
             "💡 Dressed, it keeps 3 days chilled and improves overnight; the cabbage and carrot stay crisp, but do not freeze it, as the vegetables thaw limp and watery.",
-            "💡 Dissolve the honey in the vinegar before whisking in the oil; honey dropped straight into oil stays in a stubborn ball and the dressing never emulsifies."
+            "💡 Dissolve the honey in the vinegar before whisking in the oil; honey dropped straight into oil stays in a stubborn ball and the dressing never emulsifies.",
+            "💪 Protein note: at 6.7 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -10867,7 +11117,8 @@ const PENDING_RECIPES = [
             "Spoon lentil mixture into warm tortillas.",
             "Top with lettuce and tomatoes before serving.",
             "💡 Chill the spiced lentil filling for 4 days or freeze for 3 months; reheat in a pan with a splash of water, and store tortillas, lettuce and tomatoes separately to keep the wrap from sogging.",
-            "💡 Drain the diced tomatoes in a sieve before topping, and warm the corn tortillas in a dry pan for 20 seconds a side; cold corn tortillas crack the moment they are folded."
+            "💡 Drain the diced tomatoes in a sieve before topping, and warm the corn tortillas in a dry pan for 20 seconds a side; cold corn tortillas crack the moment they are folded.",
+            "💪 Protein note: at 2.3 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -11050,7 +11301,8 @@ const PENDING_RECIPES = [
             "Simmer for 30 minutes or until barley is tender.",
             "Serve warm, garnished with fresh herbs if desired.",
             "💡 Chill for 4 days or freeze for 3 months; barley keeps swallowing broth, so expect it to thicken and add 60 ml water when reheating on the hob, until steaming hot all the way through.",
-            "💡 Cook the mushrooms hard in a single layer until browned before adding the broth; crowding them in the pot means they boil grey and rubbery."
+            "💡 Cook the mushrooms hard in a single layer until browned before adding the broth; crowding them in the pot means they boil grey and rubbery.",
+            "💪 Protein note: at 5.3 g per portion this sits below what a main should carry. Add 150 g of 0% Greek yogurt on the side (+15 g protein, +90 kcal), 30 g of whey in water (+24 g, +120 kcal), or 100 g of grilled chicken breast (+31 g, +165 kcal) — none of which is counted in the numbers above."
         ],
     },
     {
@@ -11417,8 +11669,9 @@ const PENDING_RECIPES = [
             { key: "ds20_dashof", label: "Dash of cinnamon", qty: 0.5, unit: "g", cat: "Spices", ingId: 220 },
         ],
         steps: [
-            "Spread the peanut butter evenly over each rice cake, letting it reach all the way to the edges so every bite feels creamy and satisfying.",
-            "Arrange the banana slices on top in a neat layer, then finish with a light sprinkle of cinnamon for a soft, sweet warmth.",
+            "Spread the peanut butter across the rice cakes right to the edges.",
+            "Slice the banana thinly and lay it over the top.",
+            "Finish with the cinnamon and eat straight away — rice cakes soften within minutes once topped.",
             "💡 Assemble only when eating; rice cakes go soft within an hour of contact with peanut butter and banana browns. Pre-portion the peanut butter into small pots and slice the banana fresh.",
             "💡 Spread the peanut butter right to the rim so it seals the cake against banana moisture, and lay slices in a single layer rather than stacking; stacked banana slides off on the first bite."
         ],
@@ -11534,7 +11787,7 @@ const PENDING_RECIPES = [
         carb: "🥗 Low Carb",
         portions: 1,
         perPortion: { kcal: 98, protein: 2.9, carbs: 13.1, fat: 4.2 },
-        allergens: ["Dairy", "Tree Nuts"],
+        allergens: ["Tree Nuts"],
         batchItems: [
             { key: "bf76_chiase", label: "Chia seeds", qty: 10.5, unit: "g", cat: "Fats", ingId: 169 },
             { key: "bf76_almond", label: "Almond milk", qty: 120, unit: "ml", cat: "Dairy", ingId: 58 },
@@ -11613,7 +11866,7 @@ const PENDING_RECIPES = [
         carb: "🍌 Banana",
         portions: 1,
         perPortion: { kcal: 230, protein: 26.6, carbs: 27.2, fat: 2.5 },
-        allergens: ["Dairy", "Gluten / Wheat"],
+        allergens: ["Dairy"],
         batchItems: [
             { key: "sm33_frozen", label: "Frozen mango", qty: 82, unit: "g", cat: "Fruits", ingId: 146 },
             { key: "sm33_handfu", label: "Handful spinach", qty: 15, unit: "g", cat: "Vegetables", ingId: 121 },
@@ -11777,7 +12030,7 @@ const PENDING_RECIPES = [
         carb: "🍎 Apple",
         portions: 1,
         perPortion: { kcal: 234, protein: 25.4, carbs: 32.3, fat: 1.7 },
-        allergens: ["Celery", "Dairy", "Gluten / Wheat"],
+        allergens: ["Dairy", "Celery"],
         batchItems: [
             { key: "sm37_greena", label: "Green apples", qty: 180, unit: "g", cat: "Fruits", ingId: 141 },
             { key: "sm37_celery", label: "Celery stalks", qty: 40, unit: "g", cat: "Vegetables", ingId: 118 },
@@ -15541,9 +15794,14 @@ function detectAllergens(recipe) {
     // Gluten-Free badge while the method told the user to add the allergen.
     // Reading the steps over-warns in the worst case and under-warns in none,
     // which is the only acceptable direction of error for an allergen.
+    // Notes are the exception: 💪 "add 150 g Greek yogurt on the side" and 🍽️
+    // "serve with 150 g rice" describe what you COULD add, not what the recipe
+    // contains. Reading them made a dairy-free bowl declare Dairy purely
+    // because its protein suggestion mentioned yogurt.
+    const isNote = x => /^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u.test(String(x));
     const text = [
         recipe.batchItems.map(i => (i.name || i.label || "")).join(" "),
-        (recipe.steps || []).join(" "),
+        (recipe.steps || []).filter(x => !isNote(x)).join(" "),
         recipe.subtitle || "",
     ].join(" ");
     return ALLERGEN_MAP.filter(a => _allergenHit(text, a));
@@ -15647,10 +15905,15 @@ const RecipeCard = React.memo(function RecipeCard({ r, activeLunch, activeDinner
         return next;
     });
     const doneCount = Object.values(stepsDone).filter(Boolean).length;
-    // 💡 lines are storage / technique tips, not steps to tick off. They were
-    // being counted in "N/N done" and numbered as if you had to do them.
-    const methodSteps = (r.steps || []).filter(s => !String(s).startsWith("💡"));
-    const tipSteps = (r.steps || []).filter(s => String(s).startsWith("💡"));
+    // Notes are not steps to tick off. They were being counted in "N/N done"
+    // and numbered as if you had to do them — first for 💡 storage tips, and
+    // then for every other note the library uses: 🟡 nutrient pairings, 🔬
+    // leucine notes, ⚡ fuelling notes, 💪 protein suggestions, 🍽️ serving
+    // suggestions and ⏱️ timing notes. One list, so a new note type cannot
+    // start appearing as step 7 of 6 again.
+    const isNote = s => /^[\u{1F4A1}\u{1F7E1}\u{1F52C}\u{26A1}\u{1F4AA}\u{1F37D}\u{23F1}\u{1F634}]/u.test(String(s));
+    const methodSteps = (r.steps || []).filter(s => !isNote(s));
+    const tipSteps = (r.steps || []).filter(isNote);
     const allergenEl = (function() {
         const allergens = detectAllergens(r);
         if (!allergens.length) return React.createElement("div", { style: { fontSize: 11, color: C.sub } }, "No common allergens detected — always double-check ingredient labels.");
