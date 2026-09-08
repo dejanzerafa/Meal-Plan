@@ -62,13 +62,32 @@ for (const it of items) {
 }
 
 // ── 2. The two registries must describe the same food ───────────────────────
+//
+// This compared CALORIES ONLY, at a 15% tolerance, for as long as it existed.
+// Whole-wheat pasta read 348 kcal in one bank and 354 in the other — 1.7%, a
+// comfortable pass — while its protein read 14 g against 20 g, a 43%
+// disagreement nothing ever looked at. Nine foods were out by more than 15% on
+// protein, carbs or fat when this was finally checked (2026-09-08), and since
+// the recipe card reads INGREDIENT_MACROS while the ingredients tab and the
+// shopping list read ING_FLAT, the app could quote two different protein
+// numbers for the same food.
+//
+// The invariant now: a card's macros ARE its registry row's, exactly. A recipe
+// that genuinely uses a different product (high-protein pasta rather than
+// wholewheat) gets its own registry row — that is what stops the two banks
+// drifting apart again, and it keeps the shopping list honest about which
+// product to buy.
 for (const it of items) {
   const k = IM[it.key], f = byId.get(it.ingId);
-  if (!k || !f || !k.kcal) continue;
-  const drift = Math.abs(f.kcal - k.kcal) / k.kcal * 100;
-  if (drift > 15) {
+  if (!k || !f) continue;
+  for (const [field, label] of [["kcal", "kcal"], ["p", "protein"], ["c", "carbs"], ["f", "fat"]]) {
+    const a = k[field], b = f[field];
+    if (a == null || b == null) continue;
+    if (Math.abs(a - b) <= 0.001) continue;
+    const pct = Math.round(Math.abs(a - b) / Math.max(Math.abs(a), Math.abs(b), 1) * 100);
     fail("banks-disagree",
-      `${it.rid}/${it.key} "${it.label}": macros say ${k.kcal} kcal, ingId ${it.ingId} is "${f.name}" at ${f.kcal} kcal (${Math.round(drift)}% apart)`);
+      `${it.rid}/${it.key} "${it.label}": card says ${a} g ${label}, ingId ${it.ingId} ("${f.name}") says ${b} (${pct}% apart). ` +
+      `Either fix the card, or give this product its own ING_FLAT row if it really is a different food.`);
   }
 }
 

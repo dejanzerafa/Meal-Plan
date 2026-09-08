@@ -29,26 +29,12 @@ Nothing here has been changed.
 | a step over 320 characters | 2 |
 | no allergens field (admin release panel only) | 177 |
 | duplicate recipe names | 0 |
-| same food, different macros between recipes | 12 |
-| the two macro banks disagree on protein/carbs/fat | 9 foods |
+| same food, different macros between recipes | 0 |
+| the two macro banks disagree on protein/carbs/fat | 0 foods |
 
 **Total findings: 415** across 283 recipes.
 
 Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutrition**, **quality**, **cosmetic**.
-
-## The two macro banks disagree (9 foods) — severity: wrong
-
-`INGREDIENT_MACROS` drives the recipe card; `ING_FLAT` drives the ingredients tab and shopping list. `check-ingredients.mjs` compares them on calories only, at a 15% tolerance, so these never surfaced.
-
-- **Black Beans (canned, drained)** — protein: recipe card says 6.9 g, registry says 8.9 g · 2 use(s): m89, m100
-- **Black Beans (canned, drained)** — carbs: recipe card says 19.8 g, registry says 24 g · 2 use(s): m89, m100
-- **Corn / Sweetcorn** — protein: recipe card says 2.6 g, registry says 3.2 g · 3 use(s): m89, m93, m100
-- **Taco Seasoning (blend)** — fat: recipe card says 6 g, registry says 8 g · 3 use(s): m89, m93, m100
-- **Fat-Free Mozzarella (shredded)** — carbs: recipe card says 7.1 g, registry says 3 g · 3 use(s): m93, m97, m102
-- **Pasta (dry, whole wheat)** — protein: recipe card says 20 g, registry says 14 g · 3 use(s): m97, m101, m103
-- **Parmesan** — carbs: recipe card says 4.1 g, registry says 3.2 g · 1 use(s): m103
-- **Soy Sauce (low sodium)** — protein: recipe card says 10.5 g, registry says 8.1 g · 2 use(s): v10, v11
-- **Peanut Butter (natural)** — carbs: recipe card says 12.2 g, registry says 20 g · 1 use(s): v11
 
 ## cooked rice stored without a rapid-cool note (27) — severity: safety
 
@@ -242,7 +228,7 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 ## main course under 300 kcal (29) — severity: nutrition
 
 - `m18` 🍗 Chicken with Mustard & Coffee Sauce — 228 kcal
-- `m36` 🐟 Tuna & Chickpea Power Bowl — 225 kcal
+- `m36` 🐟 Tuna & Chickpea Power Bowl — 220 kcal
 - `sn4` 🥒 Zesty Pickle & Veggie Board — 222 kcal
 - `m142`* 🐟 Baked Lemon Dill Cod with Garlic Green Beans — 230 kcal
 - `m143`* 🐟 One-Pan Lemon Garlic Tilapia with Asparagus — 244 kcal
@@ -525,21 +511,6 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 - `v10`* 🥗 Tofu & Quinoa Veggie Power Bowls — the user-facing chips and diet filters call detectAllergens() live, so this is cosmetic — the release panel just shows no ⚠ line. Would read: Gluten / Wheat, Soy
 - `v11`* 🥜 Cold Peanut Noodle Slaw — the user-facing chips and diet filters call detectAllergens() live, so this is cosmetic — the release panel just shows no ⚠ line. Would read: Gluten / Wheat, Soy, Peanuts, Sesame
 
-## same registry food, different macros (12)
-
-- **Tuna (canned in water)** — 116 kcal / 26 g protein (m36) · 109 kcal / 25.5 g protein (sn9) · 109 kcal / 25.5 g protein (m101) · 109 kcal / 25.5 g protein (m160) · 109 kcal / 25.5 g protein (m177) · 109 kcal / 25.5 g protein (m187) · 109 kcal / 25.5 g protein (sn41)
-- **Milk (skim / 0%)** — 34 kcal / 3.4 g protein (m12) · 34 kcal / 3.4 g protein (m05) · 34 kcal / 3.4 g protein (m10) · 34 kcal / 3.4 g protein (m06) · 34 kcal / 3.4 g protein (m16) · 34 kcal / 3.4 g protein (v8) · 34 kcal / 3.4 g protein (bf9) · 34 kcal / 3.4 g protein (bf13) · 34 kcal / 3.4 g protein (bf14) · 34 kcal / 3.4 g protein (bf15) · 35 kcal / 3.4 g protein (sm1) · 34 kcal / 3.4 g protein (m85) · 34 kcal / 3.4 g protein (m122) · 34 kcal / 3.4 g protein (bf36) · 34 kcal / 3.4 g protein (bf38) · 34 kcal / 3.4 g protein (bf40) · 34 kcal / 3.4 g protein (ds9) · 34 kcal / 3.4 g protein (bf43)
-- **Pasta (dry, whole wheat)** — 348 kcal / 14 g protein (m23) · 348 kcal / 14 g protein (v8) · 348 kcal / 14 g protein (m85) · 348 kcal / 14 g protein (m86) · 354 kcal / 20 g protein (m97) · 354 kcal / 20 g protein (m101) · 354 kcal / 20 g protein (m103) · 348 kcal / 14 g protein (m111) · 348 kcal / 14 g protein (m146) · 348 kcal / 14 g protein (m149) · 348 kcal / 14 g protein (m157) · 348 kcal / 14 g protein (m160) · 348 kcal / 14 g protein (m169)
-- **Corn / Sweetcorn** — 86 kcal / 3.2 g protein (hol6) · 86 kcal / 3.2 g protein (hol4) · 86 kcal / 3.2 g protein (m07) · 86 kcal / 3.2 g protein (m58) · 86 kcal / 3.2 g protein (m30) · 86 kcal / 3.2 g protein (m50) · 86 kcal / 3.2 g protein (v7) · 86 kcal / 3.2 g protein (m78) · 81 kcal / 2.6 g protein (m89) · 81 kcal / 2.6 g protein (m93) · 81 kcal / 2.6 g protein (m100)
-- **Black Beans (canned, drained)** — 132 kcal / 8.9 g protein (hol6) · 132 kcal / 8.9 g protein (hol4) · 132 kcal / 8.9 g protein (m07) · 132 kcal / 8.9 g protein (m39) · 132 kcal / 8.9 g protein (m06) · 132 kcal / 8.9 g protein (m30) · 132 kcal / 8.9 g protein (v7) · 118 kcal / 6.9 g protein (m89) · 118 kcal / 6.9 g protein (m100)
-- **Edamame (shelled)** — 121 kcal / 11 g protein (m47) · 121 kcal / 11 g protein (v2) · 121 kcal / 11 g protein (sn5) · 121 kcal / 11.9 g protein (v10) · 121 kcal / 11.9 g protein (v11) · 121 kcal / 11 g protein (m186) · 121 kcal / 11 g protein (m189) · 121 kcal / 11 g protein (sn31)
-- **Peanut Butter (natural)** — 588 kcal / 25 g protein (bf10) · 588 kcal / 25 g protein (pw1) · 588 kcal / 25 g protein (sm2) · 588 kcal / 25 g protein (sm3) · 588 kcal / 25 g protein (bf24) · 588 kcal / 25 g protein (ds5) · 623 kcal / 27.6 g protein (v11) · 588 kcal / 25 g protein (m107) · 588 kcal / 25 g protein (ds7) · 588 kcal / 25 g protein (m132) · 588 kcal / 25 g protein (bf58) · 588 kcal / 25 g protein (ds15) · 588 kcal / 25 g protein (ds17) · 588 kcal / 25 g protein (ds20)
-- **Soy Sauce (low sodium)** — 53 kcal / 8.1 g protein (m35) · 53 kcal / 8.1 g protein (m51) · 53 kcal / 8.1 g protein (m61) · 53 kcal / 8.1 g protein (m20) · 53 kcal / 8.1 g protein (m44) · 53 kcal / 8.1 g protein (m24) · 53 kcal / 8.1 g protein (m47) · 53 kcal / 8.1 g protein (v2) · 53 kcal / 8.1 g protein (sn2) · 53 kcal / 8.1 g protein (sn6) · 53 kcal / 8.1 g protein (m66) · 53 kcal / 8.1 g protein (m68) · 53 kcal / 8.1 g protein (m74) · 53 kcal / 8.1 g protein (m75) · 53 kcal / 8.1 g protein (m76) · 53 kcal / 8.1 g protein (m79) · 53 kcal / 8.1 g protein (m88) · 53 kcal / 8.1 g protein (m94) · 53 kcal / 8.1 g protein (m95) · 60 kcal / 10.5 g protein (v10) · 60 kcal / 10.5 g protein (v11) · 53 kcal / 8.1 g protein (m107) · 53 kcal / 8.1 g protein (m108) · 53 kcal / 8.1 g protein (m114) · 53 kcal / 8.1 g protein (m127) · 53 kcal / 8.1 g protein (m132) · 53 kcal / 8.1 g protein (m139) · 53 kcal / 8.1 g protein (sn10) · 53 kcal / 8.1 g protein (m154) · 53 kcal / 8.1 g protein (sn14) · 53 kcal / 8.1 g protein (m155) · 53 kcal / 8.1 g protein (m168) · 53 kcal / 8.1 g protein (m176) · 53 kcal / 8.1 g protein (ds16) · 53 kcal / 8.1 g protein (m182)
-- **Passata (tomato sauce)** — 27 kcal / 1.3 g protein (m14) · 27 kcal / 1.3 g protein (m11) · 27 kcal / 1.3 g protein (m58) · 27 kcal / 1.3 g protein (m06) · 27 kcal / 1.3 g protein (m16) · 27 kcal / 1.3 g protein (v1) · 27 kcal / 1.3 g protein (m23) · 27 kcal / 1.3 g protein (m50) · 27 kcal / 1.3 g protein (v6) · 27 kcal / 1.3 g protein (v5) · 27 kcal / 1.3 g protein (m63) · 29 kcal / 1.5 g protein (m97) · 27 kcal / 1.3 g protein (m111) · 27 kcal / 1.3 g protein (m112) · 27 kcal / 1.3 g protein (m124) · 27 kcal / 1.3 g protein (bf46) · 27 kcal / 1.3 g protein (m164) · 27 kcal / 1.3 g protein (m173) · 27 kcal / 1.3 g protein (m174) · 27 kcal / 1.3 g protein (m179) · 27 kcal / 1.3 g protein (m180) · 27 kcal / 1.3 g protein (m181) · 27 kcal / 1.3 g protein (m188) · 27 kcal / 1.3 g protein (m190)
-- **Fat-Free Mozzarella (shredded)** — 163 kcal / 36 g protein (m16) · 163 kcal / 36 g protein (m29) · 163 kcal / 36 g protein (bf5) · 163 kcal / 36 g protein (m85) · 143 kcal / 32.1 g protein (m93) · 143 kcal / 32.1 g protein (m97) · 143 kcal / 32.1 g protein (m102)
-- **Taco Seasoning (blend)** — 285 kcal / 11 g protein (m58) · 285 kcal / 11 g protein (m86) · 300 kcal / 10 g protein (m89) · 300 kcal / 10 g protein (m93) · 300 kcal / 10 g protein (m100)
-- **Soba Noodles (dry)** — 336 kcal / 14 g protein (m66) · 336 kcal / 14.4 g protein (v11)
-
 ## one food, many labels (86)
 
 - **Chicken Breast (skinless, raw)** — "Skinless boneless chicken breast (raw)", "Chicken breast (raw)", "Chicken breast (skinless, raw)", "Diced chicken breast", "Chicken breasts (raw)", "Chicken breast (raw, diced)", "Chicken breast (raw, butterflied)", "Chicken breast (raw, cubed)", "Chicken breast (raw, shredded)", "Chicken breast (diced)", "Chicken breast (large)", "Chicken breast", "Chicken breasts"
@@ -561,7 +532,7 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 - **Almond Milk (unsweetened)** — "Unsweetened almond milk", "Almond milk (unsweetened)", "Almond Milk (unsweetened)", "Almond milk"
 - **Oats (rolled, dry)** — "Rolled oats", "Rolled oats (dry)", "Oats (rolled, dry)", "Oats"
 - **Pasta (dry, white)** — "Pasta (any shape)", "Pasta (rigatoni or any)", "Pasta (farfalle or any)", "Pasta (macaroni/shells)", "Penne pasta", "Pasta (penne or short)", "Pasta (spaghetti or any)", "Macaroni pasta", "Pasta (elbow or short)", "Macaroni (dry)", "Pasta (dry)", "Rigatoni (dry pasta)"
-- **Pasta (dry, whole wheat)** — "High-protein pasta", "Protein pasta or wholegrain pasta (dry)", "High-protein pasta (dry)", "Chickpea / high-protein pasta", "Wholewheat lasagne sheets", "Whole-grain pasta", "Whole-grain spaghetti", "Whole wheat pasta"
+- **Pasta (dry, whole wheat)** — "Wholegrain pasta (dry)", "High-protein pasta (dry)", "Chickpea / high-protein pasta", "Wholewheat lasagne sheets", "Whole-grain pasta", "Whole-grain spaghetti", "Whole wheat pasta"
 - **Sweet Potato (raw)** — "Sweet potato (raw)", "Sweet potato (cubed, raw)", "Sweet potatoes (cubed)", "Sweet potatoes (whole)", "Sweet potatoes", "Large sweet potato", "Sweet potato (raw, diced)", "Sweet potato (cubed)", "Cubed sweet potatoes", "Sweet potato"
 - **White Potato (raw)** — "Baby potatoes (halved)", "White potato (raw)", "Red potatoes (quartered)", "Frozen shredded hashbrowns", "White potato (raw, cubed)", "Baby potatoes (cubed)", "Potatoes"
 - **Bread (whole wheat)** — "Wholegrain bread slice", "Wholegrain bread (loaf)", "Whole wheat toast", "Bread (whole wheat)", "Whole-grain bread"
