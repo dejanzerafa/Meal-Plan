@@ -8,10 +8,6 @@ Nothing here has been changed.
 
 | Finding | Recipes |
 |---|---|
-| cooked rice stored without a rapid-cool note | 27 |
-| minced red meat with no doneness cue | 20 |
-| reheat advice with neither a time nor 'until hot through' | 9 |
-| long marinade with no refrigeration note | 1 |
 | method with no timing at all | 60 |
 | ingredient never mentioned in the method | 21 |
 | same registry ingredient listed twice | 9 |
@@ -32,78 +28,9 @@ Nothing here has been changed.
 | same food, different macros between recipes | 0 |
 | the two macro banks disagree on protein/carbs/fat | 0 foods |
 
-**Total findings: 415** across 283 recipes.
+**Total findings: 358** across 270 recipes.
 
 Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutrition**, **quality**, **cosmetic**.
-
-## cooked rice stored without a rapid-cool note (27) — severity: safety
-
-- `hol10` 🎖️ All-American Beef & Rice Casserole — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `hol6` 🍗 🇺🇸 BBQ Chicken & Corn Rice Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m31` 🍗 Classic Chicken, Rice & Broccoli — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m35` 🦐 Garlic Shrimp Stir-Fry & Brown Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m52` 🍗 Italian Herb Chicken, Rice & Broccoli — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m44` 🥩 Lean Beef & Broccoli Rice Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m24` 🍯 Slow Cooker Honey Cashew Chicken — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m47` 🍗 Teriyaki Chicken & Edamame Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `v2` 🥢 Tofu & Edamame Teriyaki Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `v5` 🧀 Paneer Tikka Masala Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `v7` 🪴 Black Bean & Sweet Potato Burrito Bowls — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `bf32` 🍚 Protein Chicken Congee — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m74` 🍯 Honey Soy Glazed Chicken Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m78` 🌶 Peri Peri Grilled Chicken Plate — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m79` 🍗 Lemongrass Chicken Coconut Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m88`* 🍯 Honey Garlic Chicken & Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m89`* 🥩 Steak Burrito Meal Prep Bowls — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m90`* 🐟 Teriyaki Salmon & Brown Rice Power Bowls — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m94`* 🍚 Crispy Garlic Chicken & Fried Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m95`* 🥦 Honey Garlic Baked Chicken & Broccoli — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m109`* 🍛 Yellow Curry Meatballs — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m132`* 🍗 Thai Peanut Chicken Rice Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m139`* 🐟 Miso Ginger Salmon with Brown Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m162`* 🫘 Curried Chickpea Bowl — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m164`* 🦃 Turkey & Vegetable Stuffed Peppers — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m172`* 🥚 Roasted Veggie Grain Bowl with Tahini Drizzle — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-- `m188`* 🫘 Chickpea Coconut Curry with Basmati Rice — Bacillus cereus survives cooking and multiplies in rice left to cool slowly
-
-## minced red meat with no doneness cue (20) — severity: safety
-
-- `m13` 🥩 Beef Mince & Rice Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m04` 🥩 Beef Mince Bake — minced beef/lamb needs cooking right through, unlike a steak
-- `m02` 🥩 Big Mac Protein Pasta — minced beef/lamb needs cooking right through, unlike a steak
-- `m55` 🥩 Lean Beef Bowl with Sweet Potato & Vegetables — minced beef/lamb needs cooking right through, unlike a steak
-- `m58` 🌶️ Lean Beef Chili with Sweet Potato, Spinach & Corn — minced beef/lamb needs cooking right through, unlike a steak
-- `m22` 🍯 Hot Honey Beef & Sweet Potato Bowls — minced beef/lamb needs cooking right through, unlike a steak
-- `m44` 🥩 Lean Beef & Broccoli Rice Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m08` 🥩 Lean Beef Hamburger Helper — minced beef/lamb needs cooking right through, unlike a steak
-- `m29` 🥩 Ranch Beef Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `hol5` 🌙 Spiced Lamb & Lentil Rice (Mujadara-Style) — minced beef/lamb needs cooking right through, unlike a steak
-- `m63` 🍝 Slow-Cooked Beef Ragu Pasta — minced beef/lamb needs cooking right through, unlike a steak
-- `m71` 🧆 Smoky Eggplant Beef Rice Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m75` 🥩 Spicy Thai Basil Beef Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m80` 🍔 Lean Beef Smash Burger — minced beef/lamb needs cooking right through, unlike a steak
-- `m85` 🥓 Creamy Bacon Beef Protein Pasta — minced beef/lamb needs cooking right through, unlike a steak
-- `m93`* 🧀 Cheesy Beef Taco Potato Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m97`* 🍝 Cheesy Beef Pasta Skillet — minced beef/lamb needs cooking right through, unlike a steak
-- `m107`* 🥜 Caramelised Beef & Peanut Noodles — minced beef/lamb needs cooking right through, unlike a steak
-- `m114`* 🥢 Egg Roll in a Bowl — minced beef/lamb needs cooking right through, unlike a steak
-- `m124`* 🍝 Spinach Tagliatelle Bolognese — minced beef/lamb needs cooking right through, unlike a steak
-
-## reheat advice with neither a time nor 'until hot through' (9) — severity: safety
-
-- `m35` 🦐 Garlic Shrimp Stir-Fry & Brown Rice — no way to tell when it is safely reheated
-- `v8` 🥬 Spinach & White Bean Pasta — no way to tell when it is safely reheated
-- `m89`* 🥩 Steak Burrito Meal Prep Bowls — no way to tell when it is safely reheated
-- `m96`* 🫙 No-Cook Greek Chickpea & Chicken Jars — no way to tell when it is safely reheated
-- `m103`* 🍝 Creamy Pesto Pasta — no way to tell when it is safely reheated
-- `m124`* 🍝 Spinach Tagliatelle Bolognese — no way to tell when it is safely reheated
-- `m166`* 🍝 Creamy Spinach & Mushroom Orzo — no way to tell when it is safely reheated
-- `sn26`* 🌿 Savory Mushroom Lentil Stew — no way to tell when it is safely reheated
-- `m191`* 🍲 Mushroom Barley Soup — no way to tell when it is safely reheated
-
-## long marinade with no refrigeration note (1) — severity: safety
-
-- `m78` 🌶 Peri Peri Grilled Chicken Plate — marinating at room temperature
 
 ## method with no timing at all (60) — severity: wrong
 
@@ -600,6 +527,6 @@ Severity: **safety** first, then **wrong** (the recipe misstates itself), **nutr
 - **Chicken Breast (cooked / rotisserie)** — "Rotisserie chicken breast (shredded)", "Chicken breast (cooked, finely chopped)", "Chicken breast (cooked, diced)", "Cooked chicken breast"
 - **Ice / Water** — "Water", "Ice", "Warm water", "Ice cubes", "Cold water"
 
-## No findings (118)
+## No findings (131)
 
-`m38` `m39` `m53` `m60` `m32` `m92` `m104` `m105` `m108` `m111` `m112` `m113` `m117` `m121` `bf36` `bf37` `bf38` `ds8` `d6` `bf41` `m126` `m127` `m128` `m129` `bf43` `m134` `m135` `m136` `m138` `m140` `m141` `m144` `sm10` `bf45` `ds12` `bf46` `m150` `m151` `m153` `sn11` `bf47` `sn13` `bf48` `sn14` `sm11` `bf50` `bf52` `m157` `sn15` `bf53` `m159` `m160` `bf56` `bf57` `sn19` `sn21` `bf59` `m165` `bf60` `bf61` `sn22` `m167` `sn23` `bf62` `m170` `bf63` `sm12` `bf65` `bf66` `sm13` `m173` `sm14` `sm15` `sm16` `sm17` `sm19` `sm20` `m174` `m175` `sm21` `bf67` `m184` `m185` `sn29` `sm22` `bf69` `m187` `ds17` `bf71` `sm24` `bf72` `sn31` `sm25` `sn32` `sn33` `sn34` `bf73` `bf74` `ds19` `sn36` `sm28` `sn38` `sm29` `sm30` `ds21` `sm31` `bf76` `sn41` `sm33` `ds22` `sm34` `ds23` `sm37` `sm38` `sm39` `sm40` `sm42` `sm44`
+`m04` `m38` `m31` `m39` `m52` `m53` `m60` `m22` `m32` `m92` `m104` `m105` `m107` `m108` `m109` `m111` `m112` `m113` `m114` `m117` `m121` `bf36` `bf37` `bf38` `m124` `ds8` `d6` `bf41` `m126` `m127` `m128` `m129` `bf43` `m132` `m134` `m135` `m136` `m138` `m140` `m141` `m144` `sm10` `bf45` `ds12` `bf46` `m150` `m151` `m153` `sn11` `bf47` `sn13` `bf48` `sn14` `sm11` `bf50` `bf52` `m157` `sn15` `bf53` `m159` `m160` `bf56` `bf57` `sn19` `m162` `sn21` `bf59` `m165` `bf60` `bf61` `m166` `sn22` `m167` `sn23` `bf62` `m170` `bf63` `sm12` `bf65` `bf66` `sm13` `m173` `sm14` `sm15` `sm16` `sm17` `sm19` `sn26` `sm20` `m174` `m175` `sm21` `bf67` `m184` `m185` `sn29` `sm22` `bf69` `m187` `m188` `ds17` `bf71` `sm24` `bf72` `sn31` `sm25` `sn32` `sn33` `sn34` `bf73` `bf74` `ds19` `sn36` `sm28` `sn38` `sm29` `sm30` `ds21` `sm31` `bf76` `sn41` `sm33` `ds22` `sm34` `ds23` `sm37` `sm38` `sm39` `sm40` `sm42` `sm44`

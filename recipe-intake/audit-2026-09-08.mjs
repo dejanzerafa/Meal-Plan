@@ -44,8 +44,13 @@ for (const r of ALL) {
     flag("pork with no doneness temperature", r, "raw pork/sausage and no core temperature in the method");
   if (has(/\b(beef|lamb|steak|mince)\b/i) && /\b(mince|ground)\b/i.test((r.batchItems || []).map(i => i.label).join(" ")) && !/(7[0-9]|8\d)\s*°C|cooked through|no longer pink|browned/i.test(T))
     flag("minced red meat with no doneness cue", r, "minced beef/lamb needs cooking right through, unlike a steak");
-  if (/\b(rice)\b/i.test((r.batchItems || []).map(i => i.label).join(" ")) && /\b(overnight|meal prep|4 days|5 days|keeps? \d)\b/i.test(T)
-      && !/cool (?:it )?(?:quickly|fast|within)|spread .* to cool|chill (?:it )?quickly/i.test(T))
+  // "rice wine vinegar" is not rice, and a bowl built on ready-cooked grain was
+  // not cooled by this user — the note belongs on recipes that cook their own.
+  const riceLabels = (r.batchItems || []).filter(i => /\brice\b/i.test(i.label || "")
+    && !/rice (?:cake|paper|vinegar|wine|milk|flour|noodle)|\bcooked\b/i.test(i.label || ""));
+  if (riceLabels.length && /\brice\b/i.test(T) && /\b(cook|boil|steam|simmer)\b/i.test(T)
+      && /\b(overnight|meal prep|4 days|5 days|keeps? \d|container|portion)\b/i.test(T)
+      && !/cool[^.]{0,40}\b(quickly|fast|within an hour)\b|within an hour|spores/i.test(T))
     flag("cooked rice stored without a rapid-cool note", r, "Bacillus cereus survives cooking and multiplies in rice left to cool slowly");
   if (has(/\begg\b|\beggs\b/i) && /\braw\b/i.test(T) && !/pasteuris|pasteuriz/i.test(T) && /\b(raw egg|uncooked egg)\b/i.test(T))
     flag("raw egg with no pasteurised note", r, "raw egg served without noting pasteurised eggs");

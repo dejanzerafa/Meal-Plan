@@ -1322,10 +1322,51 @@ section("Recipe content — the 2026-09-07 audit fixes (all 401)");
   t("every recipe that cooks raw poultry states a doneness temperature", noCue.length === 0, list(noCue));
   const staleCue = ALL.filter(r => rawBird(r) && (r.steps || []).some(s => /\b(74\s*°\s*C|165\s*°\s*F)\b/.test(s))).map(r => r.id);
   t("poultry doneness is quoted as 75°C throughout", staleCue.length === 0, list(staleCue));
-  const falseCue = ALL.filter(r => !rawBird(r) && (r.steps || []).some(s => /reads 7[45]°C/.test(s))).map(r => r.id);
+  // The POULTRY cue specifically — minced beef carries its own 75°C wording and
+  // must not be caught by this.
+  const falseCue = ALL.filter(r => !rawBird(r) && (r.steps || []).some(s =>
+    /(?:thickest part|centre of the thickest piece) reads 7[45]°C/.test(s))).map(r => r.id);
   t("no ready-cooked-chicken recipe tells you to cook it to temperature", falseCue.length === 0, list(falseCue));
   const dupCue = ALL.filter(r => (r.steps || []).some(s => (s.match(/7[45]\s*°\s*C/g) || []).length > 1)).map(r => r.id);
   t("no step states the doneness temperature twice", dupCue.length === 0, list(dupCue));
+
+  // 4b. Food safety beyond poultry (audit 2026-09-08).
+  //     Rice: uncooked grains carry Bacillus cereus spores that SURVIVE
+  //     cooking. Left to cool slowly they germinate and make a heat-stable
+  //     toxin that reheating does not destroy — the classic meal-prep food
+  //     poisoning, and the one this app is most exposed to.
+  const cooksOwnRice = r => (r.batchItems || []).some(i => /\brice\b/i.test(i.label || "")
+      && !/rice (?:cake|paper|vinegar|wine|milk|flour|noodle)|\bcooked\b/i.test(i.label || ""))
+    && /\brice\b/i.test((r.steps || []).join(" ")) && /\b(cook|boil|steam|simmer)\b/i.test((r.steps || []).join(" "));
+  const noRiceNote = ALL.filter(r => cooksOwnRice(r)
+    && !/cool[^.]{0,40}\b(quickly|fast|within an hour)\b|within an hour|spores/i.test((r.steps || []).join(" "))).map(r => r.id);
+  t("every recipe that cooks its own rice carries the rapid-cool note", noRiceNote.length === 0, list(noRiceNote));
+
+  //     Mince: whole muscle is sterile inside, so a steak can be rare. Mincing
+  //     spreads surface bacteria right through, so mince must be cooked through.
+  const noMinceCue = ALL.filter(r => {
+    const labels = (r.batchItems || []).map(i => i.label || "").join(" ");
+    if (!/\b(beef|lamb|pork)\b/i.test(labels) || !/\b(mince|minced|ground)\b/i.test(labels)) return false;
+    return !/(7[0-9]|8\d)\s*°C|no (?:longer )?pink|right through|cooked through|fully browned|until browned/i.test((r.steps || []).join(" "));
+  }).map(r => r.id);
+  t("every minced beef/lamb/pork recipe says to cook it through", noMinceCue.length === 0, list(noMinceCue));
+
+  //     Reheating: "reheat in the microwave" with no time and no doneness is
+  //     not an instruction, it is a guess.
+  const badReheat = ALL.filter(r => {
+    const T = (r.steps || []).join(" ");
+    if (!/\breheat/i.test(T)) return false;
+    const tail = T.slice(T.search(/\breheat/i));
+    return !/(steaming hot|piping hot|hot (?:all the way )?through|through(?:out)?|75\s*°C|until hot)/i.test(T)
+        && !/\d+\s*W\b|\d+\s*%\s*power|\d+\s*(?:min|sec)/i.test(tail);
+  }).map(r => r.id);
+  t("every reheat instruction gives a time or a doneness", badReheat.length === 0, list(badReheat));
+
+  const roomTempMarinade = ALL.filter(r => {
+    const T = (r.steps || []).join(" ");
+    return /\bmarinate\b/i.test(T) && /\b(overnight|\d+\s*h(?:ours?|rs?)?)\b/i.test(T) && !/fridge|refrigerat|chill|cold/i.test(T);
+  }).map(r => r.id);
+  t("no recipe marinates for hours at room temperature", roomTempMarinade.length === 0, list(roomTempMarinade));
 
   // 5. The card shows the subtitle; without a duration the user cannot plan.
   const noTime = ALL.filter(r => !/\d+\s*(?:min|hr|hour|h\b)|overnight/i.test(r.subtitle || "")).map(r => r.id);
