@@ -1298,6 +1298,49 @@ section("Stripe webhook — the three Sentry issues from the 6 Sep test purchase
      !/grantedViaAuth = true;[\s\S]{0,80}break;/.test(whSrc));
 }
 
+section("Browser database access — the client must not read a table the SQL revoked");
+{
+  // This is the bug that produced "permission denied for table promo_codes".
+  // supabase-security-fix.sql revoked anon/authenticated access to promo_codes
+  // — correctly, since a SELECT grant lets any signed-in user read every live
+  // code and redeem one — but the admin panel was still querying the table from
+  // the browser. Nothing connected the two: the SQL is one file, the client
+  // another, and part 9's own comment listed promo_codes as a client table.
+  //
+  // So: whatever the browser calls .from() on, no SQL file may revoke.
+  const clientTables = [...new Set([...raw.matchAll(/\.from\("([a-z_]+)"\)/g)].map(m => m[1]))].sort();
+  t("the browser touches a known, small set of tables", clientTables.length > 0, clientTables.join(", "));
+
+  const sqlFiles = readdirSync(ROOT).filter(f => f.endsWith(".sql"))
+    .concat(existsSync(join(ROOT, "supabase", "migrations"))
+      ? readdirSync(join(ROOT, "supabase", "migrations")).map(f => join("supabase", "migrations", f)) : []);
+  const revoked = new Set();
+  for (const f of sqlFiles) {
+    const sql = readFileSync(join(ROOT, f), "utf8");
+    // Ignore commented-out lines — several files carry a revoke inside a
+    // "-- WAS:" explanation of a bug that was already fixed.
+    for (const line of sql.split("\n")) {
+      if (/^\s*--/.test(line)) continue;
+      const m = line.match(/revoke\s+(?:all|select[^o]*)\s+on\s+public\.([a-z_]+)\s+from\s+[^;]*\b(anon|authenticated)\b/i);
+      if (m) revoked.add(m[1]);
+    }
+    // The scripted loop revokes a list held in an array literal.
+    const loop = sql.match(/targets\s+text\[\]\s*:=\s*array\[([\s\S]*?)\]/);
+    if (loop && /revoke all on public\.%I from anon, authenticated/.test(sql))
+      for (const m of loop[1].matchAll(/'([a-z_]+)'/g)) revoked.add(m[1]);
+  }
+  t("the revoke list was found in the SQL", revoked.size > 0, [...revoked].join(", "));
+
+  const broken = clientTables.filter(x => revoked.has(x));
+  t("no table the browser queries has been revoked from anon/authenticated",
+     broken.length === 0,
+     broken.length
+       ? `${broken.join(", ")} — the client will get "permission denied". Move the access into a ` +
+         `Netlify function with the service_role key (see admin-promo-codes.js), or grant it back deliberately.`
+       : `client: ${clientTables.join(", ")}`);
+  t("promo_codes specifically is server-side only", !clientTables.includes("promo_codes"));
+}
+
 section("Recipe content — every rule from the 2026-09-07 and 2026-09-08 audits");
 {
   // The rules themselves live in scripts/lib/recipe-rules.mjs, and this asserts
