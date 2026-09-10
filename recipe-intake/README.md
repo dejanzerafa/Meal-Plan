@@ -173,6 +173,13 @@ not counted in "N/N done", and not read by `detectAllergens`.
 | ⚡ | fuelling and timing around training |
 | 💪 | protein suggestions ("add 150 g Greek yogurt") |
 | 🍽️ | serving suggestions ("add 150 g rice to complete the plate") |
+
+**Notes cost more than they look.** On 2026-09-10, 43 nutrition notes added two
+days earlier were stripped back out. The measurement that settled it: 195 of 401
+recipes carried more note text than method text, and one recipe had 227
+characters of method against 976 of notes. A note has to earn its place against
+the method it is competing with — safety notes do, advice the card already
+states does not.
 | ⏱️ | timing notes |
 | 😴 | pre-sleep / casein notes |
 

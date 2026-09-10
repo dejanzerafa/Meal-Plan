@@ -278,17 +278,22 @@ const RULES = [
   },
 
   // ── Nutrition ─────────────────────────────────────────────────────────────
-  {
-    id: "light-main-guidance", severity: "nutrition",
-    why: "A light main is fine; a light main with nothing telling the user how to complete the plate is the app quietly serving them 200 kcal for dinner.",
-    check(r, ctx) {
-      if (r.category !== "main" || !r.perPortion) return null;
-      const plate = plateGrams(r, ctx);
-      if (!(r.perPortion.kcal < 300 || plate < 200)) return null;
-      const guided = (r.steps || []).some(s => isNote(s) && /plate it:|protein note:/i.test(s));
-      return guided ? null : `${r.perPortion.kcal} kcal / ${Math.round(plate)} g with no serving guidance`;
-    },
-  },
+  //
+  // There was a `light-main-guidance` rule here, requiring every main under
+  // 300 kcal or 200 g to carry a 🍽️ or 💪 note explaining how to complete the
+  // plate. It was retired on 2026-09-10 along with the 43 notes that satisfied
+  // it, and the reason is worth keeping:
+  //
+  // The rule and the notes were written together, so the rule could only ever
+  // report success — it was measuring whether the notes existed, not whether
+  // the library was any good. What it produced was 195 of 401 recipes carrying
+  // more note text than method text, and a paragraph on the card telling the
+  // cook that the recipe they had just chosen "sits below what a main should
+  // carry". The protein and calorie numbers are already on every card, and the
+  // protein filter chips already let someone avoid a light main.
+  //
+  // If light mains become a real problem, the fix belongs in the filters or in
+  // the recipes themselves — not in a rule that is satisfied by adding text.
   {
     id: "fat-dominant-main", severity: "nutrition",
     why: "69% of calories from fat is right for a tahini dip. A MAIN that is fat-dominant and short on protein will not keep anyone full.",
@@ -349,17 +354,6 @@ const RULES = [
     check(r) { return Array.isArray(r.allergens) ? null : "no allergens field"; },
   },
 ];
-
-function plateGrams(r, ctx) {
-  const IM = (ctx && ctx.IM) || {};
-  let g = 0;
-  for (const i of r.batchItems || []) {
-    const md = IM[i.key]; if (!md) continue;
-    const u = String(i.unit || "g").toLowerCase();
-    g += (u === "g" || u === "ml") ? i.qty : i.qty * (md.unitG || 0);
-  }
-  return g / (r.portions || 1);
-}
 
 export const RULE_IDS = RULES.map(r => r.id);
 

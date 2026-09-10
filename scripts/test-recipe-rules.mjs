@@ -93,7 +93,6 @@ const CASES = [
            r.batchItems.push({ key: "t1_soy3", label: "Japanese soy sauce", qty: 30, unit: "ml", cat: "Sauces", ingId: 180 });
            r.steps[2] = "Steam the broccoli 5 min, then stir in both soy sauces."; }],
   ["no-pdf-artefacts", r => { r.steps[2] = "Steam the broccoli for"; }],
-  ["light-main-guidance", r => { r.perPortion.kcal = 220; }],
   ["fat-dominant-main", r => { r.perPortion = { kcal: 400, protein: 12, carbs: 10, fat: 34 }; }],
   ["kcal-matches-macros", r => { r.perPortion.kcal = 900; }],
   ["batch-portioning", r => { r.steps[3] = "Eat."; }],
