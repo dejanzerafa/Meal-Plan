@@ -44,8 +44,10 @@ export const POULTRY = /\b(chicken|turkey|duck)\b/i;
 export const NOT_RAW = /broth|stock|knorr|bouillon|smoked|deli|rotisserie|pre-?cooked|\bcooked\b|jerky|bacon/i;
 export const COOK_IMPERATIVE = /^(?:then\s+|now\s+|next,?\s+|meanwhile,?\s+|carefully\s+|gently\s+|lightly\s+)?(cook|fry|saut[ée]|sear|brown|grill|bake|roast|boil|simmer|steam|poach|toast|air[- ]?fry|blanch|braise|scramble|griddle)\b/i;
 export const TIMED = /\d+\s*(?:min(?:ute)?s?|h(?:ou)?rs?|sec(?:ond)?s?)\b|overnight/i;
-export const DEFERS = /per (?:the )?(?:packet|package)|according to (?:the )?(?:packet|package)|packet instructions|package directions|to your liking|to your preference/i;
-export const DONENESS_CUE = /\buntil\b|\bto your\b|\d+\s*°C|no (?:longer )?pink|golden|tender|crisp|set\b|wilted|softened|fragrant|charred|opaque|shreds?/i;
+export const DEFERS = /(?:per|to|under|following)\s+(?:just\s+)?(?:the\s+)?(?:packet|package)|according to (?:the )?(?:packet|package)|packet (?:time|instructions)|package (?:time|directions)|to your liking|to your preference/i;
+// "al dente" is a doneness, and a cook knows what it means — it was missing,
+// so a step that gave a perfectly good cue was reported as unanswerable.
+export const DONENESS_CUE = /\buntil\b|\bto your\b|\d+\s*°C|no (?:longer )?pink|golden|tender|crisp|set\b|wilted|softened|fragrant|charred|opaque|shreds?|al dente/i;
 export const CARB = /rice|pasta|potato|quinoa|couscous|bread|tortilla|wrap|noodle|oats|barley|farro|bulgur|gnocchi|polenta|pita|bagel|falafel/i;
 // The house doneness temperature. USDA and Health Canada give 74°C (165°F)
 // instantaneous for poultry; the UK FSA writes it as 70°C for 2 min, 75°C for
@@ -109,8 +111,14 @@ const RULES = [
     id: "mince-cooked-through", severity: "safety",
     why: "Whole muscle is sterile inside, which is why a steak can be rare. Mincing spreads surface bacteria right through the meat.",
     check(r) {
-      const labels = (r.batchItems || []).map(i => i.label || "").join(" ");
-      if (!/\b(beef|lamb|pork)\b/i.test(labels) || !/\b(mince|minced|ground)\b/i.test(labels)) return null;
+      // The mince word has to be on the MEAT's own label. Testing the whole
+      // ingredient list meant "Lean beef tenderloin" + "Coriander (ground)"
+      // counted as minced beef, and so did "Braising beef" + "Garlic (minced)".
+      // Both got a cooked-through cue they did not need, on a step that was not
+      // even cooking meat.
+      const isMince = (r.batchItems || []).some(i =>
+        /\b(beef|lamb|pork)\b/i.test(i.label || "") && /\b(mince[d]?|ground)\b/i.test(i.label || ""));
+      if (!isMince) return null;
       const T = (r.steps || []).join(" ");
       return /(7[0-9]|8\d)\s*°C|no (?:longer )?pink|right through|cooked through|fully browned|until browned/i.test(T)
         ? null : "minced red meat with no cooked-through cue";
@@ -128,7 +136,12 @@ const RULES = [
       // water when reheating" are asides about something else — the gerund is
       // the tell, and matching /reheat/ loosely flagged four of them.
       const withReheat = (r.steps || []).flatMap(x => String(x).split(/(?<=[.!?])\s+/))
-        .filter(x => /\breheat\b/i.test(x) && !/\b(after|when|before|while|during|than)\s+reheat/i.test(x));
+        .filter(x => /\breheat\b/i.test(x)
+                  && !/\b(after|when|before|while|during|than)\s+reheat/i.test(x)
+                  // "No reheating needed; eat cold" is the opposite of a reheat
+                  // instruction, and appending a doneness to it produced
+                  // "eat cold or at room temperature, until steaming hot".
+                  && !/\bno\b[^.]{0,20}\breheat/i.test(x));
       if (!withReheat.length) return null;
       const answered = withReheat.some(x =>
         /(steaming hot|piping hot|hot (?:all the way )?through|through(?:out)?|75\s*°C|until hot)/i.test(x)
