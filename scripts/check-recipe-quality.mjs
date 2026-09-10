@@ -47,7 +47,7 @@ if (files.length) {
 let results = checkLibrary(recipes, { IM, ING });
 if (sevArg) results = results.map(r => ({ ...r, findings: r.findings.filter(f => f.severity === sevArg) })).filter(r => r.findings.length);
 
-const ORDER = ["safety", "wrong", "nutrition", "quality"];
+const ORDER = ["safety", "wrong", "technique", "nutrition", "quality"];
 const all = results.flatMap(r => r.findings);
 const bySeverity = Object.fromEntries(ORDER.map(s => [s, all.filter(f => f.severity === s).length]));
 

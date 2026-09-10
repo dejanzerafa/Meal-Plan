@@ -51,6 +51,8 @@ const IM = {
   t1_chicken: { kcal: 165, p: 31, c: 0, f: 3.6 },
   t1_rice: { kcal: 360, p: 7.5, c: 76, f: 2.7 },
   t1_broccoli: { kcal: 34, p: 2.8, c: 7, f: 0.4 },
+  t1_onion: { kcal: 40, p: 1.1, c: 9.3, f: 0.1 },
+  t1_garlic: { kcal: 149, p: 6.4, c: 33, f: 0.5 },
 };
 const ctx = { IM, ING: [] };
 const fires = (recipe, ruleId) => checkRecipe(recipe, ctx).some(f => f.id === ruleId);
@@ -93,6 +95,55 @@ const CASES = [
            r.batchItems.push({ key: "t1_soy3", label: "Japanese soy sauce", qty: 30, unit: "ml", cat: "Sauces", ingId: 180 });
            r.steps[2] = "Steam the broccoli 5 min, then stir in both soy sauces."; }],
   ["no-pdf-artefacts", r => { r.steps[2] = "Steam the broccoli for"; }],
+
+  // ── Technique (added 2026-09-10) ──────────────────────────────────────────
+  // Every lookalike below is a real recipe that a first draft of the rule
+  // flagged wrongly. They are the point of this file.
+  ["pasta-water-salted",
+    r => { r.batchItems[1] = { key: "t1_pasta", label: "Pasta (dry)", qty: 300, unit: "g", cat: "Carbs", ingId: 2 };
+           r.steps[0] = "Cook the pasta for 9 min until al dente, then drain."; },
+    "udon is salted in manufacture and is boiled in unsalted water",
+    r => { r.batchItems[1] = { key: "t1_udon", label: "Udon noodles (dry)", qty: 300, unit: "g", cat: "Carbs", ingId: 2 };
+           r.steps[0] = "Cook the udon noodles for 9 min, then drain."; }],
+
+  ["long-grain-rice-rinsed",
+    r => { r.batchItems[1].label = "Basmati rice (dry)";
+           r.steps[0] = "Cook the basmati rice for 12 min. Cool it quickly, within an hour, and chill."; },
+    "pre-cooked basmati has nothing to rinse",
+    r => { r.batchItems[1].label = "Cooked basmati rice";
+           r.steps[0] = "Warm the cooked basmati rice through for 2 min."; }],
+
+  ["spices-bloomed-in-fat",
+    r => { r.steps[0] = "Heat the oil, then add the stock, the cumin and the paprika and simmer 10 min."; },
+    "a cold dip has no fat stage to bloom in",
+    r => { r.steps[0] = "Whisk the yogurt with the paprika and a splash of water into a cold dip."; }],
+
+  ["blanched-greens-shocked",
+    r => { r.steps[2] = "Blanch the broccoli for 3 min, then drain and set aside."; },
+    "greens that finish in the wok do not need shocking",
+    r => { r.steps[2] = "Blanch the broccoli 3 min, then toss it in the wok over high heat for 2 min."; }],
+
+  ["onion-before-garlic",
+    // Appended, not substituted: replacing step 0 orphaned whatever it used and
+    // tripped ingredient-used instead, which would have proved nothing.
+    r => { r.batchItems.push({ key: "t1_onion", label: "Onion (diced)", qty: 100, unit: "g", cat: "Aromatics", ingId: 8 },
+                             { key: "t1_garlic", label: "Garlic (minced)", qty: 20, unit: "g", cat: "Aromatics", ingId: 9 });
+           r.steps.splice(1, 0, "Saut\u00e9 the diced onion and garlic over medium heat for 8 min until soft."); },
+    "onion first, then garlic, is the correct staging",
+    r => { r.batchItems.push({ key: "t1_onion", label: "Onion (diced)", qty: 100, unit: "g", cat: "Aromatics", ingId: 8 },
+                             { key: "t1_garlic", label: "Garlic (minced)", qty: 20, unit: "g", cat: "Aromatics", ingId: 9 });
+           r.steps.splice(1, 0, "Saut\u00e9 the diced onion 5 min until softened, then add the garlic for 30\u201360 seconds."); }],
+
+  ["technique-not-buried-in-a-note",
+    r => { r.steps[1] = "Sear the chicken 4 min a side until it reads 75\u00b0C.";
+           r.steps.push("\uD83D\uDCA1 Cook in batches in a single layer; a crowded pan steams the chicken grey."); },
+    "a single layer for FREEZING is storage advice, not browning advice",
+    r => { r.steps.push("\uD83D\uDCA1 Freeze in a single layer in a lidded tub for up to 3 months."); }],
+
+  ["no-kitchen-myths",
+    r => { r.steps[1] = "Sear the chicken hard to seal in the juices, until it reads 75\u00b0C."; },
+    "searing for a crust is correct; only the sealing claim is a myth",
+    r => { r.steps[1] = "Sear the chicken hard for a deep crust, until it reads 75\u00b0C."; }],
   ["badge-matches-method", r => { r.badge = "🥗 No-Cook"; },
     "melting chocolate in a microwave is still no-cook",
     r => { r.badge = "🥗 No-Cook"; r.steps = ["Melt the chocolate in the microwave in 20-second bursts.", "Spread it over and chill 15 min.", "Divide equally into 4 portions."]; }],

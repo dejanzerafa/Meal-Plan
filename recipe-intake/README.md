@@ -105,6 +105,9 @@ regression suite asserts and CI gates on. Exit code 1 on any finding.
 
 `--severity safety` narrows it to the findings that could make someone ill.
 
+Severities run `safety · wrong · technique · nutrition · quality`. Any finding at
+any severity exits 1 — a new batch does not merge until it is clean.
+
 ### 5. Review
 
 Produce a review file for Dejan: every recipe, its macros, its duplicates
@@ -217,6 +220,68 @@ from the macros.
 **Presentation** — batches say how to divide; methods have at least three steps
 and none over 320 characters; subtitles carry a time; names start with an emoji;
 every recipe has an allergens field.
+
+**Technique** (added 2026-09-10) — the recipe is accurate but the dish will not
+work. Pasta water is salted; long-grain rice is rinsed; ground spices are bloomed
+in fat rather than tipped into liquid; blanched greens get a cold shock; onion
+goes in before garlic; a technique-critical instruction is not left inside a
+collapsed tip; and no method repeats a kitchen myth.
+
+Sources: Serious Eats / Kenji López-Alt, America's Test Kitchen, Harold McGee's
+*On Food and Cooking*, USDA FSIS, the UK Food Standards Agency, EFSA, the US
+National Cancer Institute and Harvard's Nutrition Source.
+
+### Three technique rules were researched and deliberately NOT encoded
+
+Their evidence is genuinely contested, and a rule that produces confident wrong
+verdicts is worse than no rule:
+
+- **resting meat** — the juice-loss measurement replicates (ATK: ~9% vs ~2%), but
+  a Serious Eats blind panel found rested and unrested steaks indistinguishable
+  16/30, and the "juices redistribute" mechanism is wrong regardless.
+- **charring meat** — HCAs and PAHs do form, but the NCI states the human cancer
+  link is not established, and IARC did not attribute the red-meat
+  classification to them.
+- **smoke points** — oxidative stability predicts heated performance better than
+  smoke point, so extra-virgin olive oil must never be flagged for high heat.
+
+A fourth, `no-acid-to-finish`, was implemented, ran at 21 findings and was
+retired on review: it traced to chef consensus rather than a measurement, and
+could not tell "no acid" from "acid, added early" — it flagged a dish containing
+both Worcestershire and Dijon.
+
+### Eleven myths the rules refuse to encode
+
+`no-kitchen-myths` is an **inverse** check: it fails a recipe for *repeating*
+these, rather than for breaking them.
+
+| Myth | What is actually true |
+|---|---|
+| Searing seals in the juices | Disproved. Searing is for crust. Liebig, 1847. |
+| The alcohol all cooks off | ~40% remains after 15 min simmering (USDA retention factors); flambé keeps ~75%. |
+| Add oil to the pasta water | It floats, then coats the pasta and makes sauce slide off. |
+| Salt makes beans tough | Backwards — salt softens the skins. **Acid** is what keeps them firm. |
+| Never wash mushrooms | They absorb only a few percent by weight. |
+| Resting redistributes the juices | Wrong mechanism; rested meat simply loses less because it is cooler. |
+| Rinsing rice removes the arsenic | ~10%. Cooking in excess water and draining removes 40–60%. |
+| Bring meat to room temperature | A thick steak rises a few degrees in an hour, and it is a safety liability. |
+| Salt makes water boil faster | Boiling-point elevation works the other way; the effect is negligible. |
+| Never cook with extra-virgin olive oil | Smoke point is a poor ranking metric; EVOO is oxidatively stable. |
+| Keep potatoes out of the fridge | The FSA **withdrew** this advice after a COT-reviewed study. |
+
+### The test for a step versus a tip
+
+Collapsing the tips behind **STORAGE & TIPS** was right — 195 of 401 recipes
+carried more note text than method text. But it means a tip is no longer read in
+passing, and nine recipes had an instruction in there that decided whether the
+dish worked.
+
+> **If skipping the line makes the dish fail, it is a step, not a tip.**
+
+"Salt the courgette noodles and pat dry" is a step. "Freeze in a single layer for
+up to 3 months" is a tip. `technique-not-buried-in-a-note` enforces the
+distinction, and deliberately ignores any sentence about chilling, freezing or
+storing.
 
 ---
 

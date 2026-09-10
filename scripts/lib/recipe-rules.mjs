@@ -56,6 +56,19 @@ export const CARB = /rice|pasta|potato|quinoa|couscous|bread|tortilla|wrap|noodl
 export const HOUSE_TEMP = 75;
 export const ANY_DONENESS_TEMP = /\b(7[45]|8[02])\s*°\s*C\b|\b16[5-9]\s*°\s*F\b/;
 
+// ── Technique vocabulary ────────────────────────────────────────────────────
+// A "single layer" or "pat dry" sentence about CHILLING or FREEZING is storage
+// advice, not browning advice. Three desserts were flagged during the 2026-09-10
+// audit purely for saying how to store them.
+export const STORAGE_SENTENCE = /\b(chill|freeze|frozen|store|storing|airtight|fridge|keep|keeps|lid|tub|box|bag)\b/i;
+export const PASTA = /\b(pasta|spaghetti|penne|fusilli|linguine|orzo|macaroni|rigatoni|farfalle)\b/i;
+// Japanese and Chinese noodles are salted in manufacture and are conventionally
+// boiled in UNSALTED water. That convention is correct; do not "fix" it.
+export const PRESALTED_NOODLE = /\b(udon|ramen|somen|soba|rice noodle|vermicelli)\b/i;
+export const LONG_GRAIN = /\b(basmati|jasmine|long.grain|long grain)\b/i;
+export const GROUND_SPICE = /\b(cumin|ground coriander|paprika|turmeric|curry powder|garam masala|chill?i powder)\b/i;
+export const THIN_LIQUID = /\b(stock|broth|water|tomatoes|coconut milk|passata)\b/i;
+
 const sentences = s => String(s).split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
 const stem = w => w.replace(/(ies)$/, "y").replace(/(es|s)$/, "");
 
@@ -405,6 +418,158 @@ const RULES = [
     id: "has-allergens-field", severity: "quality",
     why: "The release panel shows a blank where the warning should be. The user-facing chips compute live, so this is admin-only — but a blank is still wrong.",
     check(r) { return Array.isArray(r.allergens) ? null : "no allergens field"; },
+  },
+
+  // ── Technique — the recipe is accurate, but the dish will not work ─────────
+  //
+  // Added 2026-09-10 after a full technique audit of all 401 recipes. Rules were
+  // researched from Serious Eats / Kenji López-Alt, America's Test Kitchen,
+  // Harold McGee's On Food and Cooking, USDA FSIS, the UK FSA and Harvard's
+  // Nutrition Source, then VALIDATED against the real library before being
+  // trusted. Six of the first 87 findings were false positives, and the only way
+  // that surfaced was reading each flagged recipe in full.
+  //
+  // The lookalike clauses below matter more than the detect patterns. Every one
+  // of those six was a rule firing on text that merely looked like the error.
+  //
+  // Three researched rules were deliberately NOT encoded because their evidence
+  // is contested: resting meat (the juice-loss measurement replicates, the
+  // sensory benefit does not), charring meat (HCAs form, but NCI states the
+  // human cancer link is not established) and smoke points (oxidative stability
+  // predicts heated performance better, so EVOO must not be flagged).
+  //
+  // A fourth, `no-acid-to-finish`, was implemented, ran at 21 findings and was
+  // retired on review: it traced to chef consensus rather than a measurement,
+  // and could not tell "no acid" from "acid, added early".
+  {
+    id: "pasta-water-salted", severity: "technique",
+    why: "Pasta absorbs its cooking water, so salt there seasons the pasta itself. Salt only in the sauce leaves bland pasta under a seasoned coating. About 10 g per litre.",
+    check(r) {
+      const ing = (r.batchItems || []).map(i => i.label || "").join(" ");
+      if (!PASTA.test(ing)) return null;
+      const T = bodyOf(r).join(" ");
+      if (!/\b(cook|boil)\b[^]{0,60}\b(pasta|spaghetti|penne|orzo|macaroni|noodles|rigatoni)\b/i.test(T)) return null;
+      if (PRESALTED_NOODLE.test(ing + T)) return null;   // salted in manufacture
+      return /salt(ed)?\s+(the\s+)?water|water[^]{0,30}salt|season the water/i.test(T)
+        ? null : "boils pasta without salting the water";
+    },
+  },
+  {
+    id: "long-grain-rice-rinsed", severity: "technique",
+    why: "Milling leaves loose surface starch; unrinsed basmati and jasmine cook gummy rather than separate. NOT an arsenic measure — rinsing removes only ~10%, and risotto/paella rice must NOT be rinsed.",
+    check(r) {
+      const ing = (r.batchItems || []).map(i => i.label || "").join(" ");
+      if (!LONG_GRAIN.test(ing)) return null;
+      if (/\bcooked\b/i.test(ing.match(/[^|]*(?:basmati|jasmine|long.grain)[^|]*/i)?.[0] || "")) return null; // bought pre-cooked
+      const T = bodyOf(r).join(" ");
+      if (!/\brice\b/i.test(T) || !/\b(cook|boil|simmer|steam)\b/i.test(T)) return null;
+      return /rins|wash|runs clear/i.test(T) ? null : "cooks long-grain rice without rinsing it";
+    },
+  },
+  {
+    id: "spices-bloomed-in-fat", severity: "technique",
+    why: "Most of the aroma in ground cumin, paprika, turmeric and curry powder is fat-soluble. Tipped into stock or coconut milk they stay raw and dusty; 30–60 s in hot fat extracts them. The tarka principle.",
+    check(r) {
+      for (const s of bodyOf(r)) {
+        const l = s.toLowerCase();
+        if (!GROUND_SPICE.test(l) || !THIN_LIQUID.test(l)) continue;
+        if (/until fragrant|bloom|toast|in the oil|in the fat|30 seconds|1 minute/.test(l)) continue;
+        // A cold mix has no fat stage to bloom in, and a slow cooker has no
+        // frying stage at all — hol6's cumin goes into a cold salsa and m50 is
+        // a slow cooker. Neither is fixable and neither is wrong.
+        if (/\b(slow cooker|cold|chilled|dip|dressing|salsa|whisk|mix with)\b/.test(l)) continue;
+        if (!bodyOf(r).some(x => /\b(heat|saut[ée]|fry|oil|butter|ghee)\b/i.test(x))) continue;
+        return `ground spices go straight into liquid: "${s.slice(0, 70)}"`;
+      }
+      return null;
+    },
+  },
+  {
+    id: "blanched-greens-shocked", severity: "technique",
+    why: "Held hot, blanched greens carry on cooking and their chlorophyll degrades to olive-brown pheophytin. Iced water stops both. Irrelevant when they go straight into a hot pan.",
+    check(r) {
+      const T = bodyOf(r).join(" ");
+      const s = bodyOf(r).find(x => /blanch/i.test(x) && /green bean|broccoli|asparagus|peas|spinach|kale|chard|mangetout|sugar snap/i.test(x));
+      if (!s) return null;
+      if (/ice bath|iced water|cold water|refresh|shock|plunge/i.test(T)) return null;
+      if (/\b(wok|stir.fry|return to the pan)\b/i.test(T)) return null;   // finishes in the pan
+      return "blanches greens with no cold-water shock";
+    },
+  },
+  {
+    id: "onion-before-garlic", severity: "technique",
+    why: "Garlic scorches and turns acrid in 30–60 s at sauté heat; onion needs 5–8 min. Added together you get burnt garlic or raw onion.",
+    check(r) {
+      for (const s of bodyOf(r)) {
+        const l = s.toLowerCase();
+        if (!/\bgarlic\b/.test(l)) continue;
+        if (/garlic powder|onion powder|granulated garlic/.test(l)) continue;   // not fresh alliums
+        if (!/\b(diced|chopped|sliced|minced|fresh)\s*(onion|shallot|leek)/.test(l)) continue;
+        // NO trailing \b. "sauté" ends in a non-word character, so \b after it
+        // requires a boundary that never exists before a space — the rule could
+        // not fire on any sautéing step at all. Same shape as the "fryer" bug
+        // that hid 12 safety findings in the 2026-09-08 audit.
+        if (!/\b(cook|saut[ée]|fry|brown)/.test(l)) continue;
+        if (/\b(stock|broth|water|slow cooker|pressure)\b/.test(l)) continue;   // no scorch risk in liquid
+        // Only a SIMULTANEOUS addition is the error. hol4 says "sauté onion
+        // 3 min until softened, then garlic 1 min" and v5 puts them in separate
+        // sentences — both are correctly staged and were flagged by a first
+        // draft of this rule that merely found the two words in one step.
+        const oi = l.search(/\b(onion|shallot|leek)/), gi = l.indexOf("garlic");
+        if (oi < 0 || gi < 0) continue;
+        const between = l.slice(Math.min(oi, gi), Math.max(oi, gi));
+        if (/[.;]|\bthen\b|\bafter\b|\bonce\b|\bnext\b|\bremove\b|min/.test(between)) continue;
+        if (!/\b(and|,)\b/.test(between)) continue;
+        return `onion and garlic go in together: "${s.slice(0, 70)}"`;
+      }
+      return null;
+    },
+  },
+  {
+    id: "technique-not-buried-in-a-note", severity: "technique",
+    why: "The tips block is collapsed behind STORAGE & TIPS, so a tip is no longer read in passing. 'Salt the courgette noodles and pat dry' decides whether the dish works — skip it and the garlic butter is watery. The test: if skipping the line makes the dish fail, it is a step, not a tip.",
+    check(r) {
+      const noteText = notesOf(r).join(" ").split(/(?<=\.)\s+/)
+        .filter(x => !STORAGE_SENTENCE.test(x)).join(" ").toLowerCase();
+      const body = bodyOf(r).join(" ").toLowerCase();
+      const browns = /\b(brown|sear|fry|saut[ée]|roast|bake|air.?fry|griddle|char)\b/i.test(body);
+      // The body pattern is deliberately LOOSER than the note pattern. Matching
+      // them made already-fixed recipes keep firing: "pat .{0,12}dry" caught the
+      // tip but not the promoted step "Pat the surface completely dry".
+      const CRIT = [
+        [/press(ing)? the tofu/, /press[^.]{0,25}tofu/, "press the tofu"],
+        [/pat [^.]{0,14}dry|blot [^.]{0,14}dry/, /\bpat\b[^.]{0,40}\bdry\b|\bblot\b/, "pat dry"],
+        // "single layer" only counts when the recipe actually browns or roasts.
+        // ds20 lays banana slices on a rice cake in a single layer — assembly,
+        // not browning, and step 2 already says to lay them over the top.
+        [browns ? /in batches|do not crowd|single layer/ : /(?!)/, /in batches|do not crowd|single layer|without crowding/, "cook in a single layer"],
+        [/against the grain/, /against the grain/, "slice against the grain"],
+      ];
+      for (const [inNote, inBody, label] of CRIT)
+        if (inNote.test(noteText) && !inBody.test(body)) return `"${label}" appears only in a tip, not in the method`;
+      return null;
+    },
+  },
+  {
+    id: "no-kitchen-myths", severity: "technique",
+    why: "Eleven pieces of received wisdom are false or overstated. Repeating one in a method teaches it. Searing does not seal juices (Liebig, 1847, disproved); ~40% of alcohol remains after 15 min simmering (USDA retention factors); oil in pasta water floats, then makes sauce slide off; salt SOFTENS beans, acid is what keeps them firm; the FSA withdrew the potato-fridge advice.",
+    check(r) {
+      const T = (r.steps || []).join(" ");
+      const MYTHS = [
+        [/seal(s|ing)? in the juices|lock in the juices|seal the meat/i, "searing seals in the juices"],
+        [/alcohol (will )?(cook|burn)s? off|alcohol evaporates completely/i, "the alcohol all cooks off"],
+        [/add(ing)? (a splash of )?oil to the (pasta )?water/i, "oil in the pasta water"],
+        [/(do not|don't) salt the beans until|salt(ing)? beans early/i, "salt toughens beans"],
+        [/never (wash|rinse) mushrooms|mushrooms are sponges/i, "never wash mushrooms"],
+        [/juices (can )?redistribute|juices to (flow|move) back/i, "resting redistributes the juices"],
+        [/rinse the rice to remove[^.]{0,15}arsenic/i, "rinsing removes the arsenic"],
+        [/salt (helps|makes) the water boil (faster|quicker)/i, "salt makes water boil faster"],
+        [/never (use|cook with) (extra.virgin )?olive oil/i, "never cook with olive oil"],
+        [/(do not|don't) (store|keep) potatoes in the (fridge|refrigerator)/i, "potatoes must not go in the fridge"],
+      ];
+      for (const [re, name] of MYTHS) if (re.test(T)) return `repeats the myth "${name}"`;
+      return null;
+    },
   },
 ];
 
