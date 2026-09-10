@@ -1,0 +1,150 @@
+# Protein-lift batch 5 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+ds17  🍎 Apple Peanut Butter "Nachos"
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 216 kcal · 5.3 g protein · 29.5 C · 10.9 F  =  10% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Apple: 180.0 g
+  - Peanut butter: 16.0 g
+  - Chopped almonds: 2.9 g
+  - Shredded coconut: 1.9 g
+METHOD:
+  1. Arrange apple slices on a plate like nachos.
+  2. Drizzle peanut butter evenly across the slices.
+  3. Sprinkle chopped almonds and coconut on top.
+
+============================================================================
+ds7  🍫 Frozen Banana Snickers Bar
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 284 kcal · 7.5 g protein · 24.3 C · 19.3 F  =  11% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Banana (halved lengthways): 60.0 g
+  - Peanut butter (natural): 14.0 g
+  - Roasted peanuts (chopped): 10.0 g
+  - Dark chocolate 85% (melted): 12.0 g
+  - Coconut oil: 2.0 g
+METHOD:
+  1. Halve the banana lengthways — flat pieces give you a stable base to layer everything onto.
+  2. Freeze the banana for 10 minutes before dipping. A cold base sets the chocolate faster and far more neatly.
+  3. Spread the peanut butter over the cut side. This is the caramel layer that makes it taste like the candy bar.
+  4. Press the chopped peanuts into the peanut butter so they don't roll off when you dip.
+  5. Melt the chocolate with the coconut oil and drizzle over — the oil helps it set into a clean, snappy shell.
+  6. Add a pinch of flaky salt right after the chocolate, before the shell hardens.
+  7. Freeze on parchment at least an hour until firm.
+
+============================================================================
+ds20  🍪 Peanut Butter Banana Rice Cakes
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 109 kcal · 3 g protein · 16.3 C · 4.3 F  =  11% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Brown rice cakes: 9.0 g
+  - Peanut butter: 8.0 g
+  - Banana: 29.5 g
+  - Dash of cinnamon: 0.5 g
+METHOD:
+  1. Spread the peanut butter across the rice cakes right to the edges.
+  2. Slice the banana thinly and lay it over the top.
+  3. Finish with the cinnamon and eat straight away — rice cakes soften within minutes once topped.
+
+============================================================================
+ds21  🌾 Banana Almond Oat Cookies
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 98 kcal · 2.9 g protein · 16.5 C · 3 F  =  12% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Bananas: 29.5 g
+  - Oats: 10.0 g
+  - Almond butter: 4.0 g
+  - Honey: 2.7 g
+  - Cinnamon: 0.2 g
+METHOD:
+  1. Preheat oven to 175°C.
+  2. Mix all ingredients in a bowl until combined.
+  3. Drop spoonfuls onto a lined baking sheet and flatten slightly.
+  4. Bake for 12–14 minutes until golden.
+
+============================================================================
+d6  🍎 Baked Apple & Blueberry Crumble
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 371 kcal · 15.6 g protein · 60 C · 10 F  =  17% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Apples (diced): 150.0 g
+  - Blueberries: 50.0 g
+  - Rolled oats: 30.0 g
+  - Vanilla whey protein: 10.0 g
+  - Almond flour: 7.5 g
+  - Butter (melted): 3.8 g
+  - Maple syrup: 12.5 g
+  - Cinnamon (ground): 1.0 g
+  - Lemon juice: 1.3 g
+  - Cornstarch: 0.7 g
+METHOD:
+  1. Heat the oven to 190°C.
+  2. Toss the apples and blueberries with the cinnamon, lemon juice and cornstarch. The cornstarch is what stops the fruit juice flooding the dish and steaming the topping.
+  3. Tip the fruit into a small oven-safe dish.
+  4. Combine the oats, protein powder and almond flour in a bowl.
+  5. Rub through the melted butter and maple syrup until the mixture clumps. Stop while it is still uneven — the loose and clumped bits together are what gives you crumble rather than a lid.
+  6. Scatter over the fruit and bake 25–30 min until golden and bubbling at the edges.
+  7. Cool before covering and refrigerating.
+
+============================================================================
+ds14  🫙 Apple Cinnamon Yogurt Parfait
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 220 kcal · 12.5 g protein · 31.3 C · 5.6 F  =  23% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Greek yogurt: 122.0 g
+  - Apple: 90.0 g
+  - Honey: 10.5 g
+  - Cinnamon: 0.3 g
+  - Granola: 7.0 g
+  - Chopped walnuts: 3.8 g
+METHOD:
+  1. In a bowl, stir together the yogurt, honey, and cinnamon until smooth and well combined.
+  2. In serving glasses, layer a spoonful of the yogurt mixture, followed by diced apple, granola, and walnuts, spreading each layer evenly.
+  3. Repeat the layers until the glasses are filled, finishing with a touch of yogurt and a few walnut pieces on top.
+  4. Chill briefly if desired, then serve immediately for a creamy, crunchy, and sweet breakfast or snack.
+
+============================================================================
+m169  🥑 Creamy Avocado Pasta
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 455 kcal · 10.8 g protein · 46.6 C · 27.1 F  =  9% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Whole wheat pasta: 57.0 g
+  - Avocado: 75.0 g
+  - Garlic clove: 1.5 g
+  - Lemon juice: 7.5 g
+  - Olive oil: 13.5 g
+  - Grated Parmesan cheese: 3.1 g
+METHOD:
+  1. Cook pasta according to package directions. Reserve 60 ml of the pasta water.
+  2. In a blender, combine avocado, garlic, lemon juice, olive oil, salt, and pepper. Blend until creamy.
+  3. Toss pasta with avocado sauce, adding reserved water to loosen if needed.
+  4. Sprinkle with Parmesan (if using) before serving.
+
+============================================================================
+m180  🥚 Quinoa-Stuffed Eggplant Boats
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 249 kcal · 7.3 g protein · 37.7 C · 9.4 F  =  12% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Eggplant: 225.0 g
+  - Cooked quinoa: 92.0 g
+  - Olive oil: 7.0 g
+  - Diced tomatoes: 60.0 g
+  - Chopped spinach: 3.8 g
+  - Garlic clove: 1.5 g
+  - Oregano: 0.3 g
+METHOD:
+  1. Preheat oven to 190°C. Scoop out eggplant flesh and chop it finely.
+  2. Sauté chopped eggplant and garlic in olive oil for 5 minutes.
+  3. Mix with quinoa, tomatoes, spinach, oregano, salt, and pepper.
+  4. Spoon filling into eggplant shells and bake for 20 minutes.
+

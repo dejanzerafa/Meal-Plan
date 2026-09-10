@@ -1,0 +1,136 @@
+# Protein-lift batch 10 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+sn16  🥚 Grilled Veggie & Halloumi Salad
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 405 kcal · 25 g protein · 7.8 C · 30.9 F  =  25% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Halloumi cheese: 104.0 g
+  - Zucchini: 100.0 g
+  - Mixed greens: 47.0 g
+  - Olive oil: 4.5 g
+  - Balsamic vinegar: 5.5 g
+METHOD:
+  1. Heat a grill pan and lightly brush with olive oil.
+  2. Grill halloumi slices for 2–3 minutes per side until golden.
+  3. Grill the zucchini until tender and lightly charred.
+  4. Toss all with greens and drizzle with balsamic vinegar.
+
+============================================================================
+sn22  🌿 Mediterranean Lentil Salad with Feta
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 399 kcal · 25.2 g protein · 55.2 C · 10.1 F  =  25% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Cooked lentils: 260.0 g
+  - Cherry tomatoes: 37.5 g
+  - Cucumber: 15.0 g
+  - Feta cheese: 9.5 g
+  - Olive oil: 7.0 g
+  - Lemon juice: 7.5 g
+METHOD:
+  1. In a bowl, combine lentils, tomatoes, cucumber, and feta.
+  2. Whisk olive oil, lemon juice, salt, and pepper together.
+  3. Pour dressing over salad, toss gently, and chill before serving.
+
+============================================================================
+sn27  🫙 Carrot Sticks with Spicy Greek Yogurt Dip
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 92 kcal · 6.6 g protein · 13.4 C · 1.5 F  =  29% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Carrot sticks: 110.0 g
+  - Greek yogurt: 61.0 g
+  - Chili flakes: 0.5 g
+  - Lemon juice: 2.5 g
+METHOD:
+  1. Whisk the Greek yogurt with the spices, lemon juice and a pinch of salt until smooth.
+  2. Cut the carrots into sticks of roughly even thickness so they stay crisp in the box.
+  3. Pack the dip separately from the carrots — dip poured over them goes watery within a day.
+
+============================================================================
+sn35  🥚 Mini Veggie Frittatas
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 112 kcal · 9 g protein · 4.3 C · 6.4 F  =  32% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Eggs: 60.0 g
+  - Chopped bell peppers: 40.0 g
+  - Spinach: 20.0 g
+  - Milk: 15.0 g
+METHOD:
+  1. Preheat oven to 175°C.
+  2. Whisk eggs, milk, salt, and pepper in a bowl.
+  3. Stir in chopped vegetables.
+  4. Pour into greased mini muffin tins and bake 15 minutes or until set.
+
+============================================================================
+ds16  🌱 Crispy Air-Fried Tofu Bites
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 88 kcal · 7.3 g protein · 2 C · 6.4 F  =  33% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Firm tofu: 88.0 g
+  - Olive oil: 2.2 g
+  - Soy sauce: 1.3 g
+  - Garlic powder: 0.4 g
+METHOD:
+  1. Add the tofu cubes to a bowl and drizzle them with the olive oil and soy sauce.
+  2. Sprinkle the garlic powder over the top, then toss everything together until each cube is evenly coated and lightly seasoned.
+  3. Arrange the tofu pieces in a single layer in your air fryer basket and cook at 190°C for 10–12 minutes, shaking the basket halfway through to help them crisp evenly on all sides.
+  4. Serve the tofu hot and golden with your favorite dipping sauce for a cozy, satisfying snack.
+
+============================================================================
+m183  🥤 Matcha Green Smoothie Bowl
+category: smoothie | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 255 kcal · 6.7 g protein · 37.4 C · 10.9 F  =  11% protein
+target for smoothie: at least 29% (category floor), ideally 38% (live median)
+INGREDIENTS (per portion):
+  - Banana: 118.0 g
+  - Spinach: 15.0 g
+  - Almond milk: 120.0 g
+  - Matcha powder: 1.0 g
+  - Almond butter: 16.0 g
+  - Granola: 7.0 g
+METHOD:
+  1. Blend banana, spinach, almond milk, matcha powder, and almond butter until creamy.
+  2. Pour into a bowl and top with granola.
+  3. Enjoy immediately for an energizing, antioxidant-rich start to your day.
+
+============================================================================
+sm26  🥤 Pineapple Coconut Recovery Smoothie
+category: smoothie | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 454 kcal · 28.7 g protein · 27 C · 27.8 F  =  25% protein
+target for smoothie: at least 29% (category floor), ideally 38% (live median)
+INGREDIENTS (per portion):
+  - Pineapple chunks: 82.0 g
+  - Coconut milk: 120.0 g
+  - Banana: 29.5 g
+  - Hemp seeds: 5.0 g
+  - Vanilla extract: 1.1 g
+  - Whey protein (vanilla) — our addition: 30.0 g
+METHOD:
+  1. Add pineapple and banana into the blender first to form a fruity base.
+  2. Pour in coconut milk and add vanilla extract.
+  3. Blend on medium for 20–30 seconds, then high until creamy and uniform.
+  4. Stir in hemp seeds and pulse 3–4 times for a nutty, protein-rich texture.
+  5. Pour into glasses and enjoy immediately post-workout for natural recovery.
+
+============================================================================
+sm23  🥣 Mango Coconut Chia Pudding
+category: smoothie | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 462 kcal · 29.4 g protein · 22 C · 30.3 F  =  25% protein
+target for smoothie: at least 29% (category floor), ideally 38% (live median)
+INGREDIENTS (per portion):
+  - Coconut milk: 120.0 g
+  - Chia seeds: 16.0 g
+  - Diced mango: 41.0 g
+  - Vanilla extract: 1.1 g
+  - Whey protein (vanilla) — our addition: 30.0 g
+METHOD:
+  1. Mix chia seeds, coconut milk, and vanilla in a jar.
+  2. Stir well and refrigerate for at least 4 hours or overnight.
+  3. Top with diced mango before serving.
+

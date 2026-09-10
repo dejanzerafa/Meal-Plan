@@ -1,0 +1,150 @@
+# Protein-lift batch 6 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+m189  🌾 Rainbow Grain Salad
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 223 kcal · 6.7 g protein · 27.6 C · 9.9 F  =  12% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Cooked quinoa or farro: 92.0 g
+  - Shredded red cabbage: 11.0 g
+  - Grated carrots: 14.0 g
+  - Chopped bell peppers: 19.0 g
+  - Edamame: 19.5 g
+  - Olive oil: 7.0 g
+  - Apple cider vinegar: 7.5 g
+  - Honey: 3.5 g
+METHOD:
+  1. In a large bowl, combine quinoa, cabbage, carrots, peppers, and edamame.
+  2. In a separate bowl, whisk together olive oil, vinegar, honey, salt, and pepper.
+  3. Pour the dressing over the salad, toss well, and refrigerate for 10 minutes before serving.
+
+============================================================================
+m182  🥚 Quinoa & Veggie Stir-Fry
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 230 kcal · 7 g protein · 28 C · 9.8 F  =  12% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Cooked quinoa: 92.0 g
+  - Olive oil: 7.0 g
+  - Garlic clove: 1.5 g
+  - Mixed vegetables: 65.0 g
+  - Soy sauce: 8.0 g
+  - Sesame seeds: 1.5 g
+METHOD:
+  1. Heat olive oil in a pan, sauté garlic and veggies until slightly tender.
+  2. Add cooked quinoa and soy sauce, stirring well.
+  3. Sprinkle sesame seeds and serve warm.
+
+============================================================================
+m179  🍽️ Mediterranean Stuffed Bell Peppers
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 277 kcal · 8.8 g protein · 31.5 C · 13.2 F  =  13% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Bell peppers: 120.0 g
+  - Cooked quinoa: 92.0 g
+  - Diced tomatoes: 60.0 g
+  - Chopped spinach: 3.8 g
+  - Feta cheese: 19.0 g
+  - Olive oil: 7.0 g
+METHOD:
+  1. Preheat oven to 190°C.
+  2. Sauté tomatoes and spinach in olive oil for 3 minutes.
+  3. Mix with quinoa, feta, salt, and pepper.
+  4. Spoon mixture into bell peppers and bake for 20 minutes.
+  5. Serve warm with a squeeze of lemon.
+
+============================================================================
+m170  🫘 Roasted Chickpea & Avocado Toast
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 373 kcal · 12.5 g protein · 42.3 C · 19.2 F  =  13% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain bread: 40.0 g
+  - Avocado: 75.0 g
+  - Roasted chickpeas: 82.0 g
+  - Olive oil: 4.5 g
+  - Smoked paprika: 0.6 g
+METHOD:
+  1. Mash avocado on toasted bread and season with salt and pepper.
+  2. Top with roasted chickpeas and drizzle with olive oil.
+  3. Sprinkle smoked paprika and enjoy warm or chilled.
+
+============================================================================
+m186  🍽️ Green Goddess Buddha Bowl
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 298 kcal · 10.3 g protein · 34.1 C · 15.1 F  =  14% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Cooked brown rice or farro: 98.0 g
+  - Edamame: 39.0 g
+  - Avocado: 37.5 g
+  - Kale: 32.5 g
+  - Tahini: 7.5 g
+  - Lemon juice: 7.5 g
+  - Olive oil: 2.2 g
+METHOD:
+  1. Arrange rice, edamame, kale, and avocado in a bowl.
+  2. In a small bowl, whisk tahini, lemon juice, olive oil, salt, and pepper.
+  3. Drizzle over the bowl and serve immediately.
+
+============================================================================
+m166  🍝 Creamy Spinach & Mushroom Orzo
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 416 kcal · 14.5 g protein · 64.5 C · 10.6 F  =  14% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain orzo: 85.0 g
+  - Olive oil: 7.0 g
+  - Garlic clove: 1.5 g
+  - Mushrooms: 35.0 g
+  - Spinach: 15.0 g
+  - Unsweetened almond milk: 60.0 g
+  - Grated Parmesan: 6.0 g
+METHOD:
+  1. Cook orzo according to package directions.
+  2. In a pan, heat olive oil, sauté garlic and mushrooms for 5 minutes.
+  3. Add spinach until wilted.
+  4. Stir in cooked orzo, almond milk, and Parmesan until creamy.
+  5. Serve immediately.
+
+============================================================================
+m191  🍲 Mushroom Barley Soup
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 149 kcal · 5.3 g protein · 27 C · 2.7 F  =  14% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Sliced mushrooms: 35.0 g
+  - Pearl barley: 25.0 g
+  - Onion: 37.5 g
+  - Garlic clove: 1.5 g
+  - Vegetable broth: 240.0 g
+  - Olive oil: 2.2 g
+METHOD:
+  1. Heat olive oil in a pot and sauté onions and garlic until fragrant.
+  2. Add mushrooms and cook until softened.
+  3. Add barley, broth, salt, and pepper.
+  4. Simmer for 30 minutes or until barley is tender.
+  5. Serve warm, garnished with fresh herbs if desired.
+
+============================================================================
+m172  🥚 Roasted Veggie Grain Bowl with Tahini Drizzle
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 319 kcal · 11.5 g protein · 52.6 C · 7.3 F  =  14% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Cooked farro or brown rice: 98.0 g
+  - Roasted chickpeas: 82.0 g
+  - Roasted mixed vegetables: 65.0 g
+  - Tahini: 7.5 g
+  - Lemon juice: 7.5 g
+  - Maple syrup: 3.3 g
+  - Warm water: 7.5 g
+METHOD:
+  1. Arrange grain, chickpeas, and vegetables in a bowl.
+  2. Whisk tahini, lemon juice, maple syrup, and water into a smooth dressing.
+  3. Drizzle over bowl and serve warm or cold.
+  4. Warm the cooked farro or brown rice through, or use it straight from the fridge.
+

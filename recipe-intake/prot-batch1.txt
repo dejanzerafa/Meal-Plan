@@ -1,0 +1,144 @@
+# Protein-lift batch 1 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+bf75  🫙 Coconut Yogurt Parfait with Tropical Fruit
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 275 kcal · 3.3 g protein · 32.4 C · 14.8 F  =  5% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Coconut yogurt: 122.0 g
+  - Diced mango: 41.0 g
+  - Diced pineapple: 41.0 g
+  - Granola: 14.0 g
+  - Shredded coconut: 1.0 g
+METHOD:
+  1. In a glass, layer the coconut yogurt, granola and mixed fruit.
+  2. Repeat the layers until the glass is full.
+  3. Sprinkle shredded coconut on top.
+  4. Serve immediately for a refreshing, tropical start to your day.
+
+============================================================================
+bf68  🥤 Green Apple & Cinnamon Smoothie
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 214 kcal · 3.6 g protein · 50.2 C · 2.4 F  =  7% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Green apple: 180.0 g
+  - Banana: 59.0 g
+  - Spinach: 30.0 g
+  - Unsweetened almond milk: 240.0 g
+  - Cinnamon: 1.3 g
+  - Honey: 7.0 g
+  - Ice cubes: 120.0 g
+METHOD:
+  1. Combine all ingredients in a blender.
+  2. Blend until velvety and smooth.
+  3. Pour into a tall glass, sprinkle extra cinnamon if desired, and enjoy chilled.
+
+============================================================================
+bf74  🥤 Mango Turmeric Smoothie
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 211 kcal · 3.7 g protein · 50.6 C · 1.4 F  =  7% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Frozen mango chunks: 165.0 g
+  - Banana: 59.0 g
+  - Coconut water: 240.0 g
+  - Turmeric powder: 0.8 g
+  - Honey: 3.5 g
+METHOD:
+  1. Add all ingredients to a blender.
+  2. Blend until smooth and silky.
+  3. Pour into a glass and enjoy the sunshine color and immune-boosting properties.
+
+============================================================================
+bf72  🧀 Sweet Potato Hash with Spinach & Feta
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 206 kcal · 4.9 g protein · 22.4 C · 11.2 F  =  10% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Sweet potato: 100.0 g
+  - Olive oil: 7.0 g
+  - Spinach: 15.0 g
+  - Crumbled feta: 19.0 g
+  - Garlic powder: 1.5 g
+METHOD:
+  1. Heat olive oil in a skillet; add diced sweet potatoes and cook for 10–12 minutes until golden.
+  2. Add spinach and garlic powder, stir until wilted.
+  3. Sprinkle with feta and season with salt and pepper.
+  4. Serve warm for a hearty, savory breakfast.
+
+============================================================================
+bf69  🍎 Warm Quinoa Breakfast Bowl with Cinnamon Apples
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 238 kcal · 6 g protein · 43 C · 5.8 F  =  10% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Cooked quinoa: 92.0 g
+  - Apple: 90.0 g
+  - Cinnamon: 1.3 g
+  - Maple syrup: 10.0 g
+  - Unsweetened almond milk: 120.0 g
+  - Chopped walnuts: 3.8 g
+  - Chia seeds: 1.8 g
+METHOD:
+  1. In a small pot, combine the quinoa, almond milk, and cinnamon. Warm over low heat until it simmers gently.
+  2. Add diced apple and maple syrup; stir and cook for about 5 minutes until the apples are tender.
+  3. Spoon into bowls, top with walnuts and chia seeds.
+  4. Serve warm, savoring the comforting aroma of cinnamon and sweetness of apples.
+
+============================================================================
+bf65  🌾 Coconut Mango Overnight Oats
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 327 kcal · 9.2 g protein · 42.4 C · 14.7 F  =  11% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 40.0 g
+  - Light coconut milk: 120.0 g
+  - Diced mango: 41.0 g
+  - Shredded coconut: 2.9 g
+  - Chia seeds: 5.5 g
+  - Honey: 3.5 g
+METHOD:
+  1. Combine oats, coconut milk, chia seeds, and honey in a jar.
+  2. Stir well, seal, and refrigerate overnight.
+  3. In the morning, top with mango and shredded coconut.
+  4. Stir and enjoy cool — tropical, creamy, and sunshine-sweet.
+
+============================================================================
+bf76  🥣 Peach Chia Breakfast Pudding
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 98 kcal · 2.9 g protein · 13.1 C · 4.2 F  =  12% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Chia seeds: 10.5 g
+  - Almond milk: 120.0 g
+  - Honey: 3.5 g
+  - Diced peach: 38.5 g
+  - Vanilla extract: 1.1 g
+METHOD:
+  1. Mix chia seeds, almond milk, honey, and vanilla in a jar.
+  2. Stir well, cover, and refrigerate for 2 hours until thickened.
+  3. Stir again before serving and top with fresh peaches.
+
+============================================================================
+bf66  🌾 Honey Nut Quinoa Breakfast Bowl
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 284 kcal · 8.5 g protein · 46.1 C · 8.2 F  =  12% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Quinoa: 42.5 g
+  - Almond milk: 120.0 g
+  - Honey: 10.5 g
+  - Chopped almonds: 4.4 g
+  - Walnuts: 3.8 g
+  - Cinnamon: 0.3 g
+  - Banana: 29.5 g
+METHOD:
+  1. Rinse quinoa under cold water. Combine with almond milk in a saucepan and bring to a boil.
+  2. Reduce heat to low heat, cover, and simmer for 15 minutes until fluffy.
+  3. Stir in honey and cinnamon, then remove from heat.
+  4. Divide between bowls and top with almonds, walnuts, and banana slices.
+  5. Serve warm with an extra drizzle of honey if desired.
+

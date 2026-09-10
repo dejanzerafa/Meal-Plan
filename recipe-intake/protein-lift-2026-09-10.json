@@ -1,0 +1,1241 @@
+{
+  "bf75": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ],
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "In a glass, whisk the coconut yogurt with the Greek yogurt and a scoop of whey protein powder until completely smooth, then layer this mixture with the granola and mixed fruit.",
+    "why": "Both stir into the yogurt base cold, so the parfait stays creamy and tropical.",
+    "replaces": "In a glass, layer the coconut yogurt, granola and mixed fruit."
+  },
+  "bf68": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Combine all ingredients in a blender, adding a scoop of whey protein powder along with the apple, banana, spinach, and almond milk.",
+    "why": "Whey disappears into a cold blended smoothie without dulling the apple-cinnamon flavour.",
+    "replaces": "Combine all ingredients in a blender."
+  },
+  "bf74": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Add all ingredients to a blender, including a scoop of whey protein powder, then blend until smooth and silky.",
+    "why": "Whey blends invisibly into the cold mango base.",
+    "replaces": "Add all ingredients to a blender."
+  },
+  "bf72": {
+    "add": [
+      [
+        41,
+        "Egg Whites (raw)",
+        150
+      ]
+    ],
+    "step": "Add spinach, garlic powder, and the egg whites to the skillet, stirring and folding gently until the egg whites are just set and the spinach has wilted.",
+    "why": "Egg whites scramble into the hot hash with no added fat.",
+    "replaces": "Add spinach and garlic powder, stir until wilted.",
+    "meat": "crumbled turkey breakfast sausage | 50",
+    "meatMacros": {
+      "kcal": 98,
+      "p": 8.5,
+      "c": 1,
+      "f": 6.5
+    }
+  },
+  "bf69": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Remove the pot from the heat after the apples are tender, let it cool for a minute, then whisk in the whey protein powder until fully smooth before spooning into bowls and topping with walnuts and chia seeds.",
+    "why": "Off direct heat, whey will not clump and folds into the cinnamon-apple sweetness.",
+    "replaces": "Spoon into bowls, top with walnuts and chia seeds."
+  },
+  "bf65": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ],
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        100
+      ]
+    ],
+    "step": "Combine oats, coconut milk, chia seeds, honey, and whey protein powder in a jar, then stir in the Greek yogurt until fully incorporated, seal, and refrigerate overnight.",
+    "why": "Both mix in cold and set with the oats overnight.",
+    "replaces": "Combine oats, coconut milk, chia seeds, and honey in a jar."
+  },
+  "bf76": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Mix chia seeds, almond milk, honey, vanilla, and whey protein powder in a jar until the powder is fully dissolved, then cover and refrigerate for 2 hours until thickened.",
+    "why": "Whey stirs smoothly into the cold chia base before it sets.",
+    "replaces": "Mix chia seeds, almond milk, honey, and vanilla in a jar."
+  },
+  "bf66": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Remove from the heat, then stir in the honey, cinnamon, and whey protein powder until smooth, before dividing between bowls and topping with almonds, walnuts, and banana.",
+    "why": "Adding whey off direct heat prevents clumping in this honey-nut bowl.",
+    "replaces": "Stir in honey and cinnamon, then remove from heat."
+  },
+  "bf70": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a bowl, mix the oats and baking powder, then stir in the almond milk, egg, honey, vanilla extract and a scoop of whey protein powder until no dry streaks remain, before folding in the strawberries and almonds.",
+    "why": "Whisked into raw batter, whey disappears into the crumb.",
+    "replaces": "In a bowl, mix the oats and baking powder, then stir in the almond milk, egg, honey and vanilla extract."
+  },
+  "bf60": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a jar, mix oats, almond milk, mashed banana, almond butter, vanilla, chia seeds, and a scoop of whey protein powder, stirring until fully dissolved.",
+    "why": "A no-heat overnight jar is exactly where whey belongs.",
+    "replaces": "In a jar, mix oats, almond milk, mashed banana, almond butter, vanilla, and chia seeds."
+  },
+  "bf67": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a mixing bowl, whisk eggs, honey, almond milk, vanilla, and a scoop of whey protein powder until combined, before adding the almond flour, oats, and baking powder.",
+    "why": "Stirred into the wet mix pre-bake, whey keeps the tender crumb.",
+    "replaces": "In a mixing bowl, whisk eggs, honey, almond milk, and vanilla until combined."
+  },
+  "bf58": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a jar, stir together the rolled oats, almond milk, peanut butter, half the mashed banana, the chia seeds, the cinnamon, and a scoop of whey protein powder until evenly combined.",
+    "why": "Cold overnight jar — whey blends smoothly and echoes the peanut butter.",
+    "replaces": "In a jar, stir together the rolled oats, almond milk, peanut butter, half the mashed banana, the chia seeds and the cinnamon until evenly combined."
+  },
+  "bf63": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        200
+      ]
+    ],
+    "step": "Remove from the heat and fold in the mixed berries gently, then dollop in the Greek yogurt and stir until the porridge turns creamy and cools slightly.",
+    "why": "Stirred in off the heat, 0% yogurt adds tang without curdling.",
+    "replaces": "Remove from heat and fold in the mixed berries gently."
+  },
+  "bf38": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Stir the oats, milk, egg, maple syrup, cinnamon, nutmeg, and a scoop of whey protein powder together until evenly combined, before folding in the grated carrot and raisins.",
+    "why": "Mixed into the batter before baking, whey rounds out the carrot-cake flavour.",
+    "replaces": "Stir the oats, milk, egg, maple syrup, cinnamon and nutmeg together until evenly combined."
+  },
+  "bf62": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese (blended smooth)",
+        100
+      ]
+    ],
+    "step": "Blend the cottage cheese until completely smooth, then spread it over the warm toast first, followed by the ricotta, so the two creamy layers combine before you drizzle with honey and cinnamon.",
+    "why": "Blended smooth, it vanishes into the ricotta layer.",
+    "replaces": "Spread ricotta evenly over the warm toast."
+  },
+  "bf57": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a bowl, whisk ricotta, egg, almond milk, honey, lemon zest, vanilla, and a scoop of whey protein powder until smooth, before combining with the dry ingredients.",
+    "why": "Added to the raw wet mix, whey folds seamlessly into the batter.",
+    "replaces": "In a bowl, whisk ricotta, egg, almond milk, honey, lemon zest, and vanilla until smooth."
+  },
+  "bf61": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Place banana, eggs, oats, cinnamon, baking powder, and the whey protein powder in a blender. Blend until smooth and slightly thick.",
+    "why": "The batter is already blended, so whey disappears into it completely.",
+    "replaces": "Place banana, eggs, oats, cinnamon, and baking powder in a blender. Blend until smooth and slightly thick."
+  },
+  "bf55": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "In a bowl, blend the avocado with the cottage cheese and olive oil until completely smooth, then season with salt and pepper before spreading.",
+    "why": "Blitzed cottage cheese thickens the avocado mash without adding fat.",
+    "replaces": "In a bowl, mash avocado with olive oil, salt, and pepper.",
+    "meat": "smoked salmon | 60",
+    "meatMacros": {
+      "kcal": 70,
+      "p": 10.8,
+      "c": 0,
+      "f": 2.6
+    }
+  },
+  "bf73": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        20
+      ]
+    ],
+    "step": "In a blender, combine mango, banana, coconut milk, and the whey protein powder, now raised to 35 g in total. Blend on high until creamy and smooth.",
+    "why": "The bowl already leans on protein powder, so topping up the scoop is the least disruptive fix.",
+    "replaces": "In a blender, combine mango, banana, coconut milk, and protein powder."
+  },
+  "bf54": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "In a small bowl, mash the avocado together with the cottage cheese until smooth yet slightly chunky, then season lightly with salt and pepper before spreading on the toast.",
+    "why": "Keeps the creamy texture while adding protein with almost no extra fat.",
+    "replaces": "In a small bowl, mash the avocado with a fork until smooth yet slightly chunky. Season lightly with salt and pepper.",
+    "meat": "smoked salmon | 60",
+    "meatMacros": {
+      "kcal": 70,
+      "p": 10.8,
+      "c": 0,
+      "f": 2.6
+    }
+  },
+  "bf41": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "Add the coconut protein yogurt to the base, then blend in the cottage cheese until smooth before sprinkling over the desiccated coconut.",
+    "why": "Folds invisibly into the creamy yogurt layer.",
+    "replaces": "Add the coconut protein yogurt and sprinkle over the desiccated coconut."
+  },
+  "bf39": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        175
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth, then stir it with the vanilla and honey into the kefir and yogurt so the base tastes finished rather than plain.",
+    "why": "Thickens the base and disappears into the kefir-yogurt mix.",
+    "replaces": "Stir the vanilla and honey into the kefir and yogurt so the base tastes finished rather than plain."
+  },
+  "bf53": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth and mix it with the hummus, then spread the combined mixture down the centre of the tortilla.",
+    "why": "Stretches the hummus layer further without changing the wrap.",
+    "replaces": "Spread hummus down the center.",
+    "meat": "crumbled turkey sausage | 50",
+    "meatMacros": {
+      "kcal": 98,
+      "p": 8.5,
+      "c": 1,
+      "f": 6.5
+    }
+  },
+  "bf56": {
+    "add": [
+      [
+        48,
+        "Low-fat Greek yogurt (increase existing row)",
+        100
+      ]
+    ],
+    "step": "In a glass, layer the low-fat Greek yogurt together with an extra 100 g of 0% Greek yogurt, then add the mango, pineapple, and granola.",
+    "why": "Doubling the yogurt already in the parfait keeps one line on the shopping list rather than two near-identical yogurts.",
+    "replaces": "In a glass, layer the yogurt, mango, pineapple and granola."
+  },
+  "bf71": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        10
+      ]
+    ],
+    "step": "In a bowl, whisk together oat flour, the whey protein powder — now 15 g in total — baking powder, and cinnamon.",
+    "why": "The batter is already whey-based, so a larger scoop blends in seamlessly.",
+    "replaces": "In a bowl, whisk together oat flour, protein powder, baking powder, and cinnamon."
+  },
+  "bf50": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "In serving glasses, layer chia pudding, Greek yogurt blended smooth with the cottage cheese until creamy, and sliced strawberries.",
+    "why": "Blended cottage cheese disappears into the yogurt layer.",
+    "replaces": "In serving glasses, layer chia pudding, Greek yogurt, and sliced strawberries."
+  },
+  "bf52": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        120
+      ]
+    ],
+    "step": "Remove the pan from the heat, then stir the cottage cheese, blended smooth, into the oats until creamy before folding in the spinach.",
+    "why": "Melts into the oats off the heat, thickening them into a savoury sauce.",
+    "meat": "smoked turkey bacon, crumbled | 30",
+    "meatMacros": {
+      "kcal": 65,
+      "p": 8.7,
+      "c": 0.6,
+      "f": 3.3
+    }
+  },
+  "bf49": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "Add the goat cheese and the cottage cheese, blended smooth, folding until both are just melted through the eggs.",
+    "why": "Folds into the curds like a savoury sauce, keeping the scramble light.",
+    "replaces": "Add goat cheese and fold until slightly melted.",
+    "meat": "crispy turkey bacon, crumbled | 30",
+    "meatMacros": {
+      "kcal": 65,
+      "p": 8.7,
+      "c": 0.6,
+      "f": 3.3
+    }
+  },
+  "bf59": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        60
+      ]
+    ],
+    "step": "Spread the cottage cheese — 116 g in total — evenly over the toast.",
+    "why": "The same base ingredient the toast already stars, just a bigger spoonful.",
+    "replaces": "Spread cottage cheese evenly over toast."
+  },
+  "ds18": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        120
+      ]
+    ],
+    "step": "Before dipping, roll each strawberry through a shallow bowl of thick 0% Greek yogurt, letting the excess drip off, then dip halfway into the warm chocolate as before.",
+    "why": "A cool yogurt undercoat adds a protein layer beneath the chocolate shell.",
+    "replaces": "Dip each strawberry halfway into the warm chocolate, allowing any excess to drip off, then place them carefully on a sheet of parchment paper."
+  },
+  "ds22": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        20
+      ]
+    ],
+    "step": "Add cinnamon, nutmeg, chia seeds, coconut oil, vanilla, and the vanilla whey protein powder; blend until a sticky dough forms.",
+    "why": "Never heated, so whey blends straight into the date dough.",
+    "replaces": "Add cinnamon, nutmeg, chia seeds, coconut oil, and vanilla. Blend until sticky dough forms."
+  },
+  "ds23": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        15
+      ]
+    ],
+    "step": "Add almond butter, honey, vanilla, and the vanilla whey protein powder; blend until a sticky dough forms.",
+    "why": "Processed cold, so whey folds in cleanly without drying the dough.",
+    "replaces": "Add almond butter, honey, and vanilla; blend until a sticky dough forms."
+  },
+  "ds17": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Whisk the vanilla whey protein powder with 15 ml of water until smooth, then drizzle it over the apple slices alongside the peanut butter.",
+    "why": "Whisked into a thin glaze, whey clings to the apple slices.",
+    "replaces": "Drizzle peanut butter evenly across the slices."
+  },
+  "ds7": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Spread the peanut butter, whisked together with the vanilla whey protein powder and 15 ml of water until smooth, over the cut side. This is the caramel layer that makes it taste like the candy bar.",
+    "why": "Thickens the peanut butter into more of a caramel spread.",
+    "replaces": "Spread the peanut butter over the cut side. This is the caramel layer that makes it taste like the candy bar."
+  },
+  "ds20": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Whisk the peanut butter with the vanilla whey protein powder and 15 ml of water into a thick paste, then spread it across the rice cakes right to the edges.",
+    "why": "Keeps the spreadable texture while multiplying the protein.",
+    "replaces": "Spread the peanut butter across the rice cakes right to the edges."
+  },
+  "ds21": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Mix all the ingredients with the vanilla whey protein powder in a bowl until combined, adding a splash of milk if the dough feels dry.",
+    "why": "Whey folds into raw cookie dough like any dry ingredient.",
+    "replaces": "Mix all ingredients in a bowl until combined."
+  },
+  "d6": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "Combine the oats, the vanilla whey protein powder — now 40 g in total — and the almond flour in a bowl.",
+    "why": "The topping already carries whey, so upping the amount keeps the crumble intact.",
+    "replaces": "Combine the oats, protein powder and almond flour in a bowl."
+  },
+  "ds14": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder (vanilla)",
+        30
+      ]
+    ],
+    "step": "In a bowl, stir together the yogurt, honey, cinnamon, and the vanilla whey protein powder until smooth and well combined.",
+    "why": "Stirred cold into a parfait that is built around yogurt anyway.",
+    "replaces": "In a bowl, stir together the yogurt, honey, and cinnamon until smooth and well combined."
+  },
+  "m169": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "In a blender, combine the avocado, cottage cheese, garlic, lemon juice, olive oil, salt, and pepper. Blend until creamy.",
+    "why": "Blended smooth, it disappears into the avocado sauce and adds body.",
+    "replaces": "In a blender, combine avocado, garlic, lemon juice, olive oil, salt, and pepper. Blend until creamy.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m180": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "Mix with the quinoa, tomatoes, spinach, oregano, cottage cheese, salt, and pepper.",
+    "why": "Adds a ricotta-like creaminess to the quinoa filling.",
+    "replaces": "Mix with quinoa, tomatoes, spinach, oregano, salt, and pepper.",
+    "meat": "ground turkey | 120",
+    "meatMacros": {
+      "kcal": 178,
+      "p": 25.2,
+      "c": 0,
+      "f": 8.4
+    }
+  },
+  "m189": {
+    "add": [
+      [
+        341,
+        "Tofu (extra-firm, pressed)",
+        150
+      ]
+    ],
+    "step": "In a large bowl, combine the quinoa, cabbage, carrots, peppers, edamame, and the pan-seared tofu cubes.",
+    "why": "Seared cubes hold their texture when tossed cold with a vinaigrette.",
+    "replaces": "In a large bowl, combine quinoa, cabbage, carrots, peppers, and edamame.",
+    "meat": "grilled chicken breast, diced | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m182": {
+    "add": [
+      [
+        341,
+        "Tofu (extra-firm, pressed)",
+        150
+      ]
+    ],
+    "step": "Add the cubed tofu to the pan with the garlic and vegetables, sautéing until lightly golden before adding the cooked quinoa and soy sauce.",
+    "why": "Pan-seared tofu soaks up the soy-sesame flavours already in the dish.",
+    "replaces": "Add cooked quinoa and soy sauce, stirring well.",
+    "meat": "sliced chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m179": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth and mix it into the quinoa, feta, salt, and pepper before spooning the mixture into the peppers.",
+    "why": "Disappears into the creamy quinoa-feta filling.",
+    "replaces": "Mix with quinoa, feta, salt, and pepper.",
+    "meat": "ground turkey, cooked | 100",
+    "meatMacros": {
+      "kcal": 176,
+      "p": 27,
+      "c": 0,
+      "f": 7
+    }
+  },
+  "m170": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "Whip the cottage cheese smooth with the olive oil, spread it over the toasted bread, then mash the avocado on top and season with salt and pepper.",
+    "why": "Whipped cottage cheese on toast is a natural base under the avocado, and it keeps the recipe no-cook.",
+    "replaces": "Mash avocado on toasted bread and season with salt and pepper.",
+    "meat": "smoked salmon | 60",
+    "meatMacros": {
+      "kcal": 70,
+      "p": 10.8,
+      "c": 0,
+      "f": 2.6
+    }
+  },
+  "m186": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Whisk the tahini, lemon juice, olive oil, Greek yogurt, salt, and pepper into a creamy green-goddess-style dressing.",
+    "why": "Yogurt turns the tahini dressing rich and creamy.",
+    "replaces": "In a small bowl, whisk tahini, lemon juice, olive oil, salt, and pepper.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m166": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth and stir it in with the almond milk and Parmesan until creamy.",
+    "why": "Thickens the sauce while preserving the dish's signature creaminess.",
+    "replaces": "Stir in cooked orzo, almond milk, and Parmesan until creamy.",
+    "meat": "shredded cooked chicken | 100",
+    "meatMacros": {
+      "kcal": 165,
+      "p": 31,
+      "c": 0,
+      "f": 3.6
+    }
+  },
+  "m191": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Remove the pot from the heat and stir in the Greek yogurt just before serving, until the soup turns silky.",
+    "why": "A dairy swirl off the heat is classic in mushroom-barley soup.",
+    "meat": "diced beef chuck, stewed | 100",
+    "meatMacros": {
+      "kcal": 220,
+      "p": 28,
+      "c": 0,
+      "f": 12
+    }
+  },
+  "m172": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Whisk the tahini, lemon juice, maple syrup, Greek yogurt, and warm water into a smooth, creamy dressing.",
+    "why": "Yogurt rounds the tahini drizzle into a tahini-yogurt sauce.",
+    "replaces": "Whisk tahini, lemon juice, maple syrup, and water into a smooth dressing.",
+    "meat": "grilled chicken thigh | 120",
+    "meatMacros": {
+      "kcal": 156,
+      "p": 25.2,
+      "c": 0,
+      "f": 5.4
+    }
+  },
+  "m188": {
+    "add": [
+      [
+        341,
+        "Tofu (extra-firm, pressed)",
+        180
+      ]
+    ],
+    "step": "Add the chickpeas, coconut milk, tomatoes, and cubed tofu. Simmer for 10–12 minutes until thickened and the tofu is heated through.",
+    "why": "Firm tofu soaks up the curry spices and holds its shape.",
+    "replaces": "Add chickpeas, coconut milk, and tomatoes. Simmer for 10–12 minutes until thickened.",
+    "meat": "diced chicken thigh | 150",
+    "meatMacros": {
+      "kcal": 195,
+      "p": 31.5,
+      "c": 0,
+      "f": 6.8
+    }
+  },
+  "m174": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Stir in the coconut milk, the cottage cheese blended smooth, and the spinach; cook until wilted and creamy.",
+    "why": "Melts into the coconut milk without curdling or going grainy.",
+    "replaces": "Stir in coconut milk and spinach; cook until wilted.",
+    "meat": "diced chicken breast | 120",
+    "meatMacros": {
+      "kcal": 144,
+      "p": 27,
+      "c": 0,
+      "f": 3.1
+    }
+  },
+  "m173": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Garnish with fresh parsley and a dollop of 0% Greek yogurt, then serve with couscous or rice.",
+    "why": "A cool dollop off the heat is classic alongside a spiced tagine.",
+    "replaces": "Garnish with fresh parsley and serve with couscous or rice.",
+    "meat": "diced lamb shoulder | 120",
+    "meatMacros": {
+      "kcal": 281,
+      "p": 30,
+      "c": 0,
+      "f": 18
+    }
+  },
+  "m162": {
+    "add": [
+      [
+        341,
+        "Tofu (extra-firm, pressed)",
+        200
+      ]
+    ],
+    "step": "Stir in the chickpeas, coconut milk, and cubed tofu; simmer for 5–7 minutes until the tofu is warmed through.",
+    "why": "Simmers in the curried coconut sauce, picking up flavour.",
+    "replaces": "Stir in chickpeas and coconut milk; simmer for 5–7 minutes.",
+    "meat": "diced chicken breast | 150",
+    "meatMacros": {
+      "kcal": 180,
+      "p": 33.8,
+      "c": 0,
+      "f": 3.9
+    }
+  },
+  "m178": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Serve with a side of mixed greens and a dip of 0% Greek yogurt stirred with a squeeze of lemon.",
+    "why": "A lemony yogurt dip is the traditional falafel accompaniment.",
+    "replaces": "Serve with a side of mixed greens or yogurt dip.",
+    "meat": "grilled chicken shawarma | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m157": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Add the almond milk and the cottage cheese blended smooth; simmer 3 minutes until creamy. Stir in the spinach until wilted.",
+    "why": "Turns the almond milk into a rich pasta sauce without extra fat.",
+    "replaces": "Add almond milk and simmer 3 minutes. Stir in spinach until wilted.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m171": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        150
+      ]
+    ],
+    "step": "Add the broccoli, cheddar, and the cottage cheese blended smooth, mixing until melted into a creamy sauce.",
+    "why": "Folds into the melting cheddar to build a creamier sauce.",
+    "replaces": "Add broccoli and cheddar, mixing until the cheese melts evenly.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m181": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "Spread the cottage cheese blended smooth over the eggplant, layer with the marinara, and scatter the shredded mozzarella over the top, then bake another 10 minutes.",
+    "why": "Stands in for a ricotta layer, the traditional filling in a baked parmigiana.",
+    "replaces": "Layer with the marinara and scatter the shredded mozzarella over the top, then bake another 10 minutes.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "m163": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "Blend the cottage cheese with a splash of the pasta cooking water until completely smooth, then stir it into the pan with the sautéed tomatoes before adding the spinach and cooked pasta, tossing until the sauce coats everything.",
+    "why": "Turns into a silky sauce without fighting the light tomato-garlic flavour.",
+    "replaces": "Add spinach and cooked pasta; toss together.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "sn33": {
+    "add": [
+      [
+        281,
+        "Fat-Free Mozzarella (diced)",
+        100
+      ]
+    ],
+    "step": "After tossing the orzo with the tomatoes, basil, and olive oil, fold in the diced mozzarella so it becomes a caprese-style orzo salad, then finish with the balsamic glaze.",
+    "why": "Plays straight into the tomato-basil pairing.",
+    "replaces": "Toss with tomatoes, basil, olive oil, salt, and pepper.",
+    "meat": "grilled chicken breast | 100",
+    "meatMacros": {
+      "kcal": 165,
+      "p": 31,
+      "c": 0,
+      "f": 3.6
+    }
+  },
+  "sn23": {
+    "add": [
+      [
+        281,
+        "Fat-Free Mozzarella (shredded)",
+        100
+      ]
+    ],
+    "step": "After spreading the hummus, scatter the shredded mozzarella over the spinach layer before adding the carrots, cucumber, peppers, and avocado, then roll the tortilla tightly.",
+    "why": "Adds a creamy, savoury backbone without displacing the crunch.",
+    "replaces": "Layer spinach, carrots, cucumber, peppers, and avocado in the center.",
+    "meat": "grilled chicken breast | 100",
+    "meatMacros": {
+      "kcal": 165,
+      "p": 31,
+      "c": 0,
+      "f": 3.6
+    }
+  },
+  "sn39": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        200
+      ]
+    ],
+    "step": "In the small bowl, whisk the tahini with the Greek yogurt, lemon juice, chilli powder, and a pinch of salt, adding only a splash of water, until smooth and creamy.",
+    "why": "A yogurt-tahini dip is a Mediterranean classic and makes the dip the centrepiece.",
+    "replaces": "In a small bowl, whisk together the tahini, lemon juice, chili powder, water, and a pinch of salt until the mixture is smooth and creamy."
+  },
+  "sn25": {
+    "add": [
+      [
+        281,
+        "Fat-Free Mozzarella (crumbled)",
+        120
+      ]
+    ],
+    "step": "Toss the greens with the roasted beetroot, goat cheese, walnuts, and the crumbled mozzarella before drizzling with olive oil and balsamic vinegar.",
+    "why": "A second, leaner cheese keeps the creamy-tangy character.",
+    "replaces": "Toss greens with roasted beets, goat cheese, and walnuts in a bowl.",
+    "meat": "crispy prosciutto | 40",
+    "meatMacros": {
+      "kcal": 78,
+      "p": 10.4,
+      "c": 0.4,
+      "f": 4
+    }
+  },
+  "sn32": {
+    "add": [
+      [
+        48,
+        "Greek yogurt (increase existing row)",
+        170
+      ],
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "Blend the cottage cheese smooth and stir it into the Greek yogurt — 200 g of yogurt in total — with the lemon juice, for a thicker, more generous dip alongside the sweet potato fries.",
+    "why": "Cottage cheese thickens the dip and carries far more protein than yogurt alone, without changing how it tastes.",
+    "replaces": "Mix Greek yogurt and lemon juice for a creamy, tangy dip."
+  },
+  "sn40": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "Blend the cottage cheese smooth and mix it into the hummus before spooning the mixture into each hollowed cucumber cup, then finish with the olive oil drizzle, paprika, and parsley.",
+    "why": "Thickens and lightens the hummus filling without changing its flavour.",
+    "meat": "smoked salmon | 30",
+    "meatMacros": {
+      "kcal": 35,
+      "p": 5.4,
+      "c": 0,
+      "f": 1.3
+    }
+  },
+  "sn15": {
+    "add": [
+      [
+        281,
+        "Fat-Free Mozzarella (shredded)",
+        150
+      ]
+    ],
+    "step": "After spreading the Greek yogurt on the tortillas, scatter the shredded mozzarella over the spiced chickpeas so it melts slightly from their warmth, then add the lettuce, roll tightly, and cut in half.",
+    "why": "Melting cheese into the warm chickpeas gives the wrap a savoury finish.",
+    "replaces": "Spread Greek yogurt on tortillas, add lettuce and spiced chickpeas.",
+    "meat": "grilled chicken breast | 100",
+    "meatMacros": {
+      "kcal": 165,
+      "p": 31,
+      "c": 0,
+      "f": 3.6
+    }
+  },
+  "sn36": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ],
+      [
+        281,
+        "Fat-Free Mozzarella (cubed)",
+        80
+      ]
+    ],
+    "step": "In a small bowl, blend the cottage cheese until smooth and whisk it into the dressing along with the olive oil, lemon juice, oregano, salt, and pepper, then pour over the salad, scatter over the cubed mozzarella, and toss to coat.",
+    "why": "The blended dressing turns creamy without masking the Greek flavours, and cubed mozzarella belongs in a Greek salad alongside the feta.",
+    "replaces": "In a small bowl, whisk olive oil, lemon juice, oregano, salt, and pepper.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "sn34": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        200
+      ]
+    ],
+    "step": "While the chickpeas roast, stir the Greek yogurt with a pinch of the same paprika and garlic powder to make a cooling dip, then serve the hot chickpeas alongside it for scooping.",
+    "why": "Gives the crunchy chickpeas something creamy to be scooped into."
+  },
+  "sn37": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth and fold it into the hummus before spreading a thin layer over each cucumber slice.",
+    "why": "Thickens the hummus spread while roughly doubling the protein per roll.",
+    "replaces": "Spread a thin layer of hummus over each slice, covering it gently but evenly.",
+    "meat": "sliced turkey breast | 60",
+    "meatMacros": {
+      "kcal": 62,
+      "p": 10.2,
+      "c": 0.6,
+      "f": 1.2
+    }
+  },
+  "sn38": {
+    "add": [
+      [
+        41,
+        "Egg Whites (raw)",
+        50
+      ]
+    ],
+    "step": "Dip the zucchini pieces in the egg whites before tossing them with the breadcrumbs, Parmesan, olive oil, salt, and pepper, so the coating clings evenly.",
+    "why": "An egg-white dip is the classic way to make breading stick.",
+    "replaces": "Toss zucchini with olive oil, breadcrumbs, Parmesan, salt, and pepper."
+  },
+  "sn29": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ]
+    ],
+    "step": "While the chickpeas roast, blend the cottage cheese smooth with a squeeze of lemon and a pinch of salt to make a cooling dip, and serve it alongside the hot spicy chickpeas.",
+    "why": "A cool, creamy dip balances the cayenne heat."
+  },
+  "sn24": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Once the pumpkin seeds have roasted and cooled slightly, toss them with the whey protein powder and a little extra cinnamon so it clings to the honey glaze.",
+    "why": "Stirred in after roasting, whey sticks to the glaze like a cinnamon-sugar coating.",
+    "replaces": "Toss pumpkin seeds with honey, cinnamon, and salt."
+  },
+  "sn12": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        200
+      ],
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        100
+      ]
+    ],
+    "step": "Mash the avocado with the Greek yogurt, the blended cottage cheese, and the lemon juice until smooth, then stir in the chopped eggs, salt, and pepper.",
+    "why": "Blended cottage cheese and a bigger spoon of yogurt keep the filling creamy and spreadable — and keep the wrap genuinely no-cook.",
+    "replaces": "Mash the avocado with Greek yogurt and lemon juice until smooth.",
+    "meat": "turkey bacon, crisped | 40",
+    "meatMacros": {
+      "kcal": 87,
+      "p": 11.6,
+      "c": 0.8,
+      "f": 4.4
+    }
+  },
+  "sn20": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Add the yogurt to a small bowl, whisk in the whey protein powder, then sprinkle in the cinnamon and drizzle the honey over the top, mixing until smooth and creamy.",
+    "why": "Whey dissolves cleanly in cold yogurt and pairs with the cinnamon-honey.",
+    "replaces": "Add the yogurt to a small bowl, then sprinkle in the cinnamon and drizzle the honey over the top."
+  },
+  "sn16": {
+    "add": [
+      [
+        281,
+        "Fat-Free Mozzarella",
+        100
+      ]
+    ],
+    "step": "Toss all with the greens, scatter the cubed mozzarella through the warm salad so it softens slightly, and drizzle with balsamic vinegar.",
+    "why": "Mozzarella cubes echo the halloumi's texture without extra grease.",
+    "replaces": "Toss all with greens and drizzle with balsamic vinegar.",
+    "meat": "grilled chicken breast | 120",
+    "meatMacros": {
+      "kcal": 198,
+      "p": 37.2,
+      "c": 0,
+      "f": 4.3
+    }
+  },
+  "sn22": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        180
+      ]
+    ],
+    "step": "Blend the cottage cheese until smooth, then whisk it with the olive oil, lemon juice, salt, and pepper into a creamy dressing.",
+    "why": "Thickens the lemony dressing into a protein-rich cream that coats the lentils.",
+    "replaces": "Whisk olive oil, lemon juice, salt, and pepper together.",
+    "meat": "grilled chicken breast | 100",
+    "meatMacros": {
+      "kcal": 165,
+      "p": 31,
+      "c": 0,
+      "f": 3.6
+    }
+  },
+  "sn27": {
+    "add": [
+      [
+        42,
+        "Fat-Free Cottage Cheese",
+        100
+      ]
+    ],
+    "step": "Blend the cottage cheese smooth and whisk it into the Greek yogurt with the spices, lemon juice and a pinch of salt until fully combined.",
+    "why": "Thickens the dip and doubles its protein while staying dippable.",
+    "replaces": "Whisk the Greek yogurt with the spices, lemon juice and a pinch of salt until smooth."
+  },
+  "sn35": {
+    "add": [
+      [
+        41,
+        "Egg Whites (raw)",
+        50
+      ]
+    ],
+    "step": "Whisk the eggs, egg whites, milk, salt, and pepper in a bowl.",
+    "why": "Boosts protein in the frittata mix without adding fat.",
+    "replaces": "Whisk eggs, milk, salt, and pepper in a bowl.",
+    "meat": "diced cooked ham | 40",
+    "meatMacros": {
+      "kcal": 58,
+      "p": 7.2,
+      "c": 0.4,
+      "f": 2.8
+    }
+  },
+  "ds16": {
+    "add": [
+      [
+        97,
+        "Firm tofu (increase existing row)",
+        120
+      ]
+    ],
+    "step": "Add the tofu cubes — 208 g in total — to a bowl and drizzle them with the olive oil and soy sauce.",
+    "why": "More of the same tofu the recipe already buys; a second tofu row would put two tofus on the shopping list.",
+    "replaces": "Add the tofu cubes to a bowl and drizzle them with the olive oil and soy sauce.",
+    "meat": "chicken breast, cubed | 90",
+    "meatMacros": {
+      "kcal": 108,
+      "p": 20.3,
+      "c": 0,
+      "f": 2.3
+    }
+  },
+  "m183": {
+    "add": [
+      [
+        210,
+        "Whey Protein Powder",
+        30
+      ]
+    ],
+    "step": "Blend the banana, spinach, almond milk, matcha powder, almond butter, and the whey protein powder until creamy.",
+    "why": "Whey blends into a cold base and turns the bowl into a real protein breakfast.",
+    "replaces": "Blend banana, spinach, almond milk, matcha powder, and almond butter until creamy."
+  },
+  "sm26": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        150
+      ]
+    ],
+    "step": "Stir in the hemp seeds along with the Greek yogurt and pulse 3–4 times for a thicker, protein-rich texture.",
+    "why": "Adds tang and body that suit a cold recovery smoothie.",
+    "replaces": "Stir in hemp seeds and pulse 3–4 times for a nutty, protein-rich texture."
+  },
+  "sm23": {
+    "add": [
+      [
+        47,
+        "Greek Yogurt (0% fat)",
+        200
+      ]
+    ],
+    "step": "Swirl in the Greek yogurt before topping with the diced mango.",
+    "why": "A yogurt swirl fits the chilled pudding format without disturbing the chia set.",
+    "replaces": "Top with diced mango before serving."
+  }
+}

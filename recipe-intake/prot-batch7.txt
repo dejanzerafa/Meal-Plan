@@ -1,0 +1,156 @@
+# Protein-lift batch 7 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+m188  🫘 Chickpea Coconut Curry with Basmati Rice
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 824 kcal · 30.1 g protein · 126.2 C · 24.9 F  =  15% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Coconut oil: 7.0 g
+  - Onion: 75.0 g
+  - Garlic cloves: 3.0 g
+  - Curry powder: 3.1 g
+  - Turmeric: 0.8 g
+  - Chickpeas (canned, drained): 335.0 g
+  - Light coconut milk: 120.0 g
+  - Diced tomatoes: 120.0 g
+  - Cooked basmati rice: 98.0 g
+METHOD:
+  1. Heat coconut oil in a skillet over 175°C and sauté onion until golden.
+  2. Add garlic, curry powder, and turmeric, stirring until aromatic (about 1 minute).
+  3. Add chickpeas, coconut milk, and tomatoes. Simmer for 10–12 minutes until thickened.
+  4. Serve hot over basmati rice and top with fresh cilantro.
+
+============================================================================
+m174  🫘 Chickpea & Spinach Coconut Stew
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 358 kcal · 13.3 g protein · 44.6 C · 15.6 F  =  15% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Olive oil: 7.0 g
+  - Garlic clove: 1.5 g
+  - Chickpeas: 164.0 g
+  - Spinach: 15.0 g
+  - Diced tomatoes: 60.0 g
+  - Light coconut milk: 60.0 g
+  - Curry powder: 0.5 g
+METHOD:
+  1. Heat olive oil, sauté garlic until fragrant.
+  2. Add tomatoes, chickpeas, and curry powder; simmer 5 minutes.
+  3. Stir in coconut milk and spinach; cook until wilted.
+  4. Serve warm with brown rice or flatbread.
+
+============================================================================
+m173  🫘 Moroccan Chickpea Tagine
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 360 kcal · 14 g protein · 53.7 C · 11.5 F  =  16% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Olive oil: 7.0 g
+  - Onion: 75.0 g
+  - Garlic cloves: 3.0 g
+  - Chickpeas: 164.0 g
+  - Diced tomatoes: 60.0 g
+  - Carrot: 30.0 g
+  - Cumin: 0.5 g
+  - Cinnamon: 0.7 g
+  - Cayenne: 0.2 g
+  - Vegetable broth: 60.0 g
+METHOD:
+  1. Heat olive oil in a pot and sauté onion and garlic until fragrant.
+  2. Add carrots and cook for 3 minutes.
+  3. Stir in chickpeas, tomatoes, broth, and all spices.
+  4. Simmer for 15–20 minutes, stirring occasionally until thickened.
+  5. Garnish with fresh parsley and serve with couscous or rice.
+
+============================================================================
+m162  🫘 Curried Chickpea Bowl
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 762 kcal · 30 g protein · 111.2 C · 24.5 F  =  16% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Chickpeas: 370.0 g
+  - Coconut milk: 60.0 g
+  - Curry powder: 1.0 g
+  - Cooked brown rice: 98.0 g
+  - Spinach: 7.5 g
+  - Olive oil: 2.2 g
+METHOD:
+  1. In a pan, heat olive oil and add curry powder for 30 seconds.
+  2. Stir in chickpeas and coconut milk; simmer for 5–7 minutes.
+  3. Add spinach and cook until wilted.
+  4. Serve over warm brown rice for a creamy, aromatic meal.
+
+============================================================================
+m178  🫘 Baked Falafel Bowl
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 307 kcal · 12.1 g protein · 41.4 C · 11.3 F  =  16% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Canned chickpeas: 164.0 g
+  - Garlic clove: 1.5 g
+  - Parsley: 1.9 g
+  - Olive oil: 7.0 g
+  - Flour: 3.9 g
+  - Cumin: 0.5 g
+METHOD:
+  1. Preheat oven to 200°C.
+  2. Blend chickpeas, garlic, parsley, olive oil, flour, cumin, and salt in a food processor until coarse.
+  3. Form small balls and place on a lined baking sheet.
+  4. Bake for 20–25 minutes, flipping halfway through.
+  5. Serve with a side of mixed greens or yogurt dip.
+
+============================================================================
+m157  🍝 Creamy Mushroom & Spinach Pasta
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 406 kcal · 16.2 g protein · 61.1 C · 11.5 F  =  16% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain pasta: 85.0 g
+  - Olive oil: 7.0 g
+  - Garlic clove: 1.5 g
+  - Sliced mushrooms: 35.0 g
+  - Baby spinach: 15.0 g
+  - Unsweetened almond milk: 60.0 g
+  - Grated Parmesan: 6.0 g
+METHOD:
+  1. Cook pasta according to package instructions. Drain and set aside.
+  2. In a skillet, heat olive oil and sauté garlic and mushrooms until browned.
+  3. Add almond milk and simmer 3 minutes. Stir in spinach until wilted.
+  4. Toss in pasta and sprinkle with Parmesan if desired.
+
+============================================================================
+m171  🌾 Broccoli & Cheddar Quinoa Bowl
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 228 kcal · 9.2 g protein · 23.5 C · 11.3 F  =  16% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Cooked quinoa: 92.0 g
+  - Steamed broccoli florets: 45.0 g
+  - Shredded sharp cheddar: 14.0 g
+  - Olive oil: 7.0 g
+  - Garlic: 1.5 g
+METHOD:
+  1. In a skillet, heat olive oil and sauté garlic for 1 minute.
+  2. Add cooked quinoa and stir for 2 minutes.
+  3. Add broccoli and cheddar, mixing until the cheese melts evenly.
+  4. Season with salt and pepper, then serve warm.
+
+============================================================================
+m181  🥚 Baked Eggplant Parmesan
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 197 kcal · 9 g protein · 19.9 C · 10.7 F  =  18% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Eggplant: 225.0 g
+  - Marinara sauce: 60.0 g
+  - Shredded mozzarella: 28.0 g
+  - Olive oil: 7.0 g
+  - Breadcrumbs: 3.1 g
+METHOD:
+  1. Preheat oven to 200°C.
+  2. Brush eggplant slices with olive oil, sprinkle breadcrumbs, and bake 15 minutes.
+  3. Layer with the marinara and scatter the shredded mozzarella over the top, then bake another 10 minutes.
+  4. Serve warm with a side salad.
+

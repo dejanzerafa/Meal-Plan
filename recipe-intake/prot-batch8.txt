@@ -1,0 +1,141 @@
+# Protein-lift batch 8 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+m163  🥚 Veggie-Packed Chickpea Pasta
+category: main | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 279 kcal · 13.1 g protein · 34.7 C · 10.3 F  =  19% protein
+target for main: at least 21% (category floor), ideally 37% (live median)
+INGREDIENTS (per portion):
+  - Chickpea pasta: 57.0 g
+  - Cherry tomatoes: 37.5 g
+  - Chopped spinach: 3.8 g
+  - Olive oil: 7.0 g
+  - Garlic clove: 1.5 g
+  - Grated Parmesan: 3.1 g
+METHOD:
+  1. Cook pasta according to package instructions.
+  2. In a pan, heat olive oil and sauté garlic and tomatoes.
+  3. Add spinach and cooked pasta; toss together.
+  4. Sprinkle Parmesan before serving.
+
+============================================================================
+sn33  🍝 Tomato Basil Orzo Salad
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 251 kcal · 5.9 g protein · 39 C · 7.8 F  =  9% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Orzo pasta: 42.5 g
+  - Cherry tomatoes: 75.0 g
+  - Fresh basil: 1.5 g
+  - Olive oil: 7.0 g
+  - Balsamic glaze: 8.0 g
+METHOD:
+  1. Cook orzo according to package instructions; drain and cool slightly.
+  2. Toss with tomatoes, basil, olive oil, salt, and pepper.
+  3. Drizzle with balsamic glaze and chill before serving.
+
+============================================================================
+sn23  🥚 Veggie-Packed Hummus Wrap
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 339 kcal · 10.1 g protein · 44.9 C · 14.6 F  =  12% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Whole wheat tortilla: 55.0 g
+  - Hummus: 46.0 g
+  - Shredded carrots: 27.5 g
+  - Sliced cucumber: 30.0 g
+  - Bell peppers: 37.5 g
+  - Avocado: 37.5 g
+  - Spinach leaves: 15.0 g
+METHOD:
+  1. Lay the tortilla flat and spread hummus evenly to cover the surface.
+  2. Layer spinach, carrots, cucumber, peppers, and avocado in the center.
+  3. Roll the tortilla tightly and slice in half diagonally.
+  4. Chill for 10 minutes before serving for a crisp, refreshing bite.
+
+============================================================================
+sn39  🥚 Veggie Sticks with Spicy Tahini Dip
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 100 kcal · 3 g protein · 5.6 C · 8.2 F  =  12% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Carrot and cucumber sticks: 60.0 g
+  - Tahini: 15.0 g
+  - Lemon juice: 2.5 g
+  - Chili powder: 0.3 g
+  - Water: 7.5 g
+METHOD:
+  1. In a small bowl, whisk together the tahini, lemon juice, chili powder, water, and a pinch of salt until the mixture is smooth and creamy.
+  2. Adjust the consistency with a little extra water if needed, so the dip is pourable but still thick enough to coat the veggies.
+  3. Arrange your fresh veggie sticks on a plate, creating an inviting display.
+  4. Serve the tahini dip alongside the veggies, letting each stick pick up a bit of the creamy, zesty flavor.
+
+============================================================================
+sn25  🧀 Roasted Beet & Goat Cheese Salad
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 343 kcal · 11.5 g protein · 18 C · 26.3 F  =  13% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Roasted beets: 136.0 g
+  - Mixed greens: 94.0 g
+  - Goat cheese: 35.0 g
+  - Walnuts: 7.5 g
+  - Olive oil: 13.5 g
+  - Balsamic vinegar: 5.5 g
+METHOD:
+  1. Toss greens with roasted beets, goat cheese, and walnuts in a bowl.
+  2. Drizzle olive oil and balsamic vinegar over the top.
+  3. Gently toss and serve immediately for best flavor and color.
+
+============================================================================
+sn32  🫙 Sweet Potato Fries with Greek Yogurt
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 130 kcal · 4.4 g protein · 21.6 C · 2.9 F  =  14% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Sweet potato: 100.0 g
+  - Olive oil: 2.2 g
+  - Pinch of paprika & garlic powder: 0.5 g
+  - Greek yogurt: 30.5 g
+  - Lemon juice: 1.3 g
+METHOD:
+  1. Preheat oven to 220°C.
+  2. Toss sweet potato fries with olive oil, paprika, garlic powder, and salt.
+  3. Arrange on a baking tray and bake 20–25 minutes, flipping halfway through.
+  4. Mix Greek yogurt and lemon juice for a creamy, tangy dip.
+  5. Serve warm and enjoy the balance of sweet and savory.
+
+============================================================================
+sn40  🫘 Cucumber Hummus Cups
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 80 kcal · 2.9 g protein · 8.6 C · 4.6 F  =  14% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Cucumber: 150.0 g
+  - Hummus: 23.0 g
+  - Olive oil: 2.2 g
+METHOD:
+  1. Slice the cucumber into 1.5 cm thick rounds and use a small spoon or melon baller to scoop out a small hollow in the center of each slice, being careful not to go all the way through.
+  2. Spoon a dollop of creamy hummus into each cucumber cup, filling the hollowed-out center generously.
+  3. Drizzle a little olive oil over the top of the hummus for added richness, and sprinkle with a pinch of paprika and freshly chopped parsley to add a burst of color and flavor.
+
+============================================================================
+sn15  🫘 Spiced Chickpea Wraps
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 623 kcal · 25 g protein · 92 C · 18.6 F  =  16% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Chickpeas: 270.0 g
+  - Cumin: 0.5 g
+  - Paprika: 0.6 g
+  - Olive oil: 7.0 g
+  - Whole-grain tortillas: 55.0 g
+  - Shredded lettuce: 12.0 g
+  - Greek yogurt: 15.5 g
+METHOD:
+  1. Heat olive oil in a skillet and add chickpeas, cumin, and paprika.
+  2. Sauté until slightly crispy (6–8 minutes).
+  3. Spread Greek yogurt on tortillas, add lettuce and spiced chickpeas.
+  4. Roll tightly and cut in half. Serve warm or chilled.
+

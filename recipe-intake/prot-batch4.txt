@@ -1,0 +1,143 @@
+# Protein-lift batch 4 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+bf71  🍪 Apple Cinnamon Protein Muffins
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 141 kcal · 8.9 g protein · 19 C · 3.5 F  =  25% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Oat flour: 15.0 g
+  - Vanilla protein powder: 5.0 g
+  - Baking powder: 0.8 g
+  - Cinnamon: 0.2 g
+  - Apple: 30.0 g
+  - Eggs: 20.0 g
+  - Unsweetened applesauce: 10.0 g
+  - Honey or maple syrup: 3.5 g
+METHOD:
+  1. Preheat oven to 175°C and lightly grease a muffin tin.
+  2. In a bowl, whisk together oat flour, protein powder, baking powder, and cinnamon.
+  3. In another bowl, combine eggs, applesauce, grated apple, and honey.
+  4. Stir wet ingredients into dry until just combined.
+  5. Pour batter into muffin tin and bake 18–20 minutes, until golden and set.
+  6. Cool for 5 minutes before serving. These muffins fill the air with warm cinnamon sweetness — perfect with morning tea.
+
+============================================================================
+bf50  🫙 Strawberry Chia Parfait
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 253 kcal · 16.3 g protein · 23.1 C · 10.6 F  =  26% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Unsweetened almond milk: 240.0 g
+  - Chia seeds: 21.0 g
+  - Vanilla extract: 1.1 g
+  - Greek yogurt: 122.0 g
+  - Sliced strawberries: 37.5 g
+  - Honey: 3.5 g
+METHOD:
+  1. In a mixing bowl, whisk together almond milk, chia seeds, and vanilla extract. Stir for about 30 seconds to evenly distribute the chia seeds.
+  2. Cover and refrigerate for at least 2 hours (or overnight) until the mixture becomes thick and pudding-like.
+  3. Once set, stir the chia pudding well to break up any clumps.
+  4. In serving glasses, layer chia pudding, Greek yogurt, and sliced strawberries.
+  5. Drizzle each parfait with honey and serve chilled for a refreshing, protein-rich start to your morning.
+
+============================================================================
+bf52  🥚 Savory Oatmeal with Spinach & Poached Egg
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 311 kcal · 20.3 g protein · 30 C · 11.8 F  =  26% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 40.0 g
+  - Low-sodium vegetable broth: 240.0 g
+  - Spinach: 15.0 g
+  - Poached eggs: 85.0 g
+  - Grated Parmesan: 3.1 g
+METHOD:
+  1. In a saucepan, cook oats in vegetable broth over medium heat until creamy, about 10 minutes.
+  2. Stir in chopped spinach and cook another minute until wilted.
+  3. Spoon oatmeal into bowls and top with poached eggs and Parmesan.
+  4. Crack open the yolk and swirl warm, savory, and perfectly nourishing.
+
+============================================================================
+bf49  🧀 Mushroom & Goat Cheese Scramble
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 297 kcal · 20.5 g protein · 1.6 C · 22.7 F  =  28% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Eggs: 145.0 g
+  - Mushrooms: 17.5 g
+  - Goat cheese: 9.0 g
+  - Olive oil: 7.0 g
+METHOD:
+  1. Heat olive oil in a skillet over 175°C and sauté mushrooms until tender (about 5 minutes).
+  2. Beat eggs and season lightly.
+  3. Pour into skillet, stirring gently until softly set.
+  4. Add goat cheese and fold until slightly melted.
+  5. Garnish with chives and serve warm.
+
+============================================================================
+bf59  🧀 Strawberry Cottage Cheese Toast
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 176 kcal · 12.3 g protein · 24.8 C · 3.2 F  =  28% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain bread: 40.0 g
+  - Low-fat cottage cheese: 56.0 g
+  - Sliced strawberries: 37.5 g
+  - Honey: 3.5 g
+  - Chia seeds: 0.9 g
+METHOD:
+  1. Toast bread until crisp.
+  2. Spread cottage cheese evenly over toast.
+  3. Top with strawberry slices, drizzle honey, and sprinkle chia seeds.
+  4. A simple yet elegant breakfast — creamy, fruity, and lightly sweet.
+
+============================================================================
+ds18  🫐 Dark Chocolate-Dipped Strawberries
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 95 kcal · 1.3 g protein · 9.2 C · 6.1 F  =  5% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Strawberries: 36.0 g
+  - Dark chocolate: 14.0 g
+METHOD:
+  1. Melt the chocolate in a microwave-safe bowl, heating it in 15-second bursts and stirring between each round until it becomes smooth and glossy.
+  2. Dip each strawberry halfway into the warm chocolate, allowing any excess to drip off, then place them carefully on a sheet of parchment paper.
+  3. Chill the strawberries in the refrigerator for about 15 minutes, or until the chocolate sets and becomes firm with a lovely shine.
+
+============================================================================
+ds22  🍪 Spiced Almond Energy Bites
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 154 kcal · 3.5 g protein · 18.1 C · 8.8 F  =  9% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Almonds: 14.0 g
+  - Medjool dates: 19.0 g
+  - Cinnamon: 0.3 g
+  - Nutmeg: 0.1 g
+  - Chia seeds: 1.1 g
+  - Coconut oil: 1.4 g
+  - Vanilla extract: 0.4 g
+METHOD:
+  1. In a food processor, combine almonds and dates; pulse until finely chopped.
+  2. Add cinnamon, nutmeg, chia seeds, coconut oil, and vanilla. Blend until sticky dough forms.
+  3. Roll into bite-sized balls and refrigerate for 30 minutes before serving.
+
+============================================================================
+ds23  🍽️ Coconut Matcha Bliss Balls
+category: dessert | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 107 kcal · 2.6 g protein · 12.3 C · 5.7 F  =  10% protein
+target for dessert: at least 23% (category floor), ideally 33% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 6.5 g
+  - Shredded unsweetened coconut: 3.9 g
+  - Matcha powder: 0.5 g
+  - Almond butter: 5.5 g
+  - Honey or maple syrup: 7.0 g
+  - Vanilla extract: 0.4 g
+METHOD:
+  1. In a food processor, combine oats, coconut, and matcha until fine.
+  2. Add almond butter, honey, and vanilla; blend until a sticky dough forms.
+  3. Roll into balls and chill for 30 minutes before serving.
+

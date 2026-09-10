@@ -1,0 +1,156 @@
+# Protein-lift batch 3 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+bf61  🌾 Banana-Oat-Pancakes
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 238 kcal · 11.6 g protein · 27.7 C · 9.6 F  =  19% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Banana: 59.0 g
+  - Eggs: 60.0 g
+  - Rolled oats: 20.0 g
+  - Cinnamon: 0.3 g
+  - Baking powder: 1.1 g
+  - Coconut oil: 2.3 g
+METHOD:
+  1. Place banana, eggs, oats, cinnamon, and baking powder in a blender. Blend until smooth and slightly thick.
+  2. Warm coconut oil in a nonstick skillet over 175°C.
+  3. Pour about 60 ml of batter per pancake and cook for 2–3 minutes, or until bubbles form on the surface.
+  4. Flip carefully and cook the other side for another 1–2 minutes until golden brown.
+  5. Stack pancakes on a plate and top with your choice of berries, almond butter, or a drizzle of honey.
+
+============================================================================
+bf55  🥚 Creamy Avocado Toast with Soft-Boiled Egg
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 417 kcal · 20.6 g protein · 24.2 C · 27.6 F  =  20% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain bread: 40.0 g
+  - Avocado: 75.0 g
+  - Soft-boiled egg: 110.0 g
+  - Olive oil: 4.5 g
+  - Pinch of chili flakes: 0.5 g
+METHOD:
+  1. Toast the bread to your preferred crispness.
+  2. In a bowl, mash avocado with olive oil, salt, and pepper.
+  3. Spread the creamy avocado mixture over toast.
+  4. Slice the soft-boiled egg in half and place on top; sprinkle with chili flakes.
+  5. Serve immediately for a fresh, satisfying breakfast.
+
+============================================================================
+bf73  🥤 Mango Coconut Smoothie Bowl
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 302 kcal · 16.1 g protein · 35.4 C · 11.9 F  =  21% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Frozen mango chunks: 82.0 g
+  - Frozen banana: 29.5 g
+  - Light coconut milk: 90.0 g
+  - Vanilla protein powder: 15.0 g
+  - Shredded coconut: 2.9 g
+  - Chia seeds: 5.5 g
+  - Granola: 14.0 g
+METHOD:
+  1. In a blender, combine mango, banana, coconut milk, and protein powder.
+  2. Blend on high until creamy and smooth. If too thick, add a splash more coconut milk.
+  3. Pour into bowls and smooth the surface.
+  4. Sprinkle chia seeds, granola, and shredded coconut on top.
+  5. Enjoy immediately — cool, tropical, and perfectly refreshing.
+
+============================================================================
+bf54  🥚 Avocado Egg Toast with Microgreens
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 373 kcal · 20.2 g protein · 24.5 C · 22.7 F  =  22% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain bread: 40.0 g
+  - Avocado: 75.0 g
+  - Egg: 105.0 g
+  - Microgreens: 12.0 g
+  - Pinch chili flakes: 0.5 g
+METHOD:
+  1. Toast the bread slice to your preferred crispness.
+  2. In a small bowl, mash the avocado with a fork until smooth yet slightly chunky. Season lightly with salt and pepper.
+  3. Heat a nonstick skillet and fry or poach the egg until the yolk is set to your liking.
+  4. Spread the mashed avocado evenly over the warm toast, then place the cooked egg on top.
+  5. Add a handful of microgreens and a sprinkle of chili flakes for a gentle kick.
+  6. Serve immediately for a warm, nourishing breakfast.
+
+============================================================================
+bf41  🥥 Bounty Overnight Weetabix
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 523 kcal · 29.2 g protein · 60.4 C · 17.2 F  =  22% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Weetabix: 37.6 g
+  - Coconut protein yogurt: 200.0 g
+  - Unsweetened almond milk: 55.0 g
+  - Greek yogurt (0% fat): 25.0 g
+  - Desiccated coconut (unsweetened): 10.0 g
+  - Dark chocolate 85%: 10.0 g
+  - Banana (sliced): 60.0 g
+METHOD:
+  1. Crush the Weetabix into a container, pour over 50 ml of the almond milk and mix until fully combined. Press everything down firmly to create the base.
+  2. Add the coconut protein yogurt and sprinkle over the desiccated coconut.
+  3. Melt the dark chocolate, then stir it together with the Greek yogurt and the remaining 5 ml of almond milk until smooth.
+  4. Spread the chocolate mixture evenly over the coconut layer.
+  5. Top with the sliced banana, lid on, and refrigerate overnight — or at least 4 hours.
+  6. Crack through the chocolate top and eat cold.
+
+============================================================================
+bf39  🫐 Wild Blueberry Vanilla Kefir Bowl
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 383 kcal · 21.6 g protein · 61.7 C · 5.7 F  =  23% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Kefir (plain, low-fat): 170.0 g
+  - 0% Greek yogurt: 120.0 g
+  - Blueberries: 120.0 g
+  - Granola (low-sugar): 35.0 g
+  - Honey: 7.0 g
+  - Vanilla extract: 2.0 g
+  - Maple syrup: 5.0 g
+  - Lemon (juice): 5.0 g
+METHOD:
+  1. Simmer half the blueberries with the maple syrup and lemon juice for a few minutes until they burst into a thick, glossy compote.
+  2. Stir the vanilla and honey into the kefir and yogurt so the base tastes finished rather than plain.
+  3. Spoon the kefir mix into a bowl — a thick base gives the toppings something to sit on.
+  4. Swirl the warm compote over one side. The warm-on-cold contrast is what makes this feel like dessert.
+  5. Top with the remaining fresh blueberries and the granola.
+
+============================================================================
+bf53  🌯 Savory Mushroom Breakfast Wrap
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 355 kcal · 20.2 g protein · 33.7 C · 15.5 F  =  23% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-wheat tortilla: 55.0 g
+  - Sautéed mushrooms: 35.0 g
+  - Scrambled egg: 100.0 g
+  - Hummus: 15.5 g
+  - A handful of spinach: 30.0 g
+METHOD:
+  1. Warm the tortilla in a dry skillet over medium heat, about 30 seconds each side.
+  2. Spread hummus down the center.
+  3. Add scrambled egg, mushrooms, and spinach.
+  4. Season lightly, roll up, and slice in half.
+  5. A perfect protein-packed handheld breakfast.
+
+============================================================================
+bf56  🫙 Tropical Sunrise Parfait
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 206 kcal · 12.8 g protein · 23.1 C · 7 F  =  25% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Low-fat Greek yogurt: 122.0 g
+  - Diced mango: 41.0 g
+  - Diced pineapple: 41.0 g
+  - Shredded coconut: 6.0 g
+  - Granola: 7.0 g
+  - Chia seeds: 1.8 g
+METHOD:
+  1. In a glass, layer the yogurt, mango, pineapple and granola.
+  2. Sprinkle chia seeds and shredded coconut over the top.
+  3. Chill for 5 minutes for a refreshing, beachy vibe — sweet, tangy, and creamy in every bite.
+

@@ -1,0 +1,135 @@
+# Protein-lift batch 9 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+sn36  🫘 Greek Chickpea Salad Bowl
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 595 kcal · 25 g protein · 82.1 C · 20.9 F  =  17% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Chickpeas (canned, drained): 306.0 g
+  - Cucumber: 150.0 g
+  - Cherry tomatoes: 75.0 g
+  - Red onion: 20.0 g
+  - Kalamata olives: 17.0 g
+  - Feta cheese: 9.5 g
+  - Olive oil: 7.0 g
+  - Lemon juice: 7.5 g
+  - Oregano: 0.3 g
+METHOD:
+  1. In a large bowl, combine chickpeas, cucumber, tomatoes, onion, and olives.
+  2. In a small bowl, whisk olive oil, lemon juice, oregano, salt, and pepper.
+  3. Pour dressing over the salad and toss to coat evenly.
+  4. Top with feta before serving.
+  5. Chill for 10 minutes for enhanced flavor and freshness.
+
+============================================================================
+sn34  🫘 Roasted Chickpea Crunch
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 197 kcal · 8.5 g protein · 27.8 C · 6.4 F  =  17% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Chickpeas: 120.0 g
+  - Olive oil: 3.4 g
+  - Paprika: 0.3 g
+  - Garlic powder: 0.2 g
+METHOD:
+  1. Preheat oven to 200°C.
+  2. Dry chickpeas thoroughly, and toss in olive oil and spices.
+  3. Spread on a baking sheet and roast for 30 minutes, shaking halfway.
+
+============================================================================
+sn37  🫘 Cucumber Hummus Roll-Ups
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 79 kcal · 3.5 g protein · 9.8 C · 3.7 F  =  18% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Cucumber: 150.0 g
+  - Hummus: 30.5 g
+  - Chopped olives: 4.2 g
+METHOD:
+  1. Lay the cucumber slices flat on a clean surface, making sure they are even and sturdy enough to hold the filling.
+  2. Spread a thin layer of hummus over each slice, covering it gently but evenly.
+  3. Scatter the chopped olives on top, distributing them so each bite gets some.
+  4. Roll each cucumber slice tightly and secure with a toothpick to hold the filling in place.
+  5. Chill briefly before serving to allow the flavors to meld and the rolls to firm up slightly.
+
+============================================================================
+sn38  🥦 Baked Zucchini Fries
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 62 kcal · 2.8 g protein · 5.6 C · 3.5 F  =  18% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Zucchini: 100.0 g
+  - Breadcrumbs: 3.1 g
+  - Grated Parmesan: 3.1 g
+  - Olive oil: 2.2 g
+METHOD:
+  1. Preheat oven to 200°C.
+  2. Toss zucchini with olive oil, breadcrumbs, Parmesan, salt, and pepper.
+  3. Spread on a baking sheet and bake for 20 minutes until golden.
+
+============================================================================
+sn29  🫘 Spicy Roasted Chickpeas
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 248 kcal · 11.6 g protein · 38 C · 6.4 F  =  19% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Canned chickpeas: 164.0 g
+  - Olive oil: 2.2 g
+  - Paprika: 0.6 g
+  - Cayenne pepper: 0.2 g
+METHOD:
+  1. Preheat your oven to 200°C, giving it enough time to fully heat so the chickpeas crisp properly.
+  2. Pat the chickpeas dry with a clean towel, then toss them in a bowl with the olive oil, paprika, cayenne, and salt, making sure every chickpea is evenly coated.
+  3. Spread them out on a baking sheet in a single layer, giving them space so they roast instead of steam.
+  4. Roast for 25–30 minutes, shaking the pan halfway through to help them crisp on all sides.
+  5. Let them cool completely on the baking sheet; they firm up as they cool, giving you that perfect crunch.
+
+============================================================================
+sn24  🍽️ Roasted Pumpkin Seeds with Cinnamon & Honey
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 193 kcal · 9.8 g protein · 6.6 C · 16 F  =  20% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Raw pumpkin seeds: 32.5 g
+  - Honey: 3.5 g
+  - Cinnamon: 0.3 g
+METHOD:
+  1. Preheat oven to 165°C.
+  2. Toss pumpkin seeds with honey, cinnamon, and salt.
+  3. Spread on a parchment-lined baking sheet.
+  4. Roast 12–15 minutes, stirring once midway.
+
+============================================================================
+sn12  🥚 Avocado Egg Salad Wrap
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 458 kcal · 25.2 g protein · 34.2 C · 24.6 F  =  22% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Boiled eggs: 152.0 g
+  - Avocado: 37.5 g
+  - Greek yogurt: 7.5 g
+  - Lemon juice: 2.5 g
+  - Whole-grain tortillas: 55.0 g
+  - Romaine lettuce: 20.0 g
+METHOD:
+  1. Mash the avocado with Greek yogurt and lemon juice until smooth.
+  2. Stir in the chopped eggs, salt, and pepper.
+  3. Spread on tortillas, top with lettuce, and roll up. Slice in half to serve.
+
+============================================================================
+sn20  🫙 Apple Cinnamon Greek Yogurt Dip
+category: salad | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 207 kcal · 11.6 g protein · 36.8 C · 2.7 F  =  22% protein
+target for salad: at least 35% (category floor), ideally 42% (live median)
+INGREDIENTS (per portion):
+  - Greek yogurt: 122.0 g
+  - Cinnamon: 1.3 g
+  - Honey: 7.0 g
+  - Apple: 180.0 g
+METHOD:
+  1. Add the yogurt to a small bowl, then sprinkle in the cinnamon and drizzle the honey over the top.
+  2. Gently mix everything together until the yogurt becomes smooth, creamy, and lightly sweetened.
+  3. Arrange your fresh apple slices on a plate and serve them alongside the yogurt dip, letting each slice be coated in the sweet, spiced creaminess for a refreshing, energizing snack.
+

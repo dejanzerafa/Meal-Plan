@@ -1,0 +1,164 @@
+# Protein-lift batch 2 — 8 recipes
+# Read EVERY recipe. Propose ONE protein addition for each.
+
+============================================================================
+bf70  🌾 Strawberry Almond Baked Oatmeal Cups
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 156 kcal · 5.3 g protein · 27 C · 3.4 F  =  14% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 20.0 g
+  - Almond milk: 40.0 g
+  - Egg: 10.0 g
+  - Honey: 14.0 g
+  - Diced strawberries: 12.5 g
+  - Baking powder: 0.8 g
+  - Vanilla extract: 0.7 g
+  - Sliced almonds: 1.5 g
+METHOD:
+  1. Preheat oven to 175°C.
+  2. In a bowl, mix the oats and baking powder, then stir in the almond milk, egg, honey and vanilla extract.
+  3. Fold in strawberries and almonds.
+  4. Spoon mixture into greased muffin tin and bake for 20–22 minutes.
+  5. Cool slightly before serving — sweet, chewy, and portable for busy mornings.
+
+============================================================================
+bf60  🌾 Banana Almond Butter Overnight Oats
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 339 kcal · 11.8 g protein · 45.8 C · 13.3 F  =  14% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 40.0 g
+  - Unsweetened almond milk: 120.0 g
+  - Banana: 59.0 g
+  - Almond butter: 16.0 g
+  - Vanilla extract: 2.2 g
+  - Chia seeds: 1.8 g
+METHOD:
+  1. In a jar, mix oats, almond milk, mashed banana, almond butter, vanilla, and chia seeds.
+  2. Stir well, cover, and refrigerate overnight.
+  3. In the morning, stir again and add a splash of milk if needed.
+  4. Enjoy chilled or slightly warmed for creamy, nutty perfection.
+
+============================================================================
+bf67  🍪 Blueberry Almond Breakfast Muffins
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 185 kcal · 6.7 g protein · 17.2 C · 11.3 F  =  14% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Almond flour: 18.0 g
+  - Rolled oats: 5.0 g
+  - Eggs: 15.0 g
+  - Honey: 10.5 g
+  - Almond milk: 7.5 g
+  - Fresh blueberries: 9.5 g
+  - Baking powder: 0.6 g
+  - Vanilla extract: 0.5 g
+METHOD:
+  1. Preheat oven to 175°C and line a muffin tin with paper liners.
+  2. In a mixing bowl, whisk eggs, honey, almond milk, and vanilla until combined.
+  3. Add almond flour, oats, and baking powder; mix into a thick batter.
+  4. Gently fold in blueberries.
+  5. Spoon the batter into muffin cups, filling each about ¾ full.
+  6. Bake for 18–20 minutes or until golden brown and a toothpick comes out clean.
+  7. Cool slightly before serving.
+
+============================================================================
+bf58  🌾 Peanut Butter Banana Overnight Oats
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 358 kcal · 13.5 g protein · 48.7 C · 14 F  =  15% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 40.0 g
+  - Almond milk: 180.0 g
+  - Natural peanut butter: 16.0 g
+  - Banana: 59.0 g
+  - Chia seeds: 5.5 g
+  - Cinnamon: 0.7 g
+METHOD:
+  1. In a jar, stir together the rolled oats, almond milk, peanut butter, half the mashed banana, the chia seeds and the cinnamon until evenly combined.
+  2. Seal and refrigerate overnight, or at least 4 hours, so the oats and chia soften and thicken.
+  3. In the morning stir again, loosening with a splash of almond milk if it has set too firm.
+  4. Top with the remaining banana slices and eat cold.
+
+============================================================================
+bf63  🌾 Brain-Boosting Berry Oatmeal
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 246 kcal · 9.4 g protein · 39 C · 6.6 F  =  15% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 40.0 g
+  - Almond milk: 240.0 g
+  - Mixed berries: 37.5 g
+  - Ground flaxseed: 4.7 g
+  - Honey: 3.5 g
+  - Cinnamon: 0.3 g
+METHOD:
+  1. Combine oats and almond milk in a pot. Bring to a simmer over 175°C and cook for 5 minutes, stirring often.
+  2. Add flaxseed, cinnamon, and honey. Mix until smooth and creamy.
+  3. Remove from heat and fold in the mixed berries gently.
+  4. Serve warm with a few fresh berries on top.
+
+============================================================================
+bf38  🥕 Carrot Cake Baked Oats
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 516 kcal · 23.9 g protein · 71.5 C · 16.8 F  =  19% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Rolled oats: 50.0 g
+  - Skimmed milk: 120.0 g
+  - Carrot (finely grated): 70.0 g
+  - Large eggs: 60.0 g
+  - Walnuts (chopped): 10.0 g
+  - Raisins: 15.0 g
+  - Maple syrup: 7.0 g
+  - Cinnamon (ground): 2.0 g
+  - Nutmeg (ground): 0.5 g
+  - Puffed quinoa: 8.0 g
+METHOD:
+  1. Stir the oats, milk, egg, maple syrup, cinnamon and nutmeg together until evenly combined.
+  2. Fold in the grated carrot and raisins so the carrot-cake flavour runs through every bite rather than sitting in pockets.
+  3. Pour into a ramekin or small oven dish.
+  4. Bake at 180°C for about 20 min — it is ready once the top sets and the edges pull away slightly.
+  5. Top with the walnuts and puffed quinoa for crunch.
+
+============================================================================
+bf62  🌯 Sweet Almond Toast with Ricotta & Honey
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 217 kcal · 10.2 g protein · 26.5 C · 8.3 F  =  19% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-grain bread: 40.0 g
+  - Ricotta cheese: 31.0 g
+  - Honey: 7.0 g
+  - Sliced almonds: 9.0 g
+  - Cinnamon: 0.7 g
+METHOD:
+  1. Toast the bread until golden and crisp.
+  2. Spread ricotta evenly over the warm toast.
+  3. Drizzle with honey and sprinkle cinnamon on top.
+  4. Finish with toasted almond slices for crunch.
+  5. Serve immediately with tea or coffee for a cozy morning treat.
+
+============================================================================
+bf57  🥞 Lemon Ricotta Pancakes
+category: breakfast | portions: 1 | VEGETARIAN (no meat/fish anywhere) — dairy/plant protein ONLY
+now: 287 kcal · 13.5 g protein · 37.8 C · 8.5 F  =  19% protein
+target for breakfast: at least 30% (category floor), ideally 35% (live median)
+INGREDIENTS (per portion):
+  - Whole-wheat flour: 31.0 g
+  - Baking powder: 1.1 g
+  - Honey: 10.5 g
+  - Low-fat ricotta cheese: 62.0 g
+  - Egg: 30.0 g
+  - Almond milk: 60.0 g
+  - Lemon zest: 2.5 g
+  - Vanilla extract: 1.1 g
+METHOD:
+  1. In a bowl, whisk ricotta, egg, almond milk, honey, lemon zest, and vanilla until smooth.
+  2. In another bowl, mix flour and baking powder.
+  3. Combine wet and dry ingredients; stir gently.
+  4. Heat a lightly greased non-stick skillet to 175°C and pour 60 ml batter per pancake.
+  5. Cook each side for 2–3 minutes until golden.
+  6. Serve with a drizzle of honey and extra lemon zest for brightness.
+
