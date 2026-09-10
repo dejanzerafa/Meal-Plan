@@ -1,9 +1,15 @@
 # Technique & healthy-cooking audit — all 401 recipes
 
 2026-09-10. **Applied 2026-09-10** — 51 mechanical fixes across 51 recipes
-(`fix-technique-2026-09-10.mjs`). Fourteen findings were deliberately NOT applied
-because their fix is a change of step order rather than a text addition; they are
-listed at the end and wait for a decision.
+(`fix-technique-2026-09-10.mjs`). A second pass (`fix-step-order-2026-09-10.mjs`, `fix-promote-notes-2026-09-10.mjs`)
+then handled the step-order findings by hand, one recipe at a time.
+
+**8 findings remain, all deliberate exceptions** — hol6's cumin goes into a cold
+salsa; m50 is a slow cooker with no frying stage; sn39 is a cold tahini dip where
+the tahini is already the fat; m128's parsley is inside meatballs and m142's dill
+on baked cod, both traditional; m188 buys *pre-cooked* basmati so there is
+nothing to rinse; ds20's "single layer" is banana on a rice cake; sn6 needs a fat
+added, which is a macro decision rather than a text edit.
 
 Rules were researched from Serious Eats / Kenji López-Alt, America's Test Kitchen,
 Harold McGee's *On Food and Cooking*, USDA FSIS, the UK Food Standards Agency,
