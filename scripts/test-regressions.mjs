@@ -1369,6 +1369,22 @@ section("Recipe content — every rule from the 2026-09-07 and 2026-09-08 audits
   t(`all ${ALL.length} recipes pass every content rule`, results.length === 0,
      `${results.length} recipe(s) with findings`);
 
+  // The two supplement lines that were pasted onto recipe after recipe. One
+  // wording each, no connection to the dish — the ginger line sat on a beef
+  // pasta skillet and a chicken quesadilla alike. Removed 2026-09-10.
+  const boiler = ALL.filter(r => (r.steps || []).some(s =>
+    /^💡 Add 2\.5 g fresh grated ginger/.test(String(s)) || /^🟡 Add 0\.5 g turmeric/.test(String(s)))).map(r => r.id);
+  t("the ginger and turmeric boilerplate is gone", boiler.length === 0,
+     boiler.slice(0, 8).join(", ") + (boiler.length > 8 ? ` +${boiler.length - 8} more` : ""));
+
+  // Notes live behind a tap, so they stop competing with the method while the
+  // user is cooking. Nothing is deleted — the section just starts closed.
+  t("storage notes are collapsed behind a tap by default",
+     /const \[tipsOpen, setTipsOpen\] = useState\(false\)/.test(src)
+     && /STORAGE & TIPS \(" \+ tipSteps\.length/.test(raw)
+     && /tipsOpen && React\.createElement/.test(src),
+     "195 of 401 recipes carried more note text than method text");
+
   // The app has to agree with the module about what a note is, or notes get
   // numbered as steps again (76 lines across 70 recipes did).
   const appNote = raw.match(/const isNote = s => (\/\^\[[^\]]+\]\/u)\.test\(String\(s\)\)/);
