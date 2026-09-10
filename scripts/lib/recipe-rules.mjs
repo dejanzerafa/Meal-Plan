@@ -308,6 +308,46 @@ const RULES = [
   // If light mains become a real problem, the fix belongs in the filters or in
   // the recipes themselves — not in a rule that is satisfied by adding text.
   {
+    id: "badge-matches-method", severity: "wrong",
+    why: "The badge is a filter. A yogurt bowl badged Stovetop tells someone to heat something they never heat, and hides no-cook recipes from the people looking for them. Melting chocolate in a microwave is still fair to call no-cook; needing a hob, an oven or a blender is not.",
+    check(r) {
+      const body = bodyOf(r).join(" ");
+      const b = r.badge || "";
+      // "brown rice" is not the verb "brown", and "browned butter" is not a
+      // cooking step. Same class of bug as "ground coriander" counting as mince.
+      const HOB = /\b(saut[ée]|sear|simmer|boil|stir[- ]?fry|pan[- ]?fry|griddle|poach|blanch|braise|scramble|wilt|fry)\b|\bbrown\b(?!\s+(?:rice|sugar|bread|butter))/i;
+      if (/Blender/i.test(b) && !/\bblend/i.test(body)) return "badged Blender but nothing is blended";
+      if (/Oven/i.test(b) && !/\b(oven|bake|roast|grill)\b/i.test(body)) return "badged Oven but nothing goes in an oven";
+      if (/Air Fryer/i.test(b) && !/air[- ]?fry/i.test(body)) return "badged Air Fryer but nothing is air-fried";
+      if (/Stovetop/i.test(b) && !HOB.test(body) && !/\b(cook|heat|warm|toast)\b/i.test(body))
+        return "badged Stovetop but nothing is cooked";
+      // For No-Cook the bar is wider than the hob: steaming, baking or roasting
+      // anything disqualifies it too. Toasting, melting and warming do not —
+      // those need a toaster or 20 seconds in a microwave, not cooking.
+      if (/No[- ]?Cook/i.test(b)) {
+        const cooks = bodyOf(r).some(x => {
+          const t = String(x);
+          if (/\b(toast|melt|warm|thaw|defrost)\b/i.test(t) && !HOB.test(t)) return false;
+          return HOB.test(t) || /\b(cook|steam|bake|roast|grill|air[- ]?fry)\b/i.test(t);
+        });
+        if (cooks) return "badged No-Cook but the method cooks something";
+      }
+      return null;
+    },
+  },
+  {
+    id: "subtitle-matches-badge", severity: "quality",
+    why: "The subtitle repeats the method in words. 'Stovetop · 8 hr' on overnight oats is the same lie as the badge, in a place the user reads first.",
+    check(r) {
+      const sub = String(r.subtitle || ""), b = r.badge || "";
+      if (/No[- ]?Cook/i.test(b) && /\b(stovetop|oven|blender|air fryer)\b/i.test(sub))
+        return `badge is No-Cook but the subtitle says "${sub.split("·")[0].trim()}"`;
+      if (/Stovetop/i.test(b) && /\bno[- ]?cook\b/i.test(sub))
+        return `badge is Stovetop but the subtitle says no-cook`;
+      return null;
+    },
+  },
+  {
     id: "fat-dominant-main", severity: "nutrition",
     why: "69% of calories from fat is right for a tahini dip. A MAIN that is fat-dominant and short on protein will not keep anyone full.",
     check(r) {

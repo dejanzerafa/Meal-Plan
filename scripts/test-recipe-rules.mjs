@@ -93,6 +93,13 @@ const CASES = [
            r.batchItems.push({ key: "t1_soy3", label: "Japanese soy sauce", qty: 30, unit: "ml", cat: "Sauces", ingId: 180 });
            r.steps[2] = "Steam the broccoli 5 min, then stir in both soy sauces."; }],
   ["no-pdf-artefacts", r => { r.steps[2] = "Steam the broccoli for"; }],
+  ["badge-matches-method", r => { r.badge = "🥗 No-Cook"; },
+    "melting chocolate in a microwave is still no-cook",
+    r => { r.badge = "🥗 No-Cook"; r.steps = ["Melt the chocolate in the microwave in 20-second bursts.", "Spread it over and chill 15 min.", "Divide equally into 4 portions."]; }],
+  ["subtitle-matches-badge", r => { r.badge = "🥗 No-Cook"; r.subtitle = "Stovetop · 20 min"; },
+    "a No-Cook badge with a matching subtitle",
+    r => { r.badge = "🥗 No-Cook"; r.subtitle = "No-cook · 10 min";
+           r.steps = ["Spoon the yogurt into a bowl.", "Scatter the berries over.", "Divide equally into 4 portions."]; }],
   ["fat-dominant-main", r => { r.perPortion = { kcal: 400, protein: 12, carbs: 10, fat: 34 }; }],
   ["kcal-matches-macros", r => { r.perPortion.kcal = 900; }],
   ["batch-portioning", r => { r.steps[3] = "Eat."; }],
